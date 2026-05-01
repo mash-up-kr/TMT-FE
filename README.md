@@ -1,1 +1,15 @@
 # ttalkkak-web
+
+## 커밋 컨벤션
+
+형식: `<type>: <제목>`
+
+| Type    | 설명             | 예시                                     |
+| ------- | ---------------- | ---------------------------------------- |
+| `feat`  | 새로운 기능 추가 | `feat: 로그인 페이지 추가`               |
+| `fix`   | 버그 수정        | `fix: 토큰 만료 시 무한 리다이렉트 수정` |
+| `chore` | 세팅, 기타 잡일  | `chore: PR 템플릿 추가`                  |
+| `style` | UI 관련 작업     | `style: 메인 배너 색상 변경`             |
+| `docs`  | 문서 관련 작업   | `docs: README 업데이트`                  |
+
+> GitHub Ruleset으로 자동 검증됩니다 (`.github/rulesets/commit-convention.json`).
