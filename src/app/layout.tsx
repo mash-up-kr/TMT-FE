@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/shared/styles/globals.css";
+import { QueryProvider } from "@/shared/providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "딸깍",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
