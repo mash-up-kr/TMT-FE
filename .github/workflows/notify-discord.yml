@@ -85,9 +85,7 @@ jobs:
             # UTF-8 안전 character-based 자르기 (jq의 .[0:N] 사용)
             excerpt="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 400 then .[0:400] + "…" else . end')"
             if [ -n "${desc}" ]; then
-              desc="${desc}
-
-${excerpt}"
+              desc="${desc}"$'\n\n'"${excerpt}"
             else
               desc="${excerpt}"
             fi
