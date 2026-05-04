@@ -27,46 +27,54 @@ jobs:
           REVIEWER: ${{ github.event.review.user.login }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
           AVATAR: ${{ github.event.pull_request.user.avatar_url }}
+          REPO: ${{ github.repository }}
+          REPO_URL: ${{ github.event.repository.html_url }}
         run: |
           set -euo pipefail
 
           send=true
           color=0
-          footer=""
           headline=""
+          footer_text=""
 
-          # 이벤트 → 헤드라인·색상·footer 매핑 (Discord 브랜드 컬러)
+          # 이벤트 → 헤드라인·색상·footer 매핑
           case "${EVENT}/${ACTION}" in
             "pull_request/opened")
-              # Draft로 열린 PR은 ready_for_review에서만 알림 (중복 방지)
+              # Draft PR은 ready_for_review에서만 알림 (중복 방지)
               if [ "${IS_DRAFT}" = "true" ]; then
                 send=false
               else
-                color=5763719;  footer="opened → ${BASE}"
-                headline="🔔 새 PR이 생성되었습니다!"
+                color=5763719   # green
+                headline="🔔  새 PR이 등록되었습니다"
+                footer_text="opened → ${BASE}"
               fi ;;
             "pull_request/ready_for_review")
-              color=5793266;  footer="ready for review"
-              headline="👀 PR이 리뷰 준비되었습니다!" ;;
+              color=5793266     # blurple
+              headline="👀  PR이 리뷰 대기 중입니다"
+              footer_text="ready for review" ;;
             "pull_request/closed")
               if [ "${MERGED}" = "true" ] && { [ "${BASE}" = "main" ] || [ "${BASE}" = "develop" ]; }; then
-                color=10181046; footer="merged → ${BASE}"
-                headline="🚀 ${BASE}에 머지되었습니다!"
+                color=10181046  # purple
+                headline="🚀  ${BASE} 브랜치에 머지되었습니다"
+                footer_text="merged → ${BASE}"
               else
                 send=false
               fi ;;
             "pull_request_review/submitted")
               case "${REVIEW_STATE}" in
                 approved)
-                  color=5763719;  footer="review · approved by ${REVIEWER}"
-                  headline="✅ ${REVIEWER} 님이 PR을 승인했습니다!" ;;
+                  color=5763719   # green
+                  headline="✅  ${REVIEWER} 님이 PR을 승인했습니다"
+                  footer_text="approved by ${REVIEWER}" ;;
                 changes_requested)
-                  color=15548997; footer="review · changes requested by ${REVIEWER}"
-                  headline="🛑 ${REVIEWER} 님이 변경을 요청했습니다!" ;;
+                  color=15548997  # red
+                  headline="🛑  ${REVIEWER} 님이 변경을 요청했습니다"
+                  footer_text="changes requested by ${REVIEWER}" ;;
                 *) send=false ;;
               esac ;;
             *) send=false ;;
@@ -85,38 +93,56 @@ jobs:
               key="DDK-${num}"
             fi
           fi
-
-          # description = Jira 링크 + PR 본문 발췌 (UTF-8 안전 truncation)
-          desc=""
+          jira_url=""
           if [ -n "${key}" ]; then
-            desc="[${key}](https://ttalkkak.atlassian.net/browse/${key})"
-          fi
-          if [ -n "${PR_BODY}" ]; then
-            excerpt="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 400 then .[0:400] + "…" else . end')"
-            if [ -n "${desc}" ]; then
-              desc="${desc}"$'\n\n'"${excerpt}"
-            else
-              desc="${excerpt}"
-            fi
+            jira_url="https://ttalkkak.atlassian.net/browse/${key}"
           fi
 
-          # payload: 상단 텍스트(content) + 색상바 임베드(embeds[0])
+          # PR 본문 발췌 (UTF-8 안전 truncation)
+          body=""
+          if [ -n "${PR_BODY}" ]; then
+            body="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 350 then .[0:350] + "…" else . end')"
+          fi
+
+          # ISO 8601 timestamp (Discord가 알아서 사용자 로컬 시간으로 렌더)
+          ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          # payload: 헤드라인(content) + 카드형 임베드
           jq -n \
-            --arg headline "${headline}" \
-            --arg title    "${PR_TITLE}" \
-            --arg url      "${PR_URL}" \
-            --arg author   "${AUTHOR}" \
-            --arg avatar   "${AVATAR}" \
-            --arg desc     "${desc}" \
-            --arg footer   "${footer}" \
-            --argjson color "${color}" \
+            --arg headline    "${headline}" \
+            --arg repo        "${REPO}" \
+            --arg repo_url    "${REPO_URL}" \
+            --arg favicon     "https://github.githubassets.com/favicons/favicon.png" \
+            --arg title       "${PR_TITLE}" \
+            --arg url         "${PR_URL}" \
+            --arg body        "${body}" \
+            --arg key         "${key}" \
+            --arg jira_url    "${jira_url}" \
+            --arg base        "${BASE}" \
+            --arg author      "${AUTHOR}" \
+            --arg avatar      "${AVATAR}" \
+            --arg footer_text "${footer_text}" \
+            --arg ts          "${ts}" \
+            --argjson color   "${color}" \
             '{
               content: $headline,
               embeds: [
-                ({title: $title, url: $url, color: $color})
-                + (if $desc   == "" then {} else {description: $desc} end)
-                + (if $author == "" then {} else {author: {name: $author, icon_url: $avatar}} end)
-                + (if $footer == "" then {} else {footer: {text: $footer}} end)
+                ({
+                  color: $color,
+                  author: { name: $repo, url: $repo_url, icon_url: $favicon },
+                  title: $title,
+                  url: $url,
+                  fields: [
+                    (if $key != "" then
+                       {name: "🎫  Ticket", value: ("[\($key)](\($jira_url))"), inline: true}
+                     else empty end),
+                    {name: "🌿  Base",   value: "`\($base)`",   inline: true},
+                    {name: "✍️  Author", value: "`\($author)`", inline: true}
+                  ],
+                  footer: { text: $footer_text, icon_url: $avatar },
+                  timestamp: $ts
+                })
+                + (if $body == "" then {} else {description: $body} end)
               ]
             }' > payload.json
 
