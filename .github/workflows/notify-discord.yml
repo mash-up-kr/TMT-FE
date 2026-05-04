@@ -27,13 +27,10 @@ jobs:
           REVIEWER: ${{ github.event.review.user.login }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
           AVATAR: ${{ github.event.pull_request.user.avatar_url }}
-          REPO: ${{ github.repository }}
-          REPO_URL: ${{ github.event.repository.html_url }}
         run: |
           set -euo pipefail
 
@@ -50,7 +47,7 @@ jobs:
                 send=false
               else
                 color=5763719   # green
-                headline="🔔  새 PR이 등록되었습니다"
+                headline="🔔  PR이 생성되었습니다"
                 footer_text="opened → ${BASE}"
               fi ;;
             "pull_request/ready_for_review")
@@ -104,46 +101,38 @@ jobs:
             body="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 350 then .[0:350] + "…" else . end')"
           fi
 
-          # ISO 8601 timestamp (Discord가 알아서 사용자 로컬 시간으로 렌더)
+          # description 본문: 깃 링크 + 티켓 링크 + (있으면) PR 본문 발췌
+          desc="- 🔗 [${PR_TITLE}](${PR_URL})"
+          if [ -n "${key}" ]; then
+            desc="${desc}"$'\n'"- 🎫 [${key}](${jira_url})"
+          fi
+          if [ -n "${body}" ]; then
+            desc="${desc}"$'\n\n'"${body}"
+          fi
+
+          # ISO 8601 timestamp (Discord가 사용자 로컬 시간으로 자동 렌더)
           ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-          # payload: 헤드라인(content) + 카드형 임베드
+          # payload: 외부 content 없음, 단일 embed에 모든 텍스트
           jq -n \
-            --arg headline    "${headline}" \
-            --arg repo        "${REPO}" \
-            --arg repo_url    "${REPO_URL}" \
-            --arg favicon     "https://github.githubassets.com/favicons/favicon.png" \
-            --arg title       "${PR_TITLE}" \
-            --arg url         "${PR_URL}" \
-            --arg body        "${body}" \
-            --arg key         "${key}" \
-            --arg jira_url    "${jira_url}" \
-            --arg base        "${BASE}" \
             --arg author      "${AUTHOR}" \
             --arg avatar      "${AVATAR}" \
+            --arg headline    "${headline}" \
+            --arg url         "${PR_URL}" \
+            --arg desc        "${desc}" \
             --arg footer_text "${footer_text}" \
             --arg ts          "${ts}" \
             --argjson color   "${color}" \
             '{
-              content: $headline,
-              embeds: [
-                ({
-                  color: $color,
-                  author: { name: $repo, url: $repo_url, icon_url: $favicon },
-                  title: $title,
-                  url: $url,
-                  fields: [
-                    (if $key != "" then
-                       {name: "🎫  Ticket", value: ("[\($key)](\($jira_url))"), inline: true}
-                     else empty end),
-                    {name: "🌿  Base",   value: "`\($base)`",   inline: true},
-                    {name: "✍️  Author", value: "`\($author)`", inline: true}
-                  ],
-                  footer: { text: $footer_text, icon_url: $avatar },
-                  timestamp: $ts
-                })
-                + (if $body == "" then {} else {description: $body} end)
-              ]
+              embeds: [{
+                color: $color,
+                author: { name: $author, icon_url: $avatar },
+                title: $headline,
+                url: $url,
+                description: $desc,
+                footer: { text: $footer_text },
+                timestamp: $ts
+              }]
             }' > payload.json
 
           echo "skip=false" >> "${GITHUB_OUTPUT}"
