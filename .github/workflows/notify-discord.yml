@@ -24,6 +24,7 @@ jobs:
           BASE: ${{ github.event.pull_request.base.ref }}
           REVIEW_STATE: ${{ github.event.review.state }}
           PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
@@ -73,9 +74,23 @@ jobs:
             num="$(printf '%s' "${HEAD_REF}" | grep -oE '#[0-9]+' | head -1 | tr -d '#' || true)"
             [ -n "${num}" ] && key="DDK-${num}"
           fi
+
+          # description = Jira 링크 + PR 본문 발췌 (Discord webhook은 explicit embed가 있으면
+          # content URL의 auto-unfurl을 띄우지 않음 → 본문을 직접 박아넣음)
           desc=""
           if [ -n "${key}" ]; then
             desc="[${key}](https://ttalkkak.atlassian.net/browse/${key})"
+          fi
+          if [ -n "${PR_BODY}" ]; then
+            # UTF-8 안전 character-based 자르기 (jq의 .[0:N] 사용)
+            excerpt="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 400 then .[0:400] + "…" else . end')"
+            if [ -n "${desc}" ]; then
+              desc="${desc}
+
+${excerpt}"
+            else
+              desc="${excerpt}"
+            fi
           fi
 
           jq -n \
@@ -87,7 +102,6 @@ jobs:
             --arg footer "${footer}" \
             --argjson color "${color}" \
             '{
-              content: $url,
               embeds: [
                 ({title: $title, url: $url, color: $color})
                 + (if $desc   == "" then {} else {description: $desc} end)
