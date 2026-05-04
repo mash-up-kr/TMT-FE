@@ -6,7 +6,8 @@
 | Version | 1.2 |
 | Scope | `ttalkkak-web` |
 | Stack | Next.js App Router |
-| Last updated | 2026-05-01 |
+| Tooling | Biome (lint/format) |
+| Last updated | 2026-05-04 |
 
 ---
 
@@ -45,6 +46,7 @@ src/
 │
 ├── app/                              # Next.js App Router. 라우트별 폴더만.
 │   ├── layout.tsx
+│   ├── globals.css                   # 글로벌 CSS 진입점 (root layout에서만 import)
 │   ├── page.tsx                      # /
 │   │
 │   ├── home/                         # /home
@@ -67,6 +69,7 @@ src/
     ├── model/
     ├── constants/
     ├── stores/
+    ├── styles/
     └── providers/
 ```
 
@@ -96,7 +99,8 @@ Next.js App Router는 **`_`로 시작하는 폴더를 라우트에서 제외**�
 | `_constants/` | 표준, 필요 시 | 페이지 한정 상수, enum | `post.const.ts` |
 | `_stores/` | 선택 | 페이지 스코프 atoms/store | `post.atoms.ts` |
 
-> **`_model/` vs `@/api/gen/`**: 백엔드 API 응답 타입은 `@/api/gen/`이 자동생성. `_model/`은 폼 검증, 클라이언트 전용 가공 타입(예: `PostViewModel`)에 한정.
+> **`_model/` vs `@/api/gen/`**: 백엔드 API 응답 타입은 `@/api/gen/`이 자동생성. `_model/`은 폼 검증, 클라이언트 전용 가공 타입(예: `PostViewModel`)에 한정. 단일 컴포넌트 전용 타입/variant는 그 컴포넌트 파일 내부에 두고, 여러 컴포넌트가 공유할 때 `_model/`로 승격.
+> **컴포넌트 파일 구조**: 기본은 단일 파일. 규모가 커지면 `_components/Tabs/index.tsx`로 폴더 승격하고, 외부에는 `index.tsx`만 노출.
 
 ### 4.2 공유 segment
 
@@ -108,10 +112,12 @@ Next.js App Router는 **`_`로 시작하는 폴더를 라우트에서 제외**�
 | `shared/model/` | 선택 | 전역 도메인 타입 (API gen에 없는 것만) | `User`, `Session` |
 | `shared/constants/` | 선택 | 라우트 경로, 외부 URL, 매직값 | `ROUTES`, `EXTERNAL_LINKS` |
 | `shared/stores/` | 선택 | 전역 atoms/store | `auth.atoms.ts` |
+| `shared/styles/` | 표준, 필요 시 | 디자인 토큰, reset, theme | `tokens.css`, `theme.css` |
 | `shared/providers/` | 선택 | Context Providers | `QueryClientProvider`, `ThemeProvider` |
 
 > **표준, 필요 시**: 표준 segment 이름이지만 첫 파일이 등장할 때 폴더 생성 (§3.2).
 > **선택**: 해당 패턴(전역 상태, Context 등)이 처음 등장하는 시점에 폴더 생성.
+> **글로벌 CSS**: `app/globals.css`(Next 공식 위치)가 진입점. 토큰/reset/theme은 `shared/styles/`에서 관리하고 `@import`로 끌어온다. root layout에서만 import 가능.
 
 ---
 
@@ -129,7 +135,7 @@ src/api/
 │   │   └── posts.schemas.ts
 │   ├── users/
 │   └── auth/
-└── mutator.ts             # 인증 헤더, 인터셉터, 에러 핸들링
+└── mutator.ts             # 인증 헤더, 요청/응답 래퍼, 에러 핸들링
 ```
 
 ### 5.2 규칙
@@ -139,7 +145,7 @@ src/api/
 | `src/api/gen/` 직접 편집 | 금지 (재생성 시 덮어쓰임) |
 | 신규 엔드포인트 추가 | OpenAPI 스펙 변경 후 `pnpm api-gen` 재생성 |
 | 커스텀 헤더/인증/에러 | `src/api/mutator.ts`에서 처리 |
-| 페이지 전용 axios 인스턴스 | 금지 (모든 호출은 mutator 경유) |
+| 페이지 전용 fetch 래퍼/클라이언트 | 금지 (모든 호출은 mutator 경유) |
 | API 응답 가공 | 페이지 `_utils/toXxxViewModel.ts`에서 |
 
 ### 5.3 사용 패턴
@@ -281,9 +287,9 @@ Q2. 어떤 종류인가? (분류는 §4.2 참조)
 | `_utils/`에 타입 선언 | utils는 행동 전용 | `_model/`로 |
 | `_model/`에 함수 선언 | model은 데이터 형태 전용 | `_utils/`로 |
 | 상수를 `_utils/` 또는 `_model/`에 | 분류 모호화 | `_constants/`로 |
-| 수동으로 axios/fetch 호출 작성 | API 통합 정책 위반 (§5) | `@/api/gen/...`에서 import |
+| 수동으로 fetch 호출 작성 | API 통합 정책 위반 (§5) | `@/api/gen/...`에서 import |
 | `src/api/gen/` 직접 편집 | 재생성 시 덮어쓰임 | OpenAPI 스펙 변경 후 `pnpm api-gen` 재생성 |
-| 페이지마다 다른 axios 인스턴스 생성 | 인터셉터/인증 분산 | `src/api/mutator.ts` 한 곳에서 관리 |
+| 페이지마다 다른 fetch 래퍼/클라이언트 생성 | 요청 처리/인증 분산 | `src/api/mutator.ts` 한 곳에서 관리 |
 | 페이지 코드/컴포넌트에서 MSW handler 작성 | mock 분산, API 변경 시 추적 어려움 | `src/api/mock/handlers.override.ts`에서 관리 |
 | `*.msw.ts` (gen 내부) 직접 편집 | 재생성 시 덮어쓰임 | `mock/handlers.override.ts`에서 덮어쓰기 |
 | 도메인 슬라이스(features/) 폴더 만들기 | 본 아키텍처 미사용 | 페이지 내부 segment로 분류 |
