@@ -13,6 +13,7 @@ permissions:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Build embed payload
         id: build
@@ -23,6 +24,7 @@ jobs:
           IS_DRAFT: ${{ github.event.pull_request.draft }}
           BASE: ${{ github.event.pull_request.base.ref }}
           REVIEW_STATE: ${{ github.event.review.state }}
+          REVIEWER: ${{ github.event.review.user.login }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
@@ -54,8 +56,8 @@ jobs:
               fi ;;
             "pull_request_review/submitted")
               case "${REVIEW_STATE}" in
-                approved)          color=5763719;  footer="review · approved" ;;
-                changes_requested) color=15548997; footer="review · changes requested" ;;
+                approved)          color=5763719;  footer="review · approved by ${REVIEWER}" ;;
+                changes_requested) color=15548997; footer="review · changes requested by ${REVIEWER}" ;;
                 *)                 send=false ;;
               esac ;;
             *) send=false ;;
@@ -72,7 +74,9 @@ jobs:
           key="$(printf '%s' "${PR_TITLE}" | grep -oE 'DDK-[0-9]+' | head -1 || true)"
           if [ -z "${key}" ]; then
             num="$(printf '%s' "${HEAD_REF}" | grep -oE '#[0-9]+' | head -1 | tr -d '#' || true)"
-            [ -n "${num}" ] && key="DDK-${num}"
+            if [ -n "${num}" ]; then
+              key="DDK-${num}"
+            fi
           fi
 
           # description = Jira 링크 + PR 본문 발췌 (Discord webhook은 explicit embed가 있으면
