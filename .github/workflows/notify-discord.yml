@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Build embed payload
+      - name: Build payload
         id: build
         env:
           EVENT: ${{ github.event_name }}
@@ -26,46 +26,35 @@ jobs:
           REVIEW_STATE: ${{ github.event.review.state }}
           REVIEWER: ${{ github.event.review.user.login }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
-          AVATAR: ${{ github.event.pull_request.user.avatar_url }}
         run: |
           set -euo pipefail
 
           send=true
-          color=0
-          footer=""
           headline=""
 
+          # 이벤트 → 헤드라인 매핑
           case "${EVENT}/${ACTION}" in
             "pull_request/opened")
               # Draft로 열린 PR은 ready_for_review에서만 알림 (중복 방지)
               if [ "${IS_DRAFT}" = "true" ]; then
                 send=false
               else
-                color=5763719;  footer="opened → ${BASE}"
                 headline="🔔 새 PR이 생성되었습니다!"
               fi ;;
             "pull_request/ready_for_review")
-              color=5793266;  footer="ready for review"
               headline="👀 PR이 리뷰 준비되었습니다!" ;;
             "pull_request/closed")
               if [ "${MERGED}" = "true" ] && { [ "${BASE}" = "main" ] || [ "${BASE}" = "develop" ]; }; then
-                color=10181046; footer="merged → ${BASE}"
                 headline="🚀 ${BASE}에 머지되었습니다!"
               else
                 send=false
               fi ;;
             "pull_request_review/submitted")
               case "${REVIEW_STATE}" in
-                approved)
-                  color=5763719;  footer="review · approved by ${REVIEWER}"
-                  headline="✅ ${REVIEWER} 님이 PR을 승인했습니다!" ;;
-                changes_requested)
-                  color=15548997; footer="review · changes requested by ${REVIEWER}"
-                  headline="🛑 ${REVIEWER} 님이 변경을 요청했습니다!" ;;
+                approved)          headline="✅ ${REVIEWER} 님이 PR을 승인했습니다!" ;;
+                changes_requested) headline="🛑 ${REVIEWER} 님이 변경을 요청했습니다!" ;;
                 *) send=false ;;
               esac ;;
             *) send=false ;;
@@ -76,9 +65,7 @@ jobs:
             exit 0
           fi
 
-          # Jira 키 자동 링크
-          # 1순위: PR 제목의 DDK-N 직접 매칭
-          # 2순위: 브랜치명의 #N → DDK-N (컨벤션: <type>/#<티켓번호>-<설명>)
+          # Jira 키 자동 추출 (제목 1순위, 브랜치명 #N fallback)
           key="$(printf '%s' "${PR_TITLE}" | grep -oE 'DDK-[0-9]+' | head -1 || true)"
           if [ -z "${key}" ]; then
             num="$(printf '%s' "${HEAD_REF}" | grep -oE '#[0-9]+' | head -1 | tr -d '#' || true)"
@@ -87,41 +74,15 @@ jobs:
             fi
           fi
 
-          # description = Jira 링크 + PR 본문 발췌 (Discord webhook은 explicit embed가 있으면
-          # content URL의 auto-unfurl을 띄우지 않음 → 본문을 직접 박아넣음)
-          desc=""
+          # content 본문: 헤드라인 + Jira 링크 + bare PR URL
+          # → embeds를 안 쓰므로 Discord가 PR URL의 GitHub OG를 auto-unfurl 해줌
+          content="${headline}"
           if [ -n "${key}" ]; then
-            desc="[${key}](https://ttalkkak.atlassian.net/browse/${key})"
+            content="${content}"$'\n'"🎫 [${key}](https://ttalkkak.atlassian.net/browse/${key})"
           fi
-          if [ -n "${PR_BODY}" ]; then
-            # UTF-8 안전 character-based 자르기 (jq의 .[0:N] 사용)
-            excerpt="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 400 then .[0:400] + "…" else . end')"
-            if [ -n "${desc}" ]; then
-              desc="${desc}"$'\n\n'"${excerpt}"
-            else
-              desc="${excerpt}"
-            fi
-          fi
+          content="${content}"$'\n'"${PR_URL}"
 
-          jq -n \
-            --arg headline "${headline}" \
-            --arg title    "${PR_TITLE}" \
-            --arg url      "${PR_URL}" \
-            --arg author   "${AUTHOR}" \
-            --arg avatar   "${AVATAR}" \
-            --arg desc     "${desc}" \
-            --arg footer   "${footer}" \
-            --argjson color "${color}" \
-            '{
-              content: $headline,
-              embeds: [
-                ({title: $title, url: $url, color: $color})
-                + (if $desc   == "" then {} else {description: $desc} end)
-                + (if $author == "" then {} else {author: {name: $author, icon_url: $avatar}} end)
-                + (if $footer == "" then {} else {footer: {text: $footer}} end)
-              ]
-            }' > payload.json
-
+          jq -n --arg c "${content}" '{content: $c}' > payload.json
           echo "skip=false" >> "${GITHUB_OUTPUT}"
 
       - name: Send to Discord
