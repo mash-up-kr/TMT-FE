@@ -37,6 +37,7 @@ jobs:
           send=true
           color=0
           footer=""
+          headline=""
 
           case "${EVENT}/${ACTION}" in
             "pull_request/opened")
@@ -45,20 +46,27 @@ jobs:
                 send=false
               else
                 color=5763719;  footer="opened → ${BASE}"
+                headline="🔔 새 PR이 생성되었습니다!"
               fi ;;
             "pull_request/ready_for_review")
-              color=5793266;  footer="ready for review" ;;
+              color=5793266;  footer="ready for review"
+              headline="👀 PR이 리뷰 준비되었습니다!" ;;
             "pull_request/closed")
               if [ "${MERGED}" = "true" ] && { [ "${BASE}" = "main" ] || [ "${BASE}" = "develop" ]; }; then
                 color=10181046; footer="merged → ${BASE}"
+                headline="🚀 ${BASE}에 머지되었습니다!"
               else
                 send=false
               fi ;;
             "pull_request_review/submitted")
               case "${REVIEW_STATE}" in
-                approved)          color=5763719;  footer="review · approved by ${REVIEWER}" ;;
-                changes_requested) color=15548997; footer="review · changes requested by ${REVIEWER}" ;;
-                *)                 send=false ;;
+                approved)
+                  color=5763719;  footer="review · approved by ${REVIEWER}"
+                  headline="✅ ${REVIEWER} 님이 PR을 승인했습니다!" ;;
+                changes_requested)
+                  color=15548997; footer="review · changes requested by ${REVIEWER}"
+                  headline="🛑 ${REVIEWER} 님이 변경을 요청했습니다!" ;;
+                *) send=false ;;
               esac ;;
             *) send=false ;;
           esac
@@ -96,14 +104,16 @@ jobs:
           fi
 
           jq -n \
-            --arg title  "${PR_TITLE}" \
-            --arg url    "${PR_URL}" \
-            --arg author "${AUTHOR}" \
-            --arg avatar "${AVATAR}" \
-            --arg desc   "${desc}" \
-            --arg footer "${footer}" \
+            --arg headline "${headline}" \
+            --arg title    "${PR_TITLE}" \
+            --arg url      "${PR_URL}" \
+            --arg author   "${AUTHOR}" \
+            --arg avatar   "${AVATAR}" \
+            --arg desc     "${desc}" \
+            --arg footer   "${footer}" \
             --argjson color "${color}" \
             '{
+              content: $headline,
               embeds: [
                 ({title: $title, url: $url, color: $color})
                 + (if $desc   == "" then {} else {description: $desc} end)
