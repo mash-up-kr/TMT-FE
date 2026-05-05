@@ -1,0 +1,150 @@
+name: Notify Discord
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, closed]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Build payload
+        id: build
+        env:
+          EVENT: ${{ github.event_name }}
+          ACTION: ${{ github.event.action }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          REVIEWER: ${{ github.event.review.user.login }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          AVATAR: ${{ github.event.pull_request.user.avatar_url }}
+        run: |
+          set -euo pipefail
+
+          send=true
+          color=0
+          headline=""
+          footer_text=""
+
+          # 이벤트 → 헤드라인·색상·footer 매핑
+          case "${EVENT}/${ACTION}" in
+            "pull_request/opened")
+              # Draft PR은 ready_for_review에서만 알림 (중복 방지)
+              if [ "${IS_DRAFT}" = "true" ]; then
+                send=false
+              else
+                color=5763719   # green
+                headline="🔔  PR이 생성되었습니다"
+                footer_text="opened → ${BASE}"
+              fi ;;
+            "pull_request/ready_for_review")
+              color=5793266     # blurple
+              headline="👀  PR이 리뷰 대기 중입니다"
+              footer_text="ready for review" ;;
+            "pull_request/closed")
+              if [ "${MERGED}" = "true" ] && { [ "${BASE}" = "main" ] || [ "${BASE}" = "develop" ]; }; then
+                color=10181046  # purple
+                headline="🚀  ${BASE} 브랜치에 머지되었습니다"
+                footer_text="merged → ${BASE}"
+              else
+                send=false
+              fi ;;
+            "pull_request_review/submitted")
+              case "${REVIEW_STATE}" in
+                approved)
+                  color=5763719   # green
+                  headline="✅  ${REVIEWER} 님이 PR을 승인했습니다"
+                  footer_text="approved by ${REVIEWER}" ;;
+                changes_requested)
+                  color=15548997  # red
+                  headline="🛑  ${REVIEWER} 님이 변경을 요청했습니다"
+                  footer_text="changes requested by ${REVIEWER}" ;;
+                *) send=false ;;
+              esac ;;
+            *) send=false ;;
+          esac
+
+          if [ "${send}" != "true" ]; then
+            echo "skip=true" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          # Jira 키 추출 (제목 1순위, 브랜치명 #N fallback)
+          key="$(printf '%s' "${PR_TITLE}" | grep -oE 'DDK-[0-9]+' | head -1 || true)"
+          if [ -z "${key}" ]; then
+            num="$(printf '%s' "${HEAD_REF}" | grep -oE '#[0-9]+' | head -1 | tr -d '#' || true)"
+            if [ -n "${num}" ]; then
+              key="DDK-${num}"
+            fi
+          fi
+          jira_url=""
+          if [ -n "${key}" ]; then
+            jira_url="https://ttalkkak.atlassian.net/browse/${key}"
+          fi
+
+          # PR 본문 발췌 (UTF-8 안전 truncation)
+          body=""
+          if [ -n "${PR_BODY}" ]; then
+            body="$(jq -rn --arg b "${PR_BODY}" '$b | if length > 350 then .[0:350] + "…" else . end')"
+          fi
+
+          # description 본문: 깃 링크 + 티켓 링크 + (있으면) PR 본문 발췌
+          desc="- 🔗 [${PR_TITLE}](${PR_URL})"
+          if [ -n "${key}" ]; then
+            desc="${desc}"$'\n'"- 🎫 [${key}](${jira_url})"
+          fi
+          if [ -n "${body}" ]; then
+            desc="${desc}"$'\n\n'"${body}"
+          fi
+
+          # ISO 8601 timestamp (Discord가 사용자 로컬 시간으로 자동 렌더)
+          ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          # payload: 외부 content 없음, 단일 embed에 모든 텍스트
+          jq -n \
+            --arg author      "${AUTHOR}" \
+            --arg avatar      "${AVATAR}" \
+            --arg headline    "${headline}" \
+            --arg url         "${PR_URL}" \
+            --arg desc        "${desc}" \
+            --arg footer_text "${footer_text}" \
+            --arg ts          "${ts}" \
+            --argjson color   "${color}" \
+            '{
+              embeds: [{
+                color: $color,
+                author: { name: $author, icon_url: $avatar },
+                title: $headline,
+                url: $url,
+                description: $desc,
+                footer: { text: $footer_text },
+                timestamp: $ts
+              }]
+            }' > payload.json
+
+          echo "skip=false" >> "${GITHUB_OUTPUT}"
+
+      - name: Send to Discord
+        if: steps.build.outputs.skip == 'false'
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "${WEBHOOK}" ]; then
+            echo "::warning::DISCORD_WEBHOOK_URL secret is not set — skipping"
+            exit 0
+          fi
+          curl -sS -X POST -H "Content-Type: application/json" \
+               --data @payload.json "${WEBHOOK}"
