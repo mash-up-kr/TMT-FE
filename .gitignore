@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docs (작업 컨텍스트, 히스토리 등 로컬 문서)
+/docs/
