@@ -1,0 +1,1499 @@
+/* Main screen — 1:1 with Figma node 19:336 ("맛집 지도" / MainPage). */
+
+.main-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #ffffff;
+  font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+/* --- Header --- */
+.mp-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 10px 16px 11px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-logo {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  background: #eeeeee;
+  font-size: 11px;
+  line-height: 1;
+  color: #888888;
+  cursor: pointer;
+}
+
+/* --- Scrollable content --- */
+.mp-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mp-restaurant-tab {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding-bottom: 16px;
+}
+
+/* --- Top tabs --- */
+.mp-tabs {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-bottom: 1px solid transparent;
+}
+
+.mp-tab {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1px 0 11px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  color: #888888;
+  cursor: pointer;
+}
+
+.mp-tab--active {
+  font-weight: 500;
+  color: #1c1c1c;
+}
+
+.mp-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 1px;
+  background: #1c1c1c;
+  transform: translateX(calc(var(--main-tab-index, 0) * 100%));
+  transition: transform 220ms ease;
+  pointer-events: none;
+}
+
+/* --- Filter chips --- */
+.mp-chips {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 10px 16px;
+}
+
+.mp-chip {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid #dddddd;
+  border-radius: 13px;
+  background: #ffffff;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #666666;
+  cursor: pointer;
+}
+
+.mp-chip--active {
+  border-color: #1c1c1c;
+  background: #1c1c1c;
+  color: #ffffff;
+}
+
+/* --- Map --- */
+.mp-map-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 16px;
+}
+
+.mp-map-label {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-map {
+  position: relative;
+  height: 78px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #f0f0ee;
+  overflow: hidden;
+}
+
+.mp-map-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #ff4848;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* --- Restaurant list + register button --- */
+.mp-list-group {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.mp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px 13px;
+  border: 0;
+  border-bottom: 1px solid #f0f0ee;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mp-item-thumb {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #f0f0ee;
+}
+
+.mp-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mp-item-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mp-item-name {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #f0f0ee;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: normal;
+  color: #666666;
+}
+
+.mp-badge--hot {
+  background: #eeeeee;
+  color: #ff4848;
+}
+
+.mp-item-meta {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-register-section {
+  padding: 0 16px;
+}
+
+.mp-register-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 42px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 10px;
+  background: #ff4848;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/* --- 내 그룹 tab --- */
+.mp-group-tab {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.mp-group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mp-group-label {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-group-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mp-group-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #eeeeee;
+  font-size: 16px;
+  line-height: normal;
+}
+
+.mp-group-info {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mp-group-name {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-group-meta {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-group-chevron {
+  flex-shrink: 0;
+  font-size: 13px;
+  line-height: normal;
+  color: #bbbbbb;
+}
+
+.mp-fab-wrap {
+  position: relative;
+  align-self: flex-end;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.mp-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #1c1c1c;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.mp-fab-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 180ms ease;
+}
+
+.mp-fab--open .mp-fab-icon {
+  transform: rotate(45deg);
+}
+
+/* --- FAB popup menu (Figma 19:662) --- */
+.mp-fab-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.mp-fab-menu {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 13.5px 22px 14.5px;
+  border-radius: 10px;
+  background: #eeeeee;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.85) translateY(8px);
+  transform-origin: bottom right;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    visibility 0s linear 180ms;
+}
+
+.mp-fab-menu--open {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    visibility 0s linear 0s;
+}
+
+.mp-fab-menu-item {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #1c1c1c;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mp-fab-menu-divider {
+  width: 100%;
+  height: 1px;
+  background: #dddddd;
+}
+
+/* --- Group detail view (slides in from the right, Figma 94:109) --- */
+.mp-detail {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition:
+    transform 280ms ease,
+    visibility 0s linear 280ms;
+}
+
+.mp-detail--open {
+  transform: translateX(0);
+  visibility: visible;
+  transition:
+    transform 280ms ease,
+    visibility 0s linear 0s;
+}
+
+.mp-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 10px 16px 11px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-detail-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-detail-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -4px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1;
+  color: #888888;
+  cursor: pointer;
+}
+
+.mp-detail-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 16px;
+}
+
+.mp-group-summary {
+  padding: 16px;
+}
+
+.mp-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f8f8f8;
+}
+
+.mp-summary-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mp-summary-stats {
+  display: flex;
+  gap: 4px;
+}
+
+.mp-stat {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.mp-stat-num {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-stat-label {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-summary-members {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mp-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.mp-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #f8f8f8;
+  border-radius: 50%;
+  background: #ffe5d4;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #ff4848;
+}
+
+.mp-avatar:not(:last-child) {
+  margin-right: -4px;
+}
+
+.mp-members-text {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+/* --- Group map view (Figma 5:133) --- */
+.mp-detail-map {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mp-mapview {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: #f0f0ee;
+  overflow: hidden;
+}
+
+.mp-mapview-label {
+  position: absolute;
+  top: 14%;
+  left: 18%;
+  padding: 5px 9px 6px;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  background: #ffffff;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #666666;
+  white-space: nowrap;
+}
+
+.mp-mappin {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 50%;
+}
+
+.mp-mappin--red {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #ffffff;
+  background: #ff4848;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.mp-mappin--grey {
+  width: 17px;
+  height: 17px;
+  border: 2px solid #ffffff;
+  background: #999999;
+}
+
+.mp-mappin--white {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #bbbbbb;
+  background: #ffffff;
+}
+
+.mp-mapview-fab {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ff4848;
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 1;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 4px 6px 0 rgba(232, 93, 60, 0.3);
+}
+
+/* --- Empty group detail (Figma 5:421) --- */
+.mp-eg-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 10px 16px 11px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-eg-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-eg-avatars {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.mp-eg-avatar {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+}
+
+.mp-eg-avatar--a {
+  background: #eeeeee;
+}
+
+.mp-eg-avatar--b {
+  margin-left: -7px;
+  background: #e0f0ee;
+}
+
+.mp-eg-avatar--count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -7px;
+  background: #eeeeee;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-eg-tabs {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-bottom: 1px solid transparent;
+}
+
+.mp-eg-tab {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1px 0 11px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  color: #888888;
+  cursor: pointer;
+}
+
+.mp-eg-tab--active {
+  font-weight: 500;
+  color: #1c1c1c;
+}
+
+.mp-eg-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: var(--eg-indicator-w, 24px);
+  height: 1px;
+  background: #1c1c1c;
+  transform: translate3d(var(--eg-indicator-x, 16px), 0, 0);
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+.mp-eg-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+}
+
+.mp-eg-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: #f5f5f4;
+}
+
+.mp-eg-icon-box {
+  width: 24px;
+  height: 24px;
+  border: 2px dashed #bbbbbb;
+  border-radius: 12px;
+}
+
+.mp-eg-empty-title {
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: normal;
+  color: #1c1c1c;
+  text-align: center;
+}
+
+.mp-eg-empty-desc {
+  margin: 7px 0 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 17.6px;
+  color: #888888;
+  text-align: center;
+}
+
+.mp-eg-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  height: 42px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 10px;
+  background: #ff4848;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/* --- Add store panel (slides up from the bottom, Figma 5:200) --- */
+.mp-addstore {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform 300ms ease,
+    visibility 0s linear 300ms;
+}
+
+.mp-addstore--open {
+  transform: translateY(0);
+  visibility: visible;
+  transition:
+    transform 300ms ease,
+    visibility 0s linear 0s;
+}
+
+.mp-as-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 12px 16px 13px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-as-title {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-as-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px;
+}
+
+.mp-as-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mp-as-field--rating {
+  gap: 10px;
+}
+
+.mp-as-field--review {
+  gap: 6px;
+}
+
+.mp-as-label {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-as-label-sub {
+  color: #bbbbbb;
+}
+
+.mp-as-namebtn {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 13px;
+  border: 1px dashed #bbbbbb;
+  border-radius: 8px;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 11px;
+  color: #bbbbbb;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mp-as-namebtn--filled {
+  color: #1c1c1c;
+}
+
+.mp-as-ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mp-as-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 44px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background: #ffffff;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 12px;
+  color: #666666;
+  cursor: pointer;
+}
+
+.mp-as-rating--active {
+  border-color: #ff4848;
+  background: #eeeeee;
+  font-weight: 500;
+  color: #ff4848;
+}
+
+.mp-as-textarea {
+  box-sizing: border-box;
+  height: 54px;
+  padding: 12px 13px;
+  border: 1px dashed #bbbbbb;
+  border-radius: 8px;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 11px;
+  color: #1c1c1c;
+  resize: none;
+}
+
+.mp-as-textarea::placeholder {
+  color: #bbbbbb;
+}
+
+.mp-as-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 1px dashed #bbbbbb;
+  border-radius: 10px;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 20px;
+  color: #bbbbbb;
+  cursor: pointer;
+}
+
+.mp-as-footer {
+  flex-shrink: 0;
+  padding: 13px 16px 12px;
+  border-top: 1px solid #eeeeee;
+}
+
+.mp-as-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 46px;
+  border: 0;
+  border-radius: 10px;
+  background: #ff4848;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 12px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.mp-as-submit:disabled {
+  background: #dddddd;
+  color: #888888;
+  cursor: not-allowed;
+}
+
+/* --- Store search (slides in from the right, Figma 5:529) --- */
+.mp-search {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition:
+    transform 280ms ease,
+    visibility 0s linear 280ms;
+}
+
+.mp-search--open {
+  transform: translateX(0);
+  visibility: visible;
+  transition:
+    transform 280ms ease,
+    visibility 0s linear 0s;
+}
+
+.mp-search-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 10px 16px 11px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-search-box {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #f5f5f4;
+}
+
+.mp-search-box:focus-within {
+  outline: 2px solid #1c1c1c;
+  outline-offset: 2px;
+}
+
+.mp-search-box-icon {
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.mp-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 12px;
+  color: #1c1c1c;
+}
+
+.mp-search-input::placeholder {
+  color: #888888;
+}
+
+.mp-search-input:focus {
+  outline: none;
+}
+
+.mp-search-section {
+  margin: 0;
+  flex-shrink: 0;
+  padding: 15px 16px 10px;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-search-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mp-search-row,
+.mp-search-maprow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mp-search-row {
+  padding: 12px 16px 13px;
+  border-bottom: 1px solid #f0f0ee;
+}
+
+.mp-search-maprow {
+  padding: 12px 16px;
+}
+
+.mp-search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #f5f5f4;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.mp-search-body {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mp-search-name {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-search-addr {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 15.4px;
+  color: #888888;
+}
+
+.mp-search-empty {
+  margin: 0;
+  padding: 24px 16px;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-search-divider {
+  flex-shrink: 0;
+  height: 8px;
+  background: #f5f5f4;
+}
+
+/* --- Restaurant detail (slides in from the right, Figma 5:250) --- */
+.mp-rd {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition:
+    transform 280ms ease,
+    visibility 0s linear 280ms;
+}
+
+.mp-rd--open {
+  transform: translateX(0);
+  visibility: visible;
+  transition:
+    transform 280ms ease,
+    visibility 0s linear 0s;
+}
+
+.mp-rd-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 12px 16px 13px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-rd-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-rd-more {
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #888888;
+  cursor: pointer;
+}
+
+.mp-rd-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mp-rd-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  border-bottom: 1px solid #eeeeee;
+  background: #f0f0ee;
+  font-weight: 400;
+  font-size: 11px;
+  color: #bbbbbb;
+}
+
+.mp-rd-nameblock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px 13px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-rd-name {
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-rd-submeta {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-rd-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 15px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mp-rd-label {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #888888;
+}
+
+.mp-rd-counts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mp-rd-count {
+  font-size: 12px;
+  line-height: normal;
+}
+
+.mp-rd-count--again {
+  font-weight: 500;
+  color: #ff4848;
+}
+
+.mp-rd-count--once {
+  font-weight: 400;
+  color: #666666;
+}
+
+.mp-rd-count--someday {
+  font-weight: 400;
+  color: #999999;
+}
+
+.mp-rd-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  background: #f0f0ee;
+  overflow: hidden;
+}
+
+.mp-rd-bar-again {
+  background: #ff4848;
+}
+
+.mp-rd-bar-once {
+  background: #999999;
+}
+
+.mp-rd-bar-someday {
+  background: #dddddd;
+}
+
+.mp-rd-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 16px;
+}
+
+.mp-rd-review {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mp-rd-avatar {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.mp-rd-review-body {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mp-rd-review-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.mp-rd-review-name {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: normal;
+  color: #1c1c1c;
+}
+
+.mp-rd-badge {
+  padding: 3px 7px 4px;
+  border-radius: 5px;
+  background: #f0f0ee;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  color: #666666;
+}
+
+.mp-rd-badge--hot {
+  background: #eeeeee;
+  color: #ff4848;
+}
+
+.mp-rd-comment {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 15.4px;
+  color: #666666;
+}
+
+.mp-rd-footer {
+  flex-shrink: 0;
+  padding: 13px 16px 12px;
+  border-top: 1px solid #eeeeee;
+}
+
+.mp-rd-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: #1c1c1c;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 12px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-fab-icon,
+  .mp-fab-menu,
+  .mp-fab-menu--open,
+  .mp-detail,
+  .mp-detail--open,
+  .mp-addstore,
+  .mp-addstore--open,
+  .mp-search,
+  .mp-search--open,
+  .mp-rd,
+  .mp-rd--open,
+  .mp-tab-indicator,
+  .mp-eg-tab-indicator {
+    transition: none;
+  }
+}
+
+.mp-settings:focus-visible,
+.mp-tab:focus-visible,
+.mp-chip:focus-visible,
+.mp-register-button:focus-visible,
+.mp-group-card:focus-visible,
+.mp-fab:focus-visible,
+.mp-fab-menu-item:focus-visible,
+.mp-detail-back:focus-visible,
+.mp-eg-tab:focus-visible,
+.mp-eg-button:focus-visible,
+.mp-as-namebtn:focus-visible,
+.mp-as-rating:focus-visible,
+.mp-as-textarea:focus-visible,
+.mp-as-photo:focus-visible,
+.mp-as-submit:focus-visible,
+.mp-search-row:focus-visible,
+.mp-search-maprow:focus-visible,
+.mp-mapview-fab:focus-visible,
+.mp-item:focus-visible,
+.mp-rd-more:focus-visible,
+.mp-rd-submit:focus-visible {
+  outline: 2px solid #1c1c1c;
+  outline-offset: 2px;
+}
