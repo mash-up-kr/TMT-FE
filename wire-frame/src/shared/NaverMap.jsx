@@ -27,12 +27,18 @@ function loadSdk(clientId) {
   return sdkPromise
 }
 
-/* places 의 id+좌표 모음 키 — reference 가 바뀌어도 내용이 같으면 같은 키. */
+/* places 의 id+좌표+vote 모음 키 — reference 가 바뀌어도 내용이 같으면 같은 키. */
 function placesKey(places) {
   return places
-    .map((p) => `${p.id ?? p.name}:${p.location.lat},${p.location.lng}`)
+    .map(
+      (p) =>
+        `${p.id ?? p.name}:${p.location.lat},${p.location.lng}:${p.voteTier ?? ''}`,
+    )
     .join('|')
 }
+
+/* 모든 voteTier 통일 사이즈 (px) — .mp-mappin CSS 와 일치해야 함. */
+const MARKER_SIZE = 18
 
 function NaverMap({ center, zoom = 15, places = [] }) {
   const containerRef = useRef(null)
@@ -92,18 +98,20 @@ function NaverMap({ center, zoom = 15, places = [] }) {
 
     console.log(`[NaverMap] placing ${places.length} markers`)
     markersRef.current.forEach((m) => m.setMap(null))
-    markersRef.current = places.map(
-      (p) =>
-        new naver.maps.Marker({
-          position: new naver.maps.LatLng(p.location.lat, p.location.lng),
-          map,
-          title: p.name,
-          icon: {
-            content: '<div class="naver-map-pin-marker"><span class="mp-map-pin"></span></div>',
-            anchor: new naver.maps.Point(9, 9),
-          },
-        }),
-    )
+    const half = MARKER_SIZE / 2
+    markersRef.current = places.map((p) => {
+      const tier = p.voteTier ?? 'red'
+      const name = String(p.name ?? '').replace(/[<>&"]/g, '')
+      return new naver.maps.Marker({
+        position: new naver.maps.LatLng(p.location.lat, p.location.lng),
+        map,
+        title: p.name,
+        icon: {
+          content: `<div class="naver-map-pin-marker"><span class="mp-mappin mp-mappin--${tier}"></span><span class="mp-mappin-label">${name}</span></div>`,
+          anchor: new naver.maps.Point(half, half),
+        },
+      })
+    })
 
     /* 마커 2개 이상이면 모두 보이게 fitBounds. POI 라벨이 보이는 줌 16~17 캡. */
     if (places.length >= 2) {

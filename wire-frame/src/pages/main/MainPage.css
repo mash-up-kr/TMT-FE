@@ -62,7 +62,8 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  padding-bottom: 16px;
+  /* RegisterFab 높이(42) + fab padding(24+16) 만큼 여백 확보 */
+  padding-bottom: 96px;
 }
 
 /* --- Top tabs --- */
@@ -181,11 +182,34 @@
 }
 
 /* 네이버 지도 마커 컨테이너 안에 직접 박힐 때는 absolute/translate 가 필요 없음
-   (anchor 로 위치 잡힘). 위의 .mp-map-pin 은 가짜 지도 div 안의 단일 핀 전용. */
-.naver-map-pin-marker .mp-map-pin {
+   (anchor 로 위치 잡힘). 위의 .mp-map-pin / .mp-mappin 의 position: absolute 해제. */
+.naver-map-pin-marker {
+  position: relative;
+}
+.naver-map-pin-marker .mp-map-pin,
+.naver-map-pin-marker .mp-mappin {
   position: static;
   transform: none;
   display: block;
+}
+
+/* 마커 아래 가게명 라벨. 핀 중앙을 기준으로 좌우 가운데 정렬, 핀 아래로 내려옴. */
+.mp-mappin-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-top: 2px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: #1c1c1c;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 /* --- Restaurant list + register button --- */
@@ -272,8 +296,26 @@
   color: #888888;
 }
 
-.mp-register-section {
-  padding: 0 16px;
+/* 가게 등록 버튼 — .main-page 컨테이너 하단 고정.
+   아래로 갈수록 진해지는 흰색 gradient 로 뒤 리스트가 살짝 비침. */
+.mp-register-fab {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 16px 16px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.85) 40%,
+    #ffffff 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+
+.mp-register-fab .mp-register-button {
+  pointer-events: auto;
 }
 
 .mp-register-button {
@@ -525,7 +567,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 16px;
+  padding-bottom: 96px;
 }
 
 .mp-group-summary {
@@ -631,49 +673,32 @@
   min-height: 0;
   background: #f0f0ee;
   overflow: hidden;
-}
-
-.mp-mapview-label {
-  position: absolute;
-  top: 14%;
-  left: 18%;
-  padding: 5px 9px 6px;
-  border: 1px solid #dddddd;
-  border-radius: 6px;
-  background: #ffffff;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: normal;
-  color: #666666;
-  white-space: nowrap;
+  /* NaverMap attribution 노드를 stacking context 안에 가둠 (가게 상세 위로 새지 않게) */
+  isolation: isolate;
+  z-index: 0;
 }
 
 .mp-mappin {
   position: absolute;
   box-sizing: border-box;
-  border-radius: 50%;
-}
-
-.mp-mappin--red {
-  width: 26px;
-  height: 26px;
+  width: 18px;
+  height: 18px;
   border: 2px solid #ffffff;
-  background: #ff4848;
+  border-radius: 50%;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
 }
 
+.mp-mappin--red {
+  background: #ff4848;
+}
+
 .mp-mappin--grey {
-  width: 17px;
-  height: 17px;
-  border: 2px solid #ffffff;
   background: #999999;
 }
 
 .mp-mappin--white {
-  width: 15px;
-  height: 15px;
-  border: 1px solid #bbbbbb;
   background: #ffffff;
+  border-color: #999999;
 }
 
 .mp-mapview-fab {

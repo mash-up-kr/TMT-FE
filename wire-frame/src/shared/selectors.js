@@ -27,6 +27,19 @@ function voteCounts(reviews) {
   }
 }
 
+/* 가게의 대표 vote 등급
+ * - red:   GO_AGAIN 비율 50% 이상 (또 갈래)
+ * - grey:  GO_AGAIN + ONCE 합산 50% 이상 (한 번 정도는)
+ * - white: 그 외 (NEVER 다수 또는 리뷰 없음) */
+function placeVoteTier(reviews) {
+  const total = reviews.length
+  if (!total) return 'white'
+  const { again, once } = voteCounts(reviews)
+  if (again / total >= 0.5) return 'red'
+  if ((again + once) / total >= 0.5) return 'grey'
+  return 'white'
+}
+
 /* 가게(Place) → 리스트 행 표시용 뷰모델 */
 function restaurantVM(place, reviews) {
   const own = reviews.filter((r) => r.placeId === place.id)
@@ -37,6 +50,7 @@ function restaurantVM(place, reviews) {
     id: place.id,
     name: place.name,
     location: place.location,
+    voteTier: placeVoteTier(own),
     meta: `${CATEGORY_LABELS[place.category]} · ${total}명 중 ${again}명 또 갈래`,
     pct: `${Math.round(ratio * 100)}%`,
     hot: ratio >= 0.6,

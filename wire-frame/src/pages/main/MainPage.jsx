@@ -3,7 +3,6 @@ import {
   EMPTY_GROUP_TABS,
   MAIN_TABS,
   MAP_FILTER_CHIPS,
-  MAP_PINS,
   RATING_VOTES,
   RESTAURANT_FILTER_CHIPS,
   STORE_RATINGS,
@@ -35,7 +34,7 @@ function Chips({ labels = RESTAURANT_FILTER_CHIPS, active, onSelect }) {
   )
 }
 
-function RestaurantSection({ items, onRegister, onSelect }) {
+function RestaurantSection({ items, onSelect }) {
   return (
     <div className="mp-list-group">
       <ul className="mp-list">
@@ -62,35 +61,39 @@ function RestaurantSection({ items, onRegister, onSelect }) {
           </li>
         ))}
       </ul>
-      <div className="mp-register-section">
-        <button
-          type="button"
-          className="mp-register-button"
-          onClick={onRegister}
-        >
-          가게 등록
-        </button>
-      </div>
     </div>
   )
 }
 
-function GroupMapView({ onAddStore }) {
+function RegisterFab({ onRegister }) {
+  return (
+    <div className="mp-register-fab">
+      <button
+        type="button"
+        className="mp-register-button"
+        onClick={onRegister}
+      >
+        가게 등록
+      </button>
+    </div>
+  )
+}
+
+function GroupMapView({ onAddStore, restaurants, currentLocation }) {
   const [mapChip, setMapChip] = useState(0)
+
+  /* chip 0: 또 갈래만 (red) / chip 1: 또 갈래 + 한 번 (red + grey) */
+  const visible = restaurants
+    .filter((r) => r.location)
+    .filter((r) =>
+      mapChip === 0 ? r.voteTier === 'red' : r.voteTier !== 'white',
+    )
 
   return (
     <div className="mp-detail-map">
       <Chips labels={MAP_FILTER_CHIPS} active={mapChip} onSelect={setMapChip} />
       <div className="mp-mapview">
-        <span className="mp-mapview-label">을지로 노포</span>
-        {MAP_PINS.map((pin, i) => (
-          <span
-            key={i}
-            className={`mp-mappin mp-mappin--${pin.type}`}
-            style={{ top: pin.top, left: pin.left }}
-            aria-hidden="true"
-          />
-        ))}
+        <NaverMap center={currentLocation} places={visible} />
         <button
           type="button"
           className="mp-mapview-fab"
@@ -174,6 +177,7 @@ function GroupDetail({
   onSelectRestaurant,
   view,
   onView,
+  currentLocation,
 }) {
   return (
     <>
@@ -203,7 +207,11 @@ function GroupDetail({
       />
 
       {view === 'map' ? (
-        <GroupMapView onAddStore={onRegister} />
+        <GroupMapView
+          onAddStore={onRegister}
+          restaurants={group.restaurants}
+          currentLocation={currentLocation}
+        />
       ) : (
         <div className="mp-detail-content">
           <div className="mp-group-summary">
@@ -252,12 +260,12 @@ function GroupDetail({
           <Chips active={chipState} onSelect={onChip} />
           <RestaurantSection
             items={group.restaurants}
-            onRegister={onRegister}
             onSelect={onSelectRestaurant}
           />
         </div>
       )}
 
+      {view !== 'map' ? <RegisterFab onRegister={onRegister} /> : null}
     </>
   )
 }
@@ -880,8 +888,10 @@ function MainPage({ data, addPlace, saveReview, deleteReview, onCreateGroup }) {
 
             <RestaurantSection
               items={currentGroupRestaurants}
-              onRegister={() => openAddStore(data.session.currentGroupId)}
               onSelect={openRestaurant}
+            />
+            <RegisterFab
+              onRegister={() => openAddStore(data.session.currentGroupId)}
             />
           </div>
         ) : (
@@ -985,6 +995,7 @@ function MainPage({ data, addPlace, saveReview, deleteReview, onCreateGroup }) {
             onSelectRestaurant={openRestaurant}
             view={detailView}
             onView={setDetailView}
+            currentLocation={data.session.currentLocation}
           />
         )}
       </div>
