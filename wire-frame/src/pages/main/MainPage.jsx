@@ -8,6 +8,7 @@ import {
   RESTAURANT_FILTER_CHIPS,
   STORE_RATINGS,
 } from '../../shared/mockData.js'
+import NaverMap from '../../shared/NaverMap.jsx'
 import {
   getCurrentGroupRestaurants,
   getGroupViews,
@@ -380,7 +381,7 @@ function StoreSearch({ open, query, onQuery, onSelect, onClose, results }) {
   )
 }
 
-function AddStorePanel({ open, onClose, searchResults, onSave }) {
+function AddStorePanel({ open, onClose, searchResults, onSave, currentLocation }) {
   const [rating, setRating] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState(null)
@@ -442,7 +443,11 @@ function AddStorePanel({ open, onClose, searchResults, onSave }) {
         <div className="mp-as-field">
           <p className="mp-as-label">위치</p>
           <div className="mp-map">
-            <span className="mp-map-pin" />
+            <NaverMap
+              center={selectedPlace ? selectedPlace.location : currentLocation}
+              zoom={selectedPlace ? 17 : 15}
+              places={selectedPlace ? [selectedPlace] : []}
+            />
           </div>
           <button
             type="button"
@@ -866,7 +871,10 @@ function MainPage({ data, addPlace, saveReview, deleteReview, onCreateGroup }) {
             <section className="mp-map-section">
               <p className="mp-map-label">내 지도</p>
               <div className="mp-map">
-                <span className="mp-map-pin" />
+                <NaverMap
+                  center={data.session.currentLocation}
+                  places={currentGroupRestaurants.filter((r) => r.location)}
+                />
               </div>
             </section>
 
@@ -986,6 +994,7 @@ function MainPage({ data, addPlace, saveReview, deleteReview, onCreateGroup }) {
         onClose={() => setAddStoreOpen(false)}
         searchResults={searchResults}
         onSave={handleSavePlace}
+        currentLocation={data.session.currentLocation}
       />
 
       <RestaurantDetail

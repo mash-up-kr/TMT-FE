@@ -36,6 +36,7 @@ function restaurantVM(place, reviews) {
   return {
     id: place.id,
     name: place.name,
+    location: place.location,
     meta: `${CATEGORY_LABELS[place.category]} · ${total}명 중 ${again}명 또 갈래`,
     pct: `${Math.round(ratio * 100)}%`,
     hot: ratio >= 0.6,

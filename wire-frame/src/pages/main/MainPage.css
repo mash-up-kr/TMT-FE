@@ -159,7 +159,7 @@
 
 .mp-map {
   position: relative;
-  height: 78px;
+  height: 160px;
   border: 1px solid #e5e5e5;
   border-radius: 10px;
   background: #f0f0ee;
@@ -178,6 +178,14 @@
   border-radius: 50%;
   background: #ff4848;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* 네이버 지도 마커 컨테이너 안에 직접 박힐 때는 absolute/translate 가 필요 없음
+   (anchor 로 위치 잡힘). 위의 .mp-map-pin 은 가짜 지도 div 안의 단일 핀 전용. */
+.naver-map-pin-marker .mp-map-pin {
+  position: static;
+  transform: none;
+  display: block;
 }
 
 /* --- Restaurant list + register button --- */
