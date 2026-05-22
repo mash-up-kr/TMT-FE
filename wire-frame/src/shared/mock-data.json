@@ -1,0 +1,2376 @@
+{
+  "users": [
+    {
+      "id": "u_1",
+      "nickname": "준표",
+      "avatarColor": "#FF6B6B",
+      "avatarInitial": "준"
+    },
+    {
+      "id": "u_2",
+      "nickname": "혜인",
+      "avatarColor": "#4ECDC4",
+      "avatarInitial": "혜"
+    },
+    {
+      "id": "u_3",
+      "nickname": "정우",
+      "avatarColor": "#FFD93D",
+      "avatarInitial": "정"
+    },
+    {
+      "id": "u_4",
+      "nickname": "민서",
+      "avatarColor": "#A78BFA",
+      "avatarInitial": "민"
+    },
+    {
+      "id": "u_5",
+      "nickname": "준형",
+      "avatarColor": "#60A5FA",
+      "avatarInitial": "형"
+    }
+  ],
+  "groups": [
+    {
+      "id": "g_gangnam",
+      "name": "강남역 근처 맛집",
+      "iconColor": "#FF6B6B",
+      "iconInitial": "강",
+      "memberIds": [
+        "u_1",
+        "u_2",
+        "u_3",
+        "u_4",
+        "u_5"
+      ],
+      "inviteCode": "GANG01",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T09:00:00Z"
+    },
+    {
+      "id": "g_seolleung",
+      "name": "선릉역 근처 맛집",
+      "iconColor": "#1E1E1E",
+      "iconInitial": "선",
+      "memberIds": [
+        "u_1",
+        "u_2",
+        "u_3",
+        "u_4",
+        "u_5"
+      ],
+      "inviteCode": "SEOL01",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T09:00:00Z"
+    },
+    {
+      "id": "g_yeouido",
+      "name": "여의도역 근처 맛집",
+      "iconColor": "#4ECDC4",
+      "iconInitial": "여",
+      "memberIds": [
+        "u_1",
+        "u_2",
+        "u_3",
+        "u_4",
+        "u_5"
+      ],
+      "inviteCode": "YEOU01",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T09:00:00Z"
+    },
+    {
+      "id": "g_hapjeong",
+      "name": "합정역 근처 맛집",
+      "iconColor": "#A78BFA",
+      "iconInitial": "합",
+      "memberIds": [
+        "u_1",
+        "u_2",
+        "u_3",
+        "u_4",
+        "u_5"
+      ],
+      "inviteCode": "HAPJ01",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-13T09:00:00Z"
+    }
+  ],
+  "places": [
+    {
+      "id": "p_gn_01",
+      "groupId": "g_gangnam",
+      "name": "베통 역삼",
+      "address": "서울특별시 강남구 테헤란로44길 8",
+      "location": {
+        "lat": 37.5023,
+        "lng": 127.0444
+      },
+      "category": "CAFE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-18T11:00:00Z"
+    },
+    {
+      "id": "p_gn_02",
+      "groupId": "g_gangnam",
+      "name": "강남족발 송희네족발순대국",
+      "address": "서울특별시 강남구 역삼로 138",
+      "location": {
+        "lat": 37.4941,
+        "lng": 127.0347
+      },
+      "category": "KOREAN",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-18T19:30:00Z"
+    },
+    {
+      "id": "p_gn_03",
+      "groupId": "g_gangnam",
+      "name": "신동궁감자탕",
+      "address": "서울특별시 강남구 테헤란로10길 11",
+      "location": {
+        "lat": 37.4978,
+        "lng": 127.0329
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-19T20:15:00Z"
+    },
+    {
+      "id": "p_gn_04",
+      "groupId": "g_gangnam",
+      "name": "딸부자네 불백 강남역점",
+      "address": "서울특별시 서초구 서초대로77길 9",
+      "location": {
+        "lat": 37.4986,
+        "lng": 127.0262
+      },
+      "category": "KOREAN",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-19T12:30:00Z"
+    },
+    {
+      "id": "p_gn_05",
+      "groupId": "g_gangnam",
+      "name": "코지하우스",
+      "address": "서울특별시 강남구 강남대로94길 10",
+      "location": {
+        "lat": 37.4992,
+        "lng": 127.028
+      },
+      "category": "WESTERN",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-20T19:00:00Z"
+    },
+    {
+      "id": "p_gn_06",
+      "groupId": "g_gangnam",
+      "name": "갓덴스시 강남점",
+      "address": "서울특별시 강남구 테헤란로 109",
+      "location": {
+        "lat": 37.4988,
+        "lng": 127.029
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-20T13:00:00Z"
+    },
+    {
+      "id": "p_gn_07",
+      "groupId": "g_gangnam",
+      "name": "1992 덮밥&짜글이 강남본점",
+      "address": "서울특별시 강남구 역삼동 826-3",
+      "location": {
+        "lat": 37.4965,
+        "lng": 127.0291
+      },
+      "category": "KOREAN",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-21T12:15:00Z"
+    },
+    {
+      "id": "p_gn_08",
+      "groupId": "g_gangnam",
+      "name": "영동곰탕",
+      "address": "서울특별시 강남구 학동로4길 38",
+      "location": {
+        "lat": 37.5089,
+        "lng": 127.0239
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-21T11:45:00Z"
+    },
+    {
+      "id": "p_gn_09",
+      "groupId": "g_gangnam",
+      "name": "The Beaner",
+      "address": "서울특별시 서초구 사평대로55길 65-2",
+      "location": {
+        "lat": 37.5069,
+        "lng": 127.0215
+      },
+      "category": "CAFE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-22T10:30:00Z"
+    },
+    {
+      "id": "p_gn_10",
+      "groupId": "g_gangnam",
+      "name": "뽕나무쟁이 선릉본점",
+      "address": "서울특별시 강남구 역삼로65길 31",
+      "location": {
+        "lat": 37.5032,
+        "lng": 127.052
+      },
+      "category": "KOREAN",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-22T20:00:00Z"
+    },
+    {
+      "id": "p_sl_01",
+      "groupId": "g_seolleung",
+      "name": "고향집",
+      "address": "서울특별시 강남구 선릉로96길 2",
+      "location": {
+        "lat": 37.506,
+        "lng": 127.0486
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-12T12:10:00Z"
+    },
+    {
+      "id": "p_sl_02",
+      "groupId": "g_seolleung",
+      "name": "장정정",
+      "address": "서울특별시 강남구 선릉로82길 15 1층",
+      "location": {
+        "lat": 37.5028,
+        "lng": 127.0513
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T12:00:00Z"
+    },
+    {
+      "id": "p_sl_03",
+      "groupId": "g_seolleung",
+      "name": "소코아",
+      "address": "서울특별시 강남구 선릉로100길 8 1층",
+      "location": {
+        "lat": 37.507,
+        "lng": 127.0478
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T12:10:00Z"
+    },
+    {
+      "id": "p_sl_04",
+      "groupId": "g_seolleung",
+      "name": "마담밍",
+      "address": "서울특별시 강남구 선릉로86길 5-4",
+      "location": {
+        "lat": 37.5035,
+        "lng": 127.0504
+      },
+      "category": "CHINESE",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T12:20:00Z"
+    },
+    {
+      "id": "p_sl_05",
+      "groupId": "g_seolleung",
+      "name": "코지라멘",
+      "address": "서울특별시 강남구 대치동 897-36",
+      "location": {
+        "lat": 37.5029,
+        "lng": 127.0504
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-13T12:30:00Z"
+    },
+    {
+      "id": "p_sl_06",
+      "groupId": "g_seolleung",
+      "name": "카발",
+      "address": "서울특별시 강남구 대치동 897-10",
+      "location": {
+        "lat": 37.5026,
+        "lng": 127.0507
+      },
+      "category": "WESTERN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T12:40:00Z"
+    },
+    {
+      "id": "p_sl_07",
+      "groupId": "g_seolleung",
+      "name": "지유가오카핫초메",
+      "address": "서울특별시 강남구 선릉로 (테헤란로 아이파크몰 1층)",
+      "location": {
+        "lat": 37.5024,
+        "lng": 127.0467
+      },
+      "category": "CAFE",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T12:50:00Z"
+    },
+    {
+      "id": "p_sl_08",
+      "groupId": "g_seolleung",
+      "name": "브라운돈까스",
+      "address": "서울특별시 강남구 선릉로 520",
+      "location": {
+        "lat": 37.5059,
+        "lng": 127.0485
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T13:00:00Z"
+    },
+    {
+      "id": "p_sl_09",
+      "groupId": "g_seolleung",
+      "name": "빨강우산부대찌개",
+      "address": "서울특별시 강남구 역삼동 702-13",
+      "location": {
+        "lat": 37.5038,
+        "lng": 127.0453
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T13:10:00Z"
+    },
+    {
+      "id": "p_sl_10",
+      "groupId": "g_seolleung",
+      "name": "칙바이칙",
+      "address": "서울특별시 강남구 선릉로 523",
+      "location": {
+        "lat": 37.5062,
+        "lng": 127.0478
+      },
+      "category": "WESTERN",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-13T13:20:00Z"
+    },
+    {
+      "id": "p_sl_11",
+      "groupId": "g_seolleung",
+      "name": "선술집 오후",
+      "address": "서울특별시 강남구 테헤란로64길 27",
+      "location": {
+        "lat": 37.5032,
+        "lng": 127.0519
+      },
+      "category": "BAR",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T13:30:00Z"
+    },
+    {
+      "id": "p_sl_12",
+      "groupId": "g_seolleung",
+      "name": "초록밭",
+      "address": "서울특별시 강남구 선릉로 524 104호",
+      "location": {
+        "lat": 37.5066,
+        "lng": 127.0481
+      },
+      "category": "CAFE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T13:40:00Z"
+    },
+    {
+      "id": "p_sl_13",
+      "groupId": "g_seolleung",
+      "name": "신동궁감자탕뼈숯불구이",
+      "address": "서울특별시 강남구 선릉로86길 39",
+      "location": {
+        "lat": 37.5041,
+        "lng": 127.0529
+      },
+      "category": "KOREAN",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T13:50:00Z"
+    },
+    {
+      "id": "p_sl_14",
+      "groupId": "g_seolleung",
+      "name": "스시이찌",
+      "address": "서울특별시 강남구 테헤란로63길 9 2층 203호",
+      "location": {
+        "lat": 37.5059,
+        "lng": 127.0499
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T14:00:00Z"
+    },
+    {
+      "id": "p_sl_15",
+      "groupId": "g_seolleung",
+      "name": "신촌황소곱창",
+      "address": "서울특별시 강남구 선릉로86길 32",
+      "location": {
+        "lat": 37.5037,
+        "lng": 127.0524
+      },
+      "category": "KOREAN",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T14:10:00Z"
+    },
+    {
+      "id": "p_yi_01",
+      "groupId": "g_yeouido",
+      "name": "별미볶음점",
+      "address": "서울특별시 영등포구 국제금융로6길 33 여의도백화점 지하 1층",
+      "location": {
+        "lat": 37.5251,
+        "lng": 126.9254
+      },
+      "category": "KOREAN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T09:00:00Z"
+    },
+    {
+      "id": "p_yi_02",
+      "groupId": "g_yeouido",
+      "name": "진주집",
+      "address": "서울특별시 영등포구 국제금융로6길 33 여의도백화점 지하 1층",
+      "location": {
+        "lat": 37.5251,
+        "lng": 126.9254
+      },
+      "category": "KOREAN",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T09:15:00Z"
+    },
+    {
+      "id": "p_yi_03",
+      "groupId": "g_yeouido",
+      "name": "스시유 여의도점",
+      "address": "서울특별시 영등포구 국제금융로 39 브라이튼 2층",
+      "location": {
+        "lat": 37.5253,
+        "lng": 126.9265
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T09:30:00Z"
+    },
+    {
+      "id": "p_yi_04",
+      "groupId": "g_yeouido",
+      "name": "팔당반점 동여의도점",
+      "address": "서울특별시 영등포구 의사당대로 127 지하1층 001호",
+      "location": {
+        "lat": 37.5243,
+        "lng": 126.92
+      },
+      "category": "CHINESE",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T09:45:00Z"
+    },
+    {
+      "id": "p_yi_05",
+      "groupId": "g_yeouido",
+      "name": "하동관 여의도역점",
+      "address": "서울특별시 영등포구 여의나루로 50 한국교직원공제회관 지하 1층 B1-8호",
+      "location": {
+        "lat": 37.5213,
+        "lng": 126.9199
+      },
+      "category": "KOREAN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T10:00:00Z"
+    },
+    {
+      "id": "p_yi_06",
+      "groupId": "g_yeouido",
+      "name": "종로 계림닭도리탕원조 여의도점",
+      "address": "서울특별시 영등포구 의사당대로 108 지하 1층 16호",
+      "location": {
+        "lat": 37.5239,
+        "lng": 126.9184
+      },
+      "category": "KOREAN",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T10:15:00Z"
+    },
+    {
+      "id": "p_yi_07",
+      "groupId": "g_yeouido",
+      "name": "바스버거",
+      "address": "서울특별시 영등포구 국제금융로 20 율촌빌딩 지하1층",
+      "location": {
+        "lat": 37.5236,
+        "lng": 126.925
+      },
+      "category": "WESTERN",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T10:30:00Z"
+    },
+    {
+      "id": "p_yi_08",
+      "groupId": "g_yeouido",
+      "name": "블루보틀 여의도 카페",
+      "address": "서울특별시 영등포구 여의대로 108 더현대서울 5층",
+      "location": {
+        "lat": 37.5259,
+        "lng": 126.9177
+      },
+      "category": "CAFE",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T10:45:00Z"
+    },
+    {
+      "id": "p_yi_09",
+      "groupId": "g_yeouido",
+      "name": "능동미나리",
+      "address": "서울특별시 영등포구 의사당대로 127 1층 1-107호",
+      "location": {
+        "lat": 37.5243,
+        "lng": 126.92
+      },
+      "category": "KOREAN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T11:00:00Z"
+    },
+    {
+      "id": "p_yi_10",
+      "groupId": "g_yeouido",
+      "name": "카페꼼마 여의도점",
+      "address": "서울특별시 영등포구 국제금융로8길 16 1층",
+      "location": {
+        "lat": 37.5248,
+        "lng": 126.9292
+      },
+      "category": "CAFE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T11:15:00Z"
+    },
+    {
+      "id": "p_yi_11",
+      "groupId": "g_yeouido",
+      "name": "스시미소",
+      "address": "서울특별시 영등포구 국회대로 750 1층 114호",
+      "location": {
+        "lat": 37.5269,
+        "lng": 126.9186
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T11:30:00Z"
+    },
+    {
+      "id": "p_yi_12",
+      "groupId": "g_yeouido",
+      "name": "진진 여의도점",
+      "address": "서울특별시 영등포구 국제금융로8길 34 오륜빌딩 3층",
+      "location": {
+        "lat": 37.5246,
+        "lng": 126.9296
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-13T11:45:00Z"
+    },
+    {
+      "id": "p_yi_13",
+      "groupId": "g_yeouido",
+      "name": "화목순대국",
+      "address": "서울특별시 영등포구 여의대방로 383 경도상가 1층",
+      "location": {
+        "lat": 37.5265,
+        "lng": 126.9165
+      },
+      "category": "KOREAN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T12:00:00Z"
+    },
+    {
+      "id": "p_yi_14",
+      "groupId": "g_yeouido",
+      "name": "오한수 우육면가",
+      "address": "서울특별시 영등포구 은행로 54 신한드림리버 지하1층",
+      "location": {
+        "lat": 37.5285,
+        "lng": 126.9229
+      },
+      "category": "CHINESE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T12:15:00Z"
+    },
+    {
+      "id": "p_yi_15",
+      "groupId": "g_yeouido",
+      "name": "정인면옥",
+      "address": "서울특별시 영등포구 국회대로76길 10 기독교침례회총회빌딩 1층",
+      "location": {
+        "lat": 37.5268,
+        "lng": 126.918
+      },
+      "category": "KOREAN",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-13T12:30:00Z"
+    },
+    {
+      "id": "p_hj_01",
+      "groupId": "g_hapjeong",
+      "name": "오레노라멘",
+      "address": "서울특별시 마포구 독막로8길 16 1층",
+      "location": {
+        "lat": 37.5495,
+        "lng": 126.9145
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-13T10:30:00Z"
+    },
+    {
+      "id": "p_hj_02",
+      "groupId": "g_hapjeong",
+      "name": "합정옥",
+      "address": "서울특별시 마포구 양화로1길 21 2층",
+      "location": {
+        "lat": 37.5485,
+        "lng": 126.9128
+      },
+      "category": "KOREAN",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-14T09:15:00Z"
+    },
+    {
+      "id": "p_hj_03",
+      "groupId": "g_hapjeong",
+      "name": "각시보쌈",
+      "address": "서울특별시 마포구 성지길 25 지하1층",
+      "location": {
+        "lat": 37.5485,
+        "lng": 126.912
+      },
+      "category": "KOREAN",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-15T11:45:00Z"
+    },
+    {
+      "id": "p_hj_04",
+      "groupId": "g_hapjeong",
+      "name": "우동 카덴",
+      "address": "서울특별시 마포구 양화로7안길 2-1",
+      "location": {
+        "lat": 37.5478,
+        "lng": 126.9145
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-16T13:20:00Z"
+    },
+    {
+      "id": "p_hj_05",
+      "groupId": "g_hapjeong",
+      "name": "아우룸",
+      "address": "서울특별시 마포구 월드컵로5길 33-26",
+      "location": {
+        "lat": 37.551,
+        "lng": 126.9128
+      },
+      "category": "WESTERN",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-17T14:00:00Z"
+    },
+    {
+      "id": "p_hj_06",
+      "groupId": "g_hapjeong",
+      "name": "푸짐한 밥상",
+      "address": "서울특별시 마포구 망원로11길 6",
+      "location": {
+        "lat": 37.5552,
+        "lng": 126.9097
+      },
+      "category": "KOREAN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-18T08:30:00Z"
+    },
+    {
+      "id": "p_hj_07",
+      "groupId": "g_hapjeong",
+      "name": "명품잔치국수",
+      "address": "서울특별시 마포구 동교로 103 1층",
+      "location": {
+        "lat": 37.551,
+        "lng": 126.9216
+      },
+      "category": "KOREAN",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-13T12:00:00Z"
+    },
+    {
+      "id": "p_hj_08",
+      "groupId": "g_hapjeong",
+      "name": "담택",
+      "address": "서울특별시 마포구 월드컵로8길 34 1층",
+      "location": {
+        "lat": 37.5562,
+        "lng": 126.9135
+      },
+      "category": "JAPANESE",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-14T15:45:00Z"
+    },
+    {
+      "id": "p_hj_09",
+      "groupId": "g_hapjeong",
+      "name": "기사식당 감나무집",
+      "address": "서울특별시 마포구 연남로 25",
+      "location": {
+        "lat": 37.5615,
+        "lng": 126.9249
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-15T16:20:00Z"
+    },
+    {
+      "id": "p_hj_10",
+      "groupId": "g_hapjeong",
+      "name": "포트레이트 커피 바",
+      "address": "서울특별시 마포구 포은로8길 32 1층",
+      "location": {
+        "lat": 37.5555,
+        "lng": 126.9105
+      },
+      "category": "CAFE",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-16T10:15:00Z"
+    },
+    {
+      "id": "p_hj_11",
+      "groupId": "g_hapjeong",
+      "name": "상수곱창",
+      "address": "서울특별시 마포구 독막로 55 가동 1층",
+      "location": {
+        "lat": 37.5482,
+        "lng": 126.9215
+      },
+      "category": "KOREAN",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-17T18:30:00Z"
+    },
+    {
+      "id": "p_hj_12",
+      "groupId": "g_hapjeong",
+      "name": "604Seoul",
+      "address": "서울특별시 마포구 동교로 49 정하빌딩 1층",
+      "location": {
+        "lat": 37.556,
+        "lng": 126.9165
+      },
+      "category": "CAFE",
+      "createdBy": "u_2",
+      "createdAt": "2026-05-18T17:00:00Z"
+    },
+    {
+      "id": "p_hj_13",
+      "groupId": "g_hapjeong",
+      "name": "테일러커피",
+      "address": "서울특별시 마포구 성미산로 189 1층",
+      "location": {
+        "lat": 37.5612,
+        "lng": 126.9255
+      },
+      "category": "CAFE",
+      "createdBy": "u_3",
+      "createdAt": "2026-05-19T09:45:00Z"
+    },
+    {
+      "id": "p_hj_14",
+      "groupId": "g_hapjeong",
+      "name": "오우",
+      "address": "서울특별시 마포구 동교동 203-56",
+      "location": {
+        "lat": 37.5527,
+        "lng": 126.922
+      },
+      "category": "KOREAN",
+      "createdBy": "u_4",
+      "createdAt": "2026-05-20T11:20:00Z"
+    },
+    {
+      "id": "p_hj_15",
+      "groupId": "g_hapjeong",
+      "name": "네포",
+      "address": "서울특별시 마포구 독막로15길 3-11 1층",
+      "location": {
+        "lat": 37.5478,
+        "lng": 126.9225
+      },
+      "category": "BAR",
+      "createdBy": "u_5",
+      "createdAt": "2026-05-21T13:00:00Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "r_gn_01",
+      "placeId": "p_gn_04",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "불백 시키면 개인당 된장찌개까지 줘서 좋음. 2인당 계란찜도 하나 더 나옴.",
+      "photos": [],
+      "createdAt": "2026-05-19T13:00:00Z"
+    },
+    {
+      "id": "r_gn_02",
+      "placeId": "p_gn_05",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "가성비 스테이크. 기분 낼 때 괜찮음.",
+      "photos": [],
+      "createdAt": "2026-05-20T20:00:00Z"
+    },
+    {
+      "id": "r_gn_03",
+      "placeId": "p_gn_06",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "너무 유명하긴한데 두부초밥도 맛있음.",
+      "photos": [],
+      "createdAt": "2026-05-20T13:45:00Z"
+    },
+    {
+      "id": "r_gn_04",
+      "placeId": "p_gn_07",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "가격대비 개맛도리.",
+      "photos": [],
+      "createdAt": "2026-05-21T12:50:00Z"
+    },
+    {
+      "id": "r_gn_05",
+      "placeId": "p_gn_08",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "맑은 국물 곰탕인데 맛있음.",
+      "photos": [],
+      "createdAt": "2026-05-21T12:30:00Z"
+    },
+    {
+      "id": "r_gn_06",
+      "placeId": "p_gn_09",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "분위기도 좋고 카공하기도 좋은데 바닐라라떼 진짜 맛있음.",
+      "photos": [],
+      "createdAt": "2026-05-22T11:15:00Z"
+    },
+    {
+      "id": "r_gn_07",
+      "placeId": "p_gn_10",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "족발이 되게 부드러움.",
+      "photos": [],
+      "createdAt": "2026-05-22T20:45:00Z"
+    },
+    {
+      "id": "r_sl_01",
+      "placeId": "p_sl_01",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "보리밥 미쳤음",
+      "photos": [],
+      "createdAt": "2026-05-12T13:00:00Z"
+    },
+    {
+      "id": "r_sl_02",
+      "placeId": "p_sl_02",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "웨이팅 많은 이유가 있음. 또 가야함",
+      "photos": [],
+      "createdAt": "2026-05-13T12:30:00Z"
+    },
+    {
+      "id": "r_sl_03",
+      "placeId": "p_sl_03",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "카레 우동 맛있긴 한데 프랜차이즈라 한계있음",
+      "photos": [],
+      "createdAt": "2026-05-13T12:40:00Z"
+    },
+    {
+      "id": "r_sl_04",
+      "placeId": "p_sl_04",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "짬뽕 국물 진짜 칼칼하고 좋아",
+      "photos": [],
+      "createdAt": "2026-05-13T12:50:00Z"
+    },
+    {
+      "id": "r_sl_05",
+      "placeId": "p_sl_05",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "마제소바 양 엄청 많음 주의",
+      "photos": [],
+      "createdAt": "2026-05-13T13:00:00Z"
+    },
+    {
+      "id": "r_sl_06",
+      "placeId": "p_sl_06",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "분위기랑 맥주는 좋음. 자주 오기엔 좀 비쌈",
+      "photos": [],
+      "createdAt": "2026-05-13T13:10:00Z"
+    },
+    {
+      "id": "r_sl_07",
+      "placeId": "p_sl_07",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "케이크 두쫀쿠 맛집",
+      "photos": [],
+      "createdAt": "2026-05-13T13:20:00Z"
+    },
+    {
+      "id": "r_sl_08",
+      "placeId": "p_sl_08",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "경양식 돈까스 먹고싶을 때 가면 됨",
+      "photos": [],
+      "createdAt": "2026-05-13T13:30:00Z"
+    },
+    {
+      "id": "r_sl_09",
+      "placeId": "p_sl_09",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "만 원 부대찌개 가성비 굿",
+      "photos": [],
+      "createdAt": "2026-05-13T13:40:00Z"
+    },
+    {
+      "id": "r_sl_10",
+      "placeId": "p_sl_10",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "치킨버거 맛있음. 동네에 있으면 한 번 가볼 만",
+      "photos": [],
+      "createdAt": "2026-05-13T13:50:00Z"
+    },
+    {
+      "id": "r_sl_11",
+      "placeId": "p_sl_11",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "튀김상태 완벽함",
+      "photos": [],
+      "createdAt": "2026-05-13T14:00:00Z"
+    },
+    {
+      "id": "r_sl_12",
+      "placeId": "p_sl_12",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "건강한 한 끼 원할 때 한 번쯤 와볼 만해",
+      "photos": [],
+      "createdAt": "2026-05-13T14:10:00Z"
+    },
+    {
+      "id": "r_sl_13",
+      "placeId": "p_sl_13",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "엽떡마냥 쿨타임 돌아서 매번 수혈하러 와야 함",
+      "photos": [],
+      "createdAt": "2026-05-13T14:20:00Z"
+    },
+    {
+      "id": "r_sl_14",
+      "placeId": "p_sl_14",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "3만원 가성비 오마카세 또 가야 함",
+      "photos": [],
+      "createdAt": "2026-05-13T14:30:00Z"
+    },
+    {
+      "id": "r_sl_15",
+      "placeId": "p_sl_15",
+      "userId": "u_2",
+      "vote": "NEVER",
+      "oneLiner": "기름 너무 많고 맛없음",
+      "photos": [],
+      "createdAt": "2026-05-13T14:40:00Z"
+    },
+    {
+      "id": "r_gn_08",
+      "placeId": "p_gn_01",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "소금빵 진짜 꿀맛, 매일 사먹을 것 같음",
+      "photos": [],
+      "createdAt": "2026-05-21T11:00:00Z"
+    },
+    {
+      "id": "r_gn_09",
+      "placeId": "p_gn_01",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "바삭한 겉, 부드러운 안, 입에서 녹네",
+      "photos": [],
+      "createdAt": "2026-05-19T10:30:00Z"
+    },
+    {
+      "id": "r_gn_10",
+      "placeId": "p_gn_01",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "가격대 꽤 괜찮은데 하나면 족할듯",
+      "photos": [],
+      "createdAt": "2026-05-19T15:00:00Z"
+    },
+    {
+      "id": "r_gn_11",
+      "placeId": "p_gn_02",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "족발 가성비 최고, 칼국수 서비스까지",
+      "photos": [],
+      "createdAt": "2026-05-18T19:30:00Z"
+    },
+    {
+      "id": "r_gn_12",
+      "placeId": "p_gn_02",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "국산 생족발 맛 인정",
+      "photos": [],
+      "createdAt": "2026-05-19T20:00:00Z"
+    },
+    {
+      "id": "r_gn_13",
+      "placeId": "p_gn_02",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "양 많지만 조금 짜지 않나 싶네",
+      "photos": [],
+      "createdAt": "2026-05-19T21:00:00Z"
+    },
+    {
+      "id": "r_gn_14",
+      "placeId": "p_gn_03",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "고기 완전 부드럽네, 강남 감자탕 최고",
+      "photos": [],
+      "createdAt": "2026-05-18T20:00:00Z"
+    },
+    {
+      "id": "r_gn_15",
+      "placeId": "p_gn_03",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "24시간 영업이 최고, 밤 11시도 가능",
+      "photos": [],
+      "createdAt": "2026-05-20T23:00:00Z"
+    },
+    {
+      "id": "r_gn_16",
+      "placeId": "p_gn_03",
+      "userId": "u_5",
+      "vote": "NEVER",
+      "oneLiner": "맛은 좋은데 가격 장난 아님",
+      "photos": [],
+      "createdAt": "2026-05-20T21:00:00Z"
+    },
+    {
+      "id": "r_gn_17",
+      "placeId": "p_gn_04",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "불백 중독되는 맛, 밥 안 남음",
+      "photos": [],
+      "createdAt": "2026-05-21T12:30:00Z"
+    },
+    {
+      "id": "r_gn_18",
+      "placeId": "p_gn_04",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "야식 최강, 새벽에도 꽉 참",
+      "photos": [],
+      "createdAt": "2026-05-22T03:00:00Z"
+    },
+    {
+      "id": "r_gn_19",
+      "placeId": "p_gn_04",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "괜찮긴 한데 특별하진 않더라",
+      "photos": [],
+      "createdAt": "2026-05-18T19:00:00Z"
+    },
+    {
+      "id": "r_gn_20",
+      "placeId": "p_gn_05",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "가성비 스테이크 미쳤음",
+      "photos": [],
+      "createdAt": "2026-05-21T19:30:00Z"
+    },
+    {
+      "id": "r_gn_21",
+      "placeId": "p_gn_05",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "분위기 좋고 파스타도 맛있음",
+      "photos": [],
+      "createdAt": "2026-05-20T20:00:00Z"
+    },
+    {
+      "id": "r_gn_22",
+      "placeId": "p_gn_05",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "대기 좀 길지만 데려가기 좋음",
+      "photos": [],
+      "createdAt": "2026-05-20T18:30:00Z"
+    },
+    {
+      "id": "r_gn_23",
+      "placeId": "p_gn_06",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "초밥 신선함 끝판왕, 쇼도 재미",
+      "photos": [],
+      "createdAt": "2026-05-22T13:30:00Z"
+    },
+    {
+      "id": "r_gn_24",
+      "placeId": "p_gn_06",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "웨이팅 있어도 값어치 함",
+      "photos": [],
+      "createdAt": "2026-05-21T13:00:00Z"
+    },
+    {
+      "id": "r_gn_25",
+      "placeId": "p_gn_06",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "질은 좋은데 가격이 좀 셈",
+      "photos": [],
+      "createdAt": "2026-05-21T14:00:00Z"
+    },
+    {
+      "id": "r_gn_26",
+      "placeId": "p_gn_07",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "전라도식 된장짜글이 진짜 별미",
+      "photos": [],
+      "createdAt": "2026-05-22T12:30:00Z"
+    },
+    {
+      "id": "r_gn_27",
+      "placeId": "p_gn_07",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "강남역 2번 출구 가기 쉽고 맛있음",
+      "photos": [],
+      "createdAt": "2026-05-19T13:00:00Z"
+    },
+    {
+      "id": "r_gn_28",
+      "placeId": "p_gn_07",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "한식 분위기는 좋은데 맛은 평범",
+      "photos": [],
+      "createdAt": "2026-05-21T13:30:00Z"
+    },
+    {
+      "id": "r_gn_29",
+      "placeId": "p_gn_08",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "곰탕 국물 깊이 장난 아님",
+      "photos": [],
+      "createdAt": "2026-05-18T11:00:00Z"
+    },
+    {
+      "id": "r_gn_30",
+      "placeId": "p_gn_08",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "아침에 먹기 딱 좋은 속풀이",
+      "photos": [],
+      "createdAt": "2026-05-19T08:30:00Z"
+    },
+    {
+      "id": "r_gn_31",
+      "placeId": "p_gn_08",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "맛 있는데 매번 같은 맛이라 한 번이면",
+      "photos": [],
+      "createdAt": "2026-05-20T12:00:00Z"
+    },
+    {
+      "id": "r_gn_32",
+      "placeId": "p_gn_09",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "커피 일단 다름, 바스크치즈케이크도",
+      "photos": [],
+      "createdAt": "2026-05-18T15:00:00Z"
+    },
+    {
+      "id": "r_gn_33",
+      "placeId": "p_gn_09",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "숨은 맛집, 분위기 진짜 좋음",
+      "photos": [],
+      "createdAt": "2026-05-22T14:30:00Z"
+    },
+    {
+      "id": "r_gn_34",
+      "placeId": "p_gn_09",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "좋긴 한데 빨리 가버림",
+      "photos": [],
+      "createdAt": "2026-05-18T16:30:00Z"
+    },
+    {
+      "id": "r_gn_35",
+      "placeId": "p_gn_10",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "족발 부드럽고 맛",
+      "photos": [],
+      "createdAt": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "r_gn_36",
+      "placeId": "p_gn_10",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "재방문 확정",
+      "photos": [],
+      "createdAt": "2026-05-19T21:30:00Z"
+    },
+    {
+      "id": "r_gn_37",
+      "placeId": "p_gn_10",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "유명해서 그런가 기대가 컸던 듯",
+      "photos": [],
+      "createdAt": "2026-05-19T20:30:00Z"
+    },
+    {
+      "id": "r_sl_16",
+      "placeId": "p_sl_01",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "음식은 좋은데 자극적. 한 번만 도전",
+      "photos": [],
+      "createdAt": "2026-05-15T14:30:00Z"
+    },
+    {
+      "id": "r_sl_17",
+      "placeId": "p_sl_01",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "집밥 그리울 땐 필수. 구수한 된장 최고",
+      "photos": [],
+      "createdAt": "2026-05-18T12:45:00Z"
+    },
+    {
+      "id": "r_sl_18",
+      "placeId": "p_sl_02",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "웨이팅 길어도 가치. 스테이크 덮밥 대박",
+      "photos": [],
+      "createdAt": "2026-05-16T19:20:00Z"
+    },
+    {
+      "id": "r_sl_19",
+      "placeId": "p_sl_02",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "낮 밥 저녁 술집. 가격이 좀 셈",
+      "photos": [],
+      "createdAt": "2026-05-17T18:00:00Z"
+    },
+    {
+      "id": "r_sl_20",
+      "placeId": "p_sl_03",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "카레 우동 맛있는데 웨이팅이 길어",
+      "photos": [],
+      "createdAt": "2026-05-14T12:15:00Z"
+    },
+    {
+      "id": "r_sl_21",
+      "placeId": "p_sl_03",
+      "userId": "u_4",
+      "vote": "NEVER",
+      "oneLiner": "프랜차이즈라 그런지 뭔가 싱거움",
+      "photos": [],
+      "createdAt": "2026-05-19T13:30:00Z"
+    },
+    {
+      "id": "r_sl_22",
+      "placeId": "p_sl_04",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "냉면냉뽕 인생맛이지만 너무 매움",
+      "photos": [],
+      "createdAt": "2026-05-15T20:00:00Z"
+    },
+    {
+      "id": "r_sl_23",
+      "placeId": "p_sl_04",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "블루리본 9회 수상. 면 리필도 굿",
+      "photos": [],
+      "createdAt": "2026-05-20T12:30:00Z"
+    },
+    {
+      "id": "r_sl_24",
+      "placeId": "p_sl_05",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "라멘 좋은데 양 많아서 부담",
+      "photos": [],
+      "createdAt": "2026-05-17T19:45:00Z"
+    },
+    {
+      "id": "r_sl_25",
+      "placeId": "p_sl_05",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "돈코츠 끝내줌. 차슈 두껍고 최고",
+      "photos": [],
+      "createdAt": "2026-05-21T18:15:00Z"
+    },
+    {
+      "id": "r_sl_26",
+      "placeId": "p_sl_06",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "스테이크는 괜찮은데 분위기 조용함",
+      "photos": [],
+      "createdAt": "2026-05-18T19:30:00Z"
+    },
+    {
+      "id": "r_sl_27",
+      "placeId": "p_sl_06",
+      "userId": "u_3",
+      "vote": "NEVER",
+      "oneLiner": "가격은 좋은데 고기 식감이 별로",
+      "photos": [],
+      "createdAt": "2026-05-16T20:45:00Z"
+    },
+    {
+      "id": "r_sl_28",
+      "placeId": "p_sl_07",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "아이파크 카페 중 최고. 케이크 굿",
+      "photos": [],
+      "createdAt": "2026-05-19T15:20:00Z"
+    },
+    {
+      "id": "r_sl_29",
+      "placeId": "p_sl_07",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "예쁜데 가격이 아이파크 가격",
+      "photos": [],
+      "createdAt": "2026-05-22T14:00:00Z"
+    },
+    {
+      "id": "r_sl_30",
+      "placeId": "p_sl_08",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "돈까스 바삭, 우동도 쫄깃함",
+      "photos": [],
+      "createdAt": "2026-05-18T12:00:00Z"
+    },
+    {
+      "id": "r_sl_31",
+      "placeId": "p_sl_08",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "일식 안 좋아하는데 여긴 먹을 만함",
+      "photos": [],
+      "createdAt": "2026-05-15T12:45:00Z"
+    },
+    {
+      "id": "r_sl_32",
+      "placeId": "p_sl_09",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "부대찌개 깔끔. 밥 비벼 먹으면 꿀맛",
+      "photos": [],
+      "createdAt": "2026-05-20T19:15:00Z"
+    },
+    {
+      "id": "r_sl_33",
+      "placeId": "p_sl_09",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "안주로는 좋은데 혼밥은 어색",
+      "photos": [],
+      "createdAt": "2026-05-16T20:30:00Z"
+    },
+    {
+      "id": "r_sl_34",
+      "placeId": "p_sl_10",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "고기 맛있고 분위기도 좋음",
+      "photos": [],
+      "createdAt": "2026-05-19T20:00:00Z"
+    },
+    {
+      "id": "r_sl_35",
+      "placeId": "p_sl_10",
+      "userId": "u_2",
+      "vote": "NEVER",
+      "oneLiner": "고기는 싱싱한데 가성비 별로",
+      "photos": [],
+      "createdAt": "2026-05-17T19:30:00Z"
+    },
+    {
+      "id": "r_sl_36",
+      "placeId": "p_sl_11",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "선술집 느낌. 술만 마시고 빠짐",
+      "photos": [],
+      "createdAt": "2026-05-15T20:30:00Z"
+    },
+    {
+      "id": "r_sl_37",
+      "placeId": "p_sl_11",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "직장인 저녁 필수 코스. 분위기 좋음",
+      "photos": [],
+      "createdAt": "2026-05-21T19:00:00Z"
+    },
+    {
+      "id": "r_sl_38",
+      "placeId": "p_sl_12",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "카페는 카페인데 사람이 많아",
+      "photos": [],
+      "createdAt": "2026-05-18T15:30:00Z"
+    },
+    {
+      "id": "r_sl_39",
+      "placeId": "p_sl_12",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "아침이 좋음. 커피도 좋고 조용함",
+      "photos": [],
+      "createdAt": "2026-05-20T08:45:00Z"
+    },
+    {
+      "id": "r_sl_40",
+      "placeId": "p_sl_13",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "숯불구이는 좋은데 반찬이 별로",
+      "photos": [],
+      "createdAt": "2026-05-16T22:00:00Z"
+    },
+    {
+      "id": "r_sl_41",
+      "placeId": "p_sl_13",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "24시간이라 좋음. 매콤 양념 중독",
+      "photos": [],
+      "createdAt": "2026-05-22T00:30:00Z"
+    },
+    {
+      "id": "r_sl_42",
+      "placeId": "p_sl_14",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "스시 오마카세 이 가격에 미친 수준",
+      "photos": [],
+      "createdAt": "2026-05-19T12:30:00Z"
+    },
+    {
+      "id": "r_sl_43",
+      "placeId": "p_sl_14",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "맛은 좋은데 40분 너무 짧음",
+      "photos": [],
+      "createdAt": "2026-05-14T12:45:00Z"
+    },
+    {
+      "id": "r_sl_44",
+      "placeId": "p_sl_15",
+      "userId": "u_1",
+      "vote": "NEVER",
+      "oneLiner": "곱창 질김. 식감 안 좋음",
+      "photos": [],
+      "createdAt": "2026-05-21T20:15:00Z"
+    },
+    {
+      "id": "r_sl_45",
+      "placeId": "p_sl_15",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "60년 전통인데 요즘 좀 식은 느낌",
+      "photos": [],
+      "createdAt": "2026-05-17T21:00:00Z"
+    },
+    {
+      "id": "r_yi_01",
+      "placeId": "p_yi_01",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "손맛 그대로. 밑반찬부터 다르다",
+      "photos": [],
+      "createdAt": "2026-05-14T12:30:00Z"
+    },
+    {
+      "id": "r_yi_02",
+      "placeId": "p_yi_01",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "들깨가 잘 어울려. 한 그릇 뚝딱",
+      "photos": [],
+      "createdAt": "2026-05-15T18:45:00Z"
+    },
+    {
+      "id": "r_yi_03",
+      "placeId": "p_yi_01",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "괜찮은데 가격이 조금 비쌈",
+      "photos": [],
+      "createdAt": "2026-05-16T11:20:00Z"
+    },
+    {
+      "id": "r_yi_04",
+      "placeId": "p_yi_02",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "콩국수 예술. 여름 필수",
+      "photos": [],
+      "createdAt": "2026-05-14T13:15:00Z"
+    },
+    {
+      "id": "r_yi_05",
+      "placeId": "p_yi_02",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "노포 맛 그대로 유지",
+      "photos": [],
+      "createdAt": "2026-05-17T09:30:00Z"
+    },
+    {
+      "id": "r_yi_06",
+      "placeId": "p_yi_02",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "콩국수 좋긴 한데 좀 심심",
+      "photos": [],
+      "createdAt": "2026-05-18T14:50:00Z"
+    },
+    {
+      "id": "r_yi_07",
+      "placeId": "p_yi_03",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "신선한 초밥. 가성비 최고",
+      "photos": [],
+      "createdAt": "2026-05-15T19:25:00Z"
+    },
+    {
+      "id": "r_yi_08",
+      "placeId": "p_yi_03",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "연어 좋아. 단골 될 듯",
+      "photos": [],
+      "createdAt": "2026-05-16T12:40:00Z"
+    },
+    {
+      "id": "r_yi_09",
+      "placeId": "p_yi_03",
+      "userId": "u_4",
+      "vote": "NEVER",
+      "oneLiner": "조금 비싸고 기대보다 별로",
+      "photos": [],
+      "createdAt": "2026-05-19T17:10:00Z"
+    },
+    {
+      "id": "r_yi_10",
+      "placeId": "p_yi_04",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "짜장면부터 탕수육까지 제맛",
+      "photos": [],
+      "createdAt": "2026-05-14T18:05:00Z"
+    },
+    {
+      "id": "r_yi_11",
+      "placeId": "p_yi_04",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "동여의도 점심은 여기로",
+      "photos": [],
+      "createdAt": "2026-05-15T11:55:00Z"
+    },
+    {
+      "id": "r_yi_12",
+      "placeId": "p_yi_04",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "괜찮은데 유명한 곳보단 좀 부족",
+      "photos": [],
+      "createdAt": "2026-05-20T13:20:00Z"
+    },
+    {
+      "id": "r_yi_13",
+      "placeId": "p_yi_05",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "곰탕 예술. 국물 끝내줌",
+      "photos": [],
+      "createdAt": "2026-05-14T10:15:00Z"
+    },
+    {
+      "id": "r_yi_14",
+      "placeId": "p_yi_05",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "40년 노포 깊이가 느껴짐",
+      "photos": [],
+      "createdAt": "2026-05-17T11:30:00Z"
+    },
+    {
+      "id": "r_yi_15",
+      "placeId": "p_yi_05",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "맛은 좋은데 대기 좀 길어",
+      "photos": [],
+      "createdAt": "2026-05-19T12:00:00Z"
+    },
+    {
+      "id": "r_yi_16",
+      "placeId": "p_yi_06",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "계림닭도리탕 중독성",
+      "photos": [],
+      "createdAt": "2026-05-15T20:10:00Z"
+    },
+    {
+      "id": "r_yi_17",
+      "placeId": "p_yi_06",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "맛 일관성 좋네",
+      "photos": [],
+      "createdAt": "2026-05-16T19:45:00Z"
+    },
+    {
+      "id": "r_yi_18",
+      "placeId": "p_yi_06",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "맛 있는데 매운 정도가 기대 이상",
+      "photos": [],
+      "createdAt": "2026-05-21T18:20:00Z"
+    },
+    {
+      "id": "r_yi_19",
+      "placeId": "p_yi_07",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "수제버거는 바스. 패티 좋음",
+      "photos": [],
+      "createdAt": "2026-05-14T16:30:00Z"
+    },
+    {
+      "id": "r_yi_20",
+      "placeId": "p_yi_07",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "프렌치프라이 값어치함",
+      "photos": [],
+      "createdAt": "2026-05-18T17:50:00Z"
+    },
+    {
+      "id": "r_yi_21",
+      "placeId": "p_yi_07",
+      "userId": "u_5",
+      "vote": "NEVER",
+      "oneLiner": "버거 가격이 좀 과함",
+      "photos": [],
+      "createdAt": "2026-05-20T15:05:00Z"
+    },
+    {
+      "id": "r_yi_22",
+      "placeId": "p_yi_08",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "블루보틀은 블루보틀. 커피 굿",
+      "photos": [],
+      "createdAt": "2026-05-15T14:20:00Z"
+    },
+    {
+      "id": "r_yi_23",
+      "placeId": "p_yi_08",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "더현대에서 커피 마실 땐 여기",
+      "photos": [],
+      "createdAt": "2026-05-17T10:40:00Z"
+    },
+    {
+      "id": "r_yi_24",
+      "placeId": "p_yi_08",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "분위기는 좋은데 가격이 쎔",
+      "photos": [],
+      "createdAt": "2026-05-19T16:15:00Z"
+    },
+    {
+      "id": "r_yi_25",
+      "placeId": "p_yi_09",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "미나리 반찬만으로 밥 한그릇",
+      "photos": [],
+      "createdAt": "2026-05-16T12:25:00Z"
+    },
+    {
+      "id": "r_yi_26",
+      "placeId": "p_yi_09",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "쌈장도 고기도 신선",
+      "photos": [],
+      "createdAt": "2026-05-18T19:30:00Z"
+    },
+    {
+      "id": "r_yi_27",
+      "placeId": "p_yi_09",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "맛 좋은데 특별할 게 없음",
+      "photos": [],
+      "createdAt": "2026-05-21T20:00:00Z"
+    },
+    {
+      "id": "r_yi_28",
+      "placeId": "p_yi_10",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "꼼마 아메 한잔이면 기분 좋음",
+      "photos": [],
+      "createdAt": "2026-05-14T15:10:00Z"
+    },
+    {
+      "id": "r_yi_29",
+      "placeId": "p_yi_10",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "여의도 직장인의 쉼표",
+      "photos": [],
+      "createdAt": "2026-05-16T14:35:00Z"
+    },
+    {
+      "id": "r_yi_30",
+      "placeId": "p_yi_10",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "카페는 카페인데 좀 시끄러움",
+      "photos": [],
+      "createdAt": "2026-05-22T10:50:00Z"
+    },
+    {
+      "id": "r_yi_31",
+      "placeId": "p_yi_11",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "미소시루와 초밥의 조화",
+      "photos": [],
+      "createdAt": "2026-05-15T12:05:00Z"
+    },
+    {
+      "id": "r_yi_32",
+      "placeId": "p_yi_11",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "신선한 재료. 정식이 최고",
+      "photos": [],
+      "createdAt": "2026-05-17T18:40:00Z"
+    },
+    {
+      "id": "r_yi_33",
+      "placeId": "p_yi_11",
+      "userId": "u_2",
+      "vote": "NEVER",
+      "oneLiner": "초밥 좋아하는데 여긴 기대 이하",
+      "photos": [],
+      "createdAt": "2026-05-20T19:25:00Z"
+    },
+    {
+      "id": "r_yi_34",
+      "placeId": "p_yi_12",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "중식 같지 않은 중식. 깔끔함",
+      "photos": [],
+      "createdAt": "2026-05-14T11:50:00Z"
+    },
+    {
+      "id": "r_yi_35",
+      "placeId": "p_yi_12",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "여의도 중식 중 최고",
+      "photos": [],
+      "createdAt": "2026-05-18T12:15:00Z"
+    },
+    {
+      "id": "r_yi_36",
+      "placeId": "p_yi_12",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "맛은 좋은데 값이 좀 올랐네",
+      "photos": [],
+      "createdAt": "2026-05-21T13:45:00Z"
+    },
+    {
+      "id": "r_yi_37",
+      "placeId": "p_yi_13",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "국물 한 모금에 피로 풀림",
+      "photos": [],
+      "createdAt": "2026-05-16T10:30:00Z"
+    },
+    {
+      "id": "r_yi_38",
+      "placeId": "p_yi_13",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "국밥 먹을 땐 여기. 밥 계속 나옴",
+      "photos": [],
+      "createdAt": "2026-05-19T11:20:00Z"
+    },
+    {
+      "id": "r_yi_39",
+      "placeId": "p_yi_13",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "국물 좋은데 순대가 좀 별로",
+      "photos": [],
+      "createdAt": "2026-05-22T09:30:00Z"
+    },
+    {
+      "id": "r_yi_40",
+      "placeId": "p_yi_14",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "우육면 명성 그대로",
+      "photos": [],
+      "createdAt": "2026-05-15T11:00:00Z"
+    },
+    {
+      "id": "r_yi_41",
+      "placeId": "p_yi_14",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "여의도 우육면 최고",
+      "photos": [],
+      "createdAt": "2026-05-17T13:25:00Z"
+    },
+    {
+      "id": "r_yi_42",
+      "placeId": "p_yi_14",
+      "userId": "u_3",
+      "vote": "NEVER",
+      "oneLiner": "유명하지만 기대보단 아쉬움",
+      "photos": [],
+      "createdAt": "2026-05-20T12:50:00Z"
+    },
+    {
+      "id": "r_yi_43",
+      "placeId": "p_yi_15",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "냉면 옛스러움. 여름 입맛 살림",
+      "photos": [],
+      "createdAt": "2026-05-14T17:40:00Z"
+    },
+    {
+      "id": "r_yi_44",
+      "placeId": "p_yi_15",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "여의도 노포인데 맛 그대로",
+      "photos": [],
+      "createdAt": "2026-05-19T14:55:00Z"
+    },
+    {
+      "id": "r_yi_45",
+      "placeId": "p_yi_15",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "냉면 좋긴 한데 현대화 여지",
+      "photos": [],
+      "createdAt": "2026-05-21T15:30:00Z"
+    },
+    {
+      "id": "r_hj_01",
+      "placeId": "p_hj_01",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "돈코츠 진짜 진함. 또 가고파",
+      "photos": [],
+      "createdAt": "2026-05-13T19:00:00Z"
+    },
+    {
+      "id": "r_hj_02",
+      "placeId": "p_hj_01",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "교자랑 같이 먹으면 굿",
+      "photos": [],
+      "createdAt": "2026-05-14T20:00:00Z"
+    },
+    {
+      "id": "r_hj_03",
+      "placeId": "p_hj_01",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "양 좀 적은 편",
+      "photos": [],
+      "createdAt": "2026-05-16T19:30:00Z"
+    },
+    {
+      "id": "r_hj_04",
+      "placeId": "p_hj_02",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "합정 노포 진리",
+      "photos": [],
+      "createdAt": "2026-05-14T12:00:00Z"
+    },
+    {
+      "id": "r_hj_05",
+      "placeId": "p_hj_02",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "한 그릇 뚝딱이네",
+      "photos": [],
+      "createdAt": "2026-05-15T13:30:00Z"
+    },
+    {
+      "id": "r_hj_06",
+      "placeId": "p_hj_02",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "기다림 좀 김",
+      "photos": [],
+      "createdAt": "2026-05-17T12:30:00Z"
+    },
+    {
+      "id": "r_hj_07",
+      "placeId": "p_hj_03",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "보쌈 부드러움 미쳤음",
+      "photos": [],
+      "createdAt": "2026-05-15T18:30:00Z"
+    },
+    {
+      "id": "r_hj_08",
+      "placeId": "p_hj_03",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "수육도 굿",
+      "photos": [],
+      "createdAt": "2026-05-16T19:00:00Z"
+    },
+    {
+      "id": "r_hj_09",
+      "placeId": "p_hj_03",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "가격대 좀 셈",
+      "photos": [],
+      "createdAt": "2026-05-18T20:00:00Z"
+    },
+    {
+      "id": "r_hj_10",
+      "placeId": "p_hj_04",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "냉우동 진짜 시원함",
+      "photos": [],
+      "createdAt": "2026-05-16T13:30:00Z"
+    },
+    {
+      "id": "r_hj_11",
+      "placeId": "p_hj_04",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "기다림 좀 김",
+      "photos": [],
+      "createdAt": "2026-05-18T12:00:00Z"
+    },
+    {
+      "id": "r_hj_12",
+      "placeId": "p_hj_04",
+      "userId": "u_5",
+      "vote": "NEVER",
+      "oneLiner": "면 식감이 별로",
+      "photos": [],
+      "createdAt": "2026-05-20T13:30:00Z"
+    },
+    {
+      "id": "r_hj_13",
+      "placeId": "p_hj_05",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "파스타 진짜 맛있음",
+      "photos": [],
+      "createdAt": "2026-05-17T19:30:00Z"
+    },
+    {
+      "id": "r_hj_14",
+      "placeId": "p_hj_05",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "와인이랑 굿",
+      "photos": [],
+      "createdAt": "2026-05-18T20:30:00Z"
+    },
+    {
+      "id": "r_hj_15",
+      "placeId": "p_hj_05",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "양 조금 부족",
+      "photos": [],
+      "createdAt": "2026-05-20T19:00:00Z"
+    },
+    {
+      "id": "r_hj_16",
+      "placeId": "p_hj_06",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "곱창 진짜 부드러움",
+      "photos": [],
+      "createdAt": "2026-05-18T12:30:00Z"
+    },
+    {
+      "id": "r_hj_17",
+      "placeId": "p_hj_06",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "양 진짜 푸짐",
+      "photos": [],
+      "createdAt": "2026-05-19T13:00:00Z"
+    },
+    {
+      "id": "r_hj_18",
+      "placeId": "p_hj_06",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "기다림 좀 김",
+      "photos": [],
+      "createdAt": "2026-05-21T12:00:00Z"
+    },
+    {
+      "id": "r_hj_19",
+      "placeId": "p_hj_07",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "잔치국수 깔끔하고 굿",
+      "photos": [],
+      "createdAt": "2026-05-13T13:00:00Z"
+    },
+    {
+      "id": "r_hj_20",
+      "placeId": "p_hj_07",
+      "userId": "u_3",
+      "vote": "ONCE",
+      "oneLiner": "맛은 평범",
+      "photos": [],
+      "createdAt": "2026-05-15T08:30:00Z"
+    },
+    {
+      "id": "r_hj_21",
+      "placeId": "p_hj_07",
+      "userId": "u_5",
+      "vote": "NEVER",
+      "oneLiner": "국물 너무 심심",
+      "photos": [],
+      "createdAt": "2026-05-17T09:00:00Z"
+    },
+    {
+      "id": "r_hj_22",
+      "placeId": "p_hj_08",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "시오라멘 진짜 깔끔",
+      "photos": [],
+      "createdAt": "2026-05-14T19:00:00Z"
+    },
+    {
+      "id": "r_hj_23",
+      "placeId": "p_hj_08",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "맑은 국물 미쳤음",
+      "photos": [],
+      "createdAt": "2026-05-16T20:00:00Z"
+    },
+    {
+      "id": "r_hj_24",
+      "placeId": "p_hj_08",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "양 적은 편",
+      "photos": [],
+      "createdAt": "2026-05-19T19:30:00Z"
+    },
+    {
+      "id": "r_hj_25",
+      "placeId": "p_hj_09",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "돼지불백 야식 최고",
+      "photos": [],
+      "createdAt": "2026-05-15T17:00:00Z"
+    },
+    {
+      "id": "r_hj_26",
+      "placeId": "p_hj_09",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "24시간이라 진짜 굿",
+      "photos": [],
+      "createdAt": "2026-05-17T12:30:00Z"
+    },
+    {
+      "id": "r_hj_27",
+      "placeId": "p_hj_09",
+      "userId": "u_5",
+      "vote": "ONCE",
+      "oneLiner": "기름 좀 많음",
+      "photos": [],
+      "createdAt": "2026-05-19T13:30:00Z"
+    },
+    {
+      "id": "r_hj_28",
+      "placeId": "p_hj_10",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "분위기 좋고 작업 굿",
+      "photos": [],
+      "createdAt": "2026-05-16T11:00:00Z"
+    },
+    {
+      "id": "r_hj_29",
+      "placeId": "p_hj_10",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "라떼는 평범",
+      "photos": [],
+      "createdAt": "2026-05-18T14:30:00Z"
+    },
+    {
+      "id": "r_hj_30",
+      "placeId": "p_hj_10",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "디저트 굿",
+      "photos": [],
+      "createdAt": "2026-05-20T15:00:00Z"
+    },
+    {
+      "id": "r_hj_31",
+      "placeId": "p_hj_11",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "곱창 부드럽고 맛",
+      "photos": [],
+      "createdAt": "2026-05-17T19:30:00Z"
+    },
+    {
+      "id": "r_hj_32",
+      "placeId": "p_hj_11",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "양념 강한 편",
+      "photos": [],
+      "createdAt": "2026-05-19T20:30:00Z"
+    },
+    {
+      "id": "r_hj_33",
+      "placeId": "p_hj_11",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "야식으로 굿",
+      "photos": [],
+      "createdAt": "2026-05-21T22:00:00Z"
+    },
+    {
+      "id": "r_hj_34",
+      "placeId": "p_hj_12",
+      "userId": "u_2",
+      "vote": "GO_AGAIN",
+      "oneLiner": "감성 카페 진리",
+      "photos": [],
+      "createdAt": "2026-05-18T18:00:00Z"
+    },
+    {
+      "id": "r_hj_35",
+      "placeId": "p_hj_12",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "사진 찍기 좋음",
+      "photos": [],
+      "createdAt": "2026-05-19T19:30:00Z"
+    },
+    {
+      "id": "r_hj_36",
+      "placeId": "p_hj_12",
+      "userId": "u_5",
+      "vote": "NEVER",
+      "oneLiner": "영업 시간 짧음 별로",
+      "photos": [],
+      "createdAt": "2026-05-21T20:30:00Z"
+    },
+    {
+      "id": "r_hj_37",
+      "placeId": "p_hj_13",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "조용한 카페. 작업하기 굿",
+      "photos": [],
+      "createdAt": "2026-05-19T10:00:00Z"
+    },
+    {
+      "id": "r_hj_38",
+      "placeId": "p_hj_13",
+      "userId": "u_1",
+      "vote": "GO_AGAIN",
+      "oneLiner": "커피 깊은 맛",
+      "photos": [],
+      "createdAt": "2026-05-20T14:00:00Z"
+    },
+    {
+      "id": "r_hj_39",
+      "placeId": "p_hj_13",
+      "userId": "u_4",
+      "vote": "ONCE",
+      "oneLiner": "사람 좀 많음",
+      "photos": [],
+      "createdAt": "2026-05-22T15:30:00Z"
+    },
+    {
+      "id": "r_hj_40",
+      "placeId": "p_hj_14",
+      "userId": "u_4",
+      "vote": "GO_AGAIN",
+      "oneLiner": "제철 한정식 굿",
+      "photos": [],
+      "createdAt": "2026-05-20T12:00:00Z"
+    },
+    {
+      "id": "r_hj_41",
+      "placeId": "p_hj_14",
+      "userId": "u_2",
+      "vote": "ONCE",
+      "oneLiner": "가격 좀 셈",
+      "photos": [],
+      "createdAt": "2026-05-21T12:30:00Z"
+    },
+    {
+      "id": "r_hj_42",
+      "placeId": "p_hj_14",
+      "userId": "u_5",
+      "vote": "NEVER",
+      "oneLiner": "취향 안 맞음",
+      "photos": [],
+      "createdAt": "2026-05-22T13:00:00Z"
+    },
+    {
+      "id": "r_hj_43",
+      "placeId": "p_hj_15",
+      "userId": "u_5",
+      "vote": "GO_AGAIN",
+      "oneLiner": "칵테일 진짜 굿",
+      "photos": [],
+      "createdAt": "2026-05-21T13:30:00Z"
+    },
+    {
+      "id": "r_hj_44",
+      "placeId": "p_hj_15",
+      "userId": "u_1",
+      "vote": "ONCE",
+      "oneLiner": "분위기는 좋은데 비쌈",
+      "photos": [],
+      "createdAt": "2026-05-22T18:30:00Z"
+    },
+    {
+      "id": "r_hj_45",
+      "placeId": "p_hj_15",
+      "userId": "u_3",
+      "vote": "GO_AGAIN",
+      "oneLiner": "기네스 굿",
+      "photos": [],
+      "createdAt": "2026-05-22T19:00:00Z"
+    }
+  ],
+  "session": {
+    "currentUserId": "u_1",
+    "currentGroupId": "g_yeouido",
+    "currentLocation": {
+      "address": "서울특별시 영등포구 여의대로 24",
+      "lat": 37.5219,
+      "lng": 126.9244
+    }
+  }
+}

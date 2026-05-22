@@ -1,12 +1,13 @@
 /**
- * Mock data — DDK-18 v0.1 스키마(정규화) 형태.
+ * Mock data — DDK-18 v0.3 스키마 (정규화).
  *
- * 정규화 엔티티(USERS / GROUPS / PLACES / REVIEWS / SESSION)가 단일 진실 소스이고,
- * 화면에 필요한 집계·표시값(또갈래율, "N명 중 M명", 거리, 도보시간 등)은
- * 저장하지 않고 selectors.js 에서 매번 계산한다.
+ * 엔티티(USERS / GROUPS / PLACES / REVIEWS / SESSION)는 mock-data.json 에서 직접 로드.
+ * 집계·표시값(또갈래율, "N명 중 M명", 거리, 도보시간 등)은 저장하지 않고
+ * selectors.js 에서 매번 계산한다.
  *
  * 참고: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/17203201
  */
+import mockData from './mock-data.json'
 
 /* --- 코드값 ↔ 한글 라벨 (UI 표시는 라벨, 저장은 enum) --- */
 
@@ -27,147 +28,85 @@ export const VOTE_LABELS = {
   NEVER: '언젠간',
 }
 
-/* --- DDK-18 엔티티 --- */
+/* --- DDK-18 엔티티 (mock-data.json 에서 로드) --- */
 
-export const USERS = [
-  { id: 'u_jun', nickname: '준표', avatarColor: '#ff6b6b', avatarInitial: '준' },
-  { id: 'u_hye', nickname: '혜인', avatarColor: '#4ecdc4', avatarInitial: '혜' },
-  { id: 'u_woo', nickname: '정우', avatarColor: '#ffd93d', avatarInitial: '정' },
-  { id: 'u_min', nickname: '민서', avatarColor: '#a78bfa', avatarInitial: '민' },
-  { id: 'u_hyung', nickname: '준형', avatarColor: '#60a5fa', avatarInitial: '형' },
-]
+export const USERS = mockData.users
 
-const ALL_MEMBERS = USERS.map((u) => u.id)
-
-export const GROUPS = [
-  {
-    id: 'g_ddak',
-    name: '딸깍 맛집',
-    icon: '🍜',
-    iconColor: '#1c1c1c',
-    iconInitial: '딸',
-    memberIds: ALL_MEMBERS,
-    inviteCode: 'DDAK01',
-    createdBy: 'u_jun',
-    createdAt: '2026-04-28T10:00:00Z',
-  },
-  {
-    id: 'g_jungnang',
-    name: '중랑구 불주먹 모임',
-    icon: '🍔',
-    iconColor: '#ff4848',
-    iconInitial: '중',
-    memberIds: ALL_MEMBERS,
-    inviteCode: 'JUNG02',
-    createdBy: 'u_hye',
-    createdAt: '2026-04-15T10:00:00Z',
-  },
-  {
-    id: 'g_dawn',
-    name: '새벽회식조',
-    icon: '🍔',
-    iconColor: '#60a5fa',
-    iconInitial: '새',
-    memberIds: ALL_MEMBERS,
-    inviteCode: 'DAWN03',
-    createdBy: 'u_woo',
-    createdAt: '2026-05-19T10:00:00Z',
-  },
-]
-
-export const PLACES = [
-  // g_ddak — 딸깍 맛집
-  { id: 'p_d1', groupId: 'g_ddak', name: '을지로 노포', address: '서울 중구 을지로12길 21', location: { lat: 37.5662, lng: 126.9913 }, category: 'KOREAN', createdBy: 'u_jun', createdAt: '2026-05-12T12:10:00Z' },
-  { id: 'p_d2', groupId: 'g_ddak', name: '광장시장 빈대떡', address: '서울 종로구 창경궁로 88', location: { lat: 37.5701, lng: 126.9997 }, category: 'TRADITIONAL', createdBy: 'u_hye', createdAt: '2026-05-14T19:30:00Z' },
-  { id: 'p_d3', groupId: 'g_ddak', name: '을지로 라멘집', address: '서울 중구 을지로 153', location: { lat: 37.5668, lng: 126.9925 }, category: 'JAPANESE', createdBy: 'u_woo', createdAt: '2026-05-18T13:00:00Z' },
-  { id: 'p_d4', groupId: 'g_ddak', name: '충무로 카페', address: '서울 중구 충무로5길 12', location: { lat: 37.5614, lng: 126.9945 }, category: 'CAFE', createdBy: 'u_min', createdAt: '2026-04-20T15:00:00Z' },
-  // g_jungnang — 중랑구 불주먹 모임
-  { id: 'p_j1', groupId: 'g_jungnang', name: '면목동 곱창집', address: '서울 중랑구 면목로 73', location: { lat: 37.5851, lng: 127.0875 }, category: 'KOREAN', createdBy: 'u_hye', createdAt: '2026-05-10T18:00:00Z' },
-  { id: 'p_j2', groupId: 'g_jungnang', name: '상봉 닭한마리', address: '서울 중랑구 망우로 35', location: { lat: 37.5963, lng: 127.0853 }, category: 'KOREAN', createdBy: 'u_jun', createdAt: '2026-05-13T19:00:00Z' },
-  { id: 'p_j3', groupId: 'g_jungnang', name: '중화동 김밥천국', address: '서울 중랑구 동일로 921', location: { lat: 37.6004, lng: 127.0788 }, category: 'ETC', createdBy: 'u_min', createdAt: '2026-05-16T12:00:00Z' },
-  { id: 'p_j4', groupId: 'g_jungnang', name: '망우동 칼국수', address: '서울 중랑구 망우로 415', location: { lat: 37.5994, lng: 127.1003 }, category: 'KOREAN', createdBy: 'u_hyung', createdAt: '2026-04-25T11:30:00Z' },
-  // g_dawn — 새벽회식조: 등록된 가게 없음 (빈 그룹)
-]
-
-/* Review 시드 — [userId, vote, oneLiner] 행을 레코드로 펼친다. */
-function seedReviews(placeId, rows) {
-  return rows.map(([userId, vote, oneLiner], i) => ({
-    id: `r_${placeId}_${i + 1}`,
-    placeId,
-    userId,
-    vote,
-    oneLiner,
-    photos: [],
-    createdAt: '2026-05-20T12:00:00Z',
-  }))
+/* groupId 별 표시용 이모지 (스키마 외 UI 장식 — JSON에 없어서 별도 매핑) */
+const GROUP_ICON_MAP = {
+  g_gangnam: '🍔',
+  g_seolleung: '🍱',
+  g_yeouido: '☕',
+  g_hapjeong: '🍻',
 }
 
-export const REVIEWS = [
-  ...seedReviews('p_d1', [
-    ['u_jun', 'GO_AGAIN', '분위기 미쳤음. 재방문 확정'],
-    ['u_hye', 'GO_AGAIN', '아 배고파'],
-    ['u_woo', 'ONCE', '한번 가볼만'],
-    ['u_min', 'GO_AGAIN', '국물이 진하다'],
-    ['u_hyung', 'NEVER', '난 별로였음'],
-  ]),
-  ...seedReviews('p_d2', [
-    ['u_jun', 'GO_AGAIN', '빈대떡 바삭함'],
-    ['u_hye', 'GO_AGAIN', '막걸리랑 찰떡'],
-    ['u_woo', 'GO_AGAIN', '또 가고 싶다'],
-    ['u_min', 'GO_AGAIN', '녹두전 최고'],
-    ['u_hyung', 'ONCE', '한 번이면 충분'],
-  ]),
-  ...seedReviews('p_d3', [
-    ['u_jun', 'GO_AGAIN', '국물 깔끔하다'],
-    ['u_hye', 'ONCE', '보통이었음'],
-    ['u_woo', 'GO_AGAIN', '차슈가 굿'],
-    ['u_hyung', 'NEVER', '줄이 너무 길어'],
-  ]),
-  ...seedReviews('p_d4', [
-    ['u_jun', 'GO_AGAIN', '디저트 맛집'],
-    ['u_hye', 'NEVER', '너무 시끄러움'],
-    ['u_woo', 'ONCE', '커피는 그럭저럭'],
-    ['u_min', 'GO_AGAIN', '공부하기 좋음'],
-    ['u_hyung', 'NEVER', '자리가 불편'],
-  ]),
-  ...seedReviews('p_j1', [
-    ['u_hye', 'GO_AGAIN', '곱창 신선하다'],
-    ['u_jun', 'GO_AGAIN', '무조건 또 갈래'],
-    ['u_woo', 'GO_AGAIN', '소금구이 굿'],
-    ['u_min', 'GO_AGAIN', '양이 많음'],
-    ['u_hyung', 'ONCE', '좀 기름져'],
-  ]),
-  ...seedReviews('p_j2', [
-    ['u_hye', 'GO_AGAIN', '국물이 시원'],
-    ['u_jun', 'GO_AGAIN', '겨울에 딱'],
-    ['u_woo', 'GO_AGAIN', '칼국수 사리 필수'],
-    ['u_min', 'ONCE', '무난했음'],
-    ['u_hyung', 'NEVER', '양이 좀 적음'],
-  ]),
-  ...seedReviews('p_j3', [
-    ['u_hye', 'GO_AGAIN', '가성비 갑'],
-    ['u_jun', 'ONCE', '그냥 분식 맛'],
-    ['u_woo', 'GO_AGAIN', '라볶이 맛있음'],
-    ['u_min', 'NEVER', '내 취향은 아님'],
-  ]),
-  ...seedReviews('p_j4', [
-    ['u_hye', 'GO_AGAIN', '면이 쫄깃'],
-    ['u_jun', 'ONCE', '평범한 칼국수'],
-    ['u_woo', 'NEVER', '간이 너무 세'],
-    ['u_min', 'GO_AGAIN', '비 오는 날 생각남'],
-    ['u_hyung', 'NEVER', '재방문은 글쎄'],
-  ]),
-]
+export const GROUPS = mockData.groups.map((g) => ({
+  ...g,
+  icon: GROUP_ICON_MAP[g.id] ?? '🍜',
+}))
 
-export const SESSION = {
-  currentUserId: 'u_jun',
-  currentGroupId: 'g_ddak',
-  currentLocation: {
-    address: '서울 중구 을지로 30',
-    lat: 37.5658,
-    lng: 126.991,
+/* --- 지역(region) ↔ 그룹 매핑 (URL ?region= 파라미터로 진입 시 사용) --- */
+export const REGION_TO_GROUP_ID = {
+  gangnam: 'g_gangnam',
+  seolleung: 'g_seolleung',
+  yeouido: 'g_yeouido',
+  hapjeong: 'g_hapjeong',
+}
+
+export const GROUP_ID_TO_REGION = Object.fromEntries(
+  Object.entries(REGION_TO_GROUP_ID).map(([k, v]) => [v, k]),
+)
+
+/* 각 그룹의 기본 지도 중심 좌표 (해당 지역 역 근처) */
+export const GROUP_LOCATIONS = {
+  g_gangnam: {
+    address: '서울특별시 강남구 강남대로 396',
+    lat: 37.4979,
+    lng: 127.0276,
+  },
+  g_seolleung: {
+    address: '서울특별시 강남구 선릉로 524',
+    lat: 37.5044,
+    lng: 127.0489,
+  },
+  g_yeouido: {
+    address: '서울특별시 영등포구 여의대로 24',
+    lat: 37.5219,
+    lng: 126.9244,
+  },
+  g_hapjeong: {
+    address: '서울특별시 마포구 양화로 45',
+    lat: 37.5495,
+    lng: 126.9136,
   },
 }
+
+export const PLACES = mockData.places
+
+export const REVIEWS = mockData.reviews
+
+/**
+ * 현재 세션 — URL ?region= 파라미터로 지역 결정.
+ * 지원: gangnam / seolleung / yeouido. 미지정·미매칭 시 JSON 의 기본값(yeouido).
+ */
+function resolveSession() {
+  const fallback = mockData.session
+  if (typeof window === 'undefined') {
+    return fallback
+  }
+  const region = new URLSearchParams(window.location.search).get('region')
+  const groupId = REGION_TO_GROUP_ID[region]
+  if (!groupId) {
+    return fallback
+  }
+  return {
+    ...fallback,
+    currentGroupId: groupId,
+    currentLocation: GROUP_LOCATIONS[groupId] ?? fallback.currentLocation,
+  }
+}
+
+export const SESSION = resolveSession()
 
 /* --- 위치 검색 후보 (지도 API 대체용 mock POI — 스키마 엔티티 아님) --- */
 
