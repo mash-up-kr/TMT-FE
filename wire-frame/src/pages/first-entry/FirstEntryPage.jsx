@@ -1,13 +1,21 @@
 import { useState } from 'react'
+import { GROUP_ID_TO_REGION } from '../../shared/mockData.js'
 import { getGroupViews } from '../../shared/selectors.js'
 import './FirstEntryPage.css'
 
 function FirstEntryPage({ data, onStart, onCreateGroup, onInviteCode }) {
-  const group = getGroupViews(data)[0]
+  const myGroups = getGroupViews(data).filter((g) =>
+    data.groups
+      .find((raw) => raw.id === g.id)
+      ?.memberIds.includes(data.session.currentUserId),
+  )
   const [nickname, setNickname] = useState('')
 
-  const enterGroup = () => {
-    onStart(nickname)
+  const enterGroup = (groupId) => {
+    const region = GROUP_ID_TO_REGION[groupId]
+    const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+    const search = region ? `?region=${region}` : ''
+    window.location.href = `${basePath}/${search}#/main`
   }
 
   return (
@@ -37,18 +45,25 @@ function FirstEntryPage({ data, onStart, onCreateGroup, onInviteCode }) {
 
       <div className="fe-field fe-field--group">
         <p className="fe-label">내 그룹</p>
-        <button type="button" className="fe-group-card" onClick={enterGroup}>
-          <span className="fe-group-icon" aria-hidden="true">
-            {group.icon}
-          </span>
-          <span className="fe-group-info">
-            <span className="fe-group-name">{group.name}</span>
-            <span className="fe-group-meta">{group.meta}</span>
-          </span>
-          <span className="fe-group-chevron" aria-hidden="true">
-            ›
-          </span>
-        </button>
+        {myGroups.map((g) => (
+          <button
+            key={g.id}
+            type="button"
+            className="fe-group-card"
+            onClick={() => enterGroup(g.id)}
+          >
+            <span className="fe-group-icon" aria-hidden="true">
+              {g.icon}
+            </span>
+            <span className="fe-group-info">
+              <span className="fe-group-name">{g.name}</span>
+              <span className="fe-group-meta">{g.meta}</span>
+            </span>
+            <span className="fe-group-chevron" aria-hidden="true">
+              ›
+            </span>
+          </button>
+        ))}
       </div>
 
       <div className="fe-spacer" />
