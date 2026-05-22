@@ -12,8 +12,16 @@ const routes = {
   invite: '/invite',
 }
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+
 function currentPath() {
-  return window.location.pathname || routes.entry
+  return window.location.hash.slice(1) || routes.entry
+}
+
+function routeUrl(path) {
+  const rootPath = basePath ? `${basePath}/` : routes.entry
+
+  return path === routes.entry ? rootPath : `${rootPath}#${path}`
 }
 
 function makeId(prefix) {
@@ -37,7 +45,11 @@ function App() {
   useEffect(() => {
     const handlePopState = () => setPath(currentPath())
     window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
+    window.addEventListener('hashchange', handlePopState)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      window.removeEventListener('hashchange', handlePopState)
+    }
   }, [])
 
   function navigate(nextPath) {
@@ -45,7 +57,7 @@ function App() {
       return
     }
 
-    window.history.pushState({}, '', nextPath)
+    window.history.pushState({}, '', routeUrl(nextPath))
     setPath(nextPath)
   }
 

@@ -20,7 +20,6 @@ function CreateNewGroupPage({ onBack, onCreated }) {
 
   useEffect(() => {
     if (!shareOpen) {
-      setShareVisible(false)
       return undefined
     }
 
@@ -68,7 +67,7 @@ function CreateNewGroupPage({ onBack, onCreated }) {
           <fieldset className="cg-field cg-icon-field">
             <legend className="cg-label">아이콘</legend>
             <div className="cg-icon-list">
-              {GROUP_ICONS.map((icon, index) => (
+              {GROUP_ICONS.map((icon) => (
                 <button
                   key={icon}
                   type="button"
