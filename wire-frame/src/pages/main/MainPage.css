@@ -165,6 +165,10 @@
   border-radius: 10px;
   background: #f0f0ee;
   overflow: hidden;
+  /* 네이버 SDK 가 attribution 노드를 자체 z-index 로 박는데,
+     isolation 으로 stacking context 를 가두면 .mp-rd(z:50) 위로 새지 않음. */
+  isolation: isolate;
+  z-index: 0;
 }
 
 .mp-map-pin {
