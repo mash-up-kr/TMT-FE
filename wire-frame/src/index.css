@@ -56,6 +56,15 @@
 
 body {
   margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 마우스/터치 클릭 시 outline 숨김. 키보드 Tab 진입은 :focus-visible 로 유지 (a11y). */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+  outline: none;
 }
 
 #root {
