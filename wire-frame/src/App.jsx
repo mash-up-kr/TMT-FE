@@ -20,6 +20,10 @@ function makeId(prefix) {
   return `${prefix}_${crypto.randomUUID().slice(0, 8)}`
 }
 
+function avatarInitial(nickname) {
+  return nickname.trim().slice(0, 1) || '게'
+}
+
 function App() {
   const [path, setPath] = useState(currentPath)
   const [data, setData] = useState(() => ({
@@ -43,6 +47,35 @@ function App() {
 
     window.history.pushState({}, '', nextPath)
     setPath(nextPath)
+  }
+
+  function startAsUser(nickname) {
+    setData((prev) => {
+      const nextNickname = nickname.trim() || '게스트'
+      const userId = makeId('u')
+      const currentGroupId = prev.session.currentGroupId
+      const user = {
+        id: userId,
+        nickname: nextNickname,
+        avatarColor: '#1c1c1c',
+        avatarInitial: avatarInitial(nextNickname),
+      }
+
+      return {
+        ...prev,
+        users: [...prev.users, user],
+        groups: prev.groups.map((group) =>
+          group.id === currentGroupId
+            ? { ...group, memberIds: [...group.memberIds, userId] }
+            : group,
+        ),
+        session: {
+          ...prev.session,
+          currentUserId: userId,
+        },
+      }
+    })
+    navigate(routes.main)
   }
 
   /* 가게 추가 — 새 Place + 현재 유저의 Review 한 건을 생성 */
@@ -77,11 +110,60 @@ function App() {
     })
   }
 
+  function saveReview({ placeId, vote, oneLiner }) {
+    setData((prev) => {
+      const now = new Date().toISOString()
+      const review = prev.reviews.find(
+        (r) => r.placeId === placeId && r.userId === prev.session.currentUserId,
+      )
+
+      if (review) {
+        return {
+          ...prev,
+          reviews: prev.reviews.map((r) =>
+            r.id === review.id ? { ...r, vote, oneLiner } : r,
+          ),
+        }
+      }
+
+      return {
+        ...prev,
+        reviews: [
+          ...prev.reviews,
+          {
+            id: makeId('r'),
+            placeId,
+            userId: prev.session.currentUserId,
+            vote,
+            oneLiner,
+            photos: [],
+            createdAt: now,
+          },
+        ],
+      }
+    })
+  }
+
+  function deleteReview({ placeId }) {
+    setData((prev) => ({
+      ...prev,
+      reviews: prev.reviews.filter(
+        (r) =>
+          !(
+            r.placeId === placeId &&
+            r.userId === prev.session.currentUserId
+          ),
+      ),
+    }))
+  }
+
   if (path === routes.main) {
     return (
       <MainPage
         data={data}
         addPlace={addPlace}
+        saveReview={saveReview}
+        deleteReview={deleteReview}
         onCreateGroup={() => navigate(routes.createGroup)}
       />
     )
@@ -108,7 +190,7 @@ function App() {
   return (
     <FirstEntryPage
       data={data}
-      onStart={() => navigate(routes.main)}
+      onStart={startAsUser}
       onCreateGroup={() => navigate(routes.createGroup)}
       onInviteCode={() => navigate(routes.invite)}
     />

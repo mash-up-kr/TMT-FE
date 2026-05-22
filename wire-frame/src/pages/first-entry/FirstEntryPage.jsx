@@ -1,8 +1,14 @@
+import { useState } from 'react'
 import { getGroupViews } from '../../shared/selectors.js'
 import './FirstEntryPage.css'
 
 function FirstEntryPage({ data, onStart, onCreateGroup, onInviteCode }) {
   const group = getGroupViews(data)[0]
+  const [nickname, setNickname] = useState('')
+
+  const enterGroup = () => {
+    onStart(nickname)
+  }
 
   return (
     <div className="first-entry">
@@ -24,12 +30,14 @@ function FirstEntryPage({ data, onStart, onCreateGroup, onInviteCode }) {
           className="fe-input"
           type="text"
           placeholder="예: 준표"
+          value={nickname}
+          onChange={(event) => setNickname(event.target.value)}
         />
       </div>
 
       <div className="fe-field fe-field--group">
         <p className="fe-label">내 그룹</p>
-        <button type="button" className="fe-group-card" onClick={onStart}>
+        <button type="button" className="fe-group-card" onClick={enterGroup}>
           <span className="fe-group-icon" aria-hidden="true">
             {group.icon}
           </span>

@@ -516,7 +516,146 @@ function AddStorePanel({ open, onClose, searchResults, onSave }) {
   )
 }
 
-function RestaurantDetail({ open, restaurant, onClose, getDetail }) {
+function ReviewPanel({
+  open,
+  restaurant,
+  currentReview,
+  onClose,
+  onDelete,
+  onSave,
+}) {
+  const closePanel = () => {
+    onClose()
+  }
+
+  const handleDelete = () => {
+    onDelete()
+    closePanel()
+  }
+
+  if (!restaurant) {
+    return null
+  }
+
+  const formKey = `${restaurant.id}-${currentReview?.id ?? 'new'}-${open ? 'open' : 'closed'}`
+
+  return (
+    <div className={`mp-review${open ? ' mp-review--open' : ''}`}>
+      <button
+        type="button"
+        className="mp-review-backdrop"
+        onClick={closePanel}
+        aria-label="내 평가 닫기"
+      />
+
+      <section
+        className="mp-review-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="review-title"
+      >
+        <div className="mp-review-handle" aria-hidden="true" />
+        <header className="mp-review-header">
+          <div className="mp-review-heading">
+            <span id="review-title" className="mp-review-title">
+              내 평가 수정
+            </span>
+            <span className="mp-review-subtitle">{restaurant.name}</span>
+          </div>
+        </header>
+
+        <ReviewForm
+          key={formKey}
+          currentReview={currentReview}
+          onDelete={handleDelete}
+          onSave={(form) => {
+            onSave(form)
+            closePanel()
+          }}
+        />
+      </section>
+    </div>
+  )
+}
+
+function ReviewForm({ currentReview, onDelete, onSave }) {
+  const initialRating = Math.max(
+    0,
+    RATING_VOTES.indexOf(currentReview?.vote ?? RATING_VOTES[0]),
+  )
+  const [rating, setRating] = useState(initialRating)
+  const [oneLiner, setOneLiner] = useState(currentReview?.oneLiner ?? '')
+
+  const handleSave = () => {
+    onSave({
+      vote: RATING_VOTES[rating],
+      oneLiner: oneLiner.trim(),
+    })
+  }
+
+  return (
+    <>
+      <div className="mp-review-content">
+        <div className="mp-review-field">
+          <p className="mp-as-label">평가</p>
+          <div className="mp-review-ratings">
+            {STORE_RATINGS.map((r, i) => (
+              <button
+                key={r}
+                type="button"
+                aria-pressed={rating === i}
+                className={`mp-review-rating${rating === i ? ' mp-review-rating--active' : ''}`}
+                onClick={() => setRating(i)}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mp-review-field">
+          <p className="mp-as-label">
+            한줄평 <span className="mp-as-label-sub">선택</span>
+          </p>
+          <textarea
+            className="mp-review-textarea"
+            placeholder=""
+            aria-label="한줄평"
+            value={oneLiner}
+            onChange={(event) => setOneLiner(event.target.value)}
+          />
+        </div>
+      </div>
+
+      <footer className="mp-review-footer">
+        <button
+          type="button"
+          className="mp-review-delete"
+          disabled={!currentReview}
+          onClick={onDelete}
+        >
+          삭제
+        </button>
+        <button type="button" className="mp-review-submit" onClick={handleSave}>
+          저장
+        </button>
+      </footer>
+    </>
+  )
+}
+
+function RestaurantDetail({
+  open,
+  restaurant,
+  reviewButtonLabel,
+  onClose,
+  getDetail,
+  onReview,
+}) {
+  if (!restaurant) {
+    return null
+  }
+
   const { submeta, counts, total, reviews } = getDetail(restaurant.id)
   const width = (n) => (total ? `${(n / total) * 100}%` : '0%')
 
@@ -600,15 +739,15 @@ function RestaurantDetail({ open, restaurant, onClose, getDetail }) {
       </div>
 
       <footer className="mp-rd-footer">
-        <button type="button" className="mp-rd-submit">
-          내 평가 남기기
+        <button type="button" className="mp-rd-submit" onClick={onReview}>
+          {reviewButtonLabel}
         </button>
       </footer>
     </div>
   )
 }
 
-function MainPage({ data, addPlace, onCreateGroup }) {
+function MainPage({ data, addPlace, saveReview, deleteReview, onCreateGroup }) {
   const groupViews = useMemo(() => getGroupViews(data), [data])
   const currentGroupRestaurants = useMemo(
     () => getCurrentGroupRestaurants(data),
@@ -629,6 +768,7 @@ function MainPage({ data, addPlace, onCreateGroup }) {
   )
   const [detailView, setDetailView] = useState('list')
   const [restaurantOpen, setRestaurantOpen] = useState(false)
+  const [reviewOpen, setReviewOpen] = useState(false)
   const [selectedRestaurant, setSelectedRestaurant] = useState(
     currentGroupRestaurants[0],
   )
@@ -654,6 +794,35 @@ function MainPage({ data, addPlace, onCreateGroup }) {
 
   const handleSavePlace = (form) => {
     addPlace({ groupId: addStoreGroupId, ...form })
+  }
+
+  const currentUserReview = useMemo(
+    () => {
+      if (!selectedRestaurant) {
+        return undefined
+      }
+
+      return data.reviews.find(
+        (r) =>
+          r.placeId === selectedRestaurant.id &&
+          r.userId === data.session.currentUserId,
+      )
+    },
+    [data.reviews, data.session.currentUserId, selectedRestaurant],
+  )
+
+  const handleSaveReview = (form) => {
+    if (!selectedRestaurant) {
+      return
+    }
+    saveReview({ placeId: selectedRestaurant.id, ...form })
+  }
+
+  const handleDeleteReview = () => {
+    if (!selectedRestaurant) {
+      return
+    }
+    deleteReview({ placeId: selectedRestaurant.id })
   }
 
   const group = groupViews[selectedGroup]
@@ -822,8 +991,21 @@ function MainPage({ data, addPlace, onCreateGroup }) {
       <RestaurantDetail
         open={restaurantOpen}
         restaurant={selectedRestaurant}
+        reviewButtonLabel={
+          currentUserReview ? '내 평가 수정' : '내 평가 남기기'
+        }
         onClose={() => setRestaurantOpen(false)}
         getDetail={(id) => getRestaurantDetail(data, id)}
+        onReview={() => setReviewOpen(true)}
+      />
+
+      <ReviewPanel
+        open={reviewOpen}
+        restaurant={selectedRestaurant}
+        currentReview={currentUserReview}
+        onClose={() => setReviewOpen(false)}
+        onDelete={handleDeleteReview}
+        onSave={handleSaveReview}
       />
     </div>
   )
