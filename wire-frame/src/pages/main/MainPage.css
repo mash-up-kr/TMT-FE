@@ -593,6 +593,18 @@
   gap: 12px;
 }
 
+/* mp-summary-head 를 <button> 으로 쓸 때 기본 스타일 리셋 (region 스위치용) */
+.mp-summary-head--button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .mp-summary-stats {
   display: flex;
   gap: 4px;

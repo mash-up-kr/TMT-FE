@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   EMPTY_GROUP_TABS,
+  GROUP_ID_TO_REGION,
   MAIN_TABS,
   MAP_FILTER_CHIPS,
   RATING_VOTES,
@@ -15,6 +16,18 @@ import {
   getSearchResults,
 } from '../../shared/selectors.js'
 import './MainPage.css'
+
+/* RESTAURANT_FILTER_CHIPS 인덱스 ↔ 정렬 키.
+   0: 또 갈래율 내림차순 / 1: 최근 등록 (createdAt 내림차순) */
+function sortRestaurants(items, chipIndex) {
+  const sorted = [...items]
+  if (chipIndex === 1) {
+    sorted.sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+  } else {
+    sorted.sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0))
+  }
+  return sorted
+}
 
 function Chips({ labels = RESTAURANT_FILTER_CHIPS, active, onSelect }) {
   return (
@@ -216,7 +229,25 @@ function GroupDetail({
         <div className="mp-detail-content">
           <div className="mp-group-summary">
             <div className="mp-summary-card">
-              <div className="mp-summary-head">
+              <button
+                type="button"
+                className="mp-summary-head mp-summary-head--button"
+                onClick={() => {
+                  const region = GROUP_ID_TO_REGION[group.id]
+                  if (!region) return
+                  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+                  const target = `${basePath}/?region=${region}#/main`
+                  /* 같은 URL 이면 href 변경이 무시되므로 명시적 reload */
+                  if (
+                    window.location.pathname + window.location.search + window.location.hash ===
+                    target
+                  ) {
+                    window.location.reload()
+                  } else {
+                    window.location.href = target
+                  }
+                }}
+              >
                 <span className="mp-group-icon" aria-hidden="true">
                   {group.icon}
                 </span>
@@ -227,7 +258,7 @@ function GroupDetail({
                 <span className="mp-group-chevron" aria-hidden="true">
                   ›
                 </span>
-              </div>
+              </button>
 
               <div className="mp-summary-stats">
                 <div className="mp-stat">
@@ -259,7 +290,7 @@ function GroupDetail({
 
           <Chips active={chipState} onSelect={onChip} />
           <RestaurantSection
-            items={group.restaurants}
+            items={sortRestaurants(group.restaurants, chipState)}
             onSelect={onSelectRestaurant}
           />
         </div>
@@ -887,7 +918,7 @@ function MainPage({ data, addPlace, saveReview, deleteReview, onCreateGroup }) {
             </section>
 
             <RestaurantSection
-              items={currentGroupRestaurants}
+              items={sortRestaurants(currentGroupRestaurants, activeChip)}
               onSelect={openRestaurant}
             />
             <RegisterFab
