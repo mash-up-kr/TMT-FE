@@ -143,7 +143,6 @@ export const MAP_PINS = [
 export const INITIAL_INVITE_CODE = ['G', '', '', '', '', '']
 
 /* 새 그룹 만들기 화면 */
-export const DEFAULT_GROUP_NAME = GROUPS[0].name
 export const GROUP_ICONS = ['🍜', '🍣', '☕', '🍔', '🍺', '🥘']
 export const SHARE_URL =
   'https://www.figma.com/design/HWskrJLpHMCyIHma7pfINu/-Web-'

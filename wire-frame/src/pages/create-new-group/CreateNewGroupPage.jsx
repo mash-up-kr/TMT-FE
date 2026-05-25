@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  DEFAULT_GROUP_NAME,
   GROUP_ICONS,
   SHARE_TARGETS,
   SHARE_URL,
@@ -8,7 +7,7 @@ import {
 import './CreateNewGroupPage.css'
 
 function CreateNewGroupPage({ onBack, onCreated }) {
-  const [groupName, setGroupName] = useState(DEFAULT_GROUP_NAME)
+  const [groupName, setGroupName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState(GROUP_ICONS[0])
   const [created, setCreated] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
@@ -57,6 +56,7 @@ function CreateNewGroupPage({ onBack, onCreated }) {
               className="cg-name-input"
               type="text"
               value={groupName}
+              placeholder="예: [강남] 맛집 모음집"
               onChange={(event) => {
                 setGroupName(event.target.value)
                 setCreated(false)
