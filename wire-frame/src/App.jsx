@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CreateNewGroupPage from './pages/create-new-group/CreateNewGroupPage.jsx'
 import FirstEntryPage from './pages/first-entry/FirstEntryPage.jsx'
 import InviteCodePage from './pages/invite-code/InviteCodePage.jsx'
@@ -20,8 +20,12 @@ function currentPath() {
 
 function routeUrl(path) {
   const rootPath = basePath ? `${basePath}/` : routes.entry
+  /* 현재 URL 의 ?region= 같은 search 는 유지 — 지역 스위치가 navigate 후에도 살아남음 */
+  const search = window.location.search
 
-  return path === routes.entry ? rootPath : `${rootPath}#${path}`
+  return path === routes.entry
+    ? `${rootPath}${search}`
+    : `${rootPath}${search}#${path}`
 }
 
 function makeId(prefix) {
@@ -34,6 +38,8 @@ function avatarInitial(nickname) {
 
 function App() {
   const [path, setPath] = useState(currentPath)
+  /* 모달성 화면(createGroup/invite) 진입 직전 path — onBack 폴백용 */
+  const backTargetRef = useRef(routes.entry)
   const [data, setData] = useState(() => ({
     users: USERS,
     groups: GROUPS,
@@ -55,6 +61,16 @@ function App() {
   function navigate(nextPath) {
     if (nextPath === currentPath()) {
       return
+    }
+
+    /* createGroup/invite 로 진입할 때만 진입 직전 path 를 기록.
+       모달성 화면끼리 점프하면 직전 일반 화면이 그대로 유지됨. */
+    if (
+      (nextPath === routes.createGroup || nextPath === routes.invite) &&
+      path !== routes.createGroup &&
+      path !== routes.invite
+    ) {
+      backTargetRef.current = path
     }
 
     window.history.pushState({}, '', routeUrl(nextPath))
@@ -184,7 +200,7 @@ function App() {
   if (path === routes.createGroup) {
     return (
       <CreateNewGroupPage
-        onBack={() => navigate(routes.main)}
+        onBack={() => navigate(backTargetRef.current)}
         onCreated={() => navigate(routes.main)}
       />
     )
@@ -193,7 +209,7 @@ function App() {
   if (path === routes.invite) {
     return (
       <InviteCodePage
-        onBack={() => navigate(routes.entry)}
+        onBack={() => navigate(backTargetRef.current)}
         onSubmit={() => navigate(routes.main)}
       />
     )
