@@ -172,10 +172,6 @@
   );
 
   /* ===================== spacing ===================== */
-  /* Tailwind 배수 스케일(n×0.25rem) 제거.
-     아래 키가 px 값이라, 배수 스케일을 함께 두면 p-2(2px)가 p-1(4px)보다 작아진다. */
-  --spacing: initial;
-
   --spacing-0: var(--number-unit-0);
   --spacing-2: var(--number-unit-2);
   --spacing-4: var(--number-unit-4);
@@ -189,10 +185,6 @@
   --spacing-64: var(--number-unit-64);
 
   /* ===================== border radius ===================== */
-  /* Tailwind 기본 radius 제거.
-     그대로 두면 rounded-md/lg/xl/2xl을 조용히 덮고, rounded-3xl이 2xl과 같은 24px이 된다. */
-  --radius-*: initial;
-
   --radius-sm: var(--number-unit-4);
   --radius-md: var(--number-unit-8);
   --radius-lg: var(--number-unit-12);
