@@ -1,0 +1,139 @@
+/**
+ * Primitive 토큰 — Figma 원시 값 그대로
+ */
+:root {
+  /* base */
+  --primitive-base-black: #000000;
+  --primitive-base-white: #ffffff;
+
+  /* neutral */
+  --primitive-neutral-50: #fafafa;
+  --primitive-neutral-100: #f5f5f5;
+  --primitive-neutral-200: #e5e5e5;
+  --primitive-neutral-300: #d4d4d4;
+  --primitive-neutral-400: #a3a3a3;
+  --primitive-neutral-500: #737373;
+  --primitive-neutral-600: #525252;
+  --primitive-neutral-700: #404040;
+  --primitive-neutral-800: #262626;
+  --primitive-neutral-900: #171717;
+
+  /* red */
+  --primitive-red-50: #fef2f2;
+  --primitive-red-100: #fee2e2;
+  --primitive-red-200: #fecaca;
+  --primitive-red-300: #fca5a5;
+  --primitive-red-400: #f87171;
+  --primitive-red-500: #ef4444;
+  --primitive-red-600: #dc2626;
+  --primitive-red-700: #b91c1c;
+  --primitive-red-800: #991b1b;
+  --primitive-red-900: #7f1d1d;
+
+  /* orange */
+  --primitive-orange-50: #fff7ed;
+  --primitive-orange-100: #ffedd5;
+  --primitive-orange-200: #fed7aa;
+  --primitive-orange-300: #fdba74;
+  --primitive-orange-400: #fb923c;
+  --primitive-orange-500: #f97316;
+  --primitive-orange-600: #ea580c;
+  --primitive-orange-700: #c2410c;
+  --primitive-orange-800: #9a3412;
+  --primitive-orange-900: #7c2d12;
+
+  /* yellow */
+  --primitive-yellow-50: #fefce8;
+  --primitive-yellow-100: #fef9c3;
+  --primitive-yellow-200: #fef08a;
+  --primitive-yellow-300: #fde047;
+  --primitive-yellow-400: #facc15;
+  --primitive-yellow-500: #eab308;
+  --primitive-yellow-600: #ca8a04;
+  --primitive-yellow-700: #a16207;
+  --primitive-yellow-800: #854d0e;
+  --primitive-yellow-900: #713f12;
+
+  /* green */
+  --primitive-green-50: #f0fdf4;
+  --primitive-green-100: #dcfce7;
+  --primitive-green-200: #bbf7d0;
+  --primitive-green-300: #86efac;
+  --primitive-green-400: #4ade80;
+  --primitive-green-500: #22c55e;
+  --primitive-green-600: #16a34a;
+  --primitive-green-700: #15803d;
+  --primitive-green-800: #166534;
+  --primitive-green-900: #14532d;
+
+  /* blue */
+  --primitive-blue-50: #eff6ff;
+  --primitive-blue-100: #dbeafe;
+  --primitive-blue-200: #bfdbfe;
+  --primitive-blue-300: #93c5fd;
+  --primitive-blue-400: #60a5fa;
+  --primitive-blue-500: #3b82f6;
+  --primitive-blue-600: #2563eb;
+  --primitive-blue-700: #1d4ed8;
+  --primitive-blue-800: #1e40af;
+  --primitive-blue-900: #1e3a8a;
+
+  /* transparent (black alpha) */
+  --primitive-transparent-12: #0000001f;
+  --primitive-transparent-16: #00000029;
+  --primitive-transparent-20: #00000033;
+  --primitive-transparent-24: #0000003d;
+  --primitive-transparent-32: #00000052;
+
+  /* primary (Figma에 50/100/200만 정의됨 — orange 계열과 동일 값) */
+  --primitive-primary-50: #fff7ed;
+  --primitive-primary-100: #ffedd5;
+  --primitive-primary-200: #fed7aa;
+
+  /* ── Typography ───────────────────────────────────────────── */
+
+  /* font family */
+  --typography-font-family:
+    -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo",
+    "Malgun Gothic", "Segoe UI", sans-serif;
+
+  /* font size */
+  --typography-font-size-32: 32px;
+  --typography-font-size-28: 28px;
+  --typography-font-size-24: 24px;
+  --typography-font-size-20: 20px;
+  --typography-font-size-16: 16px;
+  --typography-font-size-14: 14px;
+  --typography-font-size-12: 12px;
+
+  /* line height */
+  --typography-line-height-42: 42px;
+  --typography-line-height-38: 38px;
+  --typography-line-height-34: 34px;
+  --typography-line-height-28: 28px;
+  --typography-line-height-24: 24px;
+  --typography-line-height-20: 20px;
+  --typography-line-height-18: 18px;
+
+  /* font weight */
+  --typography-font-weight-bold: 700;
+  --typography-font-weight-medium: 500;
+  --typography-font-weight-regular: 400;
+
+  /* letter spacing */
+  --typography-letter-spacing-normal: -0.2px;
+
+  /* ── Number/unit (spacing primitive) ─────────────────────── */
+  --number-unit-0: 0px;
+  --number-unit-1: 1px;
+  --number-unit-2: 2px;
+  --number-unit-4: 4px;
+  --number-unit-8: 8px;
+  --number-unit-12: 12px;
+  --number-unit-16: 16px;
+  --number-unit-24: 24px;
+  --number-unit-32: 32px;
+  --number-unit-40: 40px;
+  --number-unit-48: 48px;
+  --number-unit-64: 64px;
+}
