@@ -19,16 +19,23 @@
   --primitive-neutral-900: #171717;
 
   /* red */
-  --primitive-red-50: #fef2f2;
-  --primitive-red-100: #fee2e2;
-  --primitive-red-200: #fecaca;
-  --primitive-red-300: #fca5a5;
-  --primitive-red-400: #f87171;
-  --primitive-red-500: #ef4444;
-  --primitive-red-600: #dc2626;
-  --primitive-red-700: #b91c1c;
-  --primitive-red-800: #991b1b;
-  --primitive-red-900: #7f1d1d;
+  --primitive-red-50: #feefee;
+  --primitive-red-100: #fde2e0;
+  --primitive-red-200: #fbc5c1;
+  --primitive-red-300: #f99d94;
+  --primitive-red-400: #f86f63;
+  --primitive-red-500: #f55547;
+  --primitive-red-600: #f43d2d;
+  --primitive-red-700: #e22312;
+  --primitive-red-800: #b32114;
+  --primitive-red-900: #881f16;
+
+  /* error (red와 구분되는 Figma error 전용 램프) */
+  --primitive-error-50: #feeef0;
+  --primitive-error-500: #df3a45;
+  --primitive-error-600: #d11f2b;
+  --primitive-error-700: #ae1923;
+  --primitive-error-800: #88161e;
 
   /* orange */
   --primitive-orange-50: #fff7ed;
@@ -78,24 +85,29 @@
   --primitive-blue-800: #1e40af;
   --primitive-blue-900: #1e3a8a;
 
-  /* transparent (black alpha) */
-  --primitive-transparent-12: #0000001f;
+  /* transparent (black alpha) — Figma transparent 스케일 */
+  --primitive-transparent-0: #00000000;
+  --primitive-transparent-6: #0000000f;
+  --primitive-transparent-10: #0000001a;
   --primitive-transparent-16: #00000029;
   --primitive-transparent-20: #00000033;
-  --primitive-transparent-24: #0000003d;
   --primitive-transparent-32: #00000052;
+  --primitive-transparent-64: #000000a3;
 
-  /* primary — 브랜드 역할 램프. 현재 브랜드는 orange (Figma에 50/100/200만 정의됨) */
-  --primitive-primary-50: var(--primitive-orange-50);
-  --primitive-primary-100: var(--primitive-orange-100);
-  --primitive-primary-200: var(--primitive-orange-200);
+  /* primary — 브랜드 역할 램프. Figma 브랜드는 red 계열 (primary === red) */
+  --primitive-primary-50: var(--primitive-red-50);
+  --primitive-primary-100: var(--primitive-red-100);
+  --primitive-primary-200: var(--primitive-red-200);
+  --primitive-primary-600: var(--primitive-red-600);
+  --primitive-primary-700: var(--primitive-red-700);
+  --primitive-primary-800: var(--primitive-red-800);
 
   /* ── Typography ───────────────────────────────────────────── */
 
   /* font family */
   --typography-font-family:
-    -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo",
-    "Malgun Gothic", "Segoe UI", sans-serif;
+    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
 
   /* font size */
   --typography-font-size-32: 32px;
@@ -131,6 +143,7 @@
   --number-unit-8: 8px;
   --number-unit-12: 12px;
   --number-unit-16: 16px;
+  --number-unit-20: 20px;
   --number-unit-24: 24px;
   --number-unit-32: 32px;
   --number-unit-40: 40px;

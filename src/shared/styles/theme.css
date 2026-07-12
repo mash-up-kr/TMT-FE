@@ -3,46 +3,52 @@
 
   /* ===================== surface (배경) ===================== */
   --color-surface-primary: var(--primitive-base-white);
-  --color-surface-secondary: var(--primitive-neutral-50);
-  --color-surface-tertiary: var(--primitive-neutral-100);
-  --color-surface-brand: var(--primitive-orange-600);
+  --color-surface-secondary: var(--primitive-neutral-100);
+  --color-surface-tertiary: var(--primitive-neutral-200);
+  --color-surface-brand: var(--primitive-primary-600);
   --color-surface-disabled: var(--primitive-neutral-300);
+  --color-surface-selected: var(--primitive-primary-50);
+  --color-surface-selected-hovered: var(--primitive-primary-100);
+  --color-surface-selected-pressed: var(--primitive-primary-200);
   --color-surface-info-weak: var(--primitive-blue-50);
-  --color-surface-info-strong: var(--primitive-blue-700);
+  --color-surface-info-strong: var(--primitive-blue-800);
   --color-surface-warning-weak: var(--primitive-yellow-50);
-  --color-surface-warning-strong: var(--primitive-yellow-500);
+  --color-surface-warning-strong: var(--primitive-yellow-700);
   --color-surface-success-weak: var(--primitive-green-50);
-  --color-surface-success-strong: var(--primitive-green-700);
-  --color-surface-error-weak: var(--primitive-red-50);
-  --color-surface-error-strong: var(--primitive-red-700);
-  --color-surface-inverse-strong: var(--primitive-orange-700);
-  --color-surface-inverse-extreme: var(--primitive-orange-800);
-  --color-surface-interactive-primary: var(--primitive-orange-600);
-  --color-surface-interactive-primary-hovered: var(--primitive-orange-700);
-  --color-surface-interactive-primary-pressed: var(--primitive-orange-800);
-  --color-surface-interactive-secondary: var(--primitive-neutral-100);
-  --color-surface-interactive-secondary-hovered: var(--primitive-neutral-200);
-  --color-surface-interactive-secondary-pressed: var(--primitive-neutral-300);
-  --color-surface-interactive-error: var(--primitive-red-600);
-  --color-surface-interactive-error-hovered: var(--primitive-red-700);
-  --color-surface-interactive-error-pressed: var(--primitive-red-800);
+  --color-surface-success-strong: var(--primitive-green-800);
+  --color-surface-error-weak: var(--primitive-error-50);
+  --color-surface-error-strong: var(--primitive-error-800);
+  --color-surface-inverse-strong: var(--primitive-primary-700);
+  --color-surface-inverse-extreme: var(--primitive-primary-800);
+  --color-surface-interactive-primary: var(--primitive-primary-600);
+  --color-surface-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-surface-interactive-primary-pressed: var(--primitive-primary-800);
+  --color-surface-interactive-secondary: var(--primitive-neutral-700);
+  --color-surface-interactive-secondary-hovered: var(--primitive-neutral-800);
+  --color-surface-interactive-secondary-pressed: var(--primitive-neutral-900);
+  --color-surface-interactive-tertiary: var(--primitive-neutral-100);
+  --color-surface-interactive-tertiary-hovered: var(--primitive-neutral-200);
+  --color-surface-interactive-tertiary-pressed: var(--primitive-neutral-300);
+  --color-surface-interactive-error: var(--primitive-error-600);
+  --color-surface-interactive-error-hovered: var(--primitive-error-700);
+  --color-surface-interactive-error-pressed: var(--primitive-error-800);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
   --color-content-secondary: var(--primitive-neutral-700);
-  --color-content-tertiary: var(--primitive-neutral-600);
+  --color-content-tertiary: var(--primitive-neutral-500);
   --color-content-disabled: var(--primitive-neutral-400);
-  --color-content-info: var(--primitive-blue-600);
+  --color-content-info: var(--primitive-blue-500);
   --color-content-info-strong: var(--primitive-blue-800);
-  --color-content-warning: var(--primitive-yellow-500);
+  --color-content-warning: var(--primitive-yellow-400);
   --color-content-warning-strong: var(--primitive-yellow-700);
-  --color-content-success: var(--primitive-green-600);
+  --color-content-success: var(--primitive-green-500);
   --color-content-success-strong: var(--primitive-green-800);
-  --color-content-error: var(--primitive-red-600);
-  --color-content-error-strong: var(--primitive-red-800);
-  --color-content-interactive-primary: var(--primitive-orange-600);
-  --color-content-interactive-primary-hovered: var(--primitive-orange-700);
-  --color-content-interactive-primary-pressed: var(--primitive-orange-800);
+  --color-content-error: var(--primitive-error-500);
+  --color-content-error-strong: var(--primitive-error-800);
+  --color-content-interactive-primary: var(--primitive-primary-600);
+  --color-content-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-content-interactive-primary-pressed: var(--primitive-primary-800);
   --color-content-interactive-secondary: var(--primitive-neutral-400);
   --color-content-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-content-interactive-secondary-pressed: var(--primitive-neutral-600);
@@ -52,13 +58,13 @@
   --color-icon-primary: var(--primitive-neutral-900);
   --color-icon-secondary: var(--primitive-neutral-700);
   --color-icon-disabled: var(--primitive-neutral-400);
-  --color-icon-info: var(--primitive-blue-700);
-  --color-icon-warning: var(--primitive-yellow-700);
-  --color-icon-success: var(--primitive-green-700);
-  --color-icon-error: var(--primitive-red-700);
-  --color-icon-interactive-primary: var(--primitive-orange-600);
-  --color-icon-interactive-primary-hovered: var(--primitive-orange-700);
-  --color-icon-interactive-primary-pressed: var(--primitive-orange-800);
+  --color-icon-info: var(--primitive-blue-500);
+  --color-icon-warning: var(--primitive-yellow-400);
+  --color-icon-success: var(--primitive-green-500);
+  --color-icon-error: var(--primitive-error-500);
+  --color-icon-interactive-primary: var(--primitive-primary-600);
+  --color-icon-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-icon-interactive-primary-pressed: var(--primitive-primary-800);
   --color-icon-interactive-secondary: var(--primitive-neutral-400);
   --color-icon-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-icon-interactive-secondary-pressed: var(--primitive-neutral-600);
@@ -66,25 +72,26 @@
 
   /* ===================== stroke (테두리) ===================== */
   --color-stroke-primary: var(--primitive-neutral-300);
-  --color-stroke-secondary: var(--primitive-neutral-100);
+  --color-stroke-secondary: var(--primitive-neutral-200);
+  --color-stroke-tertiary: var(--primitive-neutral-100);
   --color-stroke-disabled: var(--primitive-neutral-400);
   --color-stroke-info-weak: var(--primitive-blue-50);
-  --color-stroke-info: var(--primitive-blue-600);
+  --color-stroke-info: var(--primitive-blue-500);
   --color-stroke-warning-weak: var(--primitive-yellow-50);
-  --color-stroke-warning: var(--primitive-yellow-500);
+  --color-stroke-warning: var(--primitive-yellow-400);
   --color-stroke-success-weak: var(--primitive-green-50);
-  --color-stroke-success: var(--primitive-green-600);
-  --color-stroke-error-weak: var(--primitive-red-50);
-  --color-stroke-error: var(--primitive-red-600);
-  --color-stroke-interactive-primary: var(--primitive-orange-600);
-  --color-stroke-interactive-primary-hovered: var(--primitive-orange-700);
-  --color-stroke-interactive-primary-pressed: var(--primitive-orange-800);
+  --color-stroke-success: var(--primitive-green-500);
+  --color-stroke-error-weak: var(--primitive-error-50);
+  --color-stroke-error: var(--primitive-error-500);
+  --color-stroke-interactive-primary: var(--primitive-primary-600);
+  --color-stroke-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-stroke-interactive-primary-pressed: var(--primitive-primary-800);
   --color-stroke-interactive-secondary: var(--primitive-neutral-400);
   --color-stroke-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-stroke-interactive-secondary-pressed: var(--primitive-neutral-600);
-  --color-stroke-interactive-error: var(--primitive-red-600);
-  --color-stroke-interactive-error-hovered: var(--primitive-red-700);
-  --color-stroke-interactive-error-pressed: var(--primitive-red-800);
+  --color-stroke-interactive-error: var(--primitive-error-600);
+  --color-stroke-interactive-error-hovered: var(--primitive-error-700);
+  --color-stroke-interactive-error-pressed: var(--primitive-error-800);
 
   /* ===================== typography ===================== */
   /* 기본 sans 폰트 (font-sans + 기본 body 폰트) */
@@ -178,6 +185,7 @@
   --spacing-8: var(--number-unit-8);
   --spacing-12: var(--number-unit-12);
   --spacing-16: var(--number-unit-16);
+  --spacing-20: var(--number-unit-20);
   --spacing-24: var(--number-unit-24);
   --spacing-32: var(--number-unit-32);
   --spacing-40: var(--number-unit-40);
@@ -185,12 +193,26 @@
   --spacing-64: var(--number-unit-64);
 
   /* ===================== border radius ===================== */
-  --radius-sm: var(--number-unit-4);
-  --radius-md: var(--number-unit-8);
-  --radius-lg: var(--number-unit-12);
-  --radius-xl: var(--number-unit-16);
-  --radius-2xl: var(--number-unit-24);
-  --radius-full: 9999px;
+  --radius-xs: var(--number-unit-4);
+  --radius-sm: var(--number-unit-8);
+  --radius-md: var(--number-unit-12);
+  --radius-lg: var(--number-unit-16);
+  --radius-xl: var(--number-unit-20);
+  --radius-full: 99999px;
+
+  /* ===================== elevation / shadow ===================== */
+  /* Figma Effect: 색상은 transparent 프리미티브 참조 */
+  --shadow-flat: none;
+  --shadow-raised: 0 2px 4px 0 var(--primitive-transparent-6);
+  --shadow-floating: 0 2px 12px 0 var(--primitive-transparent-10);
+  --shadow-toast: 0 2px 8px 0 var(--primitive-transparent-20);
+  --shadow-modal: 0 4px 24px 0 var(--primitive-transparent-16);
+
+  /* ===================== layout grid (mobile-first) ===================== */
+  --layout-grid-columns: 4;
+  --layout-grid-gutter: var(--number-unit-16);
+  --layout-grid-margin: var(--number-unit-20);
+  --breakpoint-mobile: 320px;
 }
 
 /* ===================== border width ===================== */
@@ -202,4 +224,15 @@
 }
 @utility border-lg {
   border-width: var(--number-unit-4);
+}
+
+/* ===================== layout grid container ===================== */
+/* mobile-first: 4col / 16px gutter / 20px 좌우 margin */
+@utility grid-container {
+  display: grid;
+  grid-template-columns: repeat(var(--layout-grid-columns), minmax(0, 1fr));
+  gap: var(--layout-grid-gutter);
+  padding-inline: var(--layout-grid-margin);
+  width: 100%;
+  margin-inline: auto;
 }
