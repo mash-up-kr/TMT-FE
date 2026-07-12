@@ -215,6 +215,7 @@
   --layout-grid-columns: 4;
   --layout-grid-gutter: var(--number-unit-16);
   --layout-grid-margin: var(--number-unit-20);
+  --layout-frame-max: 430px;
 }
 
 /* ===================== border width ===================== */
@@ -237,4 +238,29 @@
   padding-inline: var(--layout-grid-margin);
   width: 100%;
   margin-inline: auto;
+}
+
+/* ===================== app frame ===================== */
+@utility app-frame {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--layout-frame-max);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin-inline: auto;
+  background: var(--color-surface-primary);
+  padding-block: env(safe-area-inset-top) env(safe-area-inset-bottom);
+
+  /* 프레임 폭을 넘는 화면(데스크탑 등)에서만 폰처럼 은은한 그림자 */
+  @media (min-width: 431px) {
+    box-shadow: var(--shadow-floating);
+  }
+}
+
+/* ===================== content container ===================== */
+@utility content-container {
+  width: 100%;
+  padding-inline: var(--layout-grid-margin);
 }
