@@ -242,13 +242,14 @@
 
 /* ===================== app frame ===================== */
 @utility app-frame {
-  align-self: center;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: var(--layout-frame-max);
   min-height: 100vh;
   min-height: 100dvh;
+  /* 넓은 화면에서 중앙 정렬. flex 부모에 의존하지 않는 margin-inline로 처리(재사용성). */
   margin-inline: auto;
   background: var(--color-surface-primary);
   padding-block: env(safe-area-inset-top) env(safe-area-inset-bottom);
@@ -262,6 +263,7 @@
 
 /* ===================== content container ===================== */
 @utility content-container {
+  box-sizing: border-box;
   width: 100%;
   padding-inline: var(--layout-grid-margin);
 }
