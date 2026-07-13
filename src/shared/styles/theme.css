@@ -178,27 +178,30 @@
     --typography-letter-spacing-normal
   );
 
-  /* ===================== spacing ===================== */
-  --spacing-0: var(--number-unit-0);
-  --spacing-2: var(--number-unit-2);
-  --spacing-4: var(--number-unit-4);
-  --spacing-8: var(--number-unit-8);
-  --spacing-12: var(--number-unit-12);
-  --spacing-16: var(--number-unit-16);
-  --spacing-20: var(--number-unit-20);
-  --spacing-24: var(--number-unit-24);
-  --spacing-32: var(--number-unit-32);
-  --spacing-40: var(--number-unit-40);
-  --spacing-48: var(--number-unit-48);
-  --spacing-64: var(--number-unit-64);
+  /* ===================== spacing (디자인 스케일) ===================== */
+  /* `ds` 프리픽스로 Tailwind 기본 숫자 scale(p-4=16px 등)을 덮지 않는다.
+     디자인 간격은 p-ds-4 / gap-ds-16 처럼 명시적으로 사용. (Figma unit = px 값) */
+  --spacing-ds-0: var(--number-unit-0);
+  --spacing-ds-2: var(--number-unit-2);
+  --spacing-ds-4: var(--number-unit-4);
+  --spacing-ds-8: var(--number-unit-8);
+  --spacing-ds-12: var(--number-unit-12);
+  --spacing-ds-16: var(--number-unit-16);
+  --spacing-ds-20: var(--number-unit-20);
+  --spacing-ds-24: var(--number-unit-24);
+  --spacing-ds-32: var(--number-unit-32);
+  --spacing-ds-40: var(--number-unit-40);
+  --spacing-ds-48: var(--number-unit-48);
+  --spacing-ds-64: var(--number-unit-64);
 
-  /* ===================== border radius ===================== */
-  --radius-xs: var(--number-unit-4);
-  --radius-sm: var(--number-unit-8);
-  --radius-md: var(--number-unit-12);
-  --radius-lg: var(--number-unit-16);
-  --radius-xl: var(--number-unit-20);
-  --radius-full: 99999px;
+  /* ===================== border radius (디자인 스케일) ===================== */
+  /* `ds` 프리픽스로 Tailwind 기본 rounded scale를 덮지 않는다 → rounded-ds-sm 등 */
+  --radius-ds-xs: var(--number-unit-4);
+  --radius-ds-sm: var(--number-unit-8);
+  --radius-ds-md: var(--number-unit-12);
+  --radius-ds-lg: var(--number-unit-16);
+  --radius-ds-xl: var(--number-unit-20);
+  --radius-ds-full: 99999px;
 
   /* ===================== elevation / shadow ===================== */
   /* Figma Effect: 색상은 transparent 프리미티브 참조 */
