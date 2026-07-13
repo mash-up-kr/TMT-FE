@@ -253,7 +253,8 @@
   background: var(--color-surface-primary);
   padding-block: env(safe-area-inset-top) env(safe-area-inset-bottom);
 
-  /* 프레임 폭을 넘는 화면(데스크탑 등)에서만 폰처럼 은은한 그림자 */
+  /* 프레임을 넘는 화면(데스크탑 등)에서만 폰처럼 은은한 그림자.
+     431 = --layout-frame-max(430) + 1 (미디어쿼리는 var 불가) → 토큰 변경 시 함께 수정 */
   @media (min-width: 431px) {
     box-shadow: var(--shadow-floating);
   }
