@@ -1,7 +1,10 @@
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-heading-md">ttalkkak-web</h1>
+    <main className="content-container flex flex-1 flex-col items-center justify-center gap-2">
+      <h1 className="text-heading-md text-content-primary">딸깍</h1>
+      <p className="text-body-md-regular text-content-secondary">
+        모바일 기본 레이아웃
+      </p>
     </main>
   );
 }
