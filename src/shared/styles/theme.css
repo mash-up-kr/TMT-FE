@@ -1,0 +1,240 @@
+@theme {
+  /* 초기 개발 단계에서는 Tailwind 기본 토큰을 유지하고 semantic 토큰을 확장한다. */
+
+  /* ===================== surface (배경) ===================== */
+  --color-surface-primary: var(--primitive-base-white);
+  --color-surface-secondary: var(--primitive-neutral-100);
+  --color-surface-tertiary: var(--primitive-neutral-200);
+  --color-surface-brand: var(--primitive-primary-600);
+  --color-surface-disabled: var(--primitive-neutral-300);
+  --color-surface-selected: var(--primitive-primary-50);
+  --color-surface-selected-hovered: var(--primitive-primary-100);
+  --color-surface-selected-pressed: var(--primitive-primary-200);
+  --color-surface-info-weak: var(--primitive-blue-50);
+  --color-surface-info-strong: var(--primitive-blue-800);
+  --color-surface-warning-weak: var(--primitive-yellow-50);
+  --color-surface-warning-strong: var(--primitive-yellow-700);
+  --color-surface-success-weak: var(--primitive-green-50);
+  --color-surface-success-strong: var(--primitive-green-800);
+  --color-surface-error-weak: var(--primitive-error-50);
+  --color-surface-error-strong: var(--primitive-error-800);
+  --color-surface-inverse-strong: var(--primitive-primary-700);
+  --color-surface-inverse-extreme: var(--primitive-primary-800);
+  --color-surface-interactive-primary: var(--primitive-primary-600);
+  --color-surface-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-surface-interactive-primary-pressed: var(--primitive-primary-800);
+  --color-surface-interactive-secondary: var(--primitive-neutral-700);
+  --color-surface-interactive-secondary-hovered: var(--primitive-neutral-800);
+  --color-surface-interactive-secondary-pressed: var(--primitive-neutral-900);
+  --color-surface-interactive-tertiary: var(--primitive-neutral-100);
+  --color-surface-interactive-tertiary-hovered: var(--primitive-neutral-200);
+  --color-surface-interactive-tertiary-pressed: var(--primitive-neutral-300);
+  --color-surface-interactive-error: var(--primitive-error-600);
+  --color-surface-interactive-error-hovered: var(--primitive-error-700);
+  --color-surface-interactive-error-pressed: var(--primitive-error-800);
+
+  /* ===================== content (글자) ===================== */
+  --color-content-primary: var(--primitive-neutral-900);
+  --color-content-secondary: var(--primitive-neutral-700);
+  --color-content-tertiary: var(--primitive-neutral-500);
+  --color-content-disabled: var(--primitive-neutral-400);
+  --color-content-info: var(--primitive-blue-500);
+  --color-content-info-strong: var(--primitive-blue-800);
+  --color-content-warning: var(--primitive-yellow-400);
+  --color-content-warning-strong: var(--primitive-yellow-700);
+  --color-content-success: var(--primitive-green-500);
+  --color-content-success-strong: var(--primitive-green-800);
+  --color-content-error: var(--primitive-error-500);
+  --color-content-error-strong: var(--primitive-error-800);
+  --color-content-interactive-primary: var(--primitive-primary-600);
+  --color-content-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-content-interactive-primary-pressed: var(--primitive-primary-800);
+  --color-content-interactive-secondary: var(--primitive-neutral-400);
+  --color-content-interactive-secondary-hovered: var(--primitive-neutral-500);
+  --color-content-interactive-secondary-pressed: var(--primitive-neutral-600);
+  --color-content-interactive-inverse: var(--primitive-base-white);
+
+  /* ===================== icon ===================== */
+  --color-icon-primary: var(--primitive-neutral-900);
+  --color-icon-secondary: var(--primitive-neutral-700);
+  --color-icon-disabled: var(--primitive-neutral-400);
+  --color-icon-info: var(--primitive-blue-500);
+  --color-icon-warning: var(--primitive-yellow-400);
+  --color-icon-success: var(--primitive-green-500);
+  --color-icon-error: var(--primitive-error-500);
+  --color-icon-interactive-primary: var(--primitive-primary-600);
+  --color-icon-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-icon-interactive-primary-pressed: var(--primitive-primary-800);
+  --color-icon-interactive-secondary: var(--primitive-neutral-400);
+  --color-icon-interactive-secondary-hovered: var(--primitive-neutral-500);
+  --color-icon-interactive-secondary-pressed: var(--primitive-neutral-600);
+  --color-icon-interactive-inverse: var(--primitive-base-white);
+
+  /* ===================== stroke (테두리) ===================== */
+  --color-stroke-primary: var(--primitive-neutral-300);
+  --color-stroke-secondary: var(--primitive-neutral-200);
+  --color-stroke-tertiary: var(--primitive-neutral-100);
+  --color-stroke-disabled: var(--primitive-neutral-400);
+  --color-stroke-info-weak: var(--primitive-blue-50);
+  --color-stroke-info: var(--primitive-blue-500);
+  --color-stroke-warning-weak: var(--primitive-yellow-50);
+  --color-stroke-warning: var(--primitive-yellow-400);
+  --color-stroke-success-weak: var(--primitive-green-50);
+  --color-stroke-success: var(--primitive-green-500);
+  --color-stroke-error-weak: var(--primitive-error-50);
+  --color-stroke-error: var(--primitive-error-500);
+  --color-stroke-interactive-primary: var(--primitive-primary-600);
+  --color-stroke-interactive-primary-hovered: var(--primitive-primary-700);
+  --color-stroke-interactive-primary-pressed: var(--primitive-primary-800);
+  --color-stroke-interactive-secondary: var(--primitive-neutral-400);
+  --color-stroke-interactive-secondary-hovered: var(--primitive-neutral-500);
+  --color-stroke-interactive-secondary-pressed: var(--primitive-neutral-600);
+  --color-stroke-interactive-error: var(--primitive-error-600);
+  --color-stroke-interactive-error-hovered: var(--primitive-error-700);
+  --color-stroke-interactive-error-pressed: var(--primitive-error-800);
+
+  /* ===================== typography ===================== */
+  /* 기본 sans 폰트 (font-sans + 기본 body 폰트) */
+  --font-sans: var(--typography-font-family);
+
+  /* Heading (모두 Bold 700) */
+  --text-heading-xl: var(--typography-font-size-32);
+  --text-heading-xl--line-height: var(--typography-line-height-42);
+  --text-heading-xl--font-weight: var(--typography-font-weight-bold);
+  --text-heading-xl--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-heading-lg: var(--typography-font-size-28);
+  --text-heading-lg--line-height: var(--typography-line-height-38);
+  --text-heading-lg--font-weight: var(--typography-font-weight-bold);
+  --text-heading-lg--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-heading-md: var(--typography-font-size-24);
+  --text-heading-md--line-height: var(--typography-line-height-34);
+  --text-heading-md--font-weight: var(--typography-font-weight-bold);
+  --text-heading-md--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-heading-sm: var(--typography-font-size-20);
+  --text-heading-sm--line-height: var(--typography-line-height-28);
+  --text-heading-sm--font-weight: var(--typography-font-weight-bold);
+  --text-heading-sm--letter-spacing: var(--typography-letter-spacing-normal);
+
+  /* Body/lg (16 / 24) */
+  --text-body-lg-bold: var(--typography-font-size-16);
+  --text-body-lg-bold--line-height: var(--typography-line-height-24);
+  --text-body-lg-bold--font-weight: var(--typography-font-weight-bold);
+  --text-body-lg-bold--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-body-lg-medium: var(--typography-font-size-16);
+  --text-body-lg-medium--line-height: var(--typography-line-height-24);
+  --text-body-lg-medium--font-weight: var(--typography-font-weight-medium);
+  --text-body-lg-medium--letter-spacing: var(
+    --typography-letter-spacing-normal
+  );
+
+  --text-body-lg-regular: var(--typography-font-size-16);
+  --text-body-lg-regular--line-height: var(--typography-line-height-24);
+  --text-body-lg-regular--font-weight: var(--typography-font-weight-regular);
+  --text-body-lg-regular--letter-spacing: var(
+    --typography-letter-spacing-normal
+  );
+
+  /* Body/md (14 / 20) */
+  --text-body-md-bold: var(--typography-font-size-14);
+  --text-body-md-bold--line-height: var(--typography-line-height-20);
+  --text-body-md-bold--font-weight: var(--typography-font-weight-bold);
+  --text-body-md-bold--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-body-md-medium: var(--typography-font-size-14);
+  --text-body-md-medium--line-height: var(--typography-line-height-20);
+  --text-body-md-medium--font-weight: var(--typography-font-weight-medium);
+  --text-body-md-medium--letter-spacing: var(
+    --typography-letter-spacing-normal
+  );
+
+  --text-body-md-regular: var(--typography-font-size-14);
+  --text-body-md-regular--line-height: var(--typography-line-height-20);
+  --text-body-md-regular--font-weight: var(--typography-font-weight-regular);
+  --text-body-md-regular--letter-spacing: var(
+    --typography-letter-spacing-normal
+  );
+
+  /* Body/sm (12 / 18) */
+  --text-body-sm-bold: var(--typography-font-size-12);
+  --text-body-sm-bold--line-height: var(--typography-line-height-18);
+  --text-body-sm-bold--font-weight: var(--typography-font-weight-bold);
+  --text-body-sm-bold--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-body-sm-medium: var(--typography-font-size-12);
+  --text-body-sm-medium--line-height: var(--typography-line-height-18);
+  --text-body-sm-medium--font-weight: var(--typography-font-weight-medium);
+  --text-body-sm-medium--letter-spacing: var(
+    --typography-letter-spacing-normal
+  );
+
+  --text-body-sm-regular: var(--typography-font-size-12);
+  --text-body-sm-regular--line-height: var(--typography-line-height-18);
+  --text-body-sm-regular--font-weight: var(--typography-font-weight-regular);
+  --text-body-sm-regular--letter-spacing: var(
+    --typography-letter-spacing-normal
+  );
+
+  /* ===================== spacing (디자인 스케일) ===================== */
+  /* `ds` 프리픽스로 Tailwind 기본 숫자 scale(p-4=16px 등)을 덮지 않는다.
+     디자인 간격은 p-ds-4 / gap-ds-16 처럼 명시적으로 사용. (Figma unit = px 값) */
+  --spacing-ds-0: var(--number-unit-0);
+  --spacing-ds-2: var(--number-unit-2);
+  --spacing-ds-4: var(--number-unit-4);
+  --spacing-ds-8: var(--number-unit-8);
+  --spacing-ds-12: var(--number-unit-12);
+  --spacing-ds-16: var(--number-unit-16);
+  --spacing-ds-20: var(--number-unit-20);
+  --spacing-ds-24: var(--number-unit-24);
+  --spacing-ds-32: var(--number-unit-32);
+  --spacing-ds-40: var(--number-unit-40);
+  --spacing-ds-48: var(--number-unit-48);
+  --spacing-ds-64: var(--number-unit-64);
+
+  /* ===================== border radius (디자인 스케일) ===================== */
+  /* `ds` 프리픽스로 Tailwind 기본 rounded scale를 덮지 않는다 → rounded-ds-sm 등 */
+  --radius-ds-xs: var(--number-unit-4);
+  --radius-ds-sm: var(--number-unit-8);
+  --radius-ds-md: var(--number-unit-12);
+  --radius-ds-lg: var(--number-unit-16);
+  --radius-ds-xl: var(--number-unit-20);
+  --radius-ds-full: 99999px;
+
+  /* ===================== elevation / shadow ===================== */
+  /* Figma Effect: 색상은 transparent 프리미티브 참조 */
+  --shadow-flat: none;
+  --shadow-raised: 0 2px 4px 0 var(--primitive-transparent-6);
+  --shadow-floating: 0 2px 12px 0 var(--primitive-transparent-10);
+  --shadow-toast: 0 2px 8px 0 var(--primitive-transparent-20);
+  --shadow-modal: 0 4px 24px 0 var(--primitive-transparent-16);
+
+  /* ===================== layout grid (mobile-first) ===================== */
+  --layout-grid-columns: 4;
+  --layout-grid-gutter: var(--number-unit-16);
+  --layout-grid-margin: var(--number-unit-20);
+}
+
+/* ===================== border width ===================== */
+@utility border-sm {
+  border-width: var(--number-unit-1);
+}
+@utility border-md {
+  border-width: var(--number-unit-2);
+}
+@utility border-lg {
+  border-width: var(--number-unit-4);
+}
+
+/* ===================== layout grid container ===================== */
+/* mobile-first: 4col / 16px gutter / 20px 좌우 margin */
+@utility grid-container {
+  display: grid;
+  grid-template-columns: repeat(var(--layout-grid-columns), minmax(0, 1fr));
+  gap: var(--layout-grid-gutter);
+  padding-inline: var(--layout-grid-margin);
+  width: 100%;
+  margin-inline: auto;
+}
