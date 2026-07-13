@@ -215,7 +215,6 @@
   --layout-grid-columns: 4;
   --layout-grid-gutter: var(--number-unit-16);
   --layout-grid-margin: var(--number-unit-20);
-  --breakpoint-mobile: 320px;
 }
 
 /* ===================== border width ===================== */
