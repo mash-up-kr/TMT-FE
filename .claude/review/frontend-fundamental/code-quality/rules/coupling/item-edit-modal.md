@@ -121,19 +121,21 @@ function ItemEditBody({ children, keyword, onKeywordChange, onClose }) {
 ```
 
 ```tsx
-function ItemEditModal({ open, onConfirm, onClose }) {
+function ItemEditModal({ open, items, recommendedItems, onConfirm, onClose }) {
   const [keyword, setKeyword] = useState("");
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ItemEditBody
-        keyword={keyword}
-        onKeywordChange={setKeyword}
-        onClose={onClose}
-      >
-        <ItemEditList keyword={keyword} onConfirm={onConfirm} />
-      </ItemEditBody>
-    </Modal>
+    <ItemEditModalProvider value={{ items, recommendedItems }}>
+      <Modal open={open} onClose={onClose}>
+        <ItemEditBody
+          keyword={keyword}
+          onKeywordChange={setKeyword}
+          onClose={onClose}
+        >
+          <ItemEditList keyword={keyword} onConfirm={onConfirm} />
+        </ItemEditBody>
+      </Modal>
+    </ItemEditModalProvider>
   );
 }
 
@@ -141,16 +143,12 @@ function ItemEditList({ keyword, onConfirm }) {
   const { items, recommendedItems } = useItemEditModalContext();
 
   return (
-    <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Input
-          value={keyword}
-          onChange={(e) => onKeywordChange(e.target.value)}
-        />
-        <Button onClick={onClose}>닫기</Button>
-      </div>
-      {children}
-    </>
+    <ItemList
+      keyword={keyword}
+      items={items}
+      recommendedItems={recommendedItems}
+      onConfirm={onConfirm}
+    />
   );
 }
 ```
