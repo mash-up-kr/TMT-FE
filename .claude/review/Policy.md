@@ -17,10 +17,10 @@
 
 ## 정본 위치
 
-현재 정본은 `ttalkkak-web/.claude/review/**`입니다.
+현재 정본은 `TMT-FE/.claude/review/**`입니다.
 
 - kid-o의 `~/kid-o/apps/ttalkkak-review-bot/review/**`는 운영 fallback 사본입니다.
-- 정책 변경은 먼저 `ttalkkak-web/.claude/review/**`에 반영하고, 그 다음 kid-o fallback에 동기화합니다.
+- 정책 변경은 먼저 `TMT-FE/.claude/review/**`에 반영하고, 그 다음 kid-o fallback에 동기화합니다.
 - 나중에 `ttalkkak-review-bot`을 별도 repo로 분리하면, 그 repo의 `review/**`를 정본으로 옮기고 제품 repo는 config 참조와 override만 둡니다.
 
 ## 리뷰 모델
