@@ -17,6 +17,12 @@
 - 리뷰 출력 표현과 문서 관리 방식도 `Policy.md`를 따릅니다.
 - 각 rule 문서의 `PN 기준`은 `Policy.md`의 적용 예시입니다.
 
+## 관련 설계 문서
+
+- 운영 구조: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/37617665
+- 상세 설계: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/43220993
+- 흐름도: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/43286532
+
 ## 실행 방식
 
 | 구분 | 실행 조건 | 결과 |

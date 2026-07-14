@@ -11,7 +11,6 @@
 - `bundling/`: 코드 스플리팅, 트리 셰이킹, 번들 분석, 출력 캐시 기준입니다.
 - `a11y/`: 구조, 의미, 예측 가능한 인터랙션, 대체 텍스트 기준입니다.
 - `debug/`: 진단, 근본 원인 수정, 재현 자동화, 재발 방지 기준입니다.
-- `runtime-design.md`: `@mashong-ai ff검증`의 후보 수집, 검증, 게시 흐름 설계입니다.
 
 ```text
 code-quality/
@@ -43,6 +42,11 @@ debug/
 - 최종 판단 근거는 항상 각 축의 md 문서입니다.
 - FF 검증은 기본적으로 `P3~P5` 범위의 구조/가독성 제안을 다룹니다.
 - `bundling`과 `debug`는 측정/맥락 의존성이 높으므로 기본적으로 `tradeoff` 성격을 강하게 봅니다.
+
+## 관련 설계 문서
+
+- 상세 설계: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/43220993
+- 흐름도: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/43286532
 
 ## Rule Type
 

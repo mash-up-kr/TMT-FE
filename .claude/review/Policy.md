@@ -171,11 +171,16 @@ PN은 영향 강도이고, `evidenceLevel`은 근거 강도입니다.
 
 1. Confluence 원문 변경 내용을 확인합니다.
 2. 이 파일을 먼저 수정합니다.
-3. `default/README.md`와 `frontend-fundamental/runtime-design.md`의 요약 기준을 맞춥니다.
+3. `default/README.md`와 `frontend-fundamental/README.md`의 요약 기준을 맞춥니다.
 4. 각 rule 문서의 rule-specific 예시가 새 기준과 충돌하는지 확인합니다.
 5. `review-planner`, `frontend-reviewer`, `review-verifier`, `editor` prompt의 정책 문구를 함께 확인합니다.
 6. kid-o 런타임 fallback인 `~/kid-o/apps/ttalkkak-review-bot/review/**`와 prompt 사본을 동기화합니다.
 7. synthetic PR 또는 최근 실제 PR 하나로 출력과 P2/P3 분기가 의도대로 나오는지 확인합니다.
+
+상세 파이프라인 설계 변경은 Confluence 상세 설계 문서에 기록합니다.
+
+- 상세 설계: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/43220993
+- 흐름도: https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/43286532
 
 ## Rule 문서 추가 절차
 
