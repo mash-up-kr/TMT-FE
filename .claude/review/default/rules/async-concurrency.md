@@ -46,9 +46,10 @@ useEffect(() => {
     .then((res) => res.json())
     .then(setResults)
     .catch((error) => {
-      if (error.name !== "AbortError") {
-        throw error;
-      }
+      if (error.name === "AbortError") return;
+
+      // 팀의 에러 로깅/알림 정책에 맞게 처리합니다.
+      logError(error);
     });
 
   return () => controller.abort();
