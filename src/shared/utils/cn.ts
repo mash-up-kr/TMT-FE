@@ -5,12 +5,12 @@ import { extendTailwindMerge } from "tailwind-merge";
  * TMT 디자인 토큰을 Tailwind 병합 규칙에 추가합니다.
  *
  * - `text-heading-*`, `text-body-*`: 타이포그래피 토큰
- * - `surface-*`, `content-*`, `icon-*`, `stroke-*`: semantic 색상 토큰
+ * - `surface-*`, `content-*`, `icon-*`, `stroke-*`: theme에 정의된 semantic 색상 토큰
  * - `ds-*`: TMT spacing/radius 토큰
  *
- * 각 `isTmt*Token` 함수는 `tailwind-merge`가 전달한 토큰 값이 해당 그룹에 속하는지 판별합니다.
- * 덕분에 `text-heading-md`와 `text-content-primary`는 함께 유지되고,
- * `p-4`와 `p-ds-16`처럼 같은 CSS 속성을 바꾸는 값은 마지막 인자만 남습니다.
+ * `clsx`는 조건에 맞는 클래스만 하나의 문자열로 합칩니다.
+ * `twMerge`는 같은 CSS 속성을 바꾸는 Tailwind 클래스를 찾아 마지막 클래스를 남깁니다.
+ * `cn`은 두 함수를 묶어 조건부 결합과 충돌 정리를 한 번에 처리합니다.
  */
 
 const isTmtTextToken = (value: string) =>
