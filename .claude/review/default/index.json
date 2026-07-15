@@ -1,0 +1,350 @@
+{
+  "version": 1,
+  "profile": "default",
+  "generatedAt": "2026-07-07",
+  "purpose": "Provide default review criteria for mashong-ai. Rule files are the source of truth.",
+  "defaults": {
+    "status": "active_review_profile",
+    "decisionBias": "suppress_when_ambiguous",
+    "routing": {
+      "minRulesPerPr": 2,
+      "maxRulesPerPr": 4,
+      "maxCandidatesPerRule": 2
+    },
+    "maxPublishComments": 20,
+    "confidenceUsage": "internal_reference_only",
+    "evidenceLevel": {
+      "3": "changed line, trigger input, user impact, and fix direction are directly visible",
+      "2": "changed line and impact are visible, but some context is inferred",
+      "1": "suspicious but insufficient context"
+    },
+    "publicPriorityPolicy": {
+      "P1": { "minEvidenceLevel": 3 },
+      "P2": { "minEvidenceLevel": 3 },
+      "P3": { "minEvidenceLevel": 2, "requiresFix": true },
+      "P4": { "minEvidenceLevel": 2, "requiresFix": false },
+      "P5": { "minEvidenceLevel": 2, "requiresFix": false }
+    },
+    "suppressPriority": []
+  },
+  "rules": [
+    {
+      "id": "logic-correctness",
+      "title": "조건과 상태 전이 일치",
+      "categoryPath": ["일반 리뷰", "정확성"],
+      "file": "rules/logic-correctness.md",
+      "keywords": [
+        "condition",
+        "logic",
+        "inverted",
+        "ready",
+        "blocked",
+        "disabled",
+        "enabled",
+        "status",
+        "state",
+        "step",
+        "can",
+        "has",
+        "is"
+      ],
+      "signals": [
+        "긍정 조건이 참인데 실패 상태를 반환함",
+        "성공/실패 분기의 반환값이 뒤집힘",
+        "조건 연산자나 boolean 조합 때문에 상태 전이가 반대로 동작함"
+      ],
+      "publishConditions": [
+        "조건명과 반환 상태의 의미가 추가/수정 라인에서 직접 충돌합니다.",
+        "타입 이름, 상태 이름, PR 설명 중 하나가 기대 흐름을 뒷받침합니다.",
+        "조건 반전이나 반환값 교체처럼 수정 방향이 좁고 명확합니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P3"
+    },
+    {
+      "id": "runtime-safety",
+      "title": "런타임 크래시 방지",
+      "categoryPath": ["일반 리뷰", "런타임 안전성"],
+      "file": "rules/runtime-safety.md",
+      "keywords": [
+        "undefined",
+        "null",
+        "empty array",
+        "optional chaining",
+        "TypeError",
+        "crash",
+        "length",
+        "index"
+      ],
+      "signals": [
+        "nullable 값이나 배열 첫 요소를 검증 없이 바로 읽음",
+        "외부 입력을 전제로 속성 접근이나 메서드 호출을 수행함",
+        "렌더링 경로에서 예외가 발생하면 화면 전체가 깨질 수 있음"
+      ],
+      "publishConditions": [
+        "추가/수정 라인에서 실제 예외 가능성이 직접 보입니다.",
+        "상위에서 항상 방어된다는 근거가 diff나 주변 코드에 없습니다.",
+        "간단한 guard 또는 fallback으로 사용자 영향이 줄어듭니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P3"
+    },
+    {
+      "id": "api-contract",
+      "title": "API 응답 계약 검증",
+      "categoryPath": ["일반 리뷰", "계약"],
+      "file": "rules/api-contract.md",
+      "keywords": [
+        "fetch",
+        "axios",
+        "json",
+        "response",
+        "data",
+        "items",
+        "schema",
+        "zod",
+        "Array.isArray"
+      ],
+      "signals": [
+        "API 응답 형태를 검증하지 않고 바로 사용함",
+        "서버 응답의 optional field를 필수값처럼 다룸",
+        "파싱 실패나 예상 밖 응답을 처리하지 않음"
+      ],
+      "publishConditions": [
+        "응답 구조가 깨지면 런타임 오류나 잘못된 데이터 표시로 이어집니다.",
+        "검증 또는 fallback 위치가 추가 코드 안에 없습니다.",
+        "수정 방향이 명확합니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P3"
+    },
+    {
+      "id": "error-handling",
+      "title": "에러 처리 누락",
+      "categoryPath": ["일반 리뷰", "에러 처리"],
+      "file": "rules/error-handling.md",
+      "keywords": [
+        "try",
+        "catch",
+        "throw",
+        "fetch",
+        "await",
+        "promise",
+        "timeout",
+        "retry",
+        "error"
+      ],
+      "signals": [
+        "비동기 호출 실패가 사용자 상태나 로그 없이 사라짐",
+        "JSON 파싱, network failure, non-2xx 응답을 구분하지 않음",
+        "실패 상태가 성공 상태처럼 계속 흐름을 탐"
+      ],
+      "publishConditions": [
+        "실패가 실제 사용자 동작이나 데이터 표시를 깨뜨릴 수 있습니다.",
+        "상위 공통 에러 처리 레이어가 확인되지 않습니다.",
+        "로컬에서 처리해야 할 오류 범위가 분명합니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P3"
+    },
+    {
+      "id": "empty-state",
+      "title": "빈 상태와 경계값 처리",
+      "categoryPath": ["일반 리뷰", "상태"],
+      "file": "rules/empty-state.md",
+      "keywords": [
+        "empty",
+        "length",
+        "0",
+        "null",
+        "undefined",
+        "loading",
+        "fallback",
+        "placeholder"
+      ],
+      "signals": [
+        "빈 배열, 0개 결과, 빈 문자열, 음수, NaN을 고려하지 않음",
+        "로딩/에러/빈 상태 중 하나가 누락됨",
+        "사용자에게 잘못된 기본값이나 깨진 UI가 노출될 수 있음"
+      ],
+      "publishConditions": [
+        "경계값이 실제 입력으로 들어올 수 있습니다.",
+        "누락된 상태가 사용자 경험이나 계산 결과에 영향을 줍니다.",
+        "fallback 또는 분기 추가로 명확히 개선됩니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P4"
+    },
+    {
+      "id": "react-state-effect",
+      "title": "React 상태와 effect 결함",
+      "categoryPath": ["일반 리뷰", "React"],
+      "file": "rules/react-state-effect.md",
+      "keywords": [
+        "useEffect",
+        "useMemo",
+        "useCallback",
+        "setState",
+        "dependency",
+        "stale",
+        "render"
+      ],
+      "signals": [
+        "effect dependency가 누락되거나 과하게 포함됨",
+        "렌더 중 상태를 변경하거나 무한 렌더 가능성이 있음",
+        "stale closure나 cleanup 누락으로 이전 상태를 참조함"
+      ],
+      "publishConditions": [
+        "React 동작상 실제 버그로 이어지는 경로가 보입니다.",
+        "단순 lint 취향이 아니라 사용자 동작이나 상태 일관성에 영향이 있습니다.",
+        "수정 방향이 현재 컴포넌트 범위에서 명확합니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P4"
+    },
+    {
+      "id": "async-concurrency",
+      "title": "비동기 동시성 결함",
+      "categoryPath": ["일반 리뷰", "동시성"],
+      "file": "rules/async-concurrency.md",
+      "keywords": [
+        "race",
+        "concurrent",
+        "abort",
+        "AbortController",
+        "debounce",
+        "throttle",
+        "double submit",
+        "stale response",
+        "requestId",
+        "pending"
+      ],
+      "signals": [
+        "이전 요청의 늦은 응답이 최신 상태를 덮어쓸 수 있음",
+        "중복 클릭이나 중복 제출을 막지 않음",
+        "컴포넌트 unmount 후 비동기 응답이 상태를 갱신할 수 있음",
+        "동시에 실행되면 순서가 중요한 작업을 보호하지 않음"
+      ],
+      "publishConditions": [
+        "사용자 동작이나 네트워크 지연으로 실제 순서 역전이 가능합니다.",
+        "최신 요청 식별, abort, pending guard, idempotency 중 하나가 없습니다.",
+        "결과가 잘못된 UI 상태, 중복 저장, 잘못된 데이터 반영으로 이어집니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P4"
+    },
+    {
+      "id": "cache-consistency",
+      "title": "캐시 일관성 유지",
+      "categoryPath": ["일반 리뷰", "캐시"],
+      "file": "rules/cache-consistency.md",
+      "keywords": [
+        "cache",
+        "invalidate",
+        "queryKey",
+        "stale",
+        "refetch",
+        "optimistic",
+        "rollback",
+        "SWR",
+        "React Query",
+        "TanStack Query"
+      ],
+      "signals": [
+        "mutation 후 관련 캐시를 invalidate/refetch하지 않음",
+        "query key가 실제 파라미터를 충분히 포함하지 않음",
+        "optimistic update 실패 시 rollback이 없음",
+        "로컬 캐시와 서버 상태가 어긋날 수 있음"
+      ],
+      "publishConditions": [
+        "변경 후 사용자가 stale data를 볼 가능성이 있습니다.",
+        "같은 데이터의 읽기/쓰기 경로가 PR 또는 주변 코드에서 확인됩니다.",
+        "invalidate, query key 수정, rollback 등 구체적인 수정 방향이 있습니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P4"
+    },
+    {
+      "id": "security-basic",
+      "title": "보안 기초 위반",
+      "categoryPath": ["일반 리뷰", "보안"],
+      "file": "rules/security-basic.md",
+      "keywords": [
+        "token",
+        "secret",
+        "password",
+        "localStorage",
+        "innerHTML",
+        "dangerouslySetInnerHTML",
+        "redirect",
+        "url"
+      ],
+      "signals": [
+        "민감정보를 로그나 클라이언트 저장소에 노출함",
+        "사용자 입력 URL/HTML을 검증 없이 사용함",
+        "사용자 입력을 query string, redirect URL, 새 창 URL에 인코딩 없이 삽입함",
+        "인증/권한 관련 값을 신뢰할 수 없는 위치에서 결정함"
+      ],
+      "publishConditions": [
+        "실제 민감정보 노출, XSS, open redirect, 권한 우회 가능성이 보입니다.",
+        "위험이 이론적 일반론이 아니라 추가/수정 라인과 직접 연결됩니다.",
+        "완화 방법이 구체적입니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "strict_active",
+      "maxPriorityWithoutStrongEvidence": "P3"
+    },
+    {
+      "id": "deploy-workflow",
+      "title": "배포 워크플로 안전성",
+      "categoryPath": ["일반 리뷰", "배포"],
+      "file": "rules/deploy-workflow.md",
+      "keywords": [
+        "github actions",
+        "workflow",
+        "yaml",
+        "yml",
+        "deploy",
+        "s3",
+        "cloudfront",
+        "cache-control",
+        "invalidation",
+        "aws",
+        "paths",
+        "secret"
+      ],
+      "signals": [
+        "workflow trigger paths가 실제 앱이나 의존 패키지 변경을 빠뜨림",
+        "build output, S3 upload 경로, CloudFront invalidation 경로가 서로 맞지 않음",
+        "파일명 해시 전략과 cache-control 정책이 맞지 않아 stale asset이 남을 수 있음",
+        "secret, bucket, distribution id, region 같은 배포 설정이 기존 workflow와 다르게 쓰임"
+      ],
+      "publishConditions": [
+        "변경된 workflow 라인에서 실제 배포 실패나 stale asset 노출 경로가 보입니다.",
+        "같은 PR이나 주변 workflow에서 기대 경로와 실제 경로를 비교할 수 있습니다.",
+        "trigger path, upload path, cache-control, invalidation path 중 구체적인 수정 방향이 있습니다."
+      ],
+      "ruleType": "defect",
+      "status": "active",
+      "runtimeMode": "active",
+      "maxPriorityWithoutStrongEvidence": "P4"
+    }
+  ]
+}
