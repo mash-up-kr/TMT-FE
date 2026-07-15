@@ -29,6 +29,9 @@
 
 ```ts
 const average = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+const displayPrice = price || "가격 정보 없음";
+const quantity = Number(quantityInput);
+const totalPrice = unitPrice * quantity;
 ```
 
 ## 좋은 예
@@ -37,6 +40,15 @@ const average = prices.reduce((sum, price) => sum + price, 0) / prices.length;
 const average = prices.length === 0
   ? 0
   : prices.reduce((sum, price) => sum + price, 0) / prices.length;
+
+const displayPrice = price ?? "가격 정보 없음";
+const quantity = Number(quantityInput);
+const safeQuantity = Number.isNaN(quantity) ? 0 : quantity;
+const totalPrice = unitPrice * safeQuantity;
+
+const discountRate = originalPrice === 0
+  ? 0
+  : discountedPrice / originalPrice;
 ```
 
 ## Verification rule
