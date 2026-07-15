@@ -11,6 +11,7 @@ const THICK = [
 export function ChevronDownIcon({ thick = false, size = 24, ...props }: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       width={size}
       height={size}
       viewBox="0 0 24 24"

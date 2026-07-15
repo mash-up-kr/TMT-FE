@@ -127,16 +127,12 @@
   --text-body-lg-medium: var(--typography-font-size-16);
   --text-body-lg-medium--line-height: var(--typography-line-height-24);
   --text-body-lg-medium--font-weight: var(--typography-font-weight-medium);
-  --text-body-lg-medium--letter-spacing: var(
-    --typography-letter-spacing-normal
-  );
+  --text-body-lg-medium--letter-spacing: var(--typography-letter-spacing-normal);
 
   --text-body-lg-regular: var(--typography-font-size-16);
   --text-body-lg-regular--line-height: var(--typography-line-height-24);
   --text-body-lg-regular--font-weight: var(--typography-font-weight-regular);
-  --text-body-lg-regular--letter-spacing: var(
-    --typography-letter-spacing-normal
-  );
+  --text-body-lg-regular--letter-spacing: var(--typography-letter-spacing-normal);
 
   /* Body/md (14 / 20) */
   --text-body-md-bold: var(--typography-font-size-14);
@@ -147,16 +143,12 @@
   --text-body-md-medium: var(--typography-font-size-14);
   --text-body-md-medium--line-height: var(--typography-line-height-20);
   --text-body-md-medium--font-weight: var(--typography-font-weight-medium);
-  --text-body-md-medium--letter-spacing: var(
-    --typography-letter-spacing-normal
-  );
+  --text-body-md-medium--letter-spacing: var(--typography-letter-spacing-normal);
 
   --text-body-md-regular: var(--typography-font-size-14);
   --text-body-md-regular--line-height: var(--typography-line-height-20);
   --text-body-md-regular--font-weight: var(--typography-font-weight-regular);
-  --text-body-md-regular--letter-spacing: var(
-    --typography-letter-spacing-normal
-  );
+  --text-body-md-regular--letter-spacing: var(--typography-letter-spacing-normal);
 
   /* Body/sm (12 / 18) */
   --text-body-sm-bold: var(--typography-font-size-12);
@@ -167,16 +159,12 @@
   --text-body-sm-medium: var(--typography-font-size-12);
   --text-body-sm-medium--line-height: var(--typography-line-height-18);
   --text-body-sm-medium--font-weight: var(--typography-font-weight-medium);
-  --text-body-sm-medium--letter-spacing: var(
-    --typography-letter-spacing-normal
-  );
+  --text-body-sm-medium--letter-spacing: var(--typography-letter-spacing-normal);
 
   --text-body-sm-regular: var(--typography-font-size-12);
   --text-body-sm-regular--line-height: var(--typography-line-height-18);
   --text-body-sm-regular--font-weight: var(--typography-font-weight-regular);
-  --text-body-sm-regular--letter-spacing: var(
-    --typography-letter-spacing-normal
-  );
+  --text-body-sm-regular--letter-spacing: var(--typography-letter-spacing-normal);
 
   /* ===================== spacing (디자인 스케일) ===================== */
   /* `ds` 프리픽스로 Tailwind 기본 숫자 scale(p-4=16px 등)을 덮지 않는다.

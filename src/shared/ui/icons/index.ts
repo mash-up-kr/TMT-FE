@@ -1,7 +1,7 @@
-export type { IconProps } from "./types";
-export { CheckIcon } from "./CheckIcon";
 export { BlankIcon } from "./BlankIcon";
-export { ChevronUpIcon } from "./ChevronUpIcon";
-export { ChevronDownIcon } from "./ChevronDownIcon";
 export { CancelIcon } from "./CancelIcon";
+export { CheckIcon } from "./CheckIcon";
+export { ChevronDownIcon } from "./ChevronDownIcon";
+export { ChevronUpIcon } from "./ChevronUpIcon";
 export { LoadingIcon } from "./LoadingIcon";
+export type { IconProps } from "./types";

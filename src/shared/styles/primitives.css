@@ -106,8 +106,8 @@
 
   /* font family */
   --typography-font-family:
-    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
-    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
 
   /* font size */
   --typography-font-size-32: 32px;
