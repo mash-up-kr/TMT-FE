@@ -33,7 +33,21 @@
       "title": "조건과 상태 전이 일치",
       "categoryPath": ["일반 리뷰", "정확성"],
       "file": "rules/logic-correctness.md",
-      "keywords": ["condition", "logic", "inverted", "ready", "blocked", "disabled", "enabled", "status", "state", "step", "can", "has", "is"],
+      "keywords": [
+        "condition",
+        "logic",
+        "inverted",
+        "ready",
+        "blocked",
+        "disabled",
+        "enabled",
+        "status",
+        "state",
+        "step",
+        "can",
+        "has",
+        "is"
+      ],
       "signals": [
         "긍정 조건이 참인데 실패 상태를 반환함",
         "성공/실패 분기의 반환값이 뒤집힘",
@@ -54,7 +68,16 @@
       "title": "런타임 크래시 방지",
       "categoryPath": ["일반 리뷰", "런타임 안전성"],
       "file": "rules/runtime-safety.md",
-      "keywords": ["undefined", "null", "empty array", "optional chaining", "TypeError", "crash", "length", "index"],
+      "keywords": [
+        "undefined",
+        "null",
+        "empty array",
+        "optional chaining",
+        "TypeError",
+        "crash",
+        "length",
+        "index"
+      ],
       "signals": [
         "nullable 값이나 배열 첫 요소를 검증 없이 바로 읽음",
         "외부 입력을 전제로 속성 접근이나 메서드 호출을 수행함",
@@ -75,7 +98,17 @@
       "title": "API 응답 계약 검증",
       "categoryPath": ["일반 리뷰", "계약"],
       "file": "rules/api-contract.md",
-      "keywords": ["fetch", "axios", "json", "response", "data", "items", "schema", "zod", "Array.isArray"],
+      "keywords": [
+        "fetch",
+        "axios",
+        "json",
+        "response",
+        "data",
+        "items",
+        "schema",
+        "zod",
+        "Array.isArray"
+      ],
       "signals": [
         "API 응답 형태를 검증하지 않고 바로 사용함",
         "서버 응답의 optional field를 필수값처럼 다룸",
@@ -96,7 +129,17 @@
       "title": "에러 처리 누락",
       "categoryPath": ["일반 리뷰", "에러 처리"],
       "file": "rules/error-handling.md",
-      "keywords": ["try", "catch", "throw", "fetch", "await", "promise", "timeout", "retry", "error"],
+      "keywords": [
+        "try",
+        "catch",
+        "throw",
+        "fetch",
+        "await",
+        "promise",
+        "timeout",
+        "retry",
+        "error"
+      ],
       "signals": [
         "비동기 호출 실패가 사용자 상태나 로그 없이 사라짐",
         "JSON 파싱, network failure, non-2xx 응답을 구분하지 않음",
@@ -117,7 +160,16 @@
       "title": "빈 상태와 경계값 처리",
       "categoryPath": ["일반 리뷰", "상태"],
       "file": "rules/empty-state.md",
-      "keywords": ["empty", "length", "0", "null", "undefined", "loading", "fallback", "placeholder"],
+      "keywords": [
+        "empty",
+        "length",
+        "0",
+        "null",
+        "undefined",
+        "loading",
+        "fallback",
+        "placeholder"
+      ],
       "signals": [
         "빈 배열, 0개 결과, 빈 문자열, 음수, NaN을 고려하지 않음",
         "로딩/에러/빈 상태 중 하나가 누락됨",
@@ -138,7 +190,15 @@
       "title": "React 상태와 effect 결함",
       "categoryPath": ["일반 리뷰", "React"],
       "file": "rules/react-state-effect.md",
-      "keywords": ["useEffect", "useMemo", "useCallback", "setState", "dependency", "stale", "render"],
+      "keywords": [
+        "useEffect",
+        "useMemo",
+        "useCallback",
+        "setState",
+        "dependency",
+        "stale",
+        "render"
+      ],
       "signals": [
         "effect dependency가 누락되거나 과하게 포함됨",
         "렌더 중 상태를 변경하거나 무한 렌더 가능성이 있음",
@@ -159,7 +219,18 @@
       "title": "비동기 동시성 결함",
       "categoryPath": ["일반 리뷰", "동시성"],
       "file": "rules/async-concurrency.md",
-      "keywords": ["race", "concurrent", "abort", "AbortController", "debounce", "throttle", "double submit", "stale response", "requestId", "pending"],
+      "keywords": [
+        "race",
+        "concurrent",
+        "abort",
+        "AbortController",
+        "debounce",
+        "throttle",
+        "double submit",
+        "stale response",
+        "requestId",
+        "pending"
+      ],
       "signals": [
         "이전 요청의 늦은 응답이 최신 상태를 덮어쓸 수 있음",
         "중복 클릭이나 중복 제출을 막지 않음",
@@ -181,7 +252,18 @@
       "title": "캐시 일관성 유지",
       "categoryPath": ["일반 리뷰", "캐시"],
       "file": "rules/cache-consistency.md",
-      "keywords": ["cache", "invalidate", "queryKey", "stale", "refetch", "optimistic", "rollback", "SWR", "React Query", "TanStack Query"],
+      "keywords": [
+        "cache",
+        "invalidate",
+        "queryKey",
+        "stale",
+        "refetch",
+        "optimistic",
+        "rollback",
+        "SWR",
+        "React Query",
+        "TanStack Query"
+      ],
       "signals": [
         "mutation 후 관련 캐시를 invalidate/refetch하지 않음",
         "query key가 실제 파라미터를 충분히 포함하지 않음",
@@ -203,7 +285,16 @@
       "title": "보안 기초 위반",
       "categoryPath": ["일반 리뷰", "보안"],
       "file": "rules/security-basic.md",
-      "keywords": ["token", "secret", "password", "localStorage", "innerHTML", "dangerouslySetInnerHTML", "redirect", "url"],
+      "keywords": [
+        "token",
+        "secret",
+        "password",
+        "localStorage",
+        "innerHTML",
+        "dangerouslySetInnerHTML",
+        "redirect",
+        "url"
+      ],
       "signals": [
         "민감정보를 로그나 클라이언트 저장소에 노출함",
         "사용자 입력 URL/HTML을 검증 없이 사용함",
@@ -225,7 +316,20 @@
       "title": "배포 워크플로 안전성",
       "categoryPath": ["일반 리뷰", "배포"],
       "file": "rules/deploy-workflow.md",
-      "keywords": ["github actions", "workflow", "yaml", "yml", "deploy", "s3", "cloudfront", "cache-control", "invalidation", "aws", "paths", "secret"],
+      "keywords": [
+        "github actions",
+        "workflow",
+        "yaml",
+        "yml",
+        "deploy",
+        "s3",
+        "cloudfront",
+        "cache-control",
+        "invalidation",
+        "aws",
+        "paths",
+        "secret"
+      ],
       "signals": [
         "workflow trigger paths가 실제 앱이나 의존 패키지 변경을 빠뜨림",
         "build output, S3 upload 경로, CloudFront invalidation 경로가 서로 맞지 않음",
