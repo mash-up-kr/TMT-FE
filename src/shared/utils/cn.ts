@@ -16,8 +16,6 @@ import { extendTailwindMerge } from "tailwind-merge";
 const isTmtTextToken = (value: string) =>
   /^(heading-(xl|lg|md|sm)|body-(lg|md|sm)-(bold|medium|regular))$/.test(value);
 
-const isTmtColorToken = (value: string) => /^(surface|content|icon|stroke)-[a-z-]+$/.test(value);
-
 const isTmtSpacingToken = (value: string) => /^ds-(0|2|4|8|12|16|20|24|32|40|48|64)$/.test(value);
 
 const isTmtRadiusToken = (value: string) => /^ds-(xs|sm|md|lg|xl|full)$/.test(value);
@@ -25,7 +23,6 @@ const isTmtRadiusToken = (value: string) => /^ds-(xs|sm|md|lg|xl|full)$/.test(va
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      color: [isTmtColorToken],
       radius: [isTmtRadiusToken],
       spacing: [isTmtSpacingToken],
       text: [isTmtTextToken],
