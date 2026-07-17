@@ -39,6 +39,7 @@ Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node
 - production dependency를 추가하기 전에 필요성과 대안을 확인하고 보고한다.
 - 기존 경계와 추상화를 이유 없이 우회하지 않는다.
 - 정확한 값과 현재 동작은 코드, 설정, schema를 source of truth로 본다. rule과 실제 코드가 다르면 추측하지 말고 차이를 명시한다.
+- 내 변경으로 rule의 서술이 코드와 달라지면 같은 변경에서 rule을 갱신한다.
 
 ## Context routing
 

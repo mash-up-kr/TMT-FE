@@ -36,7 +36,7 @@ paths:
 3. 반복되는 요구면 기존 primitive에 variant 추가를 검토한다.
 4. 기존 시스템으로 표현할 수 없을 때만 새 primitive를 만든다.
 
-`src/shared/ui/`에는 현재 `AppFrame`과 `icons/`만 있다. Button 등 공용 primitive도 Storybook도 없다. 즉 아직 검색할 기존 primitive가 거의 없으므로, 처음 만드는 컴포넌트를 `shared/ui/`에 바로 두지 말고 architecture rule의 승격 규칙(두 곳 이상)을 따른다.
+기존 primitive 목록은 이 문서가 아니라 `src/shared/ui/`를 직접 확인한다. 처음 만드는 컴포넌트는 `shared/ui/`에 바로 두지 말고 architecture rule의 승격 규칙(두 곳 이상)을 따른다.
 
 ## Component boundaries
 
