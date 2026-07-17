@@ -57,4 +57,5 @@ UI, 스타일, 토큰, 접근성, 레이아웃을 **계획하기 전에** 읽는
 
 - 구조 정본은 `docs/frontend-architecture.md`다. 단 §5(orval/api-gen)와 §5.4(MSW)는 아직 미도입이니 현재 코드로 간주하지 않는다.
 - `.claude/review/**`는 PR 리뷰 봇 `mashong-ai`가 PR에서 쓰는 기준이다. 코딩 작업에서 읽지 않는다.
+- 브랜치는 develop에서 `<type>/#<번호>-<내용>`으로 만든다 (번호는 Jira TMT 티켓). PR은 develop 대상이며, 1인 이상 승인과 squash merge를 GitHub Ruleset이 강제한다.
 - 커밋 메시지는 `<type>: <제목>` (type: feat, fix, refactor, chore, style, deploy, docs). GitHub Ruleset이 검증한다.

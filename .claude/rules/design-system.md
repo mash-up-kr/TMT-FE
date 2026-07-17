@@ -38,6 +38,10 @@ paths:
 
 기존 primitive 목록은 이 문서가 아니라 `src/shared/ui/`를 직접 확인한다. 처음 만드는 컴포넌트는 `shared/ui/`에 바로 두지 말고 architecture rule의 승격 규칙(두 곳 이상)을 따른다.
 
+## 구현 패턴
+
+공용 컴포넌트는 shadcn 스타일 패턴을 표준으로 한다 — `className` 병합 허용, props forwarding, 합성이 필요하면 `asChild`. shadcn을 라이브러리로 설치하지 않고 패턴만 차용한다.
+
 ## Component boundaries
 
 - `shared/ui/`는 도메인 데이터를 받지 않는다. 도메인 의미가 있으면 라우트의 `_components/`에 둔다.

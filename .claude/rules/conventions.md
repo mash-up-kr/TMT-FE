@@ -24,6 +24,7 @@ paths:
 - 기존 dependency와 플랫폼 API로 해결 가능한지 먼저 확인한다.
 - production dependency 추가 전 목적, 대안, 크기를 검토하고 이유를 보고한다.
 - 하나의 단순 기능을 위해 무거운 라이브러리를 추가하지 않는다.
+- HTTP는 플랫폼 `fetch`를 쓴다. axios 등 HTTP 클라이언트 라이브러리를 추가하지 않는다 (의존 축소 팀 결정).
 
 ## Generated and external files
 
