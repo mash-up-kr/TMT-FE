@@ -42,3 +42,7 @@ next-env.d.ts
 
 # docs (작업 컨텍스트, 히스토리 등 로컬 문서)
 /docs/
+
+# 로컬 AI 도구 상태 (개인 환경)
+.omc/
+.context/
