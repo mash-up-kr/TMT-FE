@@ -1,27 +1,5 @@
-import type { IconProps } from "./types";
+import ChevronDownThick from "./assets/chevron-down-thick.svg?react";
+import ChevronDownThin from "./assets/chevron-down-thin.svg?react";
+import { createIcon } from "./createIcon";
 
-const THIN = [
-  "M17.4697 8.46973C17.7626 8.17684 18.2374 8.17684 18.5302 8.46973C18.8231 8.76263 18.8231 9.23741 18.5302 9.53028L12.5302 15.5303C12.2374 15.8232 11.7626 15.8231 11.4697 15.5303L5.46967 9.53028C5.17678 9.23739 5.17678 8.76263 5.46967 8.46973C5.76256 8.17684 6.23733 8.17684 6.53022 8.46973L12 13.9395L17.4697 8.46973Z",
-];
-
-const THICK = [
-  "M17.2929 8.29295C17.6834 7.90243 18.3164 7.90243 18.707 8.29295C19.0974 8.68348 19.0975 9.31652 18.707 9.70702L12.707 15.707C12.3165 16.0975 11.6834 16.0975 11.2929 15.707L5.29289 9.70702C4.90237 9.31649 4.90237 8.68348 5.29289 8.29295C5.68342 7.90243 6.31643 7.90243 6.70696 8.29295L11.9999 13.5859L17.2929 8.29295Z",
-];
-
-export function ChevronDownIcon({ thick = false, size = 24, ...props }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      {(thick ? THICK : THIN).map((d) => (
-        <path key={d} d={d} fill="currentColor" />
-      ))}
-    </svg>
-  );
-}
+export const ChevronDownIcon = createIcon(ChevronDownThin, ChevronDownThick);
