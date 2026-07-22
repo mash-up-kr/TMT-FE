@@ -46,3 +46,4 @@ next-env.d.ts
 # AI 도구 로컬 산출물 (biome이 vcs.useIgnoreFile로 이 파일을 따르므로, 빠지면 pnpm check가 오염됨)
 /.omc/
 /.omx/
+/.context/
