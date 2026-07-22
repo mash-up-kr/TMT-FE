@@ -11,7 +11,7 @@
 
 `CLAUDE.md`의 Context routing 절에 나오는 "rule이 자동으로 붙는다"는 Claude Code 전용 동작(`paths` frontmatter)이다. 이 환경에는 자동 첨부가 없으므로 아래 표대로 직접 읽는다.
 
-- `src/**/*.{ts,tsx,css}`를 다루는 작업: `.claude/rules/architecture.md`
+- `src/**/*.{ts,tsx}`를 다루는 작업: `.claude/rules/architecture.md`
 - `src/**/*.{ts,tsx}`를 다루는 작업: `.claude/rules/conventions.md` 추가로 읽는다.
 - UI·스타일 작업 (`src/**/*.tsx`, `src/**/*.css`): `.claude/rules/design-system.md` 추가로 읽는다.
 

@@ -1,6 +1,7 @@
 ---
 paths:
-  - "src/**/*.{ts,tsx,css}"
+  - "src/**/*.ts"
+  - "src/**/*.tsx"
 ---
 
 # Architecture Rules
@@ -106,15 +107,21 @@ app/{route}/  →  shared/{ui, hooks, utils, model, constants, stores, styles, p
 
 ## API·Mock 도입 계약
 
-API 연동을 구현하기 전에 dependency, generation command, configuration, migration scope를 포함한 도입안을 먼저 제안한다. 승인 전에는 `src/api/`, 수동 API client, 라우트별 fetch wrapper, mock layer를 만들지 않는다.
+아래는 합의된 목표 계약이며 아직 구현된 현재 구조가 아니다. API 또는 Mock 구현 요청을 받으면 구현 대신 dependency, generation command, configuration, migration scope를 포함한 도입안을 작성하고 승인을 요청한다. 승인 전에는 `src/api/`, 수동 API client, 라우트별 fetch wrapper, mock layer를 만들지 않는다.
 
-도입 변경에서 실제 package, command, 생성 경로, mock 활성화 방식을 이 규칙에 반영한다. 구현은 다음 경계를 지킨다.
+도입이 승인되면 다음 구조와 책임을 함께 구현한다.
 
-- 저수준 HTTP 호출은 플랫폼 `fetch`를 사용하고 별도 HTTP client를 추가하지 않는다.
-- 인증, 공통 header, 공통 에러 처리는 하나의 adapter가 소유한다.
+- OpenAPI와 orval로 client, hook, schema, MSW handler를 `src/api/gen/`에 생성하고 직접 수정하지 않는다.
+- endpoint 변경은 OpenAPI를 수정한 뒤 `pnpm api-gen`으로 반영한다.
+- `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 인증, 공통 header, 공통 에러 처리를 소유한다.
 - API 응답을 UI model로 바꾸는 코드는 라우트 `_utils/`에 둔다.
-- 생성 코드는 직접 수정하지 않고 원본 schema와 생성 command로 갱신한다.
-- mock handler는 라우트에 두지 않고 API 인프라에서 중앙 관리한다.
+- MSW 인프라와 custom scenario는 `src/api/mock/`에서 관리하고 생성 handler와 분리한다.
+- 페이지와 라우트 private segment에는 mock handler를 만들지 않는다.
+- MSW는 `NEXT_PUBLIC_API_MOCKING`으로 활성화한다.
+- orval 없는 수동 client, 수동 MSW handler, API와 Mock의 부분 도입을 대안으로 제안하지 않는다. 목표 계약을 바꾸려면 구현 전에 이 규칙을 먼저 합의해 수정한다.
+- 최초 API 또는 Mock 도입안의 migration scope에는 위 항목 전체를 포함하며, 개별 endpoint의 필요성을 이유로 일부 제외 여부를 다시 묻지 않는다.
+
+도입 변경에서 dependency, `pnpm api-gen`, orval/MSW 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 추가하고 이 문서의 현재 상태를 갱신한다.
 
 ## 재검토 기준
 
