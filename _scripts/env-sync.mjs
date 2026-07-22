@@ -1,16 +1,22 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_FILE = path.join(ROOT_DIR, ".env");
+const VERSION_TIMEOUT_MS = 5_000;
+const EXPORT_TIMEOUT_MS = 60_000;
 
 // Infisical 대시보드의 환경 슬러그 (dev | staging | prod)
 const TARGET_ENV = process.env.ENV ?? "dev";
 
-function run(command) {
-  return execSync(command, { cwd: ROOT_DIR, timeout: 15_000, stdio: ["ignore", "pipe", "pipe"] })
+function run(args, timeout) {
+  return execFileSync("infisical", args, {
+    cwd: ROOT_DIR,
+    timeout,
+    stdio: ["ignore", "pipe", "pipe"],
+  })
     .toString()
     .trim();
 }
@@ -26,7 +32,7 @@ function fail(reason, hints) {
 
 // 1. Infisical CLI 확인
 try {
-  run("infisical --version");
+  run(["--version"], VERSION_TIMEOUT_MS);
 } catch {
   fail("Infisical CLI를 찾을 수 없어요.", [
     "설치: brew install infisical/get-cli/infisical (Windows: scoop install infisical)",
@@ -38,7 +44,7 @@ try {
 console.log(`🔄 Infisical(${TARGET_ENV})에서 환경변수를 동기화하는 중...`);
 
 try {
-  const dotenv = run(`infisical export --env=${TARGET_ENV} --format=dotenv`);
+  const dotenv = run(["export", `--env=${TARGET_ENV}`, "--format=dotenv"], EXPORT_TIMEOUT_MS);
   writeFileSync(ENV_FILE, `${dotenv}\n`);
   const count = dotenv.split("\n").filter((line) => line.includes("=")).length;
   console.log(`🖱️  딸깍! .env 준비 완료 (변수 ${count}개)`);
@@ -51,7 +57,7 @@ try {
       "프로젝트에 초대되지 않았다면 팀에 요청해 주세요.",
     ]);
   }
-  if (error.killed || /timeout|econnrefused|enotfound|network/.test(message)) {
+  if (error.code === "ETIMEDOUT" || /econnrefused|enotfound|network/.test(message)) {
     fail("Infisical 서버에 연결하지 못했어요.", [
       "인터넷 연결을 확인해 주세요.",
       "로그인이 만료된 경우에도 응답이 멈출 수 있어요: infisical login",
