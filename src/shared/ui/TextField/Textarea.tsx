@@ -68,7 +68,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     if (!isControlled) {
       setUncontrolledCount(event.target.value.length);
     }
-    
+
     onChange?.(event);
   }
 

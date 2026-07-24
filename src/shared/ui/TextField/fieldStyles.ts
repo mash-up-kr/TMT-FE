@@ -29,7 +29,7 @@ export function fieldBoxState(disabled: boolean, invalid: boolean): string {
   if (invalid) {
     return "bg-surface-primary border-stroke-error";
   }
-  
+
   return cn(
     "bg-surface-primary border-stroke-field",
     "hover:border-stroke-field-hovered focus-within:border-stroke-field-pressed",
