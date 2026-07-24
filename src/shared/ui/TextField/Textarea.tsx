@@ -108,6 +108,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         defaultValue={defaultValue}
         onChange={handleChange}
         aria-invalid={invalid || undefined}
+        aria-required={required || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), "resize-none", className)}
         {...rest}

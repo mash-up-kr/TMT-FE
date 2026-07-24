@@ -64,6 +64,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         id={inputId}
         disabled={disabled}
         aria-invalid={invalid || undefined}
+        aria-required={required || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), className)}
         {...rest}
