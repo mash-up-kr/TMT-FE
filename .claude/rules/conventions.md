@@ -12,6 +12,11 @@ paths:
 
 따옴표, 세미콜론, 들여쓰기, 줄 길이는 Biome이 정본이다. 이 문서에 복제하지 않는다. 이 문서와 실행 가능한 설정이 충돌하면 설정을 우회하지 말고 충돌을 보고한다.
 
+## File naming
+
+- React 컴포넌트를 선언하는 파일명은 PascalCase로 작성한다 (`AppFrame.tsx`, `QueryProvider.tsx`).
+- `page.tsx`, `layout.tsx`처럼 Next.js가 정한 예약 파일명은 프레임워크 규칙을 따른다.
+
 ## Types and validation
 
 - 내부 정적 타입과 외부 입력 검증을 구분한다.
