@@ -138,7 +138,7 @@ function TabsTrigger({ className, ...props }: ComponentProps<typeof TabsPrimitiv
       data-slot="tabs-trigger"
       className={cn(
         "relative flex h-ds-48 shrink-0 items-center justify-center gap-ds-8 whitespace-nowrap bg-surface-primary px-ds-24 text-body-lg-medium text-content-primary outline-none",
-        "hover:bg-surface-secondary hover:text-content-secondary active:bg-surface-tertiary active:text-content-tertiary",
+        "hover:bg-surface-secondary hover:text-content-secondary",
         "focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-interactive-primary",
         "disabled:pointer-events-none disabled:bg-surface-disabled disabled:text-content-disabled",
         "[&_svg]:size-ds-24 [&_svg]:shrink-0",
