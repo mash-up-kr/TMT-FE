@@ -8,6 +8,7 @@ import {
   fieldText,
   type HelpTone,
   helpToneColor,
+  type ResolvedHelpTone,
 } from "./fieldStyles";
 
 export type FieldFrameProps = Readonly<{
@@ -21,7 +22,7 @@ export type FieldFrameProps = Readonly<{
   labelAside?: ReactNode;
   helpMessage?: ReactNode;
   helpMessageId?: string;
-  /** 헬프 메시지 톤. 생략 시 invalid면 error, 아니면 default */
+  /** 헬프 메시지 톤. 오류 톤은 `invalid`에서 파생되므로 여기서 지정하지 않는다. */
   helpTone?: HelpTone;
   invalid?: boolean;
   disabled?: boolean;
@@ -52,7 +53,7 @@ export function FieldFrame({
   containerClassName,
   children,
 }: FieldFrameProps) {
-  const tone: HelpTone = helpTone ?? (invalid ? "error" : "default");
+  const tone: ResolvedHelpTone = invalid ? "error" : (helpTone ?? "default");
   const hasLabelRow = label != null || labelAside != null;
 
   return (

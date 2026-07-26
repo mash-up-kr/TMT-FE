@@ -1,7 +1,8 @@
 import { cn } from "@/shared/utils/cn";
 
 export type FieldSize = "md" | "lg";
-export type HelpTone = "default" | "error" | "success";
+export type HelpTone = "default" | "success";
+export type ResolvedHelpTone = HelpTone | "error";
 
 export const containerGap: Record<FieldSize, string> = {
   lg: "gap-ds-12",
@@ -46,7 +47,7 @@ export function controlClass(size: FieldSize): string {
   );
 }
 
-export const helpToneColor: Record<HelpTone, string> = {
+export const helpToneColor: Record<ResolvedHelpTone, string> = {
   default: "text-content-tertiary",
   error: "text-content-error",
   success: "text-content-success",
