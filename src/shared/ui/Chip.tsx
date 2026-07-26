@@ -3,16 +3,12 @@ import { cn } from "@/shared/utils/cn";
 
 type ChipSize = "sm" | "md" | "lg";
 
-/* Figma stroke는 inside 정렬이라 border 1px를 padding에서 상쇄해
-   시안 높이(sm 26 / md 28 / lg 36)를 유지한다. */
 const sizeStyles: Record<ChipSize, string> = {
   sm: "py-[calc(var(--spacing-ds-4)-1px)] text-body-sm-medium [&_svg]:size-ds-16",
   md: "py-[calc(var(--spacing-ds-4)-1px)] text-body-md-medium [&_svg]:size-ds-16",
   lg: "py-[calc(var(--spacing-ds-8)-1px)] text-body-md-medium [&_svg]:size-ds-20",
 };
 
-/* Figma 시안이 pressed 상태에 한 단계 약한 램프 값(tertiary/hovered,
-   interactive-secondary-hovered)을 쓰므로 active에 -hovered 토큰이 온다. */
 const unselectedStyles =
   "border-stroke-primary bg-surface-primary text-content-primary " +
   "hover:border-stroke-interactive-secondary hover:bg-surface-interactive-tertiary hover:text-content-secondary " +
@@ -30,18 +26,6 @@ type ChipProps = ComponentProps<"button"> & {
   size?: ChipSize;
 };
 
-/**
- * 필터·태그 선택에 쓰는 알약형 Chip. 전체가 하나의 button이고
- * 아이콘 슬롯은 장식이다 — 탭하면 onClick 하나만 발생한다.
- *
- * children은 라벨만 담고, 아이콘은 슬롯으로 넣는다. 슬롯의 svg는
- * size별 크기와 currentColor를 따른다:
- * `<Chip leftIcon={<PlaceIcon />} rightIcon={<CancelIcon />}>라벨</Chip>`
- *
- * `selected`를 넘기면 토글로 간주해 `aria-pressed`를 반영하고,
- * 넘기지 않으면 일반 버튼으로 동작한다. Hovered/Pressed는 prop이 아니라
- * CSS 상태(hover/active)로 표현한다.
- */
 function Chip({
   children,
   className,
