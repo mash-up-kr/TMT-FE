@@ -110,19 +110,19 @@
     "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
 
   /* font size */
-  --typography-font-size-32: 32px;
   --typography-font-size-28: 28px;
   --typography-font-size-24: 24px;
   --typography-font-size-20: 20px;
+  --typography-font-size-18: 18px;
   --typography-font-size-16: 16px;
   --typography-font-size-14: 14px;
   --typography-font-size-12: 12px;
 
   /* line height */
-  --typography-line-height-42: 42px;
   --typography-line-height-38: 38px;
   --typography-line-height-34: 34px;
   --typography-line-height-28: 28px;
+  --typography-line-height-26: 26px;
   --typography-line-height-24: 24px;
   --typography-line-height-20: 20px;
   --typography-line-height-18: 18px;
