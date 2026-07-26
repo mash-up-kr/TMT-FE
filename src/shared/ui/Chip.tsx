@@ -1,5 +1,4 @@
 import type { ComponentProps, ReactNode } from "react";
-import { CancelIcon } from "@/shared/ui/icons";
 import { cn } from "@/shared/utils/cn";
 
 type ChipSize = "sm" | "md" | "lg";
@@ -25,10 +24,7 @@ const selectedStyles =
   "active:border-stroke-interactive-primary-pressed active:bg-surface-selected-pressed active:text-content-interactive-primary-pressed";
 
 type ChipProps = ComponentProps<"button"> & {
-  /** X(제거) 아이콘 표시 여부. Figma closeIcon 프로퍼티와 같이 기본 true. */
-  closable?: boolean;
   leftIcon?: ReactNode;
-  /** trailing 교체 슬롯. 지정하면 closable보다 우선한다 (예: ChevronDownIcon). */
   rightIcon?: ReactNode;
   selected?: boolean;
   size?: ChipSize;
@@ -40,7 +36,7 @@ type ChipProps = ComponentProps<"button"> & {
  *
  * children은 라벨만 담고, 아이콘은 슬롯으로 넣는다. 슬롯의 svg는
  * size별 크기와 currentColor를 따른다:
- * `<Chip leftIcon={<PlaceIcon />}>라벨</Chip>` → 라벨 우측에 X 기본 표시
+ * `<Chip leftIcon={<PlaceIcon />} rightIcon={<CancelIcon />}>라벨</Chip>`
  *
  * `selected`를 넘기면 토글로 간주해 `aria-pressed`를 반영하고,
  * 넘기지 않으면 일반 버튼으로 동작한다. Hovered/Pressed는 prop이 아니라
@@ -49,7 +45,6 @@ type ChipProps = ComponentProps<"button"> & {
 function Chip({
   children,
   className,
-  closable = true,
   leftIcon,
   rightIcon,
   selected,
@@ -75,7 +70,7 @@ function Chip({
     >
       {leftIcon}
       {children}
-      {rightIcon === undefined && closable ? <CancelIcon /> : rightIcon}
+      {rightIcon}
     </button>
   );
 }
