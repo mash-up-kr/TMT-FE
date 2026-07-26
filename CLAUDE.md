@@ -37,6 +37,12 @@ Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node
 
 UI, 스타일, 토큰, 접근성, 레이아웃을 **계획하기 전에** 읽는다.
 
+## Shared agent skills
+
+- 공용 project skill의 정본은 `.agents/skills/<name>/`이다.
+- Claude Code 호환 경로는 `.claude/skills/<name>`에서 정본을 가리키는 상대 symlink로 유지한다.
+- 공용 skill에는 런타임 고유 도구명을 넣지 않고, 연결된 도구의 기능 단위로 절차를 기술한다.
+
 ## Repository facts
 
 - 구조 규약과 API/MSW 도입 계약의 정본은 `.claude/rules/architecture.md`다.

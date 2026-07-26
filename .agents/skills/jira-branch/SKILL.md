@@ -16,7 +16,7 @@ description: >-
 이 스킬이 왜 이렇게 동작하는지 먼저 이해하면 나머지는 자연스럽게 따라온다.
 
 1. **입력이 무엇이든 결과는 하나로 수렴한다.** 티켓 키·기능 이름·빈손 — 사용자는 편한 대로 말하고, 스킬이 티켓을 특정하는 책임을 진다.
-2. **본인은 묻지 않고 판별한다.** "당신 누구세요"를 절대 묻지 않는다. 실행자의 Atlassian MCP 인증이 곧 신원이다 — JQL `currentUser()`와 `atlassianUserInfo`가 실행하는 사람 본인을 돌려준다. 그래서 **팀원 누구에게 공유해도 설정 없이 각자 자기 티켓 기준으로 동작**한다. *남에게* 할당하는 드문 경우에만 `lookupJiraAccountId`로 그때그때 조회한다 — 팀원 목록을 파일에 박아두지 않는다(공개 레포 PII).
+2. **본인은 묻지 않고 판별한다.** "당신 누구세요"를 절대 묻지 않는다. 연결된 Atlassian 인증과 JQL `currentUser()`로 실행자 본인을 판별한다. 그래서 **팀원 누구에게 공유해도 설정 없이 각자 자기 티켓 기준으로 동작**한다. *남에게* 할당하는 드문 경우에만 Jira 사용자 검색으로 account ID를 그때그때 조회한다 — 팀원 목록을 파일에 박아두지 않는다(공개 레포 PII).
 3. **로컬은 자유롭게, 원격 쓰기는 신중하게.** 브랜치 checkout·생성은 되돌리기 쉬우니 확인 없이 진행한다. 지라 티켓 생성·상태 전환·코멘트는 되돌리기 번거로운 외부 쓰기라 실행 전 한 번 확인받는다.
 
 ## "연결(link)"이란
@@ -41,21 +41,21 @@ description: >-
 
 | 입력 | 처리 |
 |---|---|
-| 티켓 키 (`TMT-75`·`#75`·`75`) | `getJiraIssue`로 조회해 확정 |
+| 티켓 키 (`TMT-75`·`#75`·`75`) | Jira 이슈 조회 기능으로 확정 |
 | 기능 이름/설명 (`chip-component`) | 내 활성 티켓 + summary 검색으로 매칭 → 있으면 확정, 없으면 **2-b(티켓 생성)** |
-| 없음 | 내 활성 티켓을 보여주고 고르게 함 (`AskUserQuestion`) |
+| 없음 | 내 활성 티켓을 보여주고 사용자에게 선택받음 |
 
 내 활성 티켓:
-```
-searchJiraIssuesUsingJql(cloudId,
-  jql="assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC",
-  fields=["summary","status","issuetype","updated"], maxResults=50)
+```text
+JQL: assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC
+fields: summary, status, issuetype, updated
+max results: 50
 ```
 이름 매칭은 `jql='project = TMT AND summary ~ "chip" ORDER BY updated DESC'` 병행. 후보가 여럿이면 고르게 하고, 하나여도 "이 티켓 맞나요?"로 한 번 확정한다 — 엉뚱한 티켓에 브랜치를 엮는 게 가장 비싼 실수다.
 
 ### 2-b — 티켓이 없으면 먼저 만든다
 
-매칭이 없으면 사용자에게 생성 여부를 확인하고, `team-tools:jira-creator` 규칙으로 **프로젝트 TMT**에 만든다(기본 타입 `작업`, 담당자는 본인 — `atlassianUserInfo`의 account ID). `createJiraIssue`는 `assignee_account_id`(account ID)를 받는다. 필수 커스텀 필드로 create가 막히면(`... is required`) `getJiraIssueTypeMetaWithFields`로 확인해 `additional_fields`에 채워 재시도. 생성된 키로 3번을 잇는다.
+매칭이 없으면 사용자에게 생성 여부를 확인하고 **프로젝트 TMT**에 만든다. `team-tools:jira-creator`가 제공되면 그 규칙을 따르고, 없으면 기본 타입 `작업`, 담당자는 연결된 Atlassian 인증의 본인 account ID로 설정한다. 필수 커스텀 필드 오류(`... is required`)가 나면 Jira 이슈 타입 메타데이터를 조회해 누락 필드를 채워 재시도한다. 생성된 키로 3번을 잇는다.
 
 ### 3 — 브랜치 이름을 짓는다 (제안 → 확인)
 
@@ -80,9 +80,9 @@ searchJiraIssuesUsingJql(cloudId,
 ### 5 — 티켓에 반영한다 (외부 쓰기 — 실행 전 확인)
 
 브랜치가 생겼으니 티켓을 작업 상태로 맞추고 흔적을 남긴다. 이미 만족하는 단계는 건너뛴다(중복 노이즈 방지).
-1. **진행 중 전환** (아직 아니면): `transitionJiraIssue(..., transition={"id":"21"})`. TMT 전역 ID: `21`=진행중, `2`=검토중, `31`=완료, `11`=해야할일, `3`=Blocked. 안 맞으면 `getTransitionsForJiraIssue`로 재확인.
-2. **미할당이면 본인 할당**: `editJiraIssue(fields={"assignee":{"accountId":"<본인>"}})`.
-3. **브랜치 기록 코멘트**: `addCommentToJiraIssue(..., contentFormat="markdown", commentBody="🌿 브랜치 \`feat/#75-chip-component\` 생성 (base develop). PR 생성 시 갱신.")`
+1. **진행 중 전환** (아직 아니면): TMT 전역 ID `21`로 전환한다. 참고 ID: `21`=진행중, `2`=검토중, `31`=완료, `11`=해야할일, `3`=Blocked. 실패하면 Jira의 사용 가능한 상태 전환을 조회해 재확인한다.
+2. **미할당이면 본인 할당**: 연결된 Atlassian 인증의 account ID를 담당자로 설정한다.
+3. **브랜치 기록 코멘트**: Markdown으로 ``🌿 브랜치 `feat/#75-chip-component` 생성 (base develop). PR 생성 시 갱신.``을 남긴다.
 
 ### 6 — 한눈에 보고한다
 
@@ -90,7 +90,7 @@ searchJiraIssuesUsingJql(cloudId,
 
 ## 경계
 
-- `mcp__atlassian`이 안 붙어 있으면 재연결을 안내하고 멈춘다 — 우회하지 않는다. (본인 신원도 이 인증에서 나온다.)
+- 연결된 Jira/Atlassian 도구가 없으면 재연결을 안내하고 멈춘다 — 우회하지 않는다. (본인 신원도 이 인증에서 나온다.)
 - 규약 정규식을 통과 못 하는 이름은 만들지 않는다.
 
 ## 예시

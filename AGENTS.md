@@ -16,11 +16,3 @@
 - UI·스타일 작업 (`src/**/*.tsx`, `src/**/*.css`): `.claude/rules/design-system.md` 추가로 읽는다.
 
 rule 파일 상단의 `paths:` frontmatter는 이 환경에서는 무시하고, 위 조건 판단에만 참고한다.
-
-## Skills (수동)
-
-Claude Code는 `.claude/skills/`의 스킬을 자동으로 노출하지만, 이 환경에는 자동 발견이 없다. 아래 조건에 해당하면 해당 `SKILL.md`를 먼저 읽고 그 절차를 따른다.
-
-- 지라 TMT 티켓에서 규약 브랜치를 만들 때 — 티켓 키(TMT-75)·기능 이름(chip 등)·미지정 무엇이든, "브랜치 파줘/만들어줘", "이 작업 시작할게"처럼 **새 브랜치 생성 의도**가 있으면: `.claude/skills/jira-branch/SKILL.md`
-
-SKILL.md 본문의 `mcp__atlassian__*` 도구명은 Claude Code 기준이다. 이 환경에서는 연결된 Atlassian MCP의 동등한 도구로 의도를 매핑해 따른다.
