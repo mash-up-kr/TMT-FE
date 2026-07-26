@@ -7,6 +7,8 @@ import { extendTailwindMerge } from "tailwind-merge";
  * - `text-heading-*`, `text-body-*`: 타이포그래피 토큰
  * - `surface-*`, `content-*`, `icon-*`, `stroke-*`: theme에 정의된 semantic 색상 토큰
  * - `ds-*`: TMT spacing/radius 토큰
+ * - `border-sm|md|lg`: theme의 border width 유틸 — 등록하지 않으면 twMerge가
+ *   border 색상 클래스와 충돌로 오판해 둘 중 하나를 제거한다.
  *
  * `clsx`는 조건에 맞는 클래스만 하나의 문자열로 합칩니다.
  * `twMerge`는 같은 CSS 속성을 바꾸는 Tailwind 클래스를 찾아 마지막 클래스를 남깁니다.
@@ -20,8 +22,17 @@ const isTmtSpacingToken = (value: string) => /^ds-(0|2|4|8|12|16|20|24|32|40|48|
 
 const isTmtRadiusToken = (value: string) => /^ds-(xs|sm|md|lg|xl|full)$/.test(value);
 
+const isTmtBorderWidthToken = (value: string) => /^(sm|md|lg)$/.test(value);
+
 const twMerge = extendTailwindMerge({
   extend: {
+    // twMerge는 `border-<값>`에서 숫자·length가 아닌 값을 전부 border-color로
+    // 분류한다(색상 이름은 열려 있어 catch-all). 그래서 커스텀 width 유틸은
+    // 이름을 어떻게 지어도 등록 없이는 색상 클래스와 경쟁한다.
+    // theme 확장 키에는 border-width scale이 없어 classGroups로만 등록 가능하다.
+    classGroups: {
+      "border-w": [{ border: [isTmtBorderWidthToken] }],
+    },
     theme: {
       radius: [isTmtRadiusToken],
       spacing: [isTmtSpacingToken],
