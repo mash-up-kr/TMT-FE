@@ -26,6 +26,10 @@ paths:
 - 하나의 단순 기능을 위해 무거운 라이브러리를 추가하지 않는다.
 - API 연동과 HTTP client 선택은 architecture rule의 API·Mock 도입 계약을 따른다.
 
+## Date and time
+
+- 날짜 관련 처리는 Temporal을 사용한다.
+
 ## Generated and external files
 
 - `next-env.d.ts`는 생성 파일이다. 직접 수정하지 않는다.
