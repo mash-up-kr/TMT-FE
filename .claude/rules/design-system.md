@@ -40,7 +40,9 @@ paths:
 
 ## 구현 패턴
 
-공용 컴포넌트는 shadcn 스타일 패턴을 표준으로 한다 — `className` 병합 허용, props forwarding, 합성이 필요하면 `asChild`. shadcn을 라이브러리로 설치하지 않고 패턴만 차용한다.
+공용 컴포넌트는 shadcn 스타일 패턴을 표준으로 한다 — `className` 병합 허용, props forwarding. shadcn을 라이브러리로 설치하지 않고 패턴만 차용한다.
+
+headless primitive가 필요하면 `@base-ui/react`를 쓴다. 합성은 `asChild`가 아니라 Base UI의 `render` prop으로 한다.
 
 ## Interaction states
 
