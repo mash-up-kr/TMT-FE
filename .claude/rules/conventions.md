@@ -25,6 +25,7 @@ paths:
 - production dependency 추가 전 목적, 대안, 크기를 검토하고 이유를 보고한다.
 - 하나의 단순 기능을 위해 무거운 라이브러리를 추가하지 않는다.
 - API 연동과 HTTP client 선택은 architecture rule의 API·Mock 도입 계약을 따른다.
+- `cn()`에서 사용하는 커스텀 border width 유틸은 `tailwind-merge`의 `classGroups.border-w`에 등록해 border color 유틸과 독립적으로 병합한다.
 
 ## Generated and external files
 
