@@ -50,7 +50,7 @@ function Chip({
       )}
       type={type}
       {...props}
-      aria-pressed={selected}
+      aria-pressed={selected ?? props["aria-pressed"]}
     >
       {leftIcon}
       {children}
