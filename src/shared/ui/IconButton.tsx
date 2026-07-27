@@ -21,8 +21,9 @@ export function IconButton({ className, children, type = "button", ...props }: I
       type={type}
       className={cn(
         "relative text-icon-primary",
+        "after:-translate-x-1/2 after:-translate-y-1/2 after:absolute after:top-1/2 after:left-1/2 after:content-['']",
         className,
-        "after:-translate-x-1/2 after:-translate-y-1/2 after:absolute after:top-1/2 after:left-1/2 after:size-ds-32 after:content-['']",
+        "after:size-ds-32",
       )}
       {...props}
     >
