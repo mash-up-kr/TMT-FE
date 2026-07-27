@@ -98,23 +98,23 @@
   --font-sans: var(--typography-font-family);
 
   /* Heading (모두 Bold 700) */
-  --text-heading-xl: var(--typography-font-size-32);
-  --text-heading-xl--line-height: var(--typography-line-height-42);
+  --text-heading-xl: var(--typography-font-size-28);
+  --text-heading-xl--line-height: var(--typography-line-height-38);
   --text-heading-xl--font-weight: var(--typography-font-weight-bold);
   --text-heading-xl--letter-spacing: var(--typography-letter-spacing-normal);
 
-  --text-heading-lg: var(--typography-font-size-28);
-  --text-heading-lg--line-height: var(--typography-line-height-38);
+  --text-heading-lg: var(--typography-font-size-24);
+  --text-heading-lg--line-height: var(--typography-line-height-34);
   --text-heading-lg--font-weight: var(--typography-font-weight-bold);
   --text-heading-lg--letter-spacing: var(--typography-letter-spacing-normal);
 
-  --text-heading-md: var(--typography-font-size-24);
-  --text-heading-md--line-height: var(--typography-line-height-34);
+  --text-heading-md: var(--typography-font-size-20);
+  --text-heading-md--line-height: var(--typography-line-height-28);
   --text-heading-md--font-weight: var(--typography-font-weight-bold);
   --text-heading-md--letter-spacing: var(--typography-letter-spacing-normal);
 
-  --text-heading-sm: var(--typography-font-size-20);
-  --text-heading-sm--line-height: var(--typography-line-height-28);
+  --text-heading-sm: var(--typography-font-size-18);
+  --text-heading-sm--line-height: var(--typography-line-height-26);
   --text-heading-sm--font-weight: var(--typography-font-weight-bold);
   --text-heading-sm--letter-spacing: var(--typography-letter-spacing-normal);
 
