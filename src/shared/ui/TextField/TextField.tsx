@@ -1,12 +1,12 @@
 "use client";
 
-import { forwardRef, type InputHTMLAttributes, type ReactNode, useId } from "react";
+import { type ComponentProps, type ReactNode, useId } from "react";
 import { cn } from "@/shared/utils/cn";
 import { FieldFrame } from "./FieldFrame";
 import { controlClass, type FieldSize, type HelpTone } from "./fieldStyles";
 
 export type TextFieldProps = Readonly<
-  Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
+  Omit<ComponentProps<"input">, "size"> & {
     size?: FieldSize;
     label?: ReactNode;
     required?: boolean;
@@ -21,25 +21,23 @@ export type TextFieldProps = Readonly<
 >;
 
 /** 단일 라인 텍스트 입력 필드 (Figma: Text field). */
-export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  {
-    id,
-    size = "lg",
-    label,
-    required = false,
-    optional = false,
-    helpMessage,
-    helpTone,
-    invalid = false,
-    trailing,
-    disabled = false,
-    className,
-    containerClassName,
-    "aria-describedby": ariaDescribedby,
-    ...rest
-  },
+export function TextField({
+  id,
   ref,
-) {
+  size = "lg",
+  label,
+  required = false,
+  optional = false,
+  helpMessage,
+  helpTone,
+  invalid = false,
+  trailing,
+  disabled = false,
+  className,
+  containerClassName,
+  "aria-describedby": ariaDescribedby,
+  ...rest
+}: TextFieldProps) {
   const reactId = useId();
   const inputId = id ?? reactId;
   const helpId = helpMessage != null ? `${inputId}-help` : undefined;
@@ -81,4 +79,4 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       )}
     </FieldFrame>
   );
-});
+}

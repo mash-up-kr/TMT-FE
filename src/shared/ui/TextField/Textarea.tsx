@@ -1,19 +1,12 @@
 "use client";
 
-import {
-  type ChangeEvent,
-  forwardRef,
-  type ReactNode,
-  type TextareaHTMLAttributes,
-  useId,
-  useState,
-} from "react";
+import { type ChangeEvent, type ComponentProps, type ReactNode, useId, useState } from "react";
 import { cn } from "@/shared/utils/cn";
 import { FieldFrame } from "./FieldFrame";
 import { controlClass, type FieldSize, type HelpTone } from "./fieldStyles";
 
 export type TextareaProps = Readonly<
-  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "rows"> & {
+  Omit<ComponentProps<"textarea">, "rows"> & {
     size?: FieldSize;
     label?: ReactNode;
     required?: boolean;
@@ -29,30 +22,28 @@ export type TextareaProps = Readonly<
 >;
 
 /** 멀티 라인 텍스트 입력 필드 (Figma: Text area). */
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  {
-    id,
-    size = "lg",
-    label,
-    required = false,
-    optional = false,
-    helpMessage,
-    helpTone,
-    invalid = false,
-    showCount = false,
-    rows = 4,
-    disabled = false,
-    maxLength,
-    value,
-    defaultValue,
-    onChange,
-    className,
-    containerClassName,
-    "aria-describedby": ariaDescribedby,
-    ...rest
-  },
+export function Textarea({
+  id,
   ref,
-) {
+  size = "lg",
+  label,
+  required = false,
+  optional = false,
+  helpMessage,
+  helpTone,
+  invalid = false,
+  showCount = false,
+  rows = 4,
+  disabled = false,
+  maxLength,
+  value,
+  defaultValue,
+  onChange,
+  className,
+  containerClassName,
+  "aria-describedby": ariaDescribedby,
+  ...rest
+}: TextareaProps) {
   const reactId = useId();
   const textareaId = id ?? reactId;
   const helpId = helpMessage != null ? `${textareaId}-help` : undefined;
@@ -117,4 +108,4 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       />
     </FieldFrame>
   );
-});
+}
