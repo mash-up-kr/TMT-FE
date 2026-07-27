@@ -56,7 +56,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   const reactId = useId();
   const textareaId = id ?? reactId;
   const helpId = helpMessage != null ? `${textareaId}-help` : undefined;
-  const describedBy = [ariaDescribedby, helpId].filter(Boolean).join(" ") || undefined;
+  const hasCounter = showCount && maxLength != null;
+  // 글자 수는 aria-live로 매 입력마다 읽지 않고, describedby로 포커스 시 한 번 알린다.
+  const countId = hasCounter ? `${textareaId}-count` : undefined;
+  const describedBy = [ariaDescribedby, helpId, countId].filter(Boolean).join(" ") || undefined;
 
   const isControlled = value != null;
   const [uncontrolledCount, setUncontrolledCount] = useState(
@@ -72,15 +75,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     onChange?.(event);
   }
 
-  const counter =
-    showCount && maxLength != null ? (
-      <span className="text-body-sm-medium text-content-tertiary">
-        <span className={invalid ? "text-content-error" : "text-content-secondary"}>
-          {currentLength}
-        </span>
-        {` / ${maxLength}`}
+  const counter = hasCounter ? (
+    <span id={countId} className="text-body-sm-medium text-content-tertiary">
+      <span className={invalid ? "text-content-error" : "text-content-secondary"}>
+        {currentLength}
       </span>
-    ) : undefined;
+      {` / ${maxLength}`}
+    </span>
+  ) : undefined;
 
   return (
     <FieldFrame
