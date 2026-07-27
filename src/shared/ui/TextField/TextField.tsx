@@ -70,7 +70,8 @@ export function TextField({
       {trailing != null && (
         <span
           className={cn(
-            "flex shrink-0 items-center justify-center text-icon-secondary",
+            "flex shrink-0 items-center justify-center",
+            disabled ? "text-icon-disabled" : "text-icon-secondary",
             size === "lg" ? "size-ds-24" : "size-ds-20",
           )}
         >
