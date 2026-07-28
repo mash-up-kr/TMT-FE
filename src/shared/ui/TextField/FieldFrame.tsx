@@ -13,10 +13,7 @@ import {
 } from "./fieldStyles";
 
 export type FieldFrameProps = Readonly<{
-  /**
-   * 컨트롤 id — label의 htmlFor로 연결한다.
-   * optional로 두면 빠뜨려도 타입·린트가 잡지 못하고 스크린리더에서만 드러나므로 필수다.
-   */
+  /** 컨트롤 id — label의 htmlFor로 연결 */
   htmlFor: string;
   size?: FieldSize;
   label?: ReactNode;
@@ -75,7 +72,7 @@ export function FieldFrame({
                   *
                 </span>
               )}
-              {optional && <span className="text-content-tertiary">(Optional)</span>}
+              {optional && !required && <span className="text-content-tertiary">(Optional)</span>}
             </label>
           ) : (
             <span />
