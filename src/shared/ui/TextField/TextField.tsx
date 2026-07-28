@@ -61,6 +61,7 @@ export function TextField({
         ref={ref}
         id={inputId}
         disabled={disabled}
+        required={required}
         aria-invalid={invalid || undefined}
         aria-required={required || undefined}
         aria-describedby={describedBy}

@@ -48,24 +48,24 @@ export function SearchField({
     [ref],
   );
 
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onValueChange(event.target.value);
-  }
+  };
 
-  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     // 한글 조합 중의 Enter는 글자 확정이므로 검색으로 보지 않는다.
     if (event.key === "Enter" && !event.nativeEvent.isComposing) {
       onSearch?.();
     }
 
     onKeyDown?.(event);
-  }
+  };
 
-  function handleClear() {
+  const handleClear = () => {
     onValueChange("");
     // 포커스를 남겨두지 않으면 사용자가 다시 탭해야 하고 스크린리더는 위치를 잃는다.
     inputRef.current?.focus();
-  }
+  };
 
   const iconSize = size === "lg" ? 24 : 20;
   const showClear = value.length > 0 && !disabled;

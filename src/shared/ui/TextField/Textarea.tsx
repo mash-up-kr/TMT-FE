@@ -58,13 +58,13 @@ export function Textarea({
   );
   const currentLength = isControlled ? String(value).length : uncontrolledCount;
 
-  function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (!isControlled) {
       setUncontrolledCount(event.target.value.length);
     }
 
     onChange?.(event);
-  }
+  };
 
   const counter = hasCounter ? (
     <span id={countId} className="text-body-sm-medium text-content-tertiary">
@@ -96,6 +96,7 @@ export function Textarea({
         id={textareaId}
         rows={rows}
         disabled={disabled}
+        required={required}
         maxLength={maxLength}
         value={value}
         defaultValue={defaultValue}
