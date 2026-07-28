@@ -7,6 +7,7 @@ import {
   fieldBoxState,
   fieldText,
   type HelpTone,
+  helpText,
   helpToneColor,
   type ResolvedHelpTone,
 } from "./fieldStyles";
@@ -91,7 +92,7 @@ export function FieldFrame({
       </div>
 
       {helpMessage != null && (
-        <p id={helpMessageId} className={cn(fieldText[size], helpToneColor[tone])}>
+        <p id={helpMessageId} className={cn(helpText[size], helpToneColor[tone])}>
           {helpMessage}
         </p>
       )}

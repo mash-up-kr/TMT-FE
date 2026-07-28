@@ -9,9 +9,15 @@ export const containerGap: Record<FieldSize, string> = {
   md: "gap-ds-8",
 };
 
-/** 라벨 · 헬프 메시지 · 입력 텍스트 타이포 (Figma: 모두 Medium) */
+/** 라벨 · 입력 텍스트 타이포 (Figma: 모두 Medium) */
 export const fieldText: Record<FieldSize, string> = {
   lg: "text-body-lg-medium",
+  md: "text-body-md-medium",
+};
+
+/** 헬프 메시지 타이포. 라벨·입력과 무관하게 항상 14px. */
+export const helpText: Record<FieldSize, string> = {
+  lg: "text-body-md-medium",
   md: "text-body-md-medium",
 };
 
