@@ -5,7 +5,7 @@ import { CancelIcon, SearchIcon } from "@/shared/ui/icons";
 import { cn } from "@/shared/utils/cn";
 import { TextField, type TextFieldProps } from "./TextField";
 
-/** TODO(팀 논의): controlled 전용은 합의 전 — 지우기가 값을 써야 해서 좁혔다. */
+/** controlled 전용 — 지우기가 값을 써야 해서 `value` + `onValueChange`가 필수다. */
 export type SearchFieldProps = Omit<
   TextFieldProps,
   "trailing" | "type" | "value" | "defaultValue" | "onChange"
