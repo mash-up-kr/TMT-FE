@@ -15,11 +15,7 @@ export const fieldText: Record<FieldSize, string> = {
   md: "text-body-md-medium",
 };
 
-/** 헬프 메시지 타이포. 라벨·입력과 무관하게 항상 14px. */
-export const helpText: Record<FieldSize, string> = {
-  lg: "text-body-md-medium",
-  md: "text-body-md-medium",
-};
+export const helpText = "text-body-md-medium";
 
 export const fieldBoxBase =
   "flex w-full gap-ds-12 overflow-hidden rounded-ds-md border-sm px-ds-16 py-ds-12 transition-colors";

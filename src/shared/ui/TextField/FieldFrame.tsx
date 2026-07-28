@@ -92,7 +92,7 @@ export function FieldFrame({
       </div>
 
       {helpMessage != null && (
-        <p id={helpMessageId} className={cn(helpText[size], helpToneColor[tone])}>
+        <p id={helpMessageId} className={cn(helpText, helpToneColor[tone])}>
           {helpMessage}
         </p>
       )}
