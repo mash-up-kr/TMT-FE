@@ -6,7 +6,9 @@
 
 ## 🔗 관련 이슈
 
-Closes
+<!-- 관련 Jira 티켓을 링크로 남깁니다. 여러 개면 줄을 추가하고, 없으면 이 섹션을 비워둡니다. -->
+
+- [TMT-000](https://ttalkkak.atlassian.net/browse/TMT-000)
 
 ## 📸 스크린샷
 
