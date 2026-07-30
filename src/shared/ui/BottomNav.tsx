@@ -2,11 +2,11 @@
 
 import type { ComponentPropsWithRef } from "react";
 import { cn } from "@/shared/utils/cn";
+import { PlusIcon } from "./icons";
 import FeedIcon from "./icons/assets/bottom-nav-feed.svg?react";
 import GroupIcon from "./icons/assets/bottom-nav-group.svg?react";
 import HomeIcon from "./icons/assets/bottom-nav-home.svg?react";
 import MyIcon from "./icons/assets/bottom-nav-my.svg?react";
-import PlusIcon from "./icons/assets/bottom-nav-plus.svg?react";
 
 type BottomNavValue = "home" | "feed" | "group" | "my";
 
