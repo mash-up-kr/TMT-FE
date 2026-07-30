@@ -47,3 +47,6 @@ next-env.d.ts
 /.omc/
 /.omx/
 /.context/
+
+# .claude 내부 개인 작업 파일
+/.claude/private/
