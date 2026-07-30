@@ -33,6 +33,7 @@
   --color-surface-interactive-error-hovered: var(--primitive-error-700);
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-backdrop: var(--primitive-transparent-64);
+  --color-surface-navigation-selected: var(--primitive-transparent-8);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -93,6 +94,7 @@
   --color-stroke-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-stroke-interactive-secondary-pressed: var(--primitive-neutral-600);
   --color-stroke-selected: var(--primitive-neutral-500);
+  --color-stroke-inverse: var(--primitive-base-white);
   --color-stroke-interactive-error: var(--primitive-error-600);
   --color-stroke-interactive-error-hovered: var(--primitive-error-700);
   --color-stroke-interactive-error-pressed: var(--primitive-error-800);
@@ -170,6 +172,17 @@
   --text-body-sm-regular--font-weight: var(--typography-font-weight-regular);
   --text-body-sm-regular--letter-spacing: var(--typography-letter-spacing-normal);
 
+  /* Navigation label (10 / 12) */
+  --text-label-navigation: var(--typography-font-size-10);
+  --text-label-navigation--line-height: var(--typography-line-height-12);
+  --text-label-navigation--font-weight: var(--typography-font-weight-medium);
+  --text-label-navigation--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-label-navigation-selected: var(--typography-font-size-10);
+  --text-label-navigation-selected--line-height: var(--typography-line-height-12);
+  --text-label-navigation-selected--font-weight: var(--typography-font-weight-semibold);
+  --text-label-navigation-selected--letter-spacing: var(--typography-letter-spacing-normal);
+
   /* ===================== spacing (디자인 스케일) ===================== */
   /* `ds` 프리픽스로 Tailwind 기본 숫자 scale(p-4=16px 등)을 덮지 않는다.
      디자인 간격은 p-ds-4 / gap-ds-16 처럼 명시적으로 사용. (Figma unit = px 값) */
@@ -202,6 +215,8 @@
   --shadow-floating: 0 2px 12px 0 var(--primitive-transparent-10);
   --shadow-toast: 0 2px 8px 0 var(--primitive-transparent-20);
   --shadow-modal: 0 4px 24px 0 var(--primitive-transparent-16);
+  --shadow-navigation: 0 0 12px 0 var(--primitive-transparent-10);
+  --blur-navigation: 2px;
 
   /* ===================== layout grid (mobile-first) ===================== */
   --layout-grid-columns: 4;
@@ -212,6 +227,7 @@
      달라 따로 둔다 — 카드가 화면 끝에 닿지 않게 하는 값이다. */
   --layout-overlay-inset-block: var(--number-unit-32);
   --layout-overlay-inset-inline: var(--number-unit-20);
+  --layout-bottom-navigation-width: 320px;
 }
 
 /* ===================== border width ===================== */

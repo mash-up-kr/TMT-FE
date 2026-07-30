@@ -4,7 +4,7 @@ import { extendTailwindMerge } from "tailwind-merge";
 /**
  * TMT 디자인 토큰을 Tailwind 병합 규칙에 추가합니다.
  *
- * - `text-heading-*`, `text-body-*`: 타이포그래피 토큰
+ * - `text-heading-*`, `text-body-*`, `text-label-*`: 타이포그래피 토큰
  * - `surface-*`, `content-*`, `icon-*`, `stroke-*`: theme에 정의된 semantic 색상 토큰
  * - `ds-*`: TMT spacing/radius 토큰
  * - `border-sm|md|lg`: theme의 border width 유틸 — 등록하지 않으면 twMerge가
@@ -15,8 +15,7 @@ import { extendTailwindMerge } from "tailwind-merge";
  * `cn`은 두 함수를 묶어 조건부 결합과 충돌 정리를 한 번에 처리합니다.
  */
 
-const isTmtTextToken = (value: string) =>
-  /^(heading-(xl|lg|md|sm)|body-(lg|md|sm)-(bold|medium|regular))$/.test(value);
+const isTmtTextToken = (value: string) => /^(heading|body|label)-/.test(value);
 
 const isTmtSpacingToken = (value: string) => /^ds-(0|2|4|8|12|16|20|24|32|40|48|64)$/.test(value);
 
