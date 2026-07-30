@@ -42,7 +42,7 @@ export default function ModalTestPage() {
         />
         <Case
           label="긴 본문"
-          hint="카드가 화면을 넘지 않고 내부에서만 스크롤되어야 한다"
+          hint="본문만 스크롤되고 footer의 CTA는 하단에 고정되어야 한다"
           onOpen={() => setLongBody(true)}
         />
         <Case
@@ -64,7 +64,7 @@ export default function ModalTestPage() {
         description="티켓을 사용해 그룹에 가입하시겠어요?"
         showClose={false}
         footer={
-          <div className="mt-ds-24 flex flex-col gap-ds-8">
+          <div className="flex flex-col gap-ds-8">
             <TestButton variant="primary" onClick={() => setBasic(false)}>
               가입하기
             </TestButton>
@@ -104,7 +104,16 @@ export default function ModalTestPage() {
         </p>
       </Modal>
 
-      <Modal open={longBody} onOpenChange={setLongBody} title="긴 본문 스크롤">
+      <Modal
+        open={longBody}
+        onOpenChange={setLongBody}
+        title="긴 본문 스크롤"
+        footer={
+          <TestButton variant="primary" onClick={() => setLongBody(false)}>
+            스크롤해도 이 버튼은 고정
+          </TestButton>
+        }
+      >
         <div className="flex flex-col gap-ds-8">
           {LONG_BODY_LINES.map((line) => (
             <p key={line} className="text-body-md-regular text-content-secondary">
@@ -120,7 +129,7 @@ export default function ModalTestPage() {
         title="한글 입력"
         description="입력창에 한글을 치다가 조합 중인 상태에서 ESC를 눌러본다."
         footer={
-          <TestButton variant="primary" className="mt-ds-24" onClick={() => setWithInput(false)}>
+          <TestButton variant="primary" onClick={() => setWithInput(false)}>
             확인
           </TestButton>
         }

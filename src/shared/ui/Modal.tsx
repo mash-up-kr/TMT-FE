@@ -14,7 +14,7 @@ type ModalProps = Readonly<{
   description?: string;
   /** 본문. 아이콘·입력 등 내용 구조는 전부 호출부가 조립한다. */
   children?: ReactNode;
-  /** CTA 및 추가 영역은 footer에서 담당. */
+  /** CTA 영역. 스크롤 밖 하단에 고정된다. 버튼 배치는 호출부가 정한다. */
   footer?: ReactNode;
   showClose?: boolean;
   className?: string;
@@ -68,8 +68,9 @@ export function Modal({
             ) : null}
             <div
               className={cn(
-                "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20 pb-ds-20",
+                "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20",
                 !hasHeader && "pt-ds-20",
+                !footer && "pb-ds-20",
               )}
             >
               {hasHeader ? null : <Dialog.Title className="sr-only">{title}</Dialog.Title>}
@@ -79,13 +80,13 @@ export function Modal({
                 </Dialog.Description>
               ) : null}
               {children}
-              {footer}
               {showClose ? null : (
                 <Dialog.Close aria-label="닫기" className="sr-only">
                   닫기
                 </Dialog.Close>
               )}
             </div>
+            {footer ? <div className="shrink-0 px-ds-20 pt-ds-20 pb-ds-20">{footer}</div> : null}
           </Dialog.Popup>
         </Dialog.Viewport>
       </Dialog.Portal>
