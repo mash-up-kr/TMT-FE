@@ -1,0 +1,217 @@
+"use client";
+
+import { Select as SelectPrimitive } from "@base-ui/react/select";
+import { type ReactNode, useId } from "react";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
+import { FieldFrame } from "@/shared/ui/TextField/FieldFrame";
+import { type FieldSize, fieldText, type HelpTone } from "@/shared/ui/TextField/fieldStyles";
+import { cn } from "@/shared/utils/cn";
+
+export type SelectOption = Readonly<{
+  value: string;
+  label: ReactNode;
+  /** 라벨 아래 보조 설명 */
+  description?: ReactNode;
+  disabled?: boolean;
+}>;
+
+export type SelectProps = Readonly<{
+  items: readonly SelectOption[];
+  value?: string | null;
+  defaultValue?: string | null;
+  onValueChange?: SelectPrimitive.Root.Props<string | null>["onValueChange"];
+  placeholder?: ReactNode;
+  size?: FieldSize;
+  label?: ReactNode;
+  required?: boolean;
+  optional?: boolean;
+  helpMessage?: ReactNode;
+  helpTone?: HelpTone;
+  invalid?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  name?: string;
+  form?: string;
+  id?: string;
+  /** 트리거 버튼 클래스 */
+  className?: string;
+  containerClassName?: string;
+  popupClassName?: string;
+  "aria-describedby"?: string;
+  "aria-label"?: string;
+}>;
+
+const iconSize: Record<FieldSize, number> = {
+  lg: 24,
+  md: 20,
+};
+
+const descriptionText: Record<FieldSize, string> = {
+  lg: "text-body-md-regular",
+  md: "text-body-sm-regular",
+};
+
+/**
+ * Figma: Select field. FieldFrame이 라벨·테두리 박스·헬프 메시지를 담당하고
+ * 트리거 버튼이 박스 전체를 채운다.
+ */
+export function Select({
+  items,
+  value,
+  defaultValue,
+  onValueChange,
+  placeholder,
+  size = "lg",
+  label,
+  required = false,
+  optional = false,
+  helpMessage,
+  helpTone,
+  invalid = false,
+  disabled = false,
+  readOnly = false,
+  name,
+  form,
+  id,
+  className,
+  containerClassName,
+  popupClassName,
+  "aria-describedby": ariaDescribedby,
+  "aria-label": ariaLabel,
+}: SelectProps) {
+  const reactId = useId();
+  const triggerId = id ?? reactId;
+  const helpId = helpMessage != null ? `${triggerId}-help` : undefined;
+  const describedBy = [ariaDescribedby, helpId].filter(Boolean).join(" ") || undefined;
+
+  return (
+    <SelectPrimitive.Root
+      items={items}
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      readOnly={readOnly}
+      required={required}
+      name={name}
+      form={form}
+    >
+      <FieldFrame
+        htmlFor={triggerId}
+        size={size}
+        label={label}
+        required={required}
+        optional={optional}
+        helpMessage={helpMessage}
+        helpMessageId={helpId}
+        helpTone={helpTone}
+        invalid={invalid}
+        disabled={disabled}
+        containerClassName={containerClassName}
+        boxClassName={cn(
+          "p-0",
+          !disabled && !invalid && "has-[[data-popup-open]]:border-stroke-field-pressed",
+        )}
+      >
+        <SelectPrimitive.Trigger
+          id={triggerId}
+          aria-label={ariaLabel}
+          aria-invalid={invalid || undefined}
+          aria-describedby={describedBy}
+          className={cn(
+            "flex w-full items-center justify-between gap-ds-12 px-ds-16 py-ds-12 text-left",
+            // outline-none이 --tw-outline-style을 none으로 고정하므로 focus-visible에서 solid를 되돌린다.
+            "outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-interactive-primary",
+            fieldText[size],
+            disabled ? "cursor-not-allowed text-content-disabled" : "text-content-primary",
+            className,
+          )}
+        >
+          <SelectPrimitive.Value
+            placeholder={placeholder}
+            className={cn(
+              "min-w-0 flex-1 truncate",
+              disabled
+                ? "data-placeholder:text-content-disabled"
+                : "data-placeholder:text-content-tertiary",
+            )}
+          />
+          <SelectPrimitive.Icon
+            className={cn(
+              "flex shrink-0 items-center justify-center",
+              disabled ? "text-icon-disabled" : "text-icon-secondary",
+            )}
+            render={(props, state) => (
+              <span {...props}>
+                {state.open ? (
+                  <ChevronUpIcon size={iconSize[size]} />
+                ) : (
+                  <ChevronDownIcon size={iconSize[size]} />
+                )}
+              </span>
+            )}
+          />
+        </SelectPrimitive.Trigger>
+      </FieldFrame>
+
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Positioner
+          className="z-50 outline-none"
+          sideOffset={4}
+          alignItemWithTrigger={false}
+        >
+          <SelectPrimitive.Popup
+            className={cn(
+              "w-(--anchor-width) origin-(--transform-origin) overflow-hidden rounded-ds-md bg-surface-primary shadow-floating outline-none",
+              "transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none",
+              "data-starting-style:scale-98 data-starting-style:opacity-0",
+              "data-ending-style:scale-98 data-ending-style:opacity-0",
+              popupClassName,
+            )}
+          >
+            <SelectPrimitive.List className="max-h-(--available-height) overflow-y-auto overscroll-contain py-ds-8">
+              {items.map((item) => (
+                <SelectPrimitive.Item
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.disabled}
+                  label={typeof item.label === "string" ? item.label : undefined}
+                  className={cn(
+                    "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-12 outline-none",
+                    "data-highlighted:bg-surface-secondary",
+                    "data-selected:bg-surface-selected",
+                    "data-disabled:pointer-events-none",
+                  )}
+                >
+                  <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-2">
+                    <span
+                      className={cn(
+                        "truncate text-content-primary group-data-disabled/item:text-content-disabled",
+                        fieldText[size],
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                    {item.description != null && (
+                      <span
+                        className={cn(
+                          "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
+                          descriptionText[size],
+                        )}
+                      >
+                        {item.description}
+                      </span>
+                    )}
+                  </SelectPrimitive.ItemText>
+                  <SelectPrimitive.ItemIndicator className="flex shrink-0 items-center justify-center text-icon-interactive-primary">
+                    <CheckIcon size={iconSize[size]} />
+                  </SelectPrimitive.ItemIndicator>
+                </SelectPrimitive.Item>
+              ))}
+            </SelectPrimitive.List>
+          </SelectPrimitive.Popup>
+        </SelectPrimitive.Positioner>
+      </SelectPrimitive.Portal>
+    </SelectPrimitive.Root>
+  );
+}
