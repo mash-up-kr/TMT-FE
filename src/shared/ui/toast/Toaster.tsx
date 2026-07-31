@@ -43,7 +43,7 @@ export function Toaster({ bottomInset }: ToasterProps = {}) {
           style={
             bottomInset === undefined
               ? undefined
-              : ({ "--layout-toast-inset-block": `${bottomInset}px` } as CSSProperties)
+              : ({ "--layout-floating-inset-block": `${bottomInset}px` } as CSSProperties)
           }
         >
           <ToastList />

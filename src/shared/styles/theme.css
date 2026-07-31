@@ -227,16 +227,11 @@
   --layout-grid-gutter: var(--number-unit-16);
   --layout-grid-margin: var(--number-unit-20);
   --layout-frame-max: 430px;
-  /* 오버레이(모달·바텀시트)와 화면 가장자리 사이 여백. 본문 그리드 마진과 의미가
-     달라 따로 둔다 — 카드가 화면 끝에 닿지 않게 하는 값이다. */
-  --layout-overlay-inset-block: var(--number-unit-32);
-  --layout-overlay-inset-inline: var(--number-unit-20);
   --layout-bottom-navigation-width: 320px;
-  /* 오버레이와 값은 같지만 따로 둔다 — 토스트만 BottomNav 위로 올라가는 화면이 있다.
-     그 조정은 `Toaster`의 `bottomInset` prop이 인라인으로 덮는다. */
-  --layout-toast-inset-block: var(--number-unit-32);
-  --layout-toast-inset-inline: var(--number-unit-20);
-
+  /* 화면 위에 떠 있는 것(모달·바텀시트·토스트)과 화면 가장자리 사이 여백.
+     본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
+  --layout-floating-inset-block: var(--number-unit-32);
+  --layout-floating-inset-inline: var(--number-unit-20);
   /* 겹침 순서. 오버레이는 포탈로 body 끝에 붙어 DOM 순서가 열린 차례에 따라
      달라지므로, 층위를 값으로 고정한다. 토스트는 모달 위에서도 보여야 한다. */
   --layer-overlay: 100;
@@ -300,9 +295,9 @@
   justify-content: center;
   width: 100%;
   max-width: var(--layout-frame-max);
-  padding-inline: var(--layout-overlay-inset-inline);
-  padding-block: calc(var(--layout-overlay-inset-block) + env(safe-area-inset-top))
-    calc(var(--layout-overlay-inset-block) + env(safe-area-inset-bottom));
+  padding-inline: var(--layout-floating-inset-inline);
+  padding-block: calc(var(--layout-floating-inset-block) + env(safe-area-inset-top))
+    calc(var(--layout-floating-inset-block) + env(safe-area-inset-bottom));
 }
 
 /* ===================== toast viewport ===================== */
