@@ -232,10 +232,10 @@
      본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
   --layout-floating-inset-block: var(--number-unit-32);
   --layout-floating-inset-inline: var(--number-unit-20);
-  /* 겹침 순서. 오버레이는 포탈로 body 끝에 붙어 DOM 순서가 열린 차례에 따라
-     달라지므로, 층위를 값으로 고정한다. 토스트는 모달 위에서도 보여야 한다. */
-  --layer-overlay: 100;
-  --layer-toast: 200;
+
+  /* ===================== z-index ===================== */
+  --z-index-overlay: 100;
+  --z-index-toast: 200;
 }
 
 /* ===================== border width ===================== */
@@ -288,7 +288,7 @@
   position: fixed;
   inset-block: 0;
   left: 50%;
-  z-index: var(--layer-overlay);
+  z-index: var(--z-index-overlay);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -306,7 +306,7 @@
   position: fixed;
   inset-block: 0;
   left: 50%;
-  z-index: var(--layer-toast);
+  z-index: var(--z-index-toast);
   transform: translateX(-50%);
   width: 100%;
   max-width: var(--layout-frame-max);
