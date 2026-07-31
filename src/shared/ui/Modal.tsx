@@ -41,7 +41,7 @@ export function Modal({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 bg-surface-backdrop" />
+        <Dialog.Backdrop className="fixed inset-0 z-(--layer-overlay) bg-surface-backdrop" />
         <Dialog.Viewport className="overlay-viewport">
           <Dialog.Popup
             className={cn(

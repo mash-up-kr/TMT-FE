@@ -34,6 +34,7 @@
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-backdrop: var(--primitive-transparent-64);
   --color-surface-navigation-selected: var(--primitive-transparent-8);
+  --color-surface-inverse: var(--primitive-transparent-64);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -231,6 +232,16 @@
   --layout-overlay-inset-block: var(--number-unit-32);
   --layout-overlay-inset-inline: var(--number-unit-20);
   --layout-bottom-navigation-width: 320px;
+  /* 오버레이와 값은 같지만 따로 둔다 — BottomNav가 있으면 토스트만 그 위로 올라간다. */
+  --layout-toast-inset-block: var(--number-unit-32);
+  --layout-toast-inset-inline: var(--number-unit-20);
+  --layout-toast-gap: var(--number-unit-24);
+  --layout-bottom-nav-height: var(--number-unit-64);
+
+  /* 겹침 순서. 오버레이는 포탈로 body 끝에 붙어 DOM 순서가 열린 차례에 따라
+     달라지므로, 층위를 값으로 고정한다. 토스트는 모달 위에서도 보여야 한다. */
+  --layer-overlay: 100;
+  --layer-toast: 200;
 }
 
 /* ===================== border width ===================== */
@@ -283,6 +294,7 @@
   position: fixed;
   inset-block: 0;
   left: 50%;
+  z-index: var(--layer-overlay);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -292,6 +304,28 @@
   padding-inline: var(--layout-overlay-inset-inline);
   padding-block: calc(var(--layout-overlay-inset-block) + env(safe-area-inset-top))
     calc(var(--layout-overlay-inset-block) + env(safe-area-inset-bottom));
+}
+
+/* ===================== toast viewport ===================== */
+/* 토스트가 뜨는 영역. 자식이 absolute로 서로 포개지므로 여백은 각 토스트가 잡는다. */
+@utility toast-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  z-index: var(--layer-toast);
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--layout-frame-max);
+  pointer-events: none;
+}
+
+/* BottomNav가 있는 화면의 레이아웃이 얹는다. 토스트는 BottomNav를 몰라도 그 위로 올라간다. */
+@utility toast-above-bottom-nav {
+  --layout-toast-inset-block: calc(
+    var(--number-unit-32) +
+    var(--layout-bottom-nav-height) +
+    var(--layout-toast-gap)
+  );
 }
 
 /* ===================== content container ===================== */
