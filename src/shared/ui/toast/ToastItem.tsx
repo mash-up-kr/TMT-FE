@@ -67,7 +67,7 @@ export function ToastItem({ toast }: ToastProps) {
         "transition-[transform,opacity] duration-300 ease-out",
         // 뒤 토스트는 앞 토스트들의 실제 높이(--toast-offset-y)만큼 위로 올라가 서로 겹치지 않는다.
         "translate-y-[calc(var(--stack-y)+var(--slide-y))]",
-        "z-[calc(9-var(--toast-index))]",
+        "z-[calc(var(--toast-index)*-1)]",
         // 등장만 아래에서 올라오고, 퇴장은 제자리에서 사라진다.
         "data-[starting-style]:[--slide-y:100%] data-[starting-style]:opacity-0",
         // 퇴장은 제자리에서 서서히 사라진다.
