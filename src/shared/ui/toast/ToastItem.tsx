@@ -1,6 +1,7 @@
 "use client";
 
 import { Toast as BaseToast } from "@base-ui/react/toast";
+import { type CSSProperties, useLayoutEffect, useRef } from "react";
 import { cn } from "@/shared/utils/cn";
 import ErrorIcon from "./assets/error.svg?react";
 import SuccessIcon from "./assets/success.svg?react";
@@ -27,16 +28,33 @@ type ToastProps = Readonly<{
 /**
  * 토스트 한 장. `Toaster`가 목록을 돌며 렌더한다.
  *
- * 여러 장이 쌓이면 카드 덱처럼 겹친다 — 뒤쪽은 위로 밀리고 작아지며 내용이 가려진다.
- * 위치 계산은 Base UI가 내려주는 `--toast-index`로 CSS에서 끝내 JS 측정이 필요 없다.
+ * 여러 장은 서로 포개진 채 뒤로 갈수록 위로 밀린다. 자리는 Base UI가 내려주는
+ * `--toast-offset-y`(앞 토스트들의 실측 높이 합)에 간격만 더해 CSS로 잡는다.
  */
 export function ToastItem({ toast }: ToastProps) {
   const Icon = ICONS[toast.data.type];
+  const rootRef = useRef<HTMLDivElement>(null);
+  const exitY = useRef<string>("0px");
+  const isEnding = toast.transitionStatus === "ending";
+
+  /**
+   * 퇴장이 시작되면 Base UI가 `--toast-offset-y`를 0으로 되돌린다. 쌓여 있던 카드는
+   * 그만큼 아래로 몰리므로, 살아 있는 동안의 자리를 붙잡아 퇴장 중에는 그 값을 쓴다.
+   * sonner도 같은 이유로 사라지기 직전 offset을 저장한다.
+   */
+  useLayoutEffect(() => {
+    if (isEnding || !rootRef.current) {
+      return;
+    }
+    exitY.current = getComputedStyle(rootRef.current).getPropertyValue("--stack-y").trim();
+  });
 
   return (
     <BaseToast.Root
+      ref={rootRef}
       toast={toast}
       swipeDirection={[]}
+      style={isEnding ? ({ "--stack-y": exitY.current } as CSSProperties) : undefined}
       className={cn(
         "absolute inset-x-(--layout-floating-inset-inline) bottom-[calc(var(--layout-floating-inset-block)+env(safe-area-inset-bottom))]",
         "pointer-events-auto flex items-center gap-ds-8",
