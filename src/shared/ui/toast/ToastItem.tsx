@@ -54,7 +54,7 @@ export function ToastItem({ toast }: ToastProps) {
         "data-[starting-style]:[--slide-y:100%] data-[starting-style]:opacity-0",
         // 퇴장은 제자리에서 서서히 사라진다.
         "data-[ending-style]:opacity-0",
-        "data-[limited]:opacity-0",
+        "data-[limited]:pointer-events-none data-[limited]:opacity-0",
       )}
     >
       <Icon aria-hidden="true" width={24} height={24} className="relative shrink-0" />
