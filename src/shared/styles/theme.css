@@ -232,11 +232,10 @@
   --layout-overlay-inset-block: var(--number-unit-32);
   --layout-overlay-inset-inline: var(--number-unit-20);
   --layout-bottom-navigation-width: 320px;
-  /* 오버레이와 값은 같지만 따로 둔다 — BottomNav가 있으면 토스트만 그 위로 올라간다. */
+  /* 오버레이와 값은 같지만 따로 둔다 — 토스트만 BottomNav 위로 올라가는 화면이 있다.
+     그 조정은 `Toaster`의 `bottomInset` prop이 인라인으로 덮는다. */
   --layout-toast-inset-block: var(--number-unit-32);
   --layout-toast-inset-inline: var(--number-unit-20);
-  --layout-toast-gap: var(--number-unit-24);
-  --layout-bottom-nav-height: var(--number-unit-64);
 
   /* 겹침 순서. 오버레이는 포탈로 body 끝에 붙어 DOM 순서가 열린 차례에 따라
      달라지므로, 층위를 값으로 고정한다. 토스트는 모달 위에서도 보여야 한다. */
@@ -317,15 +316,6 @@
   width: 100%;
   max-width: var(--layout-frame-max);
   pointer-events: none;
-}
-
-/* BottomNav가 있는 화면의 레이아웃이 얹는다. 토스트는 BottomNav를 몰라도 그 위로 올라간다. */
-@utility toast-above-bottom-nav {
-  --layout-toast-inset-block: calc(
-    var(--number-unit-32) +
-    var(--layout-bottom-nav-height) +
-    var(--layout-toast-gap)
-  );
 }
 
 /* ===================== content container ===================== */
