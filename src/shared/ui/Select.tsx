@@ -73,10 +73,7 @@ function listMaxHeight(size: FieldSize, hasDescription: boolean, visibleItems: n
   return `calc((${item}) * ${visibleItems} + var(--spacing-ds-16))`;
 }
 
-/**
- * Figma: Select field. FieldFrame이 라벨·테두리 박스·헬프 메시지를 담당하고
- * 트리거 버튼이 박스 전체를 채운다.
- */
+/** 단일 선택 필드 (Figma: Select field). */
 export function Select({
   items,
   value,
@@ -144,7 +141,6 @@ export function Select({
           aria-describedby={describedBy}
           className={cn(
             "flex w-full items-center justify-between gap-ds-12 px-ds-16 py-ds-12 text-left",
-            // outline-none이 --tw-outline-style을 none으로 고정하므로 focus-visible에서 solid를 되돌린다.
             "outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-interactive-primary",
             fieldText[size],
             disabled ? "cursor-not-allowed text-content-disabled" : "text-content-primary",
