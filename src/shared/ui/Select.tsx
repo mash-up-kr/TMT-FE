@@ -73,6 +73,18 @@ function listMaxHeight(size: FieldSize, hasDescription: boolean, visibleItems: n
   return `calc((${item}) * ${visibleItems} + var(--spacing-ds-16))`;
 }
 
+const itemBackground = cn(
+  "bg-surface-primary",
+  "not-data-disabled:data-highlighted:bg-surface-secondary",
+  "not-data-disabled:active:bg-surface-interactive-tertiary-hovered",
+  "not-data-disabled:data-highlighted:active:bg-surface-interactive-tertiary-hovered",
+  "data-selected:bg-surface-selected",
+  "data-selected:not-data-disabled:data-highlighted:bg-surface-selected-hovered",
+  "data-selected:not-data-disabled:active:bg-surface-selected-pressed",
+  "data-selected:not-data-disabled:data-highlighted:active:bg-surface-selected-pressed",
+  "data-disabled:pointer-events-none data-disabled:bg-surface-disabled",
+);
+
 /** 단일 선택 필드 (Figma: Select field). */
 export function Select({
   items,
@@ -215,9 +227,7 @@ export function Select({
                   label={typeof item.label === "string" ? item.label : undefined}
                   className={cn(
                     "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-8 outline-none",
-                    "data-highlighted:bg-surface-secondary",
-                    "data-selected:bg-surface-selected",
-                    "data-disabled:pointer-events-none",
+                    itemBackground,
                   )}
                 >
                   <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
