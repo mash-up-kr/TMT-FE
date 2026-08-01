@@ -84,7 +84,7 @@ const itemBackground = cn(
   "not-data-disabled:data-highlighted:bg-surface-secondary",
   "not-data-disabled:active:bg-surface-interactive-tertiary-hovered",
   "not-data-disabled:data-highlighted:active:bg-surface-interactive-tertiary-hovered",
-  "data-selected:bg-surface-selected",
+  "data-selected:not-data-disabled:bg-surface-selected",
   "data-selected:not-data-disabled:data-highlighted:bg-surface-selected-hovered",
   "data-selected:not-data-disabled:active:bg-surface-selected-pressed",
   "data-selected:not-data-disabled:data-highlighted:active:bg-surface-selected-pressed",
