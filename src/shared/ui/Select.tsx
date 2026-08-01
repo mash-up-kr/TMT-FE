@@ -3,8 +3,8 @@
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { type ReactNode, useId } from "react";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
-import { FieldFrame } from "@/shared/ui/TextField/FieldFrame";
-import { type FieldSize, fieldText, type HelpTone } from "@/shared/ui/TextField/fieldStyles";
+import { FieldFrame, type FieldSize, type HelpTone } from "@/shared/ui/TextField";
+import { fieldText } from "@/shared/ui/TextField/fieldStyles";
 import { cn } from "@/shared/utils/cn";
 
 export type SelectOption = Readonly<{
