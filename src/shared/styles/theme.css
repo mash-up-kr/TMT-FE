@@ -73,6 +73,8 @@
 
   /* ===================== stroke (테두리) ===================== */
   --color-stroke-primary: var(--primitive-neutral-300);
+  --color-stroke-primary-hovered: var(--primitive-neutral-400);
+  --color-stroke-primary-pressed: var(--primitive-neutral-500);
   --color-stroke-secondary: var(--primitive-neutral-200);
   --color-stroke-tertiary: var(--primitive-neutral-100);
   --color-stroke-disabled: var(--primitive-neutral-400);
