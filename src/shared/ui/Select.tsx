@@ -22,6 +22,8 @@ export type SelectProps = Readonly<{
   onValueChange?: SelectPrimitive.Root.Props<string | null>["onValueChange"];
   placeholder?: ReactNode;
   size?: FieldSize;
+  /** 팝업에 한 번에 보이는 항목 수. 이보다 많으면 스크롤한다. */
+  visibleItems?: 4 | 6 | 8;
   label?: ReactNode;
   required?: boolean;
   optional?: boolean;
@@ -51,6 +53,26 @@ const descriptionText: Record<FieldSize, string> = {
   md: "text-body-sm-medium",
 };
 
+const labelLineHeight: Record<FieldSize, string> = {
+  lg: "var(--text-body-lg-medium--line-height)",
+  md: "var(--text-body-md-medium--line-height)",
+};
+
+const descriptionLineHeight: Record<FieldSize, string> = {
+  lg: "var(--text-body-md-medium--line-height)",
+  md: "var(--text-body-sm-medium--line-height)",
+};
+
+function listMaxHeight(size: FieldSize, hasDescription: boolean, visibleItems: number): string {
+  const item = [
+    "var(--spacing-ds-16)",
+    labelLineHeight[size],
+    ...(hasDescription ? ["var(--spacing-ds-4)", descriptionLineHeight[size]] : []),
+  ].join(" + ");
+
+  return `calc((${item}) * ${visibleItems} + var(--spacing-ds-16))`;
+}
+
 /**
  * Figma: Select field. FieldFrame이 라벨·테두리 박스·헬프 메시지를 담당하고
  * 트리거 버튼이 박스 전체를 채운다.
@@ -62,6 +84,7 @@ export function Select({
   onValueChange,
   placeholder,
   size = "lg",
+  visibleItems = 8,
   label,
   required = false,
   optional = false,
@@ -83,6 +106,7 @@ export function Select({
   const triggerId = id ?? reactId;
   const helpId = helpMessage != null ? `${triggerId}-help` : undefined;
   const describedBy = [ariaDescribedby, helpId].filter(Boolean).join(" ") || undefined;
+  const hasDescription = items.some((item) => item.description != null);
 
   return (
     <SelectPrimitive.Root
@@ -170,9 +194,15 @@ export function Select({
             )}
           >
             <SelectPrimitive.List
-              style={{ "--select-thumb-radius": "2px 6px 6px 2px / 2px" } as CSSProperties}
+              style={
+                {
+                  "--select-list-max-height": listMaxHeight(size, hasDescription, visibleItems),
+                  "--select-thumb-radius": "2px 6px 6px 2px / 2px",
+                } as CSSProperties
+              }
               className={cn(
-                "max-h-(--available-height) overflow-y-auto overscroll-contain py-ds-8",
+                "max-h-[min(var(--available-height),var(--select-list-max-height))]",
+                "overflow-y-auto overscroll-contain py-ds-8",
                 "[&::-webkit-scrollbar]:w-ds-8",
                 "[&::-webkit-scrollbar-track]:my-ds-8 [&::-webkit-scrollbar-track]:bg-transparent",
                 "[&::-webkit-scrollbar-thumb]:bg-icon-secondary",
