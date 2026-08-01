@@ -90,6 +90,7 @@
   --color-stroke-interactive-secondary: var(--primitive-neutral-400);
   --color-stroke-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-stroke-interactive-secondary-pressed: var(--primitive-neutral-600);
+  --color-stroke-selected: var(--primitive-neutral-500);
   --color-stroke-interactive-error: var(--primitive-error-600);
   --color-stroke-interactive-error-hovered: var(--primitive-error-700);
   --color-stroke-interactive-error-pressed: var(--primitive-error-800);
