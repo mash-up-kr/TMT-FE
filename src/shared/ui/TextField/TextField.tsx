@@ -63,7 +63,6 @@ export function TextField({
         disabled={disabled}
         required={required}
         aria-invalid={invalid || undefined}
-        aria-required={required || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), className)}
         {...rest}
