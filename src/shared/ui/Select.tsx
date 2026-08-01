@@ -2,7 +2,9 @@
 
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { type CSSProperties, type ReactNode, useId } from "react";
+import { Checkbox } from "@/shared/ui/Checkbox";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
+import { Radio, RadioGroup } from "@/shared/ui/Radio";
 import { FieldFrame, type FieldSize, type HelpTone } from "@/shared/ui/TextField";
 import { fieldText } from "@/shared/ui/TextField/fieldStyles";
 import { cn } from "@/shared/utils/cn";
@@ -15,6 +17,8 @@ export type SelectOption = Readonly<{
   disabled?: boolean;
 }>;
 
+export type SelectIndicator = "check" | "checkbox" | "radio" | "none";
+
 export type SelectProps = Readonly<{
   items: readonly SelectOption[];
   value?: string | null;
@@ -24,6 +28,8 @@ export type SelectProps = Readonly<{
   size?: FieldSize;
   /** 팝업에 한 번에 보이는 항목 수. 이보다 많으면 스크롤한다. */
   visibleItems?: 4 | 6 | 8;
+  /** 항목 왼쪽 선택 표시. `none`은 배경색으로만 구분한다. */
+  indicator?: SelectIndicator;
   label?: ReactNode;
   required?: boolean;
   optional?: boolean;
@@ -85,6 +91,53 @@ const itemBackground = cn(
   "data-disabled:pointer-events-none data-disabled:bg-surface-disabled",
 );
 
+const RADIO_VALUE = "selected";
+
+type ItemIndicatorProps = Readonly<{
+  indicator: SelectIndicator;
+  selected: boolean;
+  disabled: boolean;
+}>;
+
+function ItemIndicator({ indicator, selected, disabled }: ItemIndicatorProps) {
+  if (indicator === "none" || indicator === "check") {
+    return (
+      <span className="flex size-ds-16 shrink-0 items-center justify-center">
+        {indicator === "check" && selected && (
+          <CheckIcon
+            size={16}
+            className="text-icon-primary group-data-disabled/item:text-icon-disabled"
+          />
+        )}
+      </span>
+    );
+  }
+
+  if (indicator === "checkbox") {
+    return (
+      <Checkbox
+        checked={selected}
+        disabled={disabled}
+        render={<span />}
+        aria-hidden="true"
+        tabIndex={-1}
+        className="pointer-events-none"
+      />
+    );
+  }
+
+  return (
+    <RadioGroup
+      value={selected ? RADIO_VALUE : null}
+      disabled={disabled}
+      aria-hidden="true"
+      className="contents"
+    >
+      <Radio value={RADIO_VALUE} render={<span />} tabIndex={-1} className="pointer-events-none" />
+    </RadioGroup>
+  );
+}
+
 /** 단일 선택 필드 (Figma: Select field). */
 export function Select({
   items,
@@ -94,6 +147,7 @@ export function Select({
   placeholder,
   size = "lg",
   visibleItems = 8,
+  indicator = "none",
   label,
   required = false,
   optional = false,
@@ -229,31 +283,36 @@ export function Select({
                     "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-8 outline-none",
                     itemBackground,
                   )}
-                >
-                  <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
-                    <span
-                      className={cn(
-                        "truncate text-content-primary group-data-disabled/item:text-content-disabled",
-                        fieldText[size],
-                      )}
-                    >
-                      {item.label}
-                    </span>
-                    {item.description != null && (
-                      <span
-                        className={cn(
-                          "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
-                          descriptionText[size],
+                  render={(itemProps, state) => (
+                    <div {...itemProps}>
+                      <ItemIndicator
+                        indicator={indicator}
+                        selected={state.selected}
+                        disabled={state.disabled}
+                      />
+                      <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
+                        <span
+                          className={cn(
+                            "truncate text-content-primary group-data-disabled/item:text-content-disabled",
+                            fieldText[size],
+                          )}
+                        >
+                          {item.label}
+                        </span>
+                        {item.description != null && (
+                          <span
+                            className={cn(
+                              "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
+                              descriptionText[size],
+                            )}
+                          >
+                            {item.description}
+                          </span>
                         )}
-                      >
-                        {item.description}
-                      </span>
-                    )}
-                  </SelectPrimitive.ItemText>
-                  <SelectPrimitive.ItemIndicator className="flex shrink-0 items-center justify-center text-icon-interactive-primary">
-                    <CheckIcon size={iconSize[size]} />
-                  </SelectPrimitive.ItemIndicator>
-                </SelectPrimitive.Item>
+                      </SelectPrimitive.ItemText>
+                    </div>
+                  )}
+                />
               ))}
             </SelectPrimitive.List>
           </SelectPrimitive.Popup>
