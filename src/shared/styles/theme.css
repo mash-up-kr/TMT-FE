@@ -32,6 +32,7 @@
   --color-surface-interactive-error: var(--primitive-error-600);
   --color-surface-interactive-error-hovered: var(--primitive-error-700);
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
+  --color-surface-backdrop: var(--primitive-transparent-64);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -72,6 +73,8 @@
 
   /* ===================== stroke (테두리) ===================== */
   --color-stroke-primary: var(--primitive-neutral-300);
+  --color-stroke-primary-hovered: var(--primitive-neutral-400);
+  --color-stroke-primary-pressed: var(--primitive-neutral-500);
   --color-stroke-secondary: var(--primitive-neutral-200);
   --color-stroke-tertiary: var(--primitive-neutral-100);
   --color-stroke-disabled: var(--primitive-neutral-400);
@@ -92,6 +95,7 @@
   --color-stroke-interactive-secondary: var(--primitive-neutral-400);
   --color-stroke-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-stroke-interactive-secondary-pressed: var(--primitive-neutral-600);
+  --color-stroke-selected: var(--primitive-neutral-500);
   --color-stroke-interactive-error: var(--primitive-error-600);
   --color-stroke-interactive-error-hovered: var(--primitive-error-700);
   --color-stroke-interactive-error-pressed: var(--primitive-error-800);
@@ -207,6 +211,10 @@
   --layout-grid-gutter: var(--number-unit-16);
   --layout-grid-margin: var(--number-unit-20);
   --layout-frame-max: 430px;
+  /* 오버레이(모달·바텀시트)와 화면 가장자리 사이 여백. 본문 그리드 마진과 의미가
+     달라 따로 둔다 — 카드가 화면 끝에 닿지 않게 하는 값이다. */
+  --layout-overlay-inset-block: var(--number-unit-32);
+  --layout-overlay-inset-inline: var(--number-unit-20);
 }
 
 /* ===================== border width ===================== */
@@ -250,6 +258,24 @@
   @media (min-width: 431px) {
     box-shadow: var(--shadow-floating);
   }
+}
+
+/* ===================== overlay viewport ===================== */
+/* 화면 전체를 덮는 오버레이(모달 등)의 배치 영역.
+   상하 여백은 카드가 화면 가장자리·노치·홈 인디케이터에 붙지 않게 한다. */
+@utility overlay-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: var(--layout-frame-max);
+  padding-inline: var(--layout-overlay-inset-inline);
+  padding-block: calc(var(--layout-overlay-inset-block) + env(safe-area-inset-top))
+    calc(var(--layout-overlay-inset-block) + env(safe-area-inset-bottom));
 }
 
 /* ===================== content container ===================== */
