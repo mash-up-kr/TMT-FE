@@ -88,26 +88,15 @@ export function SearchField({
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       trailing={
-        showClear ? (
-          <button
-            type="button"
-            onClick={handleClear}
-            aria-label="검색어 지우기"
-            className={iconButtonClass}
-          >
-            <CancelIcon size={iconSize} />
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onSearch}
-            disabled={disabled}
-            aria-label="검색"
-            className={iconButtonClass}
-          >
-            <SearchIcon size={iconSize} />
-          </button>
-        )
+        <button
+          type="button"
+          onClick={showClear ? handleClear : onSearch}
+          disabled={disabled}
+          aria-label={showClear ? "검색어 지우기" : "검색"}
+          className={iconButtonClass}
+        >
+          {showClear ? <CancelIcon size={iconSize} /> : <SearchIcon size={iconSize} />}
+        </button>
       }
       className={cn("[&::-webkit-search-cancel-button]:appearance-none", className)}
       {...rest}
