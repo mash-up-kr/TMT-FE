@@ -1,7 +1,7 @@
 "use client";
 
 import { Select as SelectPrimitive } from "@base-ui/react/select";
-import { type ReactNode, useId } from "react";
+import { type CSSProperties, type ReactNode, useId } from "react";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
 import { FieldFrame, type FieldSize, type HelpTone } from "@/shared/ui/TextField";
 import { fieldText } from "@/shared/ui/TextField/fieldStyles";
@@ -162,14 +162,25 @@ export function Select({
         >
           <SelectPrimitive.Popup
             className={cn(
-              "w-(--anchor-width) origin-(--transform-origin) overflow-hidden rounded-ds-md bg-surface-primary shadow-floating outline-none",
+              "w-(--anchor-width) origin-(--transform-origin) rounded-ds-md bg-surface-primary shadow-floating outline-none",
               "transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none",
               "data-starting-style:scale-98 data-starting-style:opacity-0",
               "data-ending-style:scale-98 data-ending-style:opacity-0",
               popupClassName,
             )}
           >
-            <SelectPrimitive.List className="max-h-(--available-height) overflow-y-auto overscroll-contain py-ds-8">
+            <SelectPrimitive.List
+              style={{ "--select-thumb-radius": "2px 6px 6px 2px / 2px" } as CSSProperties}
+              className={cn(
+                "max-h-(--available-height) overflow-y-auto overscroll-contain py-ds-8",
+                "[&::-webkit-scrollbar]:w-ds-8",
+                "[&::-webkit-scrollbar-track]:my-ds-8 [&::-webkit-scrollbar-track]:bg-transparent",
+                "[&::-webkit-scrollbar-thumb]:bg-icon-secondary",
+                "[&::-webkit-scrollbar-thumb]:border-r-4 [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding",
+                "[&::-webkit-scrollbar-thumb]:[border-radius:var(--select-thumb-radius)]",
+                "[&::-webkit-scrollbar-thumb]:min-h-[120px]",
+              )}
+            >
               {items.map((item) => (
                 <SelectPrimitive.Item
                   key={item.value}
