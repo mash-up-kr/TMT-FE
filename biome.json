@@ -18,15 +18,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended",
-      "a11y": {
-        "noLabelWithoutControl": {
-          "level": "error",
-          "options": {
-            "inputComponents": ["Checkbox", "Radio"]
-          }
-        }
-      }
+      "preset": "recommended"
     }
   },
   "javascript": {

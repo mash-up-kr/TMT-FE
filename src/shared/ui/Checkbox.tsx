@@ -2,7 +2,7 @@
 
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/shared/utils/cn";
 import { CheckIcon } from "./icons";
 
@@ -31,24 +31,6 @@ function Checkbox({ className, ...props }: CheckboxProps) {
   );
 }
 
-type CheckboxFieldProps = CheckboxProps & {
-  children?: ReactNode;
-};
-
-function CheckboxField({ className, children, ...props }: CheckboxFieldProps) {
-  return (
-    <label
-      data-slot="checkbox-field"
-      className={cn("inline-flex items-center gap-ds-8", className)}
-    >
-      <Checkbox className="peer" {...props} />
-      <span className="text-body-lg-medium text-content-primary peer-data-disabled:text-content-disabled">
-        {children}
-      </span>
-    </label>
-  );
-}
-
 type CheckboxGroupProps = ComponentProps<typeof BaseCheckboxGroup>;
 
 function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
@@ -61,5 +43,5 @@ function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
   );
 }
 
-export type { CheckboxFieldProps, CheckboxGroupProps, CheckboxProps };
-export { Checkbox, CheckboxField, CheckboxGroup };
+export type { CheckboxGroupProps, CheckboxProps };
+export { Checkbox, CheckboxGroup };

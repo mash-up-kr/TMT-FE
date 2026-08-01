@@ -2,7 +2,7 @@
 
 import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/shared/utils/cn";
 
 type RadioProps<Value = string> = Omit<
@@ -33,21 +33,6 @@ function Radio<Value = string>({ className, ...props }: RadioProps<Value>) {
   );
 }
 
-type RadioFieldProps<Value = string> = RadioProps<Value> & {
-  children?: ReactNode;
-};
-
-function RadioField<Value = string>({ className, children, ...props }: RadioFieldProps<Value>) {
-  return (
-    <label data-slot="radio-field" className={cn("inline-flex items-center gap-ds-8", className)}>
-      <Radio className="peer" {...props} />
-      <span className="text-body-lg-medium text-content-primary peer-data-disabled:text-content-disabled">
-        {children}
-      </span>
-    </label>
-  );
-}
-
 type RadioGroupProps<Value = string> = ComponentProps<typeof BaseRadioGroup<Value>>;
 
 function RadioGroup<Value = string>({ className, ...props }: RadioGroupProps<Value>) {
@@ -60,5 +45,5 @@ function RadioGroup<Value = string>({ className, ...props }: RadioGroupProps<Val
   );
 }
 
-export type { RadioFieldProps, RadioGroupProps, RadioProps };
-export { Radio, RadioField, RadioGroup };
+export type { RadioGroupProps, RadioProps };
+export { Radio, RadioGroup };
