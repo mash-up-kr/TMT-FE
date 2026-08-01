@@ -47,8 +47,8 @@ const iconSize: Record<FieldSize, number> = {
 };
 
 const descriptionText: Record<FieldSize, string> = {
-  lg: "text-body-md-regular",
-  md: "text-body-sm-regular",
+  lg: "text-body-md-medium",
+  md: "text-body-sm-medium",
 };
 
 /**
@@ -188,13 +188,13 @@ export function Select({
                   disabled={item.disabled}
                   label={typeof item.label === "string" ? item.label : undefined}
                   className={cn(
-                    "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-12 outline-none",
+                    "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-8 outline-none",
                     "data-highlighted:bg-surface-secondary",
                     "data-selected:bg-surface-selected",
                     "data-disabled:pointer-events-none",
                   )}
                 >
-                  <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-2">
+                  <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
                     <span
                       className={cn(
                         "truncate text-content-primary group-data-disabled/item:text-content-disabled",
