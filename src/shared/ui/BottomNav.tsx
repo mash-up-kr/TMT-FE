@@ -4,12 +4,12 @@ import type { ComponentPropsWithRef } from "react";
 import { cn } from "@/shared/utils/cn";
 import { FeedIcon, GroupIcon, HomeIcon, MyIcon, PlusIcon } from "./icons";
 
-type BottomNavValue = "home" | "feed" | "group" | "my";
+export type BottomNavValue = "home" | "feed" | "group" | "my";
 
 export type BottomNavProps = ComponentPropsWithRef<"nav"> & {
-  selected?: BottomNavValue;
-  onSelectedChange?: (value: BottomNavValue) => void;
-  onCreate?: () => void;
+  value: BottomNavValue;
+  onValueChange: (value: BottomNavValue) => void;
+  onCreate: () => void;
 };
 
 const items = [
@@ -19,15 +19,9 @@ const items = [
   { value: "my", label: "마이", Icon: MyIcon },
 ] as const;
 
-export function BottomNav({
-  selected = "home",
-  onSelectedChange,
-  onCreate,
-  className,
-  ...props
-}: BottomNavProps) {
+export function BottomNav({ value, onValueChange, onCreate, className, ...props }: BottomNavProps) {
   const renderItem = (item: (typeof items)[number]) => {
-    const active = item.value === selected;
+    const active = item.value === value;
 
     return (
       <button
@@ -38,12 +32,12 @@ export function BottomNav({
           "flex min-w-0 flex-1 flex-col items-center gap-ds-4 overflow-hidden rounded-ds-full py-[calc(var(--spacing-ds-4)+var(--spacing-ds-2))]",
           active && "bg-surface-navigation-selected",
         )}
-        onClick={() => onSelectedChange?.(item.value)}
+        onClick={() => onValueChange(item.value)}
       >
         <item.Icon
           aria-hidden="true"
           className={cn(
-            "size-ds-24 shrink-0 [&_path]:stroke-current",
+            "size-ds-24 shrink-0",
             active ? "text-icon-interactive-primary" : "text-icon-disabled",
           )}
         />

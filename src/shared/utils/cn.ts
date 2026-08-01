@@ -15,7 +15,10 @@ import { extendTailwindMerge } from "tailwind-merge";
  * `cn`은 두 함수를 묶어 조건부 결합과 충돌 정리를 한 번에 처리합니다.
  */
 
-const isTmtTextToken = (value: string) => /^(heading|body|label)-/.test(value);
+const isTmtTextToken = (value: string) =>
+  /^(heading-(xl|lg|md|sm)|body-(lg|md|sm)-(bold|medium|regular)|label-navigation(-selected)?)$/.test(
+    value,
+  );
 
 const isTmtSpacingToken = (value: string) => /^ds-(0|2|4|8|12|16|20|24|32|40|48|64)$/.test(value);
 
