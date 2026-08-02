@@ -93,6 +93,7 @@ export function Textarea({
       containerClassName={containerClassName}
     >
       <textarea
+        {...rest}
         ref={ref}
         id={textareaId}
         rows={rows}
@@ -105,7 +106,6 @@ export function Textarea({
         aria-invalid={invalid || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), "resize-none", className)}
-        {...rest}
       />
     </FieldFrame>
   );

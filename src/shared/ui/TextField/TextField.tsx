@@ -58,6 +58,7 @@ export function TextField({
       containerClassName={containerClassName}
     >
       <input
+        {...rest}
         ref={ref}
         id={inputId}
         disabled={disabled}
@@ -65,7 +66,6 @@ export function TextField({
         aria-invalid={invalid || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), className)}
-        {...rest}
       />
       {trailing != null && (
         <span
