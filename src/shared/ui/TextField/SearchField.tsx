@@ -53,12 +53,12 @@ export function SearchField({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    onKeyDown?.(event);
+
     // 한글 조합 중의 Enter는 글자 확정이므로 검색으로 보지 않는다.
-    if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+    if (event.key === "Enter" && !event.nativeEvent.isComposing && !event.defaultPrevented) {
       onSearch?.();
     }
-
-    onKeyDown?.(event);
   };
 
   const handleClear = () => {
