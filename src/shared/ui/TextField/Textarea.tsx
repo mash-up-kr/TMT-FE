@@ -57,6 +57,7 @@ export function Textarea({
     () => String(defaultValue ?? "").length,
   );
   const currentLength = isControlled ? String(value).length : uncontrolledCount;
+  const displayLength = maxLength != null ? Math.min(currentLength, maxLength) : currentLength;
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (!isControlled) {
@@ -69,7 +70,7 @@ export function Textarea({
   const counter = hasCounter ? (
     <span id={countId} className="text-body-sm-medium text-content-tertiary">
       <span className={invalid ? "text-content-error" : "text-content-secondary"}>
-        {currentLength}
+        {displayLength}
       </span>
       {` / ${maxLength}`}
     </span>
@@ -92,6 +93,7 @@ export function Textarea({
       containerClassName={containerClassName}
     >
       <textarea
+        {...rest}
         ref={ref}
         id={textareaId}
         rows={rows}
@@ -102,10 +104,8 @@ export function Textarea({
         defaultValue={defaultValue}
         onChange={handleChange}
         aria-invalid={invalid || undefined}
-        aria-required={required || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), "resize-none", className)}
-        {...rest}
       />
     </FieldFrame>
   );

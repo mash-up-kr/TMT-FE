@@ -58,15 +58,14 @@ export function TextField({
       containerClassName={containerClassName}
     >
       <input
+        {...rest}
         ref={ref}
         id={inputId}
         disabled={disabled}
         required={required}
         aria-invalid={invalid || undefined}
-        aria-required={required || undefined}
         aria-describedby={describedBy}
         className={cn(controlClass(size), className)}
-        {...rest}
       />
       {trailing != null && (
         <span
