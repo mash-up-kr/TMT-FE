@@ -57,6 +57,7 @@ export function Textarea({
     () => String(defaultValue ?? "").length,
   );
   const currentLength = isControlled ? String(value).length : uncontrolledCount;
+  const displayLength = maxLength != null ? Math.min(currentLength, maxLength) : currentLength;
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (!isControlled) {
@@ -69,7 +70,7 @@ export function Textarea({
   const counter = hasCounter ? (
     <span id={countId} className="text-body-sm-medium text-content-tertiary">
       <span className={invalid ? "text-content-error" : "text-content-secondary"}>
-        {currentLength}
+        {displayLength}
       </span>
       {` / ${maxLength}`}
     </span>
