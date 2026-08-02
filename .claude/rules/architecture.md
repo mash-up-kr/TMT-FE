@@ -80,6 +80,7 @@ src/
 | `shared/providers/` | 전역 Context provider | `app/`을 import하지 않는다. |
 
 - 도메인 의미가 있는 UI는 라우트에 유지한다. 실제 재사용이 확인되고 props를 도메인 무관하게 만들 수 있을 때만 `shared/ui/`로 승격한다.
+- 서로 다른 공용 UI 컴포넌트 계열이 공유하는 기반 컴포넌트는 특정 계열의 하위 폴더에 두지 않고, 각 계열이 함께 의존할 수 있는 `shared/ui/`의 공통 상위 계층에 둔다.
 
 ## Import 경계
 
