@@ -313,6 +313,21 @@
   pointer-events: none;
 }
 
+/* ===================== bottom sheet viewport ===================== */
+/* 하단에서 올라오는 시트의 배치 영역.
+   오버레이와 달리 좌우·하단 여백이 없다. 시트는 화면 아래에 붙어야 한다.
+   (overlay-viewport와 선언이 겹치지만 공통 레이어로 빼지 않는다 — 셋째가 생기면 재검토한다.) */
+@utility sheet-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: var(--layout-frame-max);
+}
+
 /* ===================== content container ===================== */
 @utility content-container {
   box-sizing: border-box;
