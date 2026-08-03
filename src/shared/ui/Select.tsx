@@ -93,6 +93,8 @@ const itemBackground = cn(
 
 const RADIO_VALUE = "selected";
 
+const EMPTY_MESSAGE = "선택할 수 있는 항목이 없어요";
+
 type ItemIndicatorProps = Readonly<{
   indicator: SelectIndicator;
   selected: boolean;
@@ -255,66 +257,78 @@ export function Select({
               popupClassName,
             )}
           >
-            <SelectPrimitive.List
-              style={
-                {
-                  "--select-list-max-height": listMaxHeight(size, hasDescription, visibleItems),
-                  "--select-thumb-radius": "2px 6px 6px 2px / 2px",
-                } as CSSProperties
-              }
-              className={cn(
-                "max-h-[min(var(--available-height),var(--select-list-max-height))]",
-                "overflow-y-auto overscroll-contain py-ds-8",
-                "[&::-webkit-scrollbar]:w-ds-8",
-                "[&::-webkit-scrollbar-track]:my-ds-8 [&::-webkit-scrollbar-track]:bg-transparent",
-                "[&::-webkit-scrollbar-thumb]:bg-icon-secondary",
-                "[&::-webkit-scrollbar-thumb]:border-r-4 [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding",
-                "[&::-webkit-scrollbar-thumb]:[border-radius:var(--select-thumb-radius)]",
-                "[&::-webkit-scrollbar-thumb]:min-h-[120px]",
-              )}
-            >
-              {items.map((item) => (
-                <SelectPrimitive.Item
-                  key={item.value}
-                  value={item.value}
-                  disabled={item.disabled}
-                  label={typeof item.label === "string" ? item.label : undefined}
-                  className={cn(
-                    "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-8 outline-none",
-                    itemBackground,
-                  )}
-                  render={(itemProps, state) => (
-                    <div {...itemProps}>
-                      <ItemIndicator
-                        indicator={indicator}
-                        selected={state.selected}
-                        disabled={state.disabled}
-                      />
-                      <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
-                        <span
-                          className={cn(
-                            "truncate text-content-primary group-data-disabled/item:text-content-disabled",
-                            fieldText[size],
-                          )}
-                        >
-                          {item.label}
-                        </span>
-                        {item.description != null && (
+            {items.length === 0 ? (
+              <p
+                role="status"
+                className={cn(
+                  "px-ds-16 py-ds-12 text-center text-content-tertiary",
+                  fieldText[size],
+                )}
+              >
+                {EMPTY_MESSAGE}
+              </p>
+            ) : (
+              <SelectPrimitive.List
+                style={
+                  {
+                    "--select-list-max-height": listMaxHeight(size, hasDescription, visibleItems),
+                    "--select-thumb-radius": "2px 6px 6px 2px / 2px",
+                  } as CSSProperties
+                }
+                className={cn(
+                  "max-h-[min(var(--available-height),var(--select-list-max-height))]",
+                  "overflow-y-auto overscroll-contain py-ds-8",
+                  "[&::-webkit-scrollbar]:w-ds-8",
+                  "[&::-webkit-scrollbar-track]:my-ds-8 [&::-webkit-scrollbar-track]:bg-transparent",
+                  "[&::-webkit-scrollbar-thumb]:bg-icon-secondary",
+                  "[&::-webkit-scrollbar-thumb]:border-r-4 [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding",
+                  "[&::-webkit-scrollbar-thumb]:[border-radius:var(--select-thumb-radius)]",
+                  "[&::-webkit-scrollbar-thumb]:min-h-[120px]",
+                )}
+              >
+                {items.map((item) => (
+                  <SelectPrimitive.Item
+                    key={item.value}
+                    value={item.value}
+                    disabled={item.disabled}
+                    label={typeof item.label === "string" ? item.label : undefined}
+                    className={cn(
+                      "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-8 outline-none",
+                      itemBackground,
+                    )}
+                    render={(itemProps, state) => (
+                      <div {...itemProps}>
+                        <ItemIndicator
+                          indicator={indicator}
+                          selected={state.selected}
+                          disabled={state.disabled}
+                        />
+                        <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
                           <span
                             className={cn(
-                              "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
-                              descriptionText[size],
+                              "truncate text-content-primary group-data-disabled/item:text-content-disabled",
+                              fieldText[size],
                             )}
                           >
-                            {item.description}
+                            {item.label}
                           </span>
-                        )}
-                      </SelectPrimitive.ItemText>
-                    </div>
-                  )}
-                />
-              ))}
-            </SelectPrimitive.List>
+                          {item.description != null && (
+                            <span
+                              className={cn(
+                                "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
+                                descriptionText[size],
+                              )}
+                            >
+                              {item.description}
+                            </span>
+                          )}
+                        </SelectPrimitive.ItemText>
+                      </div>
+                    )}
+                  />
+                ))}
+              </SelectPrimitive.List>
+            )}
           </SelectPrimitive.Popup>
         </SelectPrimitive.Positioner>
       </SelectPrimitive.Portal>
