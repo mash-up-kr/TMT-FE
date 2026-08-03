@@ -76,8 +76,9 @@ export function BottomSheet({
           >
             {/* 마우스·펜에서 본문 텍스트 선택이 스와이프로 오인되지 않게 하는 Base UI 파트다. */}
             <Drawer.Content className="flex min-h-0 flex-1 flex-col">
-              <div aria-hidden="true" className="flex shrink-0 justify-center pt-ds-8 pb-ds-4">
-                <div className="h-1 w-10 rounded-ds-full bg-stroke-primary" />
+              <div aria-hidden="true" className="flex shrink-0 justify-center py-ds-12">
+                {/* 36×4. ds 스케일에 36이 없어 임의값으로 둔다. */}
+                <div className="h-1 w-[36px] rounded-ds-full bg-stroke-primary" />
               </div>
 
               {/* GNB와 같은 3칸 구조다. 트랙 정의를 바꾸면 GNB.tsx도 함께 확인한다. */}
@@ -105,7 +106,8 @@ export function BottomSheet({
                 {children}
               </div>
 
-              {footer ? <div className="shrink-0 p-ds-20">{footer}</div> : null}
+              {/* 하단 32는 홈 인디케이터를 피하려는 시안 값이다. */}
+              {footer ? <div className="shrink-0 px-ds-20 pt-ds-12 pb-ds-32">{footer}</div> : null}
             </Drawer.Content>
           </Drawer.Popup>
         </Drawer.Viewport>
