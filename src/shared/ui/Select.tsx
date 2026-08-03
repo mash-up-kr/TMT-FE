@@ -149,7 +149,7 @@ export function Select({
   placeholder,
   size = "lg",
   visibleItems = 8,
-  indicator = "none",
+  indicator = "check",
   label,
   required = false,
   optional = false,
