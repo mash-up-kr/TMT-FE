@@ -60,6 +60,9 @@ export function BottomSheet({
               "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
               // 화면을 넘지 않게 잡는다. dvh라야 iOS 주소창 높이가 빠진다.
               "max-h-[85dvh]",
+              // 배경을 화면 아래로 늘려 둔다. 위로 끌어올린 동안 시트 아래에 빈 자리가 생기지
+              // 않고, 하단 safe-area도 이 여유분이 덮는다. 음수 마진으로 레이아웃 높이는 되돌린다.
+              "-mb-ds-64 pb-ds-64",
               // 등장·퇴장은 아래에서 올라오고 내려간다.
               "transition-transform duration-300 ease-out",
               "data-starting-style:translate-y-full data-ending-style:translate-y-full",
@@ -71,35 +74,39 @@ export function BottomSheet({
               className,
             )}
           >
-            <div aria-hidden="true" className="flex shrink-0 justify-center pt-ds-8 pb-ds-4">
-              <div className="h-1 w-10 rounded-ds-full bg-stroke-primary" />
-            </div>
+            {/* 마우스·펜에서 본문 텍스트 선택이 스와이프로 오인되지 않게 하는 Base UI 파트다. */}
+            <Drawer.Content className="flex min-h-0 flex-1 flex-col">
+              <div aria-hidden="true" className="flex shrink-0 justify-center pt-ds-8 pb-ds-4">
+                <div className="h-1 w-10 rounded-ds-full bg-stroke-primary" />
+              </div>
 
-            <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-ds-8 px-ds-20 py-ds-12">
-              <div className="flex items-center justify-start gap-ds-8">{left}</div>
-              <Drawer.Title
+              {/* GNB와 같은 3칸 구조다. 트랙 정의를 바꾸면 GNB.tsx도 함께 확인한다. */}
+              <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-ds-8 px-ds-20 py-ds-12">
+                <div className="flex items-center justify-start gap-ds-8">{left}</div>
+                <Drawer.Title
+                  className={cn(
+                    "min-w-0 truncate text-center text-heading-sm text-content-primary",
+                    !titleVisible && "sr-only",
+                  )}
+                >
+                  {title}
+                </Drawer.Title>
+                <div className="flex items-center justify-end gap-ds-8">{right}</div>
+              </div>
+
+              <div
                 className={cn(
-                  "min-w-0 truncate text-center text-heading-sm text-content-primary",
-                  !titleVisible && "sr-only",
+                  // min-h-0이 없으면 flex 자식의 기본 min-height:auto 때문에 본문이 줄지 않고
+                  // 시트가 max-h를 넘긴다.
+                  "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20",
+                  !footer && "pb-ds-20",
                 )}
               >
-                {title}
-              </Drawer.Title>
-              <div className="flex items-center justify-end gap-ds-8">{right}</div>
-            </div>
+                {children}
+              </div>
 
-            <div
-              className={cn(
-                // min-h-0이 없으면 flex 자식의 기본 min-height:auto 때문에 본문이 줄지 않고
-                // 시트가 max-h를 넘긴다.
-                "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20",
-                !footer && "pb-ds-20",
-              )}
-            >
-              {children}
-            </div>
-
-            {footer ? <div className="shrink-0 px-ds-20 pt-ds-20 pb-ds-20">{footer}</div> : null}
+              {footer ? <div className="shrink-0 p-ds-20">{footer}</div> : null}
+            </Drawer.Content>
           </Drawer.Popup>
         </Drawer.Viewport>
       </Drawer.Portal>
