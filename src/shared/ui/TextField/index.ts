@@ -1,5 +1,3 @@
-export { FieldFrame } from "./FieldFrame";
-export type { FieldSize, HelpTone } from "./fieldStyles";
 export type { SearchFieldProps } from "./SearchField";
 export { SearchField } from "./SearchField";
 export type { TextareaProps } from "./Textarea";

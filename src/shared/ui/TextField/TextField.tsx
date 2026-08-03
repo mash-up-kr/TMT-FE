@@ -1,9 +1,8 @@
 "use client";
 
 import { type ComponentProps, type ReactNode, useId } from "react";
+import { controlClass, FieldFrame, type FieldSize, type HelpTone } from "@/shared/ui/FieldFrame";
 import { cn } from "@/shared/utils/cn";
-import { FieldFrame } from "./FieldFrame";
-import { controlClass, type FieldSize, type HelpTone } from "./fieldStyles";
 
 export type TextFieldProps = Readonly<
   Omit<ComponentProps<"input">, "size"> & {

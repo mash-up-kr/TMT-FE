@@ -3,10 +3,9 @@
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { type CSSProperties, type ReactNode, useId } from "react";
 import { Checkbox } from "@/shared/ui/Checkbox";
+import { FieldFrame, type FieldSize, fieldText, type HelpTone } from "@/shared/ui/FieldFrame";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
 import { Radio, RadioGroup } from "@/shared/ui/Radio";
-import { FieldFrame, type FieldSize, type HelpTone } from "@/shared/ui/TextField";
-import { fieldText } from "@/shared/ui/TextField/fieldStyles";
 import { cn } from "@/shared/utils/cn";
 
 export type SelectOption = Readonly<{
