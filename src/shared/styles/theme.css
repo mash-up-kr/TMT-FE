@@ -232,8 +232,7 @@
      본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
   --layout-floating-inset-block: var(--number-unit-32);
   --layout-floating-inset-inline: var(--number-unit-20);
-  /* 하단 시트를 위로 끌어올린 동안 시트 아래가 비지 않게 배경만 화면 밖으로 늘리는 길이.
-     하단 safe-area(iPhone 최대 34)도 이 여유분이 덮는다. */
+  /* 시트를 위로 끌어올린 동안 아래가 비지 않게 배경만 늘리는 길이. safe-area도 이게 덮는다. */
   --layout-sheet-overscroll: var(--number-unit-64);
 
   /* ===================== z-index ===================== */
@@ -317,10 +316,8 @@
 }
 
 /* ===================== bottom sheet viewport ===================== */
-/* 하단에서 올라오는 시트의 배치 영역.
-   오버레이와 달리 좌우·하단 여백이 없다. 시트는 화면 아래에 붙어야 한다.
-   자식이 w-full이라 주축(justify-content) 정렬은 불필요하다.
-   (overlay-viewport와 선언이 겹치지만 공통 레이어로 빼지 않는다 — 셋째가 생기면 재검토한다.) */
+/* 하단에서 올라오는 시트의 배치 영역. 자식이 w-full이라 주축 정렬은 두지 않는다.
+   overlay-viewport와 선언이 겹치지만 공통 레이어로 빼지 않는다 — 셋째가 생기면 재검토한다. */
 @utility sheet-viewport {
   position: fixed;
   inset-block: 0;
