@@ -9,5 +9,6 @@ export { HomeIcon } from "./HomeIcon";
 export { LoadingIcon } from "./LoadingIcon";
 export { MyIcon } from "./MyIcon";
 export { PlusIcon } from "./PlusIcon";
+export { SearchIcon } from "./SearchIcon";
 export { TMTLogo } from "./TMTLogo";
 export type { IconProps } from "./types";
