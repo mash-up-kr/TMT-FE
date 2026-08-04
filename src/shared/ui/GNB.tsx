@@ -27,15 +27,26 @@ export function GNB({ left, right, title, align = "center", className }: GNBProp
     <TMTLogo />
   );
 
+  /**
+   * 좌측 정렬에서 좌측 슬롯이 비면 칸을 렌더하지 않는다. 폭이 0이어도 grid gap은 칸 사이마다
+   * 들어가서 제목이 8px 밀린다. 중앙 정렬은 좌우 1fr이 균등 분배해야 제목이 정중앙에 오므로
+   * 빈 칸도 유지한다.
+   */
+  const showLeft = align === "center" || left !== undefined;
+
   return (
     <header
       className={cn(
         "grid w-full items-center gap-ds-8 bg-surface-primary px-ds-20 py-ds-12",
-        align === "center" ? "grid-cols-[1fr_auto_1fr]" : "grid-cols-[auto_auto_1fr]",
+        align === "center"
+          ? "grid-cols-[1fr_auto_1fr]"
+          : showLeft
+            ? "grid-cols-[auto_auto_1fr]"
+            : "grid-cols-[auto_1fr]",
         className,
       )}
     >
-      <div className="flex items-center justify-start gap-ds-8">{left}</div>
+      {showLeft ? <div className="flex items-center justify-start gap-ds-8">{left}</div> : null}
       <div className="flex min-w-0 items-center justify-center">{heading}</div>
       <div className="flex items-center justify-end gap-ds-8">{right}</div>
     </header>
