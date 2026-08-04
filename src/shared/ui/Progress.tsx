@@ -16,11 +16,11 @@ function Progress({ className, ...props }: ProgressProps) {
     <ProgressPrimitive.Root data-slot="progress" className={cn("w-full", className)} {...props}>
       <ProgressPrimitive.Track
         data-slot="progress-track"
-        className="h-ds-4 w-full overflow-hidden rounded-ds-full bg-surface-primary"
+        className="h-ds-4 w-full rounded-ds-full bg-surface-tertiary"
       >
         <ProgressPrimitive.Indicator
           data-slot="progress-indicator"
-          className="h-full w-0 rounded-ds-full bg-surface-brand transition-[width] motion-reduce:transition-none data-indeterminate:w-1/3 data-indeterminate:animate-pulse motion-reduce:data-indeterminate:animate-none"
+          className="h-full rounded-ds-full bg-surface-brand transition-[width] data-indeterminate:w-0 motion-reduce:transition-none"
         />
       </ProgressPrimitive.Track>
     </ProgressPrimitive.Root>
