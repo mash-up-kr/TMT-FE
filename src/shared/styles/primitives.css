@@ -88,6 +88,7 @@
   /* transparent (black alpha) — Figma transparent 스케일 */
   --primitive-transparent-0: #00000000;
   --primitive-transparent-6: #0000000f;
+  --primitive-transparent-8: #00000014;
   --primitive-transparent-10: #0000001a;
   --primitive-transparent-16: #00000029;
   --primitive-transparent-20: #00000033;
@@ -110,6 +111,7 @@
     "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
 
   /* font size */
+  --typography-font-size-10: 10px;
   --typography-font-size-28: 28px;
   --typography-font-size-24: 24px;
   --typography-font-size-20: 20px;
@@ -119,6 +121,7 @@
   --typography-font-size-12: 12px;
 
   /* line height */
+  --typography-line-height-12: 12px;
   --typography-line-height-38: 38px;
   --typography-line-height-34: 34px;
   --typography-line-height-28: 28px;
@@ -129,6 +132,7 @@
 
   /* font weight */
   --typography-font-weight-bold: 700;
+  --typography-font-weight-semibold: 600;
   --typography-font-weight-medium: 500;
   --typography-font-weight-regular: 400;
 
