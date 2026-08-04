@@ -232,6 +232,9 @@
      본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
   --layout-floating-inset-block: var(--number-unit-32);
   --layout-floating-inset-inline: var(--number-unit-20);
+  /* 하단 시트를 위로 끌어올린 동안 시트 아래가 비지 않게 배경만 화면 밖으로 늘리는 길이.
+     하단 safe-area(iPhone 최대 34)도 이 여유분이 덮는다. */
+  --layout-sheet-overscroll: var(--number-unit-64);
 
   /* ===================== z-index ===================== */
   --z-index-overlay: 100;
