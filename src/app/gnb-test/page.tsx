@@ -24,7 +24,7 @@ export default function GnbTestPage() {
       </Case>
 
       <Case label="Style=Logo, Location=Left" hint="로고가 좌측 슬롯에 붙는다">
-        <GNB align="left" left={<BackButton />} right={<Actions />} />
+        <GNB align="left" right={<Actions />} />
       </Case>
 
       <Case label="Style=Title, Location=Center" hint="타이틀 20px, 화면 정중앙">
