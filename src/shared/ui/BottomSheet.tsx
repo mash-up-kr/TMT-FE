@@ -21,14 +21,14 @@ type BottomSheetBaseProps = Readonly<{
 
 /**
  * 시트 이름은 스크린리더가 읽어야 하므로 어느 경우든 하나는 있어야 한다.
- * 헤더가 있으면 `title`이 그 역할을 겸하고, 헤더가 없으면 `label`로 따로 준다.
+ * 헤더가 있으면 `title`이 그 역할을 겸하고, 헤더가 없을 때만 `label`로 따로 준다.
+ * 둘을 함께 주면 보이는 제목과 낭독 이름이 갈려 WCAG 2.5.3에 어긋나므로 타입으로 막는다.
  */
 type BottomSheetNameProps = Readonly<
   | {
       /** 헤더 제목. 시트 이름도 겸한다. */
       title: string;
-      /** 낭독용 이름을 제목과 다르게 할 때만 쓴다. */
-      label?: string;
+      label?: undefined;
     }
   | {
       title?: undefined;
@@ -85,9 +85,8 @@ export function BottomSheet({
               "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
               // 화면을 넘지 않게 잡는다. dvh라야 iOS 주소창 높이가 빠진다.
               "max-h-[85dvh]",
-              // 배경을 화면 아래로 늘려 둔다. 위로 끌어올린 동안 시트 아래에 빈 자리가 생기지
-              // 않고, 하단 safe-area도 이 여유분이 덮는다. 음수 마진으로 레이아웃 높이는 되돌린다.
-              "-mb-ds-64 pb-ds-64",
+              // 배경만 화면 아래로 늘린다. 음수 마진으로 레이아웃 높이는 되돌린다.
+              "mb-[calc(var(--layout-sheet-overscroll)*-1)] pb-(--layout-sheet-overscroll)",
               // 등장·퇴장은 아래에서 올라오고 내려간다.
               "transition-transform duration-300 ease-out",
               "data-starting-style:translate-y-full data-ending-style:translate-y-full",
