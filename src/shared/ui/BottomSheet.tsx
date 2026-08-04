@@ -5,13 +5,9 @@ import type { ReactNode } from "react";
 import { GNB } from "@/shared/ui/GNB";
 import { cn } from "@/shared/utils/cn";
 
-type BottomSheetProps = Readonly<{
+type BottomSheetBaseProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** 스크린리더가 읽는 시트 이름. 헤더를 그리지 않아도 값은 항상 필요하다. */
-  label: string;
-  /** 헤더 제목. 없으면 헤더를 그리지 않는다. */
-  title?: string;
   /** 헤더 좌측 슬롯. */
   left?: ReactNode;
   /** 헤더 우측 슬롯. */
@@ -24,6 +20,26 @@ type BottomSheetProps = Readonly<{
 }>;
 
 /**
+ * 시트 이름은 스크린리더가 읽어야 하므로 어느 경우든 하나는 있어야 한다.
+ * 헤더가 있으면 `title`이 그 역할을 겸하고, 헤더가 없으면 `label`로 따로 준다.
+ */
+type BottomSheetNameProps = Readonly<
+  | {
+      /** 헤더 제목. 시트 이름도 겸한다. */
+      title: string;
+      /** 낭독용 이름을 제목과 다르게 할 때만 쓴다. */
+      label?: string;
+    }
+  | {
+      title?: undefined;
+      /** 헤더가 없을 때 스크린리더가 읽을 시트 이름. */
+      label: string;
+    }
+>;
+
+type BottomSheetProps = BottomSheetBaseProps & BottomSheetNameProps;
+
+/**
  * 하단에서 올라오는 시트.
  *
  * 아래로 스와이프해 닫는 동작은 Base UI Drawer가 시트 전체에서 처리한다. 상단 핸들은
@@ -33,7 +49,11 @@ type BottomSheetProps = Readonly<{
  * Base UI는 Title이 없으면 `aria-labelledby`를 붙이지 않아 서로 충돌하지 않는다.
  *
  * 시트 헤더는 항상 제목이 있다. GNB가 제목 없을 때 로고로 폴백하는 경로는 페이지 전용이라
- * 여기서는 닿지 않는다. 헤더가 아예 없는 시트는 `title`을 넘기지 않으면 된다.
+ * 여기서는 닿지 않는다. 헤더가 아예 없는 시트는 `title` 대신 `label`을 넘긴다.
+ *
+ * @example
+ * <BottomSheet title="메뉴 34" right={<CloseButton />}>…</BottomSheet>
+ * <BottomSheet label="추천 결과">…</BottomSheet>
  */
 export function BottomSheet({
   open,
@@ -60,7 +80,7 @@ export function BottomSheet({
         />
         <Drawer.Viewport className="sheet-viewport">
           <Drawer.Popup
-            aria-label={label}
+            aria-label={label ?? title}
             className={cn(
               "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
               // 화면을 넘지 않게 잡는다. dvh라야 iOS 주소창 높이가 빠진다.

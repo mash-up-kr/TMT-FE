@@ -61,7 +61,6 @@ export default function BottomSheetTestPage() {
       <BottomSheet
         open={openCase === "short"}
         onOpenChange={close}
-        label="짧은 본문"
         title="짧은 본문"
         footer={<Buttons onCancel={close} />}
       >
@@ -73,7 +72,6 @@ export default function BottomSheetTestPage() {
       <BottomSheet
         open={openCase === "long"}
         onOpenChange={close}
-        label="긴 본문"
         title="긴 본문"
         footer={<Buttons onCancel={close} />}
       >
@@ -86,12 +84,7 @@ export default function BottomSheetTestPage() {
         </div>
       </BottomSheet>
 
-      <BottomSheet
-        open={openCase === "noFooter"}
-        onOpenChange={close}
-        label="푸터 없음"
-        title="푸터 없음"
-      >
+      <BottomSheet open={openCase === "noFooter"} onOpenChange={close} title="푸터 없음">
         <p className="text-body-md-regular text-content-secondary">
           푸터가 없으면 본문 아래에 여백이 붙는다.
         </p>
@@ -100,7 +93,6 @@ export default function BottomSheetTestPage() {
       <BottomSheet
         open={openCase === "withSlots"}
         onOpenChange={close}
-        label="긴 제목"
         title="아주 긴 제목이 들어가면 어떻게 되는지 확인한다"
         left={
           <IconButton aria-label="닫기" onClick={close}>
