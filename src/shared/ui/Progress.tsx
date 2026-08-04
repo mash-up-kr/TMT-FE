@@ -4,7 +4,10 @@ import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import type { ComponentProps } from "react";
 import { cn } from "@/shared/utils/cn";
 
-type ProgressProps = Omit<ComponentProps<typeof ProgressPrimitive.Root>, "className"> & {
+type ProgressProps = Omit<
+  ComponentProps<typeof ProgressPrimitive.Root>,
+  "children" | "className"
+> & {
   className?: string;
 };
 
