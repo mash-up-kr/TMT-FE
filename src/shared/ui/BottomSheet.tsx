@@ -83,8 +83,8 @@ export function BottomSheet({
             aria-label={label ?? title}
             className={cn(
               "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
-              // 화면을 넘지 않게 잡는다. dvh라야 iOS 주소창 높이가 빠진다.
-              "max-h-[85dvh]",
+              // 시안 최대 높이 700/760. dvh라야 iOS 주소창 높이가 빠진다.
+              "max-h-[92dvh]",
               // 배경만 화면 아래로 늘린다. 음수 마진으로 레이아웃 높이는 되돌린다.
               "-mb-(--layout-sheet-overscroll) pb-(--layout-sheet-overscroll)",
               // 등장·퇴장은 아래에서 올라오고 내려간다.
