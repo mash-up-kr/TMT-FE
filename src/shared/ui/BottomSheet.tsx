@@ -2,15 +2,16 @@
 
 import { Drawer } from "@base-ui/react/drawer";
 import type { ReactNode } from "react";
+import { GNB } from "@/shared/ui/GNB";
 import { cn } from "@/shared/utils/cn";
 
 type BottomSheetProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** 시트 제목. 스크린리더가 읽는 이름이므로 값은 항상 필요하다. */
-  title: string;
-  /** 제목을 화면에도 노출한다. */
-  titleVisible?: boolean;
+  /** 스크린리더가 읽는 시트 이름. 헤더를 그리지 않아도 값은 항상 필요하다. */
+  label: string;
+  /** 헤더 제목. 없으면 헤더를 그리지 않는다. */
+  title?: string;
   /** 헤더 좌측 슬롯. */
   left?: ReactNode;
   /** 헤더 우측 슬롯. */
@@ -28,14 +29,17 @@ type BottomSheetProps = Readonly<{
  * 아래로 스와이프해 닫는 동작은 Base UI Drawer가 시트 전체에서 처리한다. 상단 핸들은
  * 그 동작을 알리는 장식이라 별도 핸들러가 없다.
  *
- * 헤더는 GNB와 생김새가 같지만 컴포넌트를 재사용하지 않는다. 제목을 `Drawer.Title`로
- * 걸어야 스크린리더가 시트 이름을 읽고, 제목이 없을 때 로고로 폴백해서도 안 된다.
+ * 헤더는 GNB를 그대로 쓴다. 시트 이름은 `Drawer.Title` 대신 팝업의 `aria-label`로 거는데,
+ * Base UI는 Title이 없으면 `aria-labelledby`를 붙이지 않아 서로 충돌하지 않는다.
+ *
+ * 시트 헤더는 항상 제목이 있다. GNB가 제목 없을 때 로고로 폴백하는 경로는 페이지 전용이라
+ * 여기서는 닿지 않는다. 헤더가 아예 없는 시트는 `title`을 넘기지 않으면 된다.
  */
 export function BottomSheet({
   open,
   onOpenChange,
+  label,
   title,
-  titleVisible = true,
   left,
   right,
   children,
@@ -51,11 +55,12 @@ export function BottomSheet({
             "transition-opacity duration-300 ease-out",
             "data-starting-style:opacity-0 data-ending-style:opacity-0",
             "data-swiping:duration-0",
-            "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*400ms)]",
+            "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
           )}
         />
         <Drawer.Viewport className="sheet-viewport">
           <Drawer.Popup
+            aria-label={label}
             className={cn(
               "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
               // 화면을 넘지 않게 잡는다. dvh라야 iOS 주소창 높이가 빠진다.
@@ -70,7 +75,7 @@ export function BottomSheet({
               // 인라인 transform으로 직접 잡으므로 우리가 translate로 관여하지 않는다.
               "data-swiping:duration-0",
               // 놓을 때는 스와이프 속도에 비례해 미끄러진다.
-              "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*400ms)]",
+              "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
               className,
             )}
           >
@@ -78,26 +83,15 @@ export function BottomSheet({
             <Drawer.Content className="flex min-h-0 flex-1 flex-col">
               <div aria-hidden="true" className="flex shrink-0 justify-center py-ds-12">
                 {/* 36×4. ds 스케일에 36이 없어 임의값으로 둔다. */}
-                <div className="h-1 w-[36px] rounded-ds-full bg-stroke-primary" />
+                <div className="h-1 w-9 rounded-ds-full bg-stroke-primary" />
               </div>
 
-              {/* GNB와 같은 3칸 구조다. 트랙 정의를 바꾸면 GNB.tsx도 함께 확인한다. */}
-              <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-ds-8 px-ds-20 py-ds-12">
-                <div className="flex items-center justify-start gap-ds-8">{left}</div>
-                <Drawer.Title
-                  className={cn(
-                    "min-w-0 truncate text-center text-heading-sm text-content-primary",
-                    !titleVisible && "sr-only",
-                  )}
-                >
-                  {title}
-                </Drawer.Title>
-                <div className="flex items-center justify-end gap-ds-8">{right}</div>
-              </div>
+              {title ? (
+                <GNB align="left" title={title} left={left} right={right} className="shrink-0" />
+              ) : null}
 
               <div
                 className={cn(
-                  // min-h-0이 없으면 flex 자식의 기본 min-height:auto 때문에 본문이 줄지 않고
                   // 시트가 max-h를 넘긴다.
                   "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20",
                   !footer && "pb-ds-20",

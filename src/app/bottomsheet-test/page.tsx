@@ -5,7 +5,7 @@ import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon } from "@/shared/ui/icons";
 
-type Case = "short" | "long" | "noFooter" | "withSlots";
+type Case = "short" | "long" | "noFooter" | "withSlots" | "noHeader";
 
 const LONG_LINES = Array.from(
   { length: 30 },
@@ -48,14 +48,20 @@ export default function BottomSheetTestPage() {
         />
         <Trigger
           label="헤더 좌·우 슬롯"
-          hint="제목이 가운데 유지되는지 본다"
+          hint="긴 제목이 좌우 슬롯을 덮지 않는다"
           onRun={() => setOpenCase("withSlots")}
+        />
+        <Trigger
+          label="헤더 없음"
+          hint="title을 넘기지 않으면 핸들 아래가 바로 본문이다"
+          onRun={() => setOpenCase("noHeader")}
         />
       </section>
 
       <BottomSheet
         open={openCase === "short"}
         onOpenChange={close}
+        label="짧은 본문"
         title="짧은 본문"
         footer={<Buttons onCancel={close} />}
       >
@@ -67,6 +73,7 @@ export default function BottomSheetTestPage() {
       <BottomSheet
         open={openCase === "long"}
         onOpenChange={close}
+        label="긴 본문"
         title="긴 본문"
         footer={<Buttons onCancel={close} />}
       >
@@ -79,7 +86,12 @@ export default function BottomSheetTestPage() {
         </div>
       </BottomSheet>
 
-      <BottomSheet open={openCase === "noFooter"} onOpenChange={close} title="푸터 없음">
+      <BottomSheet
+        open={openCase === "noFooter"}
+        onOpenChange={close}
+        label="푸터 없음"
+        title="푸터 없음"
+      >
         <p className="text-body-md-regular text-content-secondary">
           푸터가 없으면 본문 아래에 여백이 붙는다.
         </p>
@@ -88,6 +100,7 @@ export default function BottomSheetTestPage() {
       <BottomSheet
         open={openCase === "withSlots"}
         onOpenChange={close}
+        label="긴 제목"
         title="아주 긴 제목이 들어가면 어떻게 되는지 확인한다"
         left={
           <IconButton aria-label="닫기" onClick={close}>
@@ -103,6 +116,17 @@ export default function BottomSheetTestPage() {
       >
         <p className="text-body-md-regular text-content-secondary">
           제목이 길면 좌우 슬롯을 덮지 않고 잘린다.
+        </p>
+      </BottomSheet>
+
+      <BottomSheet
+        open={openCase === "noHeader"}
+        onOpenChange={close}
+        label="헤더 없는 시트"
+        footer={<Buttons onCancel={close} />}
+      >
+        <p className="text-body-md-regular text-content-secondary">
+          title이 없으면 헤더를 그리지 않는다. 시트 이름은 label이 맡는다.
         </p>
       </BottomSheet>
     </main>
