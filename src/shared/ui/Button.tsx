@@ -59,7 +59,7 @@ export function Button({
       )}
       {...props}
     >
-      {loading ? <LoadingIcon /> : leftIcon}
+      {loading ? <LoadingIcon className="animate-spin" /> : leftIcon}
       {children}
       {!loading && rightIcon}
     </button>
