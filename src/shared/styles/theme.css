@@ -322,6 +322,7 @@
   position: fixed;
   inset-block: 0;
   left: 50%;
+  z-index: var(--z-index-overlay);
   transform: translateX(-50%);
   display: flex;
   align-items: flex-end;

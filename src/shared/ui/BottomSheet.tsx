@@ -67,7 +67,7 @@ export function BottomSheet({
       <Drawer.Portal>
         <Drawer.Backdrop
           className={cn(
-            "fixed inset-0 bg-surface-backdrop",
+            "fixed inset-0 z-overlay bg-surface-backdrop",
             "transition-opacity duration-300 ease-out",
             "data-starting-style:opacity-0 data-ending-style:opacity-0",
             "data-swiping:duration-0",
