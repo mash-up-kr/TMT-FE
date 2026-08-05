@@ -20,7 +20,7 @@ function Progress({ className, ...props }: ProgressProps) {
       >
         <ProgressPrimitive.Indicator
           data-slot="progress-indicator"
-          className="h-full rounded-ds-full bg-surface-brand transition-[width] data-indeterminate:w-0 motion-reduce:transition-none"
+          className="h-full rounded-ds-full bg-surface-brand transition-[width] data-indeterminate:w-1/3 data-indeterminate:animate-pulse motion-reduce:transition-none motion-reduce:data-indeterminate:animate-none"
         />
       </ProgressPrimitive.Track>
     </ProgressPrimitive.Root>
