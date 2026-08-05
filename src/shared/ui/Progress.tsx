@@ -4,12 +4,14 @@ import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import type { ComponentProps } from "react";
 import { cn } from "@/shared/utils/cn";
 
+type AccessibleName = { "aria-label": string } | { "aria-labelledby": string };
+
 type ProgressProps = Omit<
   ComponentProps<typeof ProgressPrimitive.Root>,
   "children" | "className"
 > & {
   className?: string;
-};
+} & AccessibleName;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
