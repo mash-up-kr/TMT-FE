@@ -34,6 +34,7 @@
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-backdrop: var(--primitive-transparent-64);
   --color-surface-navigation-selected: var(--primitive-transparent-8);
+  --color-surface-inverse: var(--primitive-transparent-64);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -226,11 +227,15 @@
   --layout-grid-gutter: var(--number-unit-16);
   --layout-grid-margin: var(--number-unit-20);
   --layout-frame-max: 430px;
-  /* 오버레이(모달·바텀시트)와 화면 가장자리 사이 여백. 본문 그리드 마진과 의미가
-     달라 따로 둔다 — 카드가 화면 끝에 닿지 않게 하는 값이다. */
-  --layout-overlay-inset-block: var(--number-unit-32);
-  --layout-overlay-inset-inline: var(--number-unit-20);
   --layout-bottom-navigation-width: 320px;
+  /* 화면 위에 떠 있는 것(모달·바텀시트·토스트)과 화면 가장자리 사이 여백.
+     본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
+  --layout-floating-inset-block: var(--number-unit-32);
+  --layout-floating-inset-inline: var(--number-unit-20);
+
+  /* ===================== z-index ===================== */
+  --z-index-overlay: 100;
+  --z-index-toast: 200;
 }
 
 /* ===================== border width ===================== */
@@ -283,15 +288,29 @@
   position: fixed;
   inset-block: 0;
   left: 50%;
+  z-index: var(--z-index-overlay);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: var(--layout-frame-max);
-  padding-inline: var(--layout-overlay-inset-inline);
-  padding-block: calc(var(--layout-overlay-inset-block) + env(safe-area-inset-top))
-    calc(var(--layout-overlay-inset-block) + env(safe-area-inset-bottom));
+  padding-inline: var(--layout-floating-inset-inline);
+  padding-block: calc(var(--layout-floating-inset-block) + env(safe-area-inset-top))
+    calc(var(--layout-floating-inset-block) + env(safe-area-inset-bottom));
+}
+
+/* ===================== toast viewport ===================== */
+/* 토스트가 뜨는 영역. 자식이 absolute로 서로 포개지므로 여백은 각 토스트가 잡는다. */
+@utility toast-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  z-index: var(--z-index-toast);
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--layout-frame-max);
+  pointer-events: none;
 }
 
 /* ===================== content container ===================== */
