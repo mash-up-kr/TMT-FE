@@ -11,9 +11,20 @@ type ProgressProps = Omit<
   className?: string;
 };
 
-function Progress({ className, ...props }: ProgressProps) {
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function Progress({ className, max = 100, min = 0, value, ...props }: ProgressProps) {
   return (
-    <ProgressPrimitive.Root data-slot="progress" className={cn("w-full", className)} {...props}>
+    <ProgressPrimitive.Root
+      data-slot="progress"
+      className={cn("w-full", className)}
+      max={max}
+      min={min}
+      value={value === null ? null : clamp(value, min, max)}
+      {...props}
+    >
       <ProgressPrimitive.Track
         data-slot="progress-track"
         className="h-ds-4 w-full rounded-ds-full bg-surface-tertiary"
