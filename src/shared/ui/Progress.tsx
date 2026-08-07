@@ -24,7 +24,7 @@ function Progress({ className, max = 100, min = 0, value, ...props }: ProgressPr
       className={cn("w-full", className)}
       max={max}
       min={min}
-      value={value === null ? null : clamp(value, min, max)}
+      value={typeof value === "number" && Number.isFinite(value) ? clamp(value, min, max) : null}
       {...props}
     >
       <ProgressPrimitive.Track
