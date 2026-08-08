@@ -58,6 +58,7 @@ const descriptionText: Record<FieldSize, string> = {
   md: "text-body-sm-medium",
 };
 
+// 팝업 높이 계산용 — 각각 fieldText·descriptionText의 line-height와 값을 맞춘다
 const labelLineHeight: Record<FieldSize, string> = {
   lg: "var(--text-body-lg-medium--line-height)",
   md: "var(--text-body-md-medium--line-height)",
