@@ -43,7 +43,6 @@ export type SelectProps = Readonly<{
   /** 트리거 버튼 클래스 */
   className?: string;
   containerClassName?: string;
-  popupClassName?: string;
   "aria-describedby"?: string;
   "aria-label"?: string;
 }>;
@@ -163,7 +162,6 @@ export function Select({
   id,
   className,
   containerClassName,
-  popupClassName,
   "aria-describedby": ariaDescribedby,
   "aria-label": ariaLabel,
 }: SelectProps) {
@@ -254,7 +252,6 @@ export function Select({
               "transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none",
               "data-starting-style:scale-98 data-starting-style:opacity-0",
               "data-ending-style:scale-98 data-ending-style:opacity-0",
-              popupClassName,
             )}
           >
             {items.length === 0 ? (
