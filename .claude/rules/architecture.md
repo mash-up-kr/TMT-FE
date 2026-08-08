@@ -39,6 +39,9 @@ src/
 │       ├── _model/
 │       ├── _constants/
 │       └── _stores/
+├── api/
+│   ├── gen/
+│   └── mutator.ts
 └── shared/
     ├── ui/
     ├── hooks/
@@ -85,16 +88,21 @@ src/
 ## Import 경계
 
 ```text
-app/{route}/  →  shared/{ui, hooks, utils, model, constants, stores, styles, providers}
+app/{route}/       →  shared/{ui, hooks, utils, model, constants, stores, styles, providers}
+app/{route}/       →  api/gen
+shared/providers/  →  api/mutator
 ```
 
-- 허용: 라우트 → shared, 같은 라우트의 private segment 간 import.
+- 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
 - 금지: shared → app, 라우트 간 직접 import, 다른 라우트의 private segment import.
+- `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
+- `shared/providers/`만 `api/mutator`를 import할 수 있다. 전역 react-query retry 정책이 API 에러 타입에 의존하기 때문이다.
+- `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.
 - 라우트 group 전용 코드는 `app/(group)/_*/`에 둔다.
 
 ## 코드 배치 절차
 
-1. API 연동이 필요한가: 아래 API·Mock 도입 계약을 먼저 따른다.
+1. API 연동이 필요한가: 아래 API 계약을 먼저 따른다.
 2. 한 라우트에서만 쓰는가: 해당 라우트의 private segment에 둔다.
 3. 여러 라우트에서 쓰는가: UI는 `shared/ui/`, hook은 `shared/hooks/`, 순수 함수와 SDK adapter는 `shared/utils/`를 검토한다.
 4. 전역 타입·상수·상태·provider인가: 실제 전역 의미나 여러 라우트의 공유 요구가 있을 때만 해당 shared segment로 옮긴다.
@@ -104,25 +112,28 @@ app/{route}/  →  shared/{ui, hooks, utils, model, constants, stores, styles, p
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
-- `src/api/`, orval, `pnpm api-gen`, MSW는 아직 도입되지 않았다.
+- API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 생성 명령은 `pnpm api-gen`이다.
+- mock layer(MSW 등)는 도입하지 않는다.
 
-## API·Mock 도입 계약
+## API 계약
 
-아래는 합의된 목표 계약이며 아직 구현된 현재 구조가 아니다. API 또는 Mock 구현 요청을 받으면 구현 대신 dependency, generation command, configuration, migration scope를 포함한 도입안을 작성하고 승인을 요청한다. 승인 전에는 `src/api/`, 수동 API client, 라우트별 fetch wrapper, mock layer를 만들지 않는다.
-
-도입이 승인되면 다음 구조와 책임을 함께 구현한다.
-
-- OpenAPI와 orval로 client, hook, schema, MSW handler를 `src/api/gen/`에 생성하고 직접 수정하지 않는다.
-- endpoint 변경은 OpenAPI를 수정한 뒤 `pnpm api-gen`으로 반영한다.
+- OpenAPI와 orval로 client, hook, 타입을 `src/api/gen/`에 생성하고 직접 수정하지 않는다.
+- 스펙 스냅샷은 `_scripts/api/openapi.json`이다. `pnpm api-gen`이 갱신하며 직접 편집하지 않는다.
+- endpoint 변경은 백엔드 OpenAPI가 바뀐 뒤 `pnpm api-gen`으로 반영한다. 스펙에 없는 endpoint를 프론트에서 만들지 않는다.
 - `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 인증, 공통 header, 공통 에러 처리를 소유한다.
 - API 응답을 UI model로 바꾸는 코드는 라우트 `_utils/`에 둔다.
-- MSW 인프라와 custom scenario는 `src/api/mock/`에서 관리하고 생성 handler와 분리한다.
-- 페이지와 라우트 private segment에는 mock handler를 만들지 않는다.
-- MSW는 `NEXT_PUBLIC_API_MOCKING`으로 활성화한다.
-- orval 없는 수동 client, 수동 MSW handler, API와 Mock의 부분 도입을 대안으로 제안하지 않는다. 목표 계약을 바꾸려면 구현 전에 이 규칙을 먼저 합의해 수정한다.
-- 최초 API 또는 Mock 도입안의 migration scope에는 위 항목 전체를 포함하며, 개별 endpoint의 필요성을 이유로 일부 제외 여부를 다시 묻지 않는다.
+- 수동 API client와 라우트별 fetch wrapper를 만들지 않는다.
+- 생성 파일은 커밋한다. lint 대상에서 제외하고 format은 유지한다.
+- 런타임 스키마 검증 라이브러리는 도입하지 않았다. 필요하면 conventions rule의 dependency 절차를 따른다.
 
-도입 변경에서 dependency, `pnpm api-gen`, orval/MSW 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 추가하고 이 문서의 현재 상태를 갱신한다.
+## Mock 정책
+
+- MSW를 포함한 mock layer를 도입하지 않는다. `src/api/mock/`을 만들지 않는다.
+- 페이지와 라우트 private segment에도 mock handler를 만들지 않는다.
+- 백엔드가 아직 제공하지 않는 endpoint는 mock으로 채우지 않고, 스펙에 올라온 뒤 연동한다.
+- mock 도입이 필요해지면 구현 전에 이 절을 먼저 합의해 수정한다.
+
+API 또는 mock 구조를 바꾸는 변경에서는 dependency, `pnpm api-gen`, orval 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 갱신하고 이 문서의 현재 상태도 함께 고친다.
 
 ## 재검토 기준
 
