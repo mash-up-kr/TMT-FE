@@ -112,14 +112,14 @@ shared/providers/  →  api/mutator
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
-- API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 생성 명령은 `pnpm api-gen`이다.
+- API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 동기화 명령은 `pnpm api:sync`다.
 - mock layer(MSW 등)는 도입하지 않는다.
 
 ## API 계약
 
 - OpenAPI와 orval로 client, hook, 타입을 `src/api/gen/`에 생성하고 직접 수정하지 않는다.
-- 스펙 스냅샷은 `_scripts/api/openapi.json`이다. `pnpm api-gen`이 갱신하며 직접 편집하지 않는다.
-- endpoint 변경은 백엔드 OpenAPI가 바뀐 뒤 `pnpm api-gen`으로 반영한다. 스펙에 없는 endpoint를 프론트에서 만들지 않는다.
+- 스펙 스냅샷은 `_scripts/api/openapi.json`이다. `pnpm api:sync`가 갱신하며 직접 편집하지 않는다.
+- endpoint 변경은 백엔드 OpenAPI가 바뀐 뒤 `pnpm api:sync`로 반영한다. 스펙에 없는 endpoint를 프론트에서 만들지 않는다.
 - `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 인증, 공통 header, 공통 에러 처리를 소유한다.
 - API 응답을 UI model로 바꾸는 코드는 라우트 `_utils/`에 둔다.
 - 수동 API client와 라우트별 fetch wrapper를 만들지 않는다.
@@ -133,7 +133,7 @@ shared/providers/  →  api/mutator
 - 백엔드가 아직 제공하지 않는 endpoint는 mock으로 채우지 않고, 스펙에 올라온 뒤 연동한다.
 - mock 도입이 필요해지면 구현 전에 이 절을 먼저 합의해 수정한다.
 
-API 또는 mock 구조를 바꾸는 변경에서는 dependency, `pnpm api-gen`, orval 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 갱신하고 이 문서의 현재 상태도 함께 고친다.
+API 또는 mock 구조를 바꾸는 변경에서는 dependency, `pnpm api:sync`, orval 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 갱신하고 이 문서의 현재 상태도 함께 고친다.
 
 ## 재검토 기준
 

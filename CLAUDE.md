@@ -14,7 +14,7 @@ Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node
 - Typecheck: `pnpm typecheck`
 - Build: `pnpm build`
 - Verify: `pnpm verify` (check → typecheck → build)
-- API 코드 생성: `pnpm api-gen` (OpenAPI 스펙 fetch → orval)
+- API 스펙 동기화: `pnpm api:sync` (OpenAPI 스펙 fetch → orval)
 
 자동 테스트 명령은 없다. 테스트를 통과했다고 말하지 않는다.
 

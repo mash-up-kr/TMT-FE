@@ -1,15 +1,15 @@
 ---
-name: generate-api
+name: sync-openapi
 description: >-
-  딸깍 웹(ttalkkak-web) 레포 전용. 백엔드 OpenAPI 스펙을 받아 orval로 API client·hook·타입을 다시 생성하는
-  모든 요청에 사용한다 — "API 생성해줘", "generate-api", "스웨거 동기화", "스펙 갱신", "백엔드 API 반영",
+  딸깍 웹(ttalkkak-web) 레포 전용. 백엔드 OpenAPI 스펙을 받아 orval로 API client·hook·타입을 동기화하는
+  모든 요청에 사용한다 — "API 동기화해줘", "OpenAPI 갱신", "스펙 갱신", "백엔드 API 반영",
   "새 엔드포인트 붙여줘", "타입 다시 뽑아줘"가 여기 해당한다. 스펙을 내려받고, 생성하고, 스펙 diff로 엔드포인트
   추가·변경·삭제를 요약하고, 깨진 호출부를 먼저 찾아 보고하고, 검증까지 한 번에 처리한다. 트리거하지 않음:
   이미 생성된 훅을 화면에 연결하는 작업, mock 데이터 요청(이 레포는 mock layer를 도입하지 않았다),
   orval 설정 자체를 바꾸는 작업.
 ---
 
-# generate-api — 스펙에서 훅까지, 한 번에
+# sync-openapi — 스펙에서 훅까지, 한 번에
 
 백엔드가 API를 바꿨을 때 프론트에서 해야 할 일 — 스펙 받기, 생성, 무엇이 바뀌었는지 파악, 깨진 곳 찾기, 검증 — 을 한 번에 처리한다.
 
@@ -40,7 +40,7 @@ diff 요약을 위해 현재 `_scripts/api/openapi.json`의 endpoint 목록(`met
 ### 3 — 생성
 
 ```
-pnpm api-gen
+pnpm api:sync
 ```
 
 실패하면 스크립트가 원인별로 안내한다 (URL 없음 / 401·403 / 타임아웃 / JSON 아님 / 빈 스펙). 임의로 우회하지 말고 안내대로 처리한다.
