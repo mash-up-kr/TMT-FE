@@ -239,7 +239,7 @@ export function Select({
 
       <SelectPrimitive.Portal>
         <SelectPrimitive.Positioner
-          className="z-50 outline-none"
+          className="z-popup outline-none"
           sideOffset={4}
           alignItemWithTrigger={false}
         >
