@@ -38,7 +38,6 @@ export type SelectProps = Readonly<{
   disabled?: boolean;
   readOnly?: boolean;
   name?: string;
-  form?: string;
   id?: string;
   /** 트리거 버튼 클래스 */
   className?: string;
@@ -158,7 +157,6 @@ export function Select({
   disabled = false,
   readOnly = false,
   name,
-  form,
   id,
   className,
   containerClassName,
@@ -181,7 +179,6 @@ export function Select({
       readOnly={readOnly}
       required={required}
       name={name}
-      form={form}
     >
       <FieldFrame
         htmlFor={triggerId}
