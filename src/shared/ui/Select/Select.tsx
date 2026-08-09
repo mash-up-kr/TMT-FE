@@ -7,6 +7,16 @@ import { FieldFrame, type FieldSize, fieldText, type HelpTone } from "@/shared/u
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
 import { Radio, RadioGroup } from "@/shared/ui/Radio";
 import { cn } from "@/shared/utils/cn";
+import {
+  descriptionText,
+  iconSize,
+  itemBackground,
+  itemLayout,
+  listMaxHeight,
+  listScroll,
+  popupSurface,
+  SCROLL_THUMB_RADIUS,
+} from "./selectStyles";
 
 export type SelectOption = Readonly<{
   value: string;
@@ -44,49 +54,6 @@ export type SelectProps = Readonly<{
   "aria-describedby"?: string;
   "aria-label"?: string;
 }>;
-
-const iconSize: Record<FieldSize, number> = {
-  lg: 24,
-  md: 20,
-};
-
-const descriptionText: Record<FieldSize, string> = {
-  lg: "text-body-md-medium",
-  md: "text-body-sm-medium",
-};
-
-// 팝업 높이 계산용 — 각각 fieldText·descriptionText의 line-height와 값을 맞춘다
-const labelLineHeight: Record<FieldSize, string> = {
-  lg: "var(--text-body-lg-medium--line-height)",
-  md: "var(--text-body-md-medium--line-height)",
-};
-
-const descriptionLineHeight: Record<FieldSize, string> = {
-  lg: "var(--text-body-md-medium--line-height)",
-  md: "var(--text-body-sm-medium--line-height)",
-};
-
-function listMaxHeight(size: FieldSize, hasDescription: boolean, visibleItems: number): string {
-  const item = [
-    "var(--spacing-ds-16)",
-    labelLineHeight[size],
-    ...(hasDescription ? ["var(--spacing-ds-4)", descriptionLineHeight[size]] : []),
-  ].join(" + ");
-
-  return `calc((${item}) * ${visibleItems} + var(--spacing-ds-16))`;
-}
-
-const itemBackground = cn(
-  "bg-surface-primary",
-  "not-data-disabled:data-highlighted:bg-surface-secondary",
-  "not-data-disabled:active:bg-surface-interactive-tertiary-hovered",
-  "not-data-disabled:data-highlighted:active:bg-surface-interactive-tertiary-hovered",
-  "data-selected:not-data-disabled:bg-surface-selected",
-  "data-selected:not-data-disabled:data-highlighted:bg-surface-selected-hovered",
-  "data-selected:not-data-disabled:active:bg-surface-selected-pressed",
-  "data-selected:not-data-disabled:data-highlighted:active:bg-surface-selected-pressed",
-  "data-disabled:pointer-events-none data-disabled:bg-surface-disabled",
-);
 
 const RADIO_VALUE = "selected";
 
@@ -137,6 +104,90 @@ function ItemIndicator({ indicator, selected, disabled }: ItemIndicatorProps) {
   );
 }
 
+function SelectEmpty({ size }: Readonly<{ size: FieldSize }>) {
+  return (
+    <p
+      role="status"
+      className={cn("px-ds-16 py-ds-12 text-center text-content-tertiary", fieldText[size])}
+    >
+      {EMPTY_MESSAGE}
+    </p>
+  );
+}
+
+type SelectOptionRowProps = Readonly<{
+  item: SelectOption;
+  indicator: SelectIndicator;
+  size: FieldSize;
+}>;
+
+function SelectOptionRow({ item, indicator, size }: SelectOptionRowProps) {
+  return (
+    <SelectPrimitive.Item
+      value={item.value}
+      disabled={item.disabled}
+      label={typeof item.label === "string" ? item.label : undefined}
+      className={cn(itemLayout, itemBackground)}
+      render={(itemProps, state) => (
+        <div {...itemProps}>
+          <ItemIndicator
+            indicator={indicator}
+            selected={state.selected}
+            disabled={state.disabled}
+          />
+          <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
+            <span
+              className={cn(
+                "truncate text-content-primary group-data-disabled/item:text-content-disabled",
+                fieldText[size],
+              )}
+            >
+              {item.label}
+            </span>
+            {item.description != null && (
+              <span
+                className={cn(
+                  "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
+                  descriptionText[size],
+                )}
+              >
+                {item.description}
+              </span>
+            )}
+          </SelectPrimitive.ItemText>
+        </div>
+      )}
+    />
+  );
+}
+
+type SelectListProps = Readonly<{
+  items: readonly SelectOption[];
+  indicator: SelectIndicator;
+  size: FieldSize;
+  visibleItems: number;
+}>;
+
+function SelectList({ items, indicator, size, visibleItems }: SelectListProps) {
+  const hasDescription = items.some((item) => item.description != null);
+
+  return (
+    <SelectPrimitive.List
+      style={
+        {
+          "--select-list-max-height": listMaxHeight(size, hasDescription, visibleItems),
+          "--select-thumb-radius": SCROLL_THUMB_RADIUS,
+        } as CSSProperties
+      }
+      className={listScroll}
+    >
+      {items.map((item) => (
+        <SelectOptionRow key={item.value} item={item} indicator={indicator} size={size} />
+      ))}
+    </SelectPrimitive.List>
+  );
+}
+
 /** 단일 선택 필드 (Figma: Select field). */
 export function Select({
   items,
@@ -165,7 +216,6 @@ export function Select({
   const triggerId = id ?? reactId;
   const helpId = helpMessage != null ? `${triggerId}-help` : undefined;
   const describedBy = [ariaDescribedby, helpId].filter(Boolean).join(" ") || undefined;
-  const hasDescription = items.some((item) => item.description != null);
 
   return (
     <SelectPrimitive.Root
@@ -240,85 +290,16 @@ export function Select({
           sideOffset={4}
           alignItemWithTrigger={false}
         >
-          <SelectPrimitive.Popup
-            className={cn(
-              "w-(--anchor-width) origin-(--transform-origin) rounded-ds-md bg-surface-primary shadow-floating outline-none",
-              "transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none",
-              "data-starting-style:scale-98 data-starting-style:opacity-0",
-              "data-ending-style:scale-98 data-ending-style:opacity-0",
-            )}
-          >
+          <SelectPrimitive.Popup className={popupSurface}>
             {items.length === 0 ? (
-              <p
-                role="status"
-                className={cn(
-                  "px-ds-16 py-ds-12 text-center text-content-tertiary",
-                  fieldText[size],
-                )}
-              >
-                {EMPTY_MESSAGE}
-              </p>
+              <SelectEmpty size={size} />
             ) : (
-              <SelectPrimitive.List
-                style={
-                  {
-                    "--select-list-max-height": listMaxHeight(size, hasDescription, visibleItems),
-                    "--select-thumb-radius": "2px 6px 6px 2px / 2px",
-                  } as CSSProperties
-                }
-                className={cn(
-                  "max-h-[min(var(--available-height),var(--select-list-max-height))]",
-                  "overflow-y-auto overscroll-contain py-ds-8",
-                  "[&::-webkit-scrollbar]:w-ds-8",
-                  "[&::-webkit-scrollbar-track]:my-ds-8 [&::-webkit-scrollbar-track]:bg-transparent",
-                  "[&::-webkit-scrollbar-thumb]:bg-icon-secondary",
-                  "[&::-webkit-scrollbar-thumb]:border-r-4 [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding",
-                  "[&::-webkit-scrollbar-thumb]:[border-radius:var(--select-thumb-radius)]",
-                  "[&::-webkit-scrollbar-thumb]:min-h-[120px]",
-                )}
-              >
-                {items.map((item) => (
-                  <SelectPrimitive.Item
-                    key={item.value}
-                    value={item.value}
-                    disabled={item.disabled}
-                    label={typeof item.label === "string" ? item.label : undefined}
-                    className={cn(
-                      "group/item flex select-none items-center gap-ds-8 px-ds-16 py-ds-8 outline-none",
-                      itemBackground,
-                    )}
-                    render={(itemProps, state) => (
-                      <div {...itemProps}>
-                        <ItemIndicator
-                          indicator={indicator}
-                          selected={state.selected}
-                          disabled={state.disabled}
-                        />
-                        <SelectPrimitive.ItemText className="flex min-w-0 flex-1 flex-col gap-ds-4">
-                          <span
-                            className={cn(
-                              "truncate text-content-primary group-data-disabled/item:text-content-disabled",
-                              fieldText[size],
-                            )}
-                          >
-                            {item.label}
-                          </span>
-                          {item.description != null && (
-                            <span
-                              className={cn(
-                                "truncate text-content-tertiary group-data-disabled/item:text-content-disabled",
-                                descriptionText[size],
-                              )}
-                            >
-                              {item.description}
-                            </span>
-                          )}
-                        </SelectPrimitive.ItemText>
-                      </div>
-                    )}
-                  />
-                ))}
-              </SelectPrimitive.List>
+              <SelectList
+                items={items}
+                indicator={indicator}
+                size={size}
+                visibleItems={visibleItems}
+              />
             )}
           </SelectPrimitive.Popup>
         </SelectPrimitive.Positioner>
