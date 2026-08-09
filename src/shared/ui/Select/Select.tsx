@@ -36,7 +36,6 @@ export type SelectProps = Readonly<{
   helpTone?: HelpTone;
   invalid?: boolean;
   disabled?: boolean;
-  readOnly?: boolean;
   name?: string;
   id?: string;
   /** 트리거 버튼 클래스 */
@@ -155,7 +154,6 @@ export function Select({
   helpTone,
   invalid = false,
   disabled = false,
-  readOnly = false,
   name,
   id,
   className,
@@ -176,7 +174,6 @@ export function Select({
       defaultValue={defaultValue}
       onValueChange={onValueChange}
       disabled={disabled}
-      readOnly={readOnly}
       required={required}
       name={name}
     >
