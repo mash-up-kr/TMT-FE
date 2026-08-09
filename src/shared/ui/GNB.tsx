@@ -27,15 +27,27 @@ export function GNB({ left, right, title, align = "center", className }: GNBProp
     <TMTLogo />
   );
 
+  // 빈 칸이라도 grid gap은 들어가 제목이 8px 밀린다. 트랙에서만 빼고 DOM은 그대로 둔다.
+  // `left={조건 && <Button />}`의 false처럼 렌더되지 않는 값도 빈 슬롯으로 본다.
+  const leftIsEmpty =
+    left === undefined || left === null || typeof left === "boolean" || left === "";
+  const collapseLeft = align === "left" && leftIsEmpty;
+
   return (
     <header
       className={cn(
         "grid w-full items-center gap-ds-8 bg-surface-primary px-ds-20 py-ds-12",
-        align === "center" ? "grid-cols-[1fr_auto_1fr]" : "grid-cols-[auto_auto_1fr]",
+        align === "center"
+          ? "grid-cols-[1fr_auto_1fr]"
+          : collapseLeft
+            ? "grid-cols-[auto_1fr]"
+            : "grid-cols-[auto_auto_1fr]",
         className,
       )}
     >
-      <div className="flex items-center justify-start gap-ds-8">{left}</div>
+      <div className={cn("flex items-center justify-start gap-ds-8", collapseLeft && "contents")}>
+        {left}
+      </div>
       <div className="flex min-w-0 items-center justify-center">{heading}</div>
       <div className="flex items-center justify-end gap-ds-8">{right}</div>
     </header>

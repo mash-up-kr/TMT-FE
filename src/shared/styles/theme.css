@@ -33,6 +33,8 @@
   --color-surface-interactive-error-hovered: var(--primitive-error-700);
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-backdrop: var(--primitive-transparent-64);
+  --color-surface-navigation-selected: var(--primitive-transparent-8);
+  --color-surface-inverse: var(--primitive-transparent-64);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -96,6 +98,7 @@
   --color-stroke-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-stroke-interactive-secondary-pressed: var(--primitive-neutral-600);
   --color-stroke-selected: var(--primitive-neutral-500);
+  --color-stroke-inverse: var(--primitive-base-white);
   --color-stroke-interactive-error: var(--primitive-error-600);
   --color-stroke-interactive-error-hovered: var(--primitive-error-700);
   --color-stroke-interactive-error-pressed: var(--primitive-error-800);
@@ -173,6 +176,17 @@
   --text-body-sm-regular--font-weight: var(--typography-font-weight-regular);
   --text-body-sm-regular--letter-spacing: var(--typography-letter-spacing-normal);
 
+  /* Navigation label (10 / 12) */
+  --text-label-navigation: var(--typography-font-size-10);
+  --text-label-navigation--line-height: var(--typography-line-height-12);
+  --text-label-navigation--font-weight: var(--typography-font-weight-medium);
+  --text-label-navigation--letter-spacing: var(--typography-letter-spacing-normal);
+
+  --text-label-navigation-selected: var(--typography-font-size-10);
+  --text-label-navigation-selected--line-height: var(--typography-line-height-12);
+  --text-label-navigation-selected--font-weight: var(--typography-font-weight-semibold);
+  --text-label-navigation-selected--letter-spacing: var(--typography-letter-spacing-normal);
+
   /* ===================== spacing (디자인 스케일) ===================== */
   /* `ds` 프리픽스로 Tailwind 기본 숫자 scale(p-4=16px 등)을 덮지 않는다.
      디자인 간격은 p-ds-4 / gap-ds-16 처럼 명시적으로 사용. (Figma unit = px 값) */
@@ -205,16 +219,25 @@
   --shadow-floating: 0 2px 12px 0 var(--primitive-transparent-10);
   --shadow-toast: 0 2px 8px 0 var(--primitive-transparent-20);
   --shadow-modal: 0 4px 24px 0 var(--primitive-transparent-16);
+  --shadow-navigation: 0 0 12px 0 var(--primitive-transparent-10);
+  --blur-navigation: 2px;
 
   /* ===================== layout grid (mobile-first) ===================== */
   --layout-grid-columns: 4;
   --layout-grid-gutter: var(--number-unit-16);
   --layout-grid-margin: var(--number-unit-20);
   --layout-frame-max: 430px;
-  /* 오버레이(모달·바텀시트)와 화면 가장자리 사이 여백. 본문 그리드 마진과 의미가
-     달라 따로 둔다 — 카드가 화면 끝에 닿지 않게 하는 값이다. */
-  --layout-overlay-inset-block: var(--number-unit-32);
-  --layout-overlay-inset-inline: var(--number-unit-20);
+  --layout-bottom-navigation-width: 320px;
+  /* 화면 위에 떠 있는 것(모달·바텀시트·토스트)과 화면 가장자리 사이 여백.
+     본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
+  --layout-floating-inset-block: var(--number-unit-32);
+  --layout-floating-inset-inline: var(--number-unit-20);
+  /* 시트를 위로 끌어올린 동안 아래가 비지 않게 배경만 늘리는 길이. safe-area도 이게 덮는다. */
+  --layout-sheet-overscroll: var(--number-unit-64);
+
+  /* ===================== z-index ===================== */
+  --z-index-overlay: 100;
+  --z-index-toast: 200;
 }
 
 /* ===================== border width ===================== */
@@ -267,15 +290,44 @@
   position: fixed;
   inset-block: 0;
   left: 50%;
+  z-index: var(--z-index-overlay);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: var(--layout-frame-max);
-  padding-inline: var(--layout-overlay-inset-inline);
-  padding-block: calc(var(--layout-overlay-inset-block) + env(safe-area-inset-top))
-    calc(var(--layout-overlay-inset-block) + env(safe-area-inset-bottom));
+  padding-inline: var(--layout-floating-inset-inline);
+  padding-block: calc(var(--layout-floating-inset-block) + env(safe-area-inset-top))
+    calc(var(--layout-floating-inset-block) + env(safe-area-inset-bottom));
+}
+
+/* ===================== toast viewport ===================== */
+/* 토스트가 뜨는 영역. 자식이 absolute로 서로 포개지므로 여백은 각 토스트가 잡는다. */
+@utility toast-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  z-index: var(--z-index-toast);
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--layout-frame-max);
+  pointer-events: none;
+}
+
+/* ===================== bottom sheet viewport ===================== */
+/* 하단에서 올라오는 시트의 배치 영역. 자식이 w-full이라 주축 정렬은 두지 않는다.
+   overlay-viewport와 선언이 겹치지만 공통 레이어로 빼지 않는다 — 셋째가 생기면 재검토한다. */
+@utility sheet-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  z-index: var(--z-index-overlay);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: var(--layout-frame-max);
 }
 
 /* ===================== content container ===================== */

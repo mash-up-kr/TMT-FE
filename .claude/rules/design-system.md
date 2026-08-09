@@ -44,6 +44,13 @@ paths:
 
 headless primitive가 필요하면 `@base-ui/react`를 쓴다. 합성은 `asChild`가 아니라 Base UI의 `render` prop으로 한다.
 
+Tailwind 유틸리티는 축약형이 있으면 축약형을 쓴다. 임의값 문법(`[]`, `()`)은 축약형이 없을 때만 쓴다.
+
+- 값 없는 data 속성: `data-[swiping]:` 아니라 `data-swiping:`. 값이 있으면 대괄호를 쓴다 — `data-[layout=fill]:`
+- 테마 변수: `z-(--z-index-overlay)` 아니라 `z-overlay`. `@theme`에 선언한 변수는 namespace에 맞는 유틸리티가 자동 생성된다
+
+IDE와 Biome이 이 축약을 제안하지만 편집 중에만 보이므로, 코드를 쓰는 시점에 먼저 확인한다.
+
 ## Interaction states
 
 상호작용 UI에서는 그 흐름에 실제로 존재하는 상태를 누락하지 않는다: loading, error, empty, disabled, focus, hover, active, selected.

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
 import { AppFrame } from "@/shared/ui/AppFrame";
+import { Toaster } from "@/shared/ui/toast";
 
 export const metadata: Metadata = {
   title: "딸깍",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <AppFrame>{children}</AppFrame>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>
