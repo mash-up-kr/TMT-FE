@@ -120,7 +120,7 @@ shared/providers/  →  api/mutator
 - OpenAPI와 orval로 client, hook, 타입을 `src/api/gen/`에 생성하고 직접 수정하지 않는다.
 - 스펙 스냅샷은 `_scripts/api/openapi.json`이다. `pnpm api:sync`가 갱신하며 직접 편집하지 않는다.
 - endpoint 변경은 백엔드 OpenAPI가 바뀐 뒤 `pnpm api:sync`로 반영한다. 스펙에 없는 endpoint를 프론트에서 만들지 않는다.
-- `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 인증, 공통 header, 공통 에러 처리를 소유한다.
+- `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 공통 header와 공통 에러 처리를 소유한다. 인증 방식은 로그인 계약이 정해진 뒤 이 경계에 추가한다.
 - API 응답을 UI model로 바꾸는 코드는 라우트 `_utils/`에 둔다.
 - 수동 API client와 라우트별 fetch wrapper를 만들지 않는다.
 - 생성 파일은 커밋한다. lint 대상에서 제외하고 format은 유지한다.

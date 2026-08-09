@@ -26,12 +26,6 @@ export default defineConfig({
         fetch: {
           includeHttpResponseReturnType: false,
         },
-        // useQuery·useMutation은 verb 기본 매핑(GET=query, 그 외=mutation)을 덮어쓰는 옵션이다.
-        // 켜면 매핑이 뒤집히므로 건드리지 않는다.
-        query: {
-          useSuspenseQuery: true,
-          useInfinite: false,
-        },
       },
     },
   },

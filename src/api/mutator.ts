@@ -20,10 +20,6 @@ function resolveUrl(url: string): string {
   return /^https?:\/\//.test(url) ? url : `${BASE_URL}${url}`;
 }
 
-function getAccessToken(): string | null {
-  return null;
-}
-
 function extractMessage(body: unknown, fallback: string): string {
   if (typeof body === "object" && body !== null && "message" in body) {
     const { message } = body as { message?: unknown };
@@ -61,11 +57,6 @@ export const tmtFetch = async <T>(url: string, init?: RequestInit): Promise<T> =
 
   if (typeof init?.body === "string" && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
-  }
-
-  const token = getAccessToken();
-  if (token !== null) {
-    headers.set("Authorization", `Bearer ${token}`);
   }
 
   const response = await fetch(resolveUrl(url), { ...init, headers });
