@@ -30,6 +30,8 @@ export type FieldFrameProps = Readonly<{
   /** 박스 내부 컨트롤 정렬 (textarea는 start) */
   controlAlign?: "center" | "start";
   containerClassName?: string;
+  /** 테두리 박스 자체의 클래스. 컨트롤이 박스 전체를 차지해야 할 때 padding·상태를 재정의한다. */
+  boxClassName?: string;
   children: ReactNode;
 }>;
 
@@ -52,6 +54,7 @@ export function FieldFrame({
   disabled = false,
   controlAlign = "center",
   containerClassName,
+  boxClassName,
   children,
 }: FieldFrameProps) {
   const tone: ResolvedHelpTone = invalid ? "error" : (helpTone ?? "default");
@@ -86,6 +89,7 @@ export function FieldFrame({
           fieldBoxBase,
           controlAlign === "start" ? "items-start" : "items-center",
           fieldBoxState(disabled, invalid),
+          boxClassName,
         )}
       >
         {children}

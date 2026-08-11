@@ -1,9 +1,8 @@
 "use client";
 
 import { type ChangeEvent, type ComponentProps, type ReactNode, useId, useState } from "react";
+import { controlClass, FieldFrame, type FieldSize, type HelpTone } from "@/shared/ui/FieldFrame";
 import { cn } from "@/shared/utils/cn";
-import { FieldFrame } from "./FieldFrame";
-import { controlClass, type FieldSize, type HelpTone } from "./fieldStyles";
 
 export type TextareaProps = Readonly<
   Omit<ComponentProps<"textarea">, "rows"> & {
