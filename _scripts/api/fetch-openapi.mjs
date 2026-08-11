@@ -81,8 +81,9 @@ if (!spec || typeof spec !== "object" || (!spec.openapi && !spec.swagger)) {
     "백엔드에 정확한 스펙 JSON 주소를 확인해 주세요.",
   ]);
 }
-if (!spec.paths || Object.keys(spec.paths).length === 0) {
-  fail("스펙에 endpoint가 하나도 없어요.", [
+const operations = countOperations(spec);
+if (operations === 0) {
+  fail("스펙에 endpoint operation이 하나도 없어요.", [
     "빈 스펙을 반영하면 생성 코드가 전부 사라져요. 백엔드 상태를 먼저 확인해 주세요.",
   ]);
 }
@@ -93,7 +94,6 @@ const next = `${JSON.stringify(spec, null, 2)}\n`;
 
 writeFileSync(SNAPSHOT_PATH, next);
 
-const operations = countOperations(spec);
 const changed = previous !== next;
 console.log(
   changed
