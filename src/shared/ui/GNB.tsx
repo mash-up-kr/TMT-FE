@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { TMTLogo } from "@/shared/ui/icons";
+import { TMTLogo } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 
 type GNBProps = Readonly<{

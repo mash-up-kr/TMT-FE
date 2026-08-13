@@ -4,7 +4,7 @@ import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 import type { ComponentProps } from "react";
 import { cn } from "@/shared/utils/cn";
-import { CheckIcon } from "./icons";
+import { CheckIcon } from "./Icons";
 
 type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "className" | "children"> & {
   className?: string;

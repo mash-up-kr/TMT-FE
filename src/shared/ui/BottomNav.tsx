@@ -2,7 +2,7 @@
 
 import type { ComponentPropsWithRef } from "react";
 import { cn } from "@/shared/utils/cn";
-import { FeedIcon, GroupIcon, HomeIcon, MyIcon, PlusIcon } from "./icons";
+import { FeedIcon, GroupIcon, HomeIcon, MyIcon, PlusIcon } from "./Icons";
 
 export type BottomNavValue = "home" | "feed" | "group" | "my";
 
