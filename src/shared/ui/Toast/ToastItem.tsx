@@ -62,17 +62,17 @@ export function ToastItem({ toast }: ToastProps) {
         "[--stack-y:calc((var(--toast-offset-y)+var(--toast-index)*var(--spacing-ds-8))*-1)] [--slide-y:0px]",
         "overflow-hidden rounded-ds-sm bg-surface-inverse px-ds-16 py-ds-12 shadow-toast",
         // 좌상단에서 타입 색이 번지는 빛. 카드 밖으로는 overflow-hidden이 잘라낸다.
-        "before:absolute before:-top-[65px] before:-left-[74px] before:size-[212px] before:rounded-full before:opacity-[0.12] before:content-['']",
+        "before:absolute before:-top-16.25 before:-left-18.5 before:size-53 before:rounded-full before:opacity-[0.12] before:content-['']",
         GLOWS[toast.data.type],
         "transition-[transform,opacity] duration-300 ease-out",
         // 뒤 토스트는 앞 토스트들의 실제 높이(--toast-offset-y)만큼 위로 올라가 서로 겹치지 않는다.
         "translate-y-[calc(var(--stack-y)+var(--slide-y))]",
-        "z-[calc(var(--toast-index)*-1)]",
+        "-z-(--toast-index)",
         // 등장만 아래에서 올라오고, 퇴장은 제자리에서 사라진다.
-        "data-[starting-style]:[--slide-y:100%] data-[starting-style]:opacity-0",
+        "data-starting-style:[--slide-y:100%] data-starting-style:opacity-0",
         // 퇴장은 제자리에서 서서히 사라진다.
-        "data-[ending-style]:opacity-0",
-        "data-[limited]:pointer-events-none data-[limited]:opacity-0",
+        "data-ending-style:opacity-0",
+        "data-limited:pointer-events-none data-limited:opacity-0",
       )}
     >
       <Icon aria-hidden="true" width={24} height={24} className="relative shrink-0" />
