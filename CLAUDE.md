@@ -4,7 +4,7 @@
 
 또맛또(TMT) — 그룹 안에서 맛집 평가를 공유하는 **모바일 전용 웹앱**. 데스크탑 반응형은 구현하지 않고, 넓은 화면에서는 430px 프레임을 중앙 정렬한다.
 
-Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node >= 22.13.0
+Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node >= 22.18.0
 
 ## Canonical commands
 
