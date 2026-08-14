@@ -32,6 +32,7 @@
   --color-surface-interactive-error: var(--primitive-error-600);
   --color-surface-interactive-error-hovered: var(--primitive-error-700);
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
+  --color-surface-badge: var(--primitive-red-alpha-10);
   --color-surface-backdrop: var(--primitive-transparent-64);
   --color-surface-navigation-selected: var(--primitive-transparent-8);
   --color-surface-inverse: var(--primitive-transparent-84);
