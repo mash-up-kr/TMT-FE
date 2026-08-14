@@ -34,7 +34,7 @@
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-backdrop: var(--primitive-transparent-64);
   --color-surface-navigation-selected: var(--primitive-transparent-8);
-  --color-surface-inverse: var(--primitive-transparent-64);
+  --color-surface-inverse: var(--primitive-transparent-84);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
