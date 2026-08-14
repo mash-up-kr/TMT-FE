@@ -22,7 +22,7 @@ function resolveUrl(url: string): string {
 
 function extractMessage(body: unknown, fallback: string): string {
   if (typeof body === "object" && body !== null && "message" in body) {
-    const { message } = body as { message?: unknown };
+    const { message } = body;
     if (typeof message === "string" && message.length > 0) {
       return message;
     }
