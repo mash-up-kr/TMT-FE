@@ -109,7 +109,7 @@ function GroupCardStats({ counts }: { counts: readonly [number, number, number] 
 
 function GroupCardBadge({ children }: { children: string }) {
   return (
-    <p className="flex w-fit items-center gap-ds-2 rounded-ds-xs bg-surface-badge px-ds-4 py-ds-2 text-body-sm-medium text-content-interactive-primary">
+    <p className="flex w-fit items-center gap-ds-2 rounded-ds-xs bg-surface-groupcard-badge px-ds-4 py-ds-2 text-body-sm-medium text-content-interactive-primary">
       {children}
       <SparkleIcon aria-hidden="true" width={12} height={12} className="shrink-0" />
     </p>

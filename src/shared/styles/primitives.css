@@ -96,9 +96,6 @@
   --primitive-transparent-64: #000000a3;
   --primitive-transparent-84: #000000d6;
 
-  /* red alpha — 브랜드색을 배경으로 깔 때 쓴다. 뒤가 비쳐야 해서 red-50과 다르다. */
-  --primitive-red-alpha-10: #f43d2d1a;
-
   /* primary — 브랜드 역할 램프. Figma 브랜드는 red 계열 (primary === red) */
   --primitive-primary-50: var(--primitive-red-50);
   --primitive-primary-100: var(--primitive-red-100);
