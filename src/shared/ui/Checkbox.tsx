@@ -27,7 +27,7 @@ const disabledStyles =
   "data-disabled:border-stroke-disabled data-disabled:bg-surface-disabled " +
   "data-checked:data-disabled:border-transparent";
 
-function Checkbox({ className, ...props }: CheckboxProps) {
+export function Checkbox({ className, ...props }: CheckboxProps) {
   return (
     <BaseCheckbox.Root
       data-slot="checkbox"
@@ -43,7 +43,7 @@ function Checkbox({ className, ...props }: CheckboxProps) {
 
 type CheckboxGroupProps = ComponentProps<typeof BaseCheckboxGroup>;
 
-function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
+export function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
   return (
     <BaseCheckboxGroup
       data-slot="checkbox-group"
@@ -54,4 +54,3 @@ function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
 }
 
 export type { CheckboxGroupProps, CheckboxProps };
-export { Checkbox, CheckboxGroup };

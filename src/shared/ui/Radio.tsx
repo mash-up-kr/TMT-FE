@@ -27,7 +27,7 @@ const checkedStyles =
 
 const disabledStyles = "data-disabled:border-stroke-disabled data-disabled:bg-surface-primary";
 
-function Radio<Value = string>({ className, ...props }: RadioProps<Value>) {
+export function Radio<Value = string>({ className, ...props }: RadioProps<Value>) {
   return (
     <BaseRadio.Root
       data-slot="radio"
@@ -43,7 +43,7 @@ function Radio<Value = string>({ className, ...props }: RadioProps<Value>) {
 
 type RadioGroupProps<Value = string> = ComponentProps<typeof BaseRadioGroup<Value>>;
 
-function RadioGroup<Value = string>({ className, ...props }: RadioGroupProps<Value>) {
+export function RadioGroup<Value = string>({ className, ...props }: RadioGroupProps<Value>) {
   return (
     <BaseRadioGroup
       data-slot="radio-group"
@@ -54,4 +54,3 @@ function RadioGroup<Value = string>({ className, ...props }: RadioGroupProps<Val
 }
 
 export type { RadioGroupProps, RadioProps };
-export { Radio, RadioGroup };

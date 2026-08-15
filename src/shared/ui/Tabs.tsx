@@ -16,7 +16,7 @@ type TabsListProps = StyledProps<ComponentProps<typeof TabsPrimitive.List>>;
 type TabsTriggerProps = StyledProps<ComponentProps<typeof TabsPrimitive.Tab>>;
 type TabsContentProps = StyledProps<ComponentProps<typeof TabsPrimitive.Panel>>;
 
-function Tabs({ className, triggerLayout = "fill", ...props }: TabsProps) {
+export function Tabs({ className, triggerLayout = "fill", ...props }: TabsProps) {
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
@@ -28,7 +28,7 @@ function Tabs({ className, triggerLayout = "fill", ...props }: TabsProps) {
   );
 }
 
-function TabsList({ activateOnFocus = true, children, className, ...props }: TabsListProps) {
+export function TabsList({ activateOnFocus = true, children, className, ...props }: TabsListProps) {
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
@@ -53,7 +53,7 @@ function TabsList({ activateOnFocus = true, children, className, ...props }: Tab
   );
 }
 
-function TabsTrigger({ className, ...props }: TabsTriggerProps) {
+export function TabsTrigger({ className, ...props }: TabsTriggerProps) {
   return (
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
@@ -70,7 +70,7 @@ function TabsTrigger({ className, ...props }: TabsTriggerProps) {
   );
 }
 
-function TabsContent({ className, ...props }: TabsContentProps) {
+export function TabsContent({ className, ...props }: TabsContentProps) {
   return (
     <TabsPrimitive.Panel
       data-slot="tabs-content"
@@ -82,5 +82,3 @@ function TabsContent({ className, ...props }: TabsContentProps) {
     />
   );
 }
-
-export { Tabs, TabsContent, TabsList, TabsTrigger };
