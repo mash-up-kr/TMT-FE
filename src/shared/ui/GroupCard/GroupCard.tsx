@@ -1,9 +1,7 @@
 import type { ComponentProps } from "react";
+import { MembersIcon, ReviewsIcon, StoreIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
-import MembersIcon from "./assets/members.svg?react";
-import ReviewsIcon from "./assets/reviews.svg?react";
 import SparkleIcon from "./assets/sparkle.svg?react";
-import StoreIcon from "./assets/store.svg?react";
 
 const STATS = [
   {
@@ -100,7 +98,7 @@ function GroupCardStats({ counts }: { counts: readonly [number, number, number] 
             aria-label={label(count)}
             className="flex items-center gap-ds-4 text-body-sm-medium text-content-tertiary"
           >
-            <Icon aria-hidden="true" width={12} height={12} className="shrink-0" />
+            <Icon size={12} className="shrink-0" />
             {text(count)}
           </li>
         );
