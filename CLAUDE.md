@@ -4,7 +4,7 @@
 
 또맛또(TMT) — 그룹 안에서 맛집 평가를 공유하는 **모바일 전용 웹앱**. 데스크탑 반응형은 구현하지 않고, 넓은 화면에서는 430px 프레임을 중앙 정렬한다.
 
-Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node >= 22.13.0
+Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node >= 22.18.0
 
 ## Canonical commands
 
@@ -14,6 +14,7 @@ Next.js 16 App Router / React 19 / TypeScript strict / Tailwind v4 / pnpm / Node
 - Typecheck: `pnpm typecheck`
 - Build: `pnpm build`
 - Verify: `pnpm verify` (check → typecheck → build)
+- API 스펙 동기화: `pnpm api:sync` (OpenAPI 스펙 fetch → orval)
 
 자동 테스트 명령은 없다. 테스트를 통과했다고 말하지 않는다.
 
@@ -45,7 +46,7 @@ UI, 스타일, 토큰, 접근성, 레이아웃을 **계획하기 전에** 읽는
 
 ## Repository facts
 
-- 구조 규약과 API/MSW 도입 계약의 정본은 `.claude/rules/architecture.md`다.
+- 구조 규약, API 계약, Mock 정책의 정본은 `.claude/rules/architecture.md`다.
 - `.claude/review/**`는 PR 리뷰 봇 `mashong-ai`가 PR에서 쓰는 기준이다. 코딩 작업에서 읽지 않는다.
 - 브랜치는 develop에서 `<type>/#<번호>-<내용>`으로 만든다 (번호는 Jira TMT 티켓). PR은 develop 대상이며, 1인 이상 승인과 squash merge를 GitHub Ruleset이 강제한다.
 - 커밋 메시지는 `<type>: <제목>` (type: feat, fix, refactor, chore, style, deploy, docs). GitHub Ruleset이 검증한다.

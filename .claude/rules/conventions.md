@@ -33,6 +33,8 @@ paths:
 ## Generated and external files
 
 - `next-env.d.ts`는 생성 파일이다. 직접 수정하지 않는다.
+- `src/api/gen/**`은 orval 생성 파일이다. 직접 수정하지 않고 `pnpm api:sync`로 갱신한다. lint 대상에서 제외되어 있고 format은 적용된다.
+- `_scripts/api/openapi.json`은 백엔드 스펙 스냅샷이다. 직접 편집하지 않는다.
 - `pnpm-lock.yaml` 변경이 `package.json` 변경과 일치하는지 확인한다.
 
 ## Testing
