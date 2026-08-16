@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
+import { Badge } from "@/shared/ui/Badge";
 import { cn } from "@/shared/utils/cn";
-import { Badge } from "./Badge";
 
 const rowStyles = cn(
   "flex w-full flex-col gap-ds-4 rounded-ds-md px-ds-12 py-ds-8 text-left outline-none",

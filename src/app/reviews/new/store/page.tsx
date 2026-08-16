@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Badge } from "@/shared/ui/Badge";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { SearchIcon } from "@/shared/ui/icons";
 import { SearchField, TextField } from "@/shared/ui/TextField";
 import { AddressSearchSheet } from "../_components/AddressSearchSheet";
-import { Badge } from "../_components/Badge";
 import { StoreSearchSheet } from "../_components/StoreSearchSheet";
 import { REVIEW_FLOW_BASE_PATH } from "../_constants/steps";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
@@ -55,7 +55,7 @@ export default function StoreStepPage() {
             <br />
             어디였나요?
           </h1>
-          <Badge>필수</Badge>
+          <Badge size="md">필수</Badge>
         </header>
 
         <SearchField
