@@ -17,7 +17,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function Progress({ className, max = 100, min = 0, value, ...props }: ProgressProps) {
+export function Progress({ className, max = 100, min = 0, value, ...props }: ProgressProps) {
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -41,4 +41,3 @@ function Progress({ className, max = 100, min = 0, value, ...props }: ProgressPr
 }
 
 export type { ProgressProps };
-export { Progress };

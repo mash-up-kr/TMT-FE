@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
-import { AppFrame } from "@/shared/ui/AppFrame";
 import { Toaster } from "@/shared/ui/toast";
 
 export const metadata: Metadata = {
@@ -25,7 +24,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <QueryProvider>
-          <AppFrame>{children}</AppFrame>
+          <div className="app-frame">{children}</div>
           <Toaster />
         </QueryProvider>
       </body>

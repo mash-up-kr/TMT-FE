@@ -26,7 +26,7 @@ type ChipProps = ComponentProps<"button"> & {
   size?: ChipSize;
 };
 
-function Chip({
+export function Chip({
   children,
   className,
   leftIcon,
@@ -58,5 +58,3 @@ function Chip({
     </button>
   );
 }
-
-export { Chip };
