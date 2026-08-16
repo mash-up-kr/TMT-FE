@@ -9,6 +9,7 @@ export { FeedIcon } from "./FeedIcon";
 export { GroupIcon } from "./GroupIcon";
 export { HomeIcon } from "./HomeIcon";
 export { LoadingIcon } from "./LoadingIcon";
+export { MenuIcon } from "./MenuIcon";
 export { MyIcon } from "./MyIcon";
 export { PlusIcon } from "./PlusIcon";
 export { SearchIcon } from "./SearchIcon";
