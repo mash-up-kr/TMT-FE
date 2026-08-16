@@ -26,5 +26,6 @@ export { SearchIcon } from "./SearchIcon";
 export { SettingsIcon } from "./SettingsIcon";
 export { StarIcon } from "./StarIcon";
 export { TMTLogo } from "./TMTLogo";
+export { TrashIcon } from "./TrashIcon";
 export type { FilledIconProps, IconProps } from "./types";
 export { XCircleIcon } from "./XCircleIcon";
