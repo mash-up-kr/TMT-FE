@@ -8,17 +8,18 @@ import SuccessIcon from "./assets/success.svg?react";
 import WarningIcon from "./assets/warning.svg?react";
 import type { ToastType, TypedToast } from "./toast";
 
+const GLOW_COLORS: Record<ToastType, string> = {
+  success: "[--glow:var(--color-icon-success)]",
+  warning: "[--glow:var(--color-icon-warning)]",
+  error: "[--glow:var(--color-icon-error)]",
+};
+
+const glowStyles = "before:bg-[radial-gradient(circle,var(--glow)_0%,transparent_70%)]";
+
 const ICONS: Record<ToastType, typeof SuccessIcon> = {
   success: SuccessIcon,
   warning: WarningIcon,
   error: ErrorIcon,
-};
-
-/** 좌상단에서 타입 색이 은은하게 번지는 빛. 시안은 212px 원의 radial gradient다. */
-const GLOWS: Record<ToastType, string> = {
-  success: "before:bg-[radial-gradient(circle,var(--color-icon-success)_0%,transparent_70%)]",
-  warning: "before:bg-[radial-gradient(circle,var(--color-icon-warning)_0%,transparent_70%)]",
-  error: "before:bg-[radial-gradient(circle,var(--color-icon-error)_0%,transparent_70%)]",
 };
 
 type ToastProps = Readonly<{
@@ -62,17 +63,18 @@ export function ToastItem({ toast }: ToastProps) {
         "[--stack-y:calc((var(--toast-offset-y)+var(--toast-index)*var(--spacing-ds-8))*-1)] [--slide-y:0px]",
         "overflow-hidden rounded-ds-sm bg-surface-inverse px-ds-16 py-ds-12 shadow-toast",
         // 좌상단에서 타입 색이 번지는 빛. 카드 밖으로는 overflow-hidden이 잘라낸다.
-        "before:absolute before:-top-[65px] before:-left-[74px] before:size-[212px] before:rounded-full before:opacity-[0.12] before:content-['']",
-        GLOWS[toast.data.type],
+        "before:absolute before:-top-16.25 before:-left-18.5 before:size-53 before:rounded-full before:opacity-[0.12] before:content-['']",
+        GLOW_COLORS[toast.data.type],
+        glowStyles,
         "transition-[transform,opacity] duration-300 ease-out",
         // 뒤 토스트는 앞 토스트들의 실제 높이(--toast-offset-y)만큼 위로 올라가 서로 겹치지 않는다.
         "translate-y-[calc(var(--stack-y)+var(--slide-y))]",
-        "z-[calc(var(--toast-index)*-1)]",
+        "-z-(--toast-index)",
         // 등장만 아래에서 올라오고, 퇴장은 제자리에서 사라진다.
-        "data-[starting-style]:[--slide-y:100%] data-[starting-style]:opacity-0",
+        "data-starting-style:[--slide-y:100%] data-starting-style:opacity-0",
         // 퇴장은 제자리에서 서서히 사라진다.
-        "data-[ending-style]:opacity-0",
-        "data-[limited]:pointer-events-none data-[limited]:opacity-0",
+        "data-ending-style:opacity-0",
+        "data-limited:pointer-events-none data-limited:opacity-0",
       )}
     >
       <Icon aria-hidden="true" width={24} height={24} className="relative shrink-0" />

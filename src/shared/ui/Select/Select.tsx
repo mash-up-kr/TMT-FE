@@ -4,7 +4,7 @@ import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { type CSSProperties, type ReactNode, useId } from "react";
 import { Checkbox } from "@/shared/ui/Checkbox";
 import { FieldFrame, type FieldSize, fieldText, type HelpTone } from "@/shared/ui/FieldFrame";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/icons";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@/shared/ui/Icons";
 import { Radio, RadioGroup } from "@/shared/ui/Radio";
 import { cn } from "@/shared/utils/cn";
 import {

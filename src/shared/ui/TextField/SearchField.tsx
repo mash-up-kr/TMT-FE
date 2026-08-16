@@ -1,7 +1,7 @@
 "use client";
 
 import { type ChangeEvent, type KeyboardEvent, type Ref, useCallback, useRef } from "react";
-import { CancelIcon, SearchIcon } from "@/shared/ui/icons";
+import { CancelIcon, SearchIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { TextField, type TextFieldProps } from "./TextField";
 

@@ -2,7 +2,7 @@
 
 import { Dialog } from "@base-ui/react/dialog";
 import type { ReactNode } from "react";
-import { CancelIcon } from "@/shared/ui/icons";
+import { CancelIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 
 type ModalProps = Readonly<{

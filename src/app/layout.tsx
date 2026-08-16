@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
-import { Toaster } from "@/shared/ui/toast";
+import { Toaster } from "@/shared/ui/Toast";
 
 export const metadata: Metadata = {
   title: "딸깍",

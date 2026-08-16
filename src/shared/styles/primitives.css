@@ -94,6 +94,7 @@
   --primitive-transparent-20: #00000033;
   --primitive-transparent-32: #00000052;
   --primitive-transparent-64: #000000a3;
+  --primitive-transparent-84: #000000d6;
 
   /* primary — 브랜드 역할 램프. Figma 브랜드는 red 계열 (primary === red) */
   --primitive-primary-50: var(--primitive-red-50);

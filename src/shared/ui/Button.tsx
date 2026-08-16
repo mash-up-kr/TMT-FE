@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
-import { LoadingIcon } from "./icons";
+import { LoadingIcon } from "./Icons";
 
 type ButtonVariant = "primary" | "secondary" | "tertiary";
 type ButtonSize = "lg" | "md" | "sm";

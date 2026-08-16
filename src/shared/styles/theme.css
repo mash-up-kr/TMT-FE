@@ -34,7 +34,7 @@
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-backdrop: var(--primitive-transparent-64);
   --color-surface-navigation-selected: var(--primitive-transparent-8);
-  --color-surface-inverse: var(--primitive-transparent-64);
+  --color-surface-inverse: var(--primitive-transparent-84);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -318,8 +318,6 @@
 }
 
 /* ===================== bottom sheet viewport ===================== */
-/* 하단에서 올라오는 시트의 배치 영역. 자식이 w-full이라 주축 정렬은 두지 않는다.
-   overlay-viewport와 선언이 겹치지만 공통 레이어로 빼지 않는다 — 셋째가 생기면 재검토한다. */
 @utility sheet-viewport {
   position: fixed;
   inset-block: 0;
