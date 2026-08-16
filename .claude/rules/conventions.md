@@ -12,6 +12,10 @@ paths:
 
 따옴표, 세미콜론, 들여쓰기, 줄 길이는 Biome이 정본이다. 이 문서에 복제하지 않는다. 이 문서와 실행 가능한 설정이 충돌하면 설정을 우회하지 말고 충돌을 보고한다.
 
+## Functions
+
+- 함수를 외부에 공개할 때는 함수 선언 앞에 `export`를 직접 붙인다.
+
 ## Types and validation
 
 - 내부 정적 타입과 외부 입력 검증을 구분한다.
@@ -29,6 +33,8 @@ paths:
 ## Generated and external files
 
 - `next-env.d.ts`는 생성 파일이다. 직접 수정하지 않는다.
+- `src/api/gen/**`은 orval 생성 파일이다. 직접 수정하지 않고 `pnpm api:sync`로 갱신한다. lint 대상에서 제외되어 있고 format은 적용된다.
+- `_scripts/api/openapi.json`은 백엔드 스펙 스냅샷이다. 직접 편집하지 않는다.
 - `pnpm-lock.yaml` 변경이 `package.json` 변경과 일치하는지 확인한다.
 
 ## Testing

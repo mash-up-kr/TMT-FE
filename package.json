@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.18.0"
   },
   "scripts": {
     "dev": "next dev",
@@ -17,7 +17,8 @@
     "check:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",
     "verify": "pnpm check && pnpm typecheck && pnpm build",
-    "env:sync": "node _scripts/env-sync.mjs"
+    "env:sync": "node _scripts/env-sync.mjs",
+    "api:sync": "node --env-file-if-exists=.env _scripts/api/fetch-openapi.mjs && orval"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -38,6 +39,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "orval": "^8.23.0",
     "typescript": "^5"
   }
 }
