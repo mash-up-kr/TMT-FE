@@ -2,6 +2,8 @@ export { BlankIcon } from "./BlankIcon";
 export { CancelIcon } from "./CancelIcon";
 export { CheckIcon } from "./CheckIcon";
 export { ChevronDownIcon } from "./ChevronDownIcon";
+export { ChevronLeftIcon } from "./ChevronLeftIcon";
+export { ChevronRightIcon } from "./ChevronRightIcon";
 export { ChevronUpIcon } from "./ChevronUpIcon";
 export { FeedIcon } from "./FeedIcon";
 export { GroupIcon } from "./GroupIcon";
