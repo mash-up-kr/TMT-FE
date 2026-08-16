@@ -21,6 +21,7 @@ export { MyIcon } from "./MyIcon";
 export { OptionIcon } from "./OptionIcon";
 export { PhoneIcon } from "./PhoneIcon";
 export { PlusIcon } from "./PlusIcon";
+export { RefreshIcon } from "./RefreshIcon";
 export { SearchIcon } from "./SearchIcon";
 export { TMTLogo } from "./TMTLogo";
 export type { FilledIconProps, IconProps } from "./types";
