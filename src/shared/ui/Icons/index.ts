@@ -18,6 +18,7 @@ export { MapIcon } from "./MapIcon";
 export { MapPinIcon } from "./MapPinIcon";
 export { MenuIcon } from "./MenuIcon";
 export { MyIcon } from "./MyIcon";
+export { OptionIcon } from "./OptionIcon";
 export { PlusIcon } from "./PlusIcon";
 export { SearchIcon } from "./SearchIcon";
 export { TMTLogo } from "./TMTLogo";
