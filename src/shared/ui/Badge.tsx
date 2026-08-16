@@ -9,9 +9,11 @@ const toneStyles = {
   neutral: "bg-surface-tertiary text-content-secondary",
 } satisfies Record<BadgeTone, string>;
 
+// 시안은 세로 padding 없이 프레임 높이로 여백을 준다. md는 20(줄높이 18 + 위아래 1),
+// sm은 줄높이 그대로다.
 const sizeStyles = {
   sm: "px-ds-8",
-  md: "px-ds-12",
+  md: "h-ds-20 px-ds-12",
 } satisfies Record<BadgeSize, string>;
 
 export type BadgeProps = ComponentPropsWithRef<"span"> & {
@@ -19,12 +21,6 @@ export type BadgeProps = ComponentPropsWithRef<"span"> & {
   size?: BadgeSize;
 };
 
-/**
- * 누를 수 없는 정적 라벨.
- *
- * `Chip`과 형태가 닮았지만 `Chip`은 `<button>`이라 그대로 쓰면 동작 없는 버튼이
- * 접근성 트리에 노출된다. 상태·사이즈 스케일도 서로 달라 기반을 공유하지 않는다.
- */
 export function Badge({ tone = "brand", size = "sm", className, ...props }: BadgeProps) {
   return (
     <span
