@@ -8,6 +8,12 @@ export type ReviewStore = {
   address: string | null;
 };
 
+/**
+ * "다음" 게이트를 통과한 매장. 다음 단계와 제출은 이 타입만 받는다.
+ * 이름의 공백 여부는 타입으로 표현하지 않으므로 게이트 함수가 함께 판정한다.
+ */
+export type CompleteReviewStore = ReviewStore & { address: string };
+
 export type StoreSearchResult = {
   id: string;
   name: string;
