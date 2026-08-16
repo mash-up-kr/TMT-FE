@@ -1,5 +1,6 @@
 export { AlertCircleIcon } from "./AlertCircleIcon";
 export { BlankIcon } from "./BlankIcon";
+export { CameraIcon } from "./CameraIcon";
 export { CancelIcon } from "./CancelIcon";
 export { CheckIcon } from "./CheckIcon";
 export { ChevronDownIcon } from "./ChevronDownIcon";
