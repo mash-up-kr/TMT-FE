@@ -10,3 +10,6 @@ export const REVIEW_STEPS = [
 export type ReviewStepSegment = (typeof REVIEW_STEPS)[number]["segment"];
 
 export const REVIEW_STEP_COUNT = REVIEW_STEPS.length;
+
+/** 완료 화면. 단계가 아니라 플로우의 끝이라 `REVIEW_STEPS`에 넣지 않는다. */
+export const REVIEW_COMPLETE_PATH = `${REVIEW_FLOW_BASE_PATH}/complete`;
