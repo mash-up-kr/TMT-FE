@@ -16,3 +16,4 @@ export { PlusIcon } from "./PlusIcon";
 export { SearchIcon } from "./SearchIcon";
 export { TMTLogo } from "./TMTLogo";
 export type { IconProps } from "./types";
+export { XCircleIcon } from "./XCircleIcon";
