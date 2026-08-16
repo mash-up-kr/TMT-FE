@@ -23,6 +23,7 @@ export { PhoneIcon } from "./PhoneIcon";
 export { PlusIcon } from "./PlusIcon";
 export { RefreshIcon } from "./RefreshIcon";
 export { SearchIcon } from "./SearchIcon";
+export { SettingsIcon } from "./SettingsIcon";
 export { TMTLogo } from "./TMTLogo";
 export type { FilledIconProps, IconProps } from "./types";
 export { XCircleIcon } from "./XCircleIcon";
