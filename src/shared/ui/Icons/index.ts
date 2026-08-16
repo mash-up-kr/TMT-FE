@@ -1,3 +1,4 @@
+export { AlertCircleIcon } from "./AlertCircleIcon";
 export { BlankIcon } from "./BlankIcon";
 export { CancelIcon } from "./CancelIcon";
 export { CheckIcon } from "./CheckIcon";
@@ -15,5 +16,5 @@ export { MyIcon } from "./MyIcon";
 export { PlusIcon } from "./PlusIcon";
 export { SearchIcon } from "./SearchIcon";
 export { TMTLogo } from "./TMTLogo";
-export type { IconProps } from "./types";
+export type { FilledIconProps, IconProps } from "./types";
 export { XCircleIcon } from "./XCircleIcon";
