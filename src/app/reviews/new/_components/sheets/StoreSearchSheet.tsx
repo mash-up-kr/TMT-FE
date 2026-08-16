@@ -4,14 +4,21 @@ import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon } from "@/shared/ui/icons";
 import { SearchField } from "@/shared/ui/TextField";
-import type { StoreSearchResult } from "../_model/store";
-import { DirectInputOption, SearchOptionList, SearchOptionRow } from "./SearchOptions";
+import type { SearchStatus } from "../../_model/search";
+import type { StoreSearchResult } from "../../_model/store";
+import {
+  DirectInputOption,
+  SearchOptionList,
+  SearchOptionRow,
+  SearchResultArea,
+} from "./SearchOptions";
 
 type StoreSearchSheetProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
   query: string;
   onQueryChange: (query: string) => void;
+  status: SearchStatus;
   results: readonly StoreSearchResult[];
   onSelectResult: (result: StoreSearchResult) => void;
   onDirectInput: (name: string) => void;
@@ -22,6 +29,7 @@ export function StoreSearchSheet({
   onOpenChange,
   query,
   onQueryChange,
+  status,
   results,
   onSelectResult,
   onDirectInput,
@@ -32,6 +40,7 @@ export function StoreSearchSheet({
     <BottomSheet
       open={open}
       onOpenChange={onOpenChange}
+      height="fixed"
       title="매장 검색"
       right={
         <IconButton aria-label="매장 검색 닫기" onClick={() => onOpenChange(false)}>
@@ -39,7 +48,7 @@ export function StoreSearchSheet({
         </IconButton>
       }
     >
-      <div className="flex flex-col gap-ds-12 pb-ds-20">
+      <div className="flex flex-col gap-ds-12">
         <SearchField
           value={query}
           onValueChange={onQueryChange}
@@ -48,7 +57,8 @@ export function StoreSearchSheet({
           autoFocus
         />
 
-        {trimmedQuery.length > 0 && (
+        {/* 직접 입력 옵션이 항상 남으므로 이 시트에는 빈 상태가 없다. */}
+        <SearchResultArea status={status}>
           <SearchOptionList>
             {results.map((result) => (
               <SearchOptionRow
@@ -60,7 +70,7 @@ export function StoreSearchSheet({
             ))}
             <DirectInputOption query={trimmedQuery} onSelect={() => onDirectInput(trimmedQuery)} />
           </SearchOptionList>
-        )}
+        </SearchResultArea>
       </div>
     </BottomSheet>
   );

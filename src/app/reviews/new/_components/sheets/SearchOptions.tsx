@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { Badge } from "@/shared/ui/Badge";
 import { cn } from "@/shared/utils/cn";
+import type { SearchStatus } from "../../_model/search";
+
+const LOADING_MESSAGE = "검색 중이에요";
+const ERROR_MESSAGE = "검색에 실패했어요. 잠시 후 다시 시도해 주세요";
 
 const rowStyles = cn(
   "flex w-full flex-col gap-ds-4 rounded-ds-md px-ds-12 py-ds-8 text-left outline-none",
@@ -10,6 +14,57 @@ const rowStyles = cn(
 
 export function SearchOptionList({ children }: Readonly<{ children: ReactNode }>) {
   return <ul className="flex flex-col gap-ds-4">{children}</ul>;
+}
+
+/**
+ * 목록 자리를 대신 채우는 안내 문구. 로딩·에러·빈 상태가 같은 자리를 쓴다.
+ */
+export function SearchOptionMessage({
+  tone = "default",
+  children,
+}: Readonly<{ tone?: "default" | "error"; children: ReactNode }>) {
+  return (
+    <p
+      role="status"
+      className={cn(
+        "px-ds-12 py-ds-20 text-center text-body-md-medium",
+        tone === "error" ? "text-content-error" : "text-content-tertiary",
+      )}
+    >
+      {children}
+    </p>
+  );
+}
+
+/**
+ * 검색 결과 자리의 상태 분기.
+ *
+ * loading·error만 여기서 그린다. 검색 전 안내와 "결과 없음"은 시트마다 달라 —
+ * 매장 검색은 둘 다 없고 주소 검색은 둘 다 있다 — 시트가 넘긴 것을 그대로 쓴다.
+ */
+export function SearchResultArea({
+  status,
+  idle = null,
+  children,
+}: Readonly<{
+  status: SearchStatus;
+  /** 검색어를 넣기 전에 보여줄 안내. 없으면 아무것도 그리지 않는다. */
+  idle?: ReactNode;
+  children: ReactNode;
+}>) {
+  if (status === "idle") {
+    return idle;
+  }
+
+  if (status === "loading") {
+    return <SearchOptionMessage>{LOADING_MESSAGE}</SearchOptionMessage>;
+  }
+
+  if (status === "error") {
+    return <SearchOptionMessage tone="error">{ERROR_MESSAGE}</SearchOptionMessage>;
+  }
+
+  return children;
 }
 
 /**
