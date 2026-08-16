@@ -11,6 +11,7 @@ export { ClockIcon } from "./ClockIcon";
 export { FeedIcon } from "./FeedIcon";
 export { GridIcon } from "./GridIcon";
 export { GroupIcon } from "./GroupIcon";
+export { HeartIcon } from "./HeartIcon";
 export { HomeIcon } from "./HomeIcon";
 export { LoadingIcon } from "./LoadingIcon";
 export { MapPinIcon } from "./MapPinIcon";
