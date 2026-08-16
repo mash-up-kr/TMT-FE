@@ -9,6 +9,7 @@ export { ChevronRightIcon } from "./ChevronRightIcon";
 export { ChevronUpIcon } from "./ChevronUpIcon";
 export { ClockIcon } from "./ClockIcon";
 export { FeedIcon } from "./FeedIcon";
+export { GridIcon } from "./GridIcon";
 export { GroupIcon } from "./GroupIcon";
 export { HomeIcon } from "./HomeIcon";
 export { LoadingIcon } from "./LoadingIcon";
