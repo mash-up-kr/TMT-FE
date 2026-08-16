@@ -5,9 +5,18 @@ import type { ReactNode } from "react";
 import { GNB } from "@/shared/ui/GNB";
 import { cn } from "@/shared/utils/cn";
 
+type SheetHeight = "content" | "fixed";
+
+const heightStyles = {
+  content: "max-h-(--layout-sheet-box-height)",
+  fixed: "h-(--layout-sheet-box-height)",
+} satisfies Record<SheetHeight, string>;
+
 type BottomSheetBaseProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** 시트 높이. `content`는 내용만큼, `fixed`는 시안 높이로 고정한다. */
+  height?: SheetHeight;
   /** 헤더 좌측 슬롯. */
   left?: ReactNode;
   /** 헤더 우측 슬롯. */
@@ -54,6 +63,7 @@ type BottomSheetProps = BottomSheetBaseProps & BottomSheetNameProps;
 export function BottomSheet({
   open,
   onOpenChange,
+  height = "content",
   label,
   title,
   left,
@@ -79,8 +89,7 @@ export function BottomSheet({
             aria-label={label ?? title}
             className={cn(
               "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
-              // 시안 700/760. dvh라야 iOS 주소창 높이가 빠진다.
-              "max-h-[92dvh]",
+              heightStyles[height],
               "-mb-(--layout-sheet-overscroll) pb-(--layout-sheet-overscroll)",
               "transition-transform duration-300 ease-out",
               "data-starting-style:translate-y-full data-ending-style:translate-y-full",
