@@ -7,6 +7,7 @@ export { ChevronDownIcon } from "./ChevronDownIcon";
 export { ChevronLeftIcon } from "./ChevronLeftIcon";
 export { ChevronRightIcon } from "./ChevronRightIcon";
 export { ChevronUpIcon } from "./ChevronUpIcon";
+export { ClockIcon } from "./ClockIcon";
 export { FeedIcon } from "./FeedIcon";
 export { GroupIcon } from "./GroupIcon";
 export { HomeIcon } from "./HomeIcon";
