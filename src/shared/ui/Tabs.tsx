@@ -45,7 +45,7 @@ export function TabsList({ activateOnFocus = true, children, className, ...props
         aria-hidden="true"
         data-slot="tabs-indicator"
         className={cn(
-          "pointer-events-none absolute bottom-0 left-[var(--active-tab-left)] z-20 h-ds-2 w-[var(--active-tab-width)] bg-stroke-selected transition-[left,width] motion-reduce:transition-none",
+          "pointer-events-none absolute bottom-0 left-(--active-tab-left) z-20 h-ds-2 w-(--active-tab-width) bg-stroke-selected transition-[left,width] motion-reduce:transition-none",
           "group-has-[[role=tab][data-active][data-disabled]]:bg-stroke-disabled",
         )}
       />
