@@ -29,7 +29,6 @@ export function ExitConfirmModal({ open, onOpenChange, onExit }: ExitConfirmModa
       }
     >
       <div className="flex flex-col gap-ds-8 pt-ds-32 text-center">
-        {/* Dialog.Title이 같은 문장을 이름으로 이미 제공한다. 중복 낭독을 막고 시안 타이포만 살린다. */}
         <p aria-hidden="true" className="text-heading-md text-content-primary">
           {TITLE}
         </p>
