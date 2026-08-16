@@ -9,8 +9,6 @@ const toneStyles = {
   neutral: "bg-surface-tertiary text-content-secondary",
 } satisfies Record<BadgeTone, string>;
 
-// 시안은 세로 padding 없이 프레임 높이로 여백을 준다. md는 20(줄높이 18 + 위아래 1),
-// sm은 줄높이 그대로다.
 const sizeStyles = {
   sm: "px-ds-8",
   md: "h-ds-20 px-ds-12",
