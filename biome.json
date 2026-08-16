@@ -7,8 +7,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/*.svg"]
+    "includes": ["**", "!**/*.svg", "!_scripts/api/openapi.json"]
   },
+  "overrides": [
+    {
+      "includes": ["src/api/gen/**"],
+      "linter": { "enabled": false }
+    }
+  ],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",

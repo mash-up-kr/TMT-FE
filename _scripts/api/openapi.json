@@ -1,0 +1,133 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TMT API",
+    "description": "또맛또(TMT) API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Local"
+    }
+  ],
+  "paths": {
+    "/health/error-test-tmt": {
+      "post": {
+        "tags": [
+          "health-check-controller"
+        ],
+        "operationId": "errorTestTmt",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/health/error-test-global": {
+      "post": {
+        "tags": [
+          "health-check-controller"
+        ],
+        "operationId": "errorTestGlobal",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/health/db": {
+      "get": {
+        "tags": [
+          "health-check-controller"
+        ],
+        "operationId": "dbHealth",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/api": {
+      "get": {
+        "tags": [
+          "health-check-controller"
+        ],
+        "operationId": "apiHealth",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "description": "실패 응답 (RFC 9457 Problem Details)",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "사용자에게 보여줄 수 있는 문구",
+            "example": "요청 경로가 잘못되었습니다."
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP 상태 코드",
+            "example": 404
+          },
+          "detail": {
+            "type": "string",
+            "description": "상황별 상세"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 식별자. 클라이언트 분기의 기준",
+            "example": "RESOURCE_NOT_FOUND"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "발생 시각 (ISO-8601 UTC)",
+            "example": "2026-08-03T05:12:44.831Z"
+          },
+          "requestId": {
+            "type": "string",
+            "description": "서버 로그 추적용",
+            "example": "8f1e0c4a-2c37-4d1e-9f6b-2f0a1c9d3e55"
+          }
+        }
+      }
+    }
+  }
+}

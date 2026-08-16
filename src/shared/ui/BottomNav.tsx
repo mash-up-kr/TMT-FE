@@ -57,7 +57,7 @@ export function BottomNav({ value, onValueChange, onCreate, className, ...props 
     <nav
       aria-label="주요 메뉴"
       className={cn(
-        "flex w-full max-w-[var(--layout-bottom-navigation-width)] items-center overflow-hidden rounded-ds-full border-sm border-stroke-inverse bg-surface-primary/80 px-ds-12 py-ds-4 shadow-navigation backdrop-blur-navigation",
+        "flex w-full max-w-(--layout-bottom-navigation-width) items-center overflow-hidden rounded-ds-full border-sm border-stroke-inverse bg-surface-primary/80 px-ds-12 py-ds-4 shadow-navigation backdrop-blur-navigation",
         className,
       )}
       {...props}
