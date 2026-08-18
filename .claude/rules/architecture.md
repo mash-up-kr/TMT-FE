@@ -44,6 +44,7 @@ src/
 │   └── mutator.ts
 └── shared/
     ├── ui/
+    ├── components/
     ├── hooks/
     ├── utils/
     ├── model/
@@ -74,6 +75,7 @@ src/
 | Segment | 책임 | 제약 |
 |---|---|---|
 | `shared/ui/` | 디자인 시스템과 도메인 무관 UI primitive | 라우트, API 응답, store에 직접 의존하지 않는다. |
+| `shared/components/` | 도메인 성격을 띠면서 여러 라우트가 쓰는 UI | 라우트를 import하지 않는다. API 응답 타입을 직접 받지 않는다. |
 | `shared/hooks/` | 도메인 무관 범용 hook | 라우트를 import하지 않는다. |
 | `shared/utils/` | 순수 함수와 외부 SDK adapter | 라우트를 import하지 않는다. |
 | `shared/model/` | 전역 도메인 타입 | 실제 전역 의미가 있을 때만 둔다. |
@@ -82,15 +84,17 @@ src/
 | `shared/styles/` | 토큰, reset, theme | 사용 방식은 design-system rule을 따른다. |
 | `shared/providers/` | 전역 Context provider | `app/`을 import하지 않는다. |
 
-- 도메인 의미가 있는 UI는 라우트에 유지한다. 실제 재사용이 확인되고 props를 도메인 무관하게 만들 수 있을 때만 `shared/ui/`로 승격한다.
+- UI는 한 라우트에서만 쓰는 동안 그 라우트에 둔다. 사용처가 둘 이상이 되면 승격하되, 도메인 무관하게 만들 수 있으면 `shared/ui/`, 도메인 성격이 남으면 `shared/components/`로 나눈다.
+- `shared/components/`도 API 응답을 그대로 받지 않는다. 응답을 props로 바꾸는 코드는 라우트 `_utils/`가 소유한다.
 - 서로 다른 공용 UI 컴포넌트 계열이 공유하는 기반 컴포넌트는 특정 계열의 하위 폴더에 두지 않고, 각 계열이 함께 의존할 수 있는 `shared/ui/`의 공통 상위 계층에 둔다.
 
 ## Import 경계
 
 ```text
-app/{route}/       →  shared/{ui, hooks, utils, model, constants, stores, styles, providers}
-app/{route}/       →  api/gen
-shared/providers/  →  api/mutator
+app/{route}/        →  shared/{ui, components, hooks, utils, model, constants, stores, styles, providers}
+app/{route}/        →  api/gen
+shared/components/  →  shared/{ui, hooks, utils, model, constants, styles}
+shared/providers/   →  api/mutator
 ```
 
 - 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
@@ -104,7 +108,7 @@ shared/providers/  →  api/mutator
 
 1. API 연동이 필요한가: 아래 API 계약을 먼저 따른다.
 2. 한 라우트에서만 쓰는가: 해당 라우트의 private segment에 둔다.
-3. 여러 라우트에서 쓰는가: UI는 `shared/ui/`, hook은 `shared/hooks/`, 순수 함수와 SDK adapter는 `shared/utils/`를 검토한다.
+3. 여러 라우트에서 쓰는가: UI는 도메인 무관하면 `shared/ui/`, 도메인 성격이 남으면 `shared/components/`, hook은 `shared/hooks/`, 순수 함수와 SDK adapter는 `shared/utils/`를 검토한다.
 4. 전역 타입·상수·상태·provider인가: 실제 전역 의미나 여러 라우트의 공유 요구가 있을 때만 해당 shared segment로 옮긴다.
 5. 어느 분류에도 맞지 않는가: 새 계층을 만들지 말고 가장 가까운 라우트에 둔 뒤 다음 실제 사용처에서 재검토한다.
 
