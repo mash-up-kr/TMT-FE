@@ -272,8 +272,11 @@
   flex-direction: column;
   width: 100%;
   max-width: var(--layout-frame-max);
-  min-height: 100vh;
-  min-height: 100dvh;
+  /* 높이를 화면에 고정한다. min-height면 내용이 길 때 프레임이 늘어나 페이지 전체가 스크롤되고,
+     하단 고정 요소(탭 바)를 둘 수 없다. 스크롤은 프레임 안쪽 영역이 소유한다. */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   /* 넓은 화면에서 중앙 정렬. flex 부모에 의존하지 않는 margin-inline로 처리(재사용성). */
   margin-inline: auto;
   background: var(--color-surface-primary);
