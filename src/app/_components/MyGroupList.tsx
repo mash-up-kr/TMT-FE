@@ -1,19 +1,16 @@
 import { PlusIcon } from "@/shared/ui/Icons";
 import type { HomeGroup } from "../_model/home";
 
-type MyGroupStripProps = {
+type MyGroupListProps = {
   groups: HomeGroup[];
 };
 
-export function MyGroupStrip({ groups }: MyGroupStripProps) {
+export function MyGroupList({ groups }: MyGroupListProps) {
   return (
     <div className="bg-surface-primary px-ds-20 py-ds-12">
       <ul className="-mx-ds-20 flex gap-ds-4 overflow-x-auto px-ds-20">
         {groups.map((group) => (
-          <li
-            key={group.id}
-            className="flex w-[76px] shrink-0 flex-col items-center gap-ds-8"
-          >
+          <li key={group.id} className="flex w-[76px] shrink-0 flex-col items-center gap-ds-8">
             <GroupThumbnail name={group.name} imageUrl={group.imageUrl} />
             <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-primary">
               {group.name}
