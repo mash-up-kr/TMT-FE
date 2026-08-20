@@ -1,0 +1,182 @@
+import type { FeedReview } from "../_model/home";
+
+type ReviewCardProps = {
+  review: FeedReview;
+};
+
+export function ReviewCard({ review }: ReviewCardProps) {
+  return (
+    <article className="flex flex-col bg-surface-primary">
+      <ReviewCardHeader
+        nickname={review.authorNickname}
+        profileImageUrl={review.authorProfileImageUrl}
+        rating={review.rating}
+        distanceMeters={review.distanceMeters}
+      />
+      <ReviewCardPhoto url={review.photoUrls.at(0) ?? null} />
+      <div className="flex flex-col gap-ds-12 rounded-b-ds-md bg-surface-primary p-ds-16">
+        <AiSummary pros={review.pros} cons={review.cons} />
+        {review.content ? (
+          <p className="whitespace-pre-line text-body-md-medium text-content-primary">
+            {review.content}
+          </p>
+        ) : null}
+        <TagList tags={review.tags} />
+        {review.place ? <PlaceRow place={review.place} /> : null}
+      </div>
+    </article>
+  );
+}
+
+type ReviewCardHeaderProps = {
+  nickname: string;
+  profileImageUrl: string | null;
+  rating: number | null;
+  distanceMeters: number | null;
+};
+
+function ReviewCardHeader({
+  nickname,
+  profileImageUrl,
+  rating,
+  distanceMeters,
+}: ReviewCardHeaderProps) {
+  return (
+    <header className="flex items-center gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
+      <AuthorAvatar nickname={nickname} imageUrl={profileImageUrl} />
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-ds-8">
+        <p className="truncate text-body-lg-medium text-content-primary">{nickname}</p>
+        <div className="flex flex-col items-end justify-center">
+          {rating === null ? null : (
+            <p className="text-body-sm-medium text-content-interactive-primary">
+              {rating.toFixed(1)}
+            </p>
+          )}
+          {distanceMeters === null ? null : (
+            <p className="text-body-sm-medium text-content-disabled">
+              {formatDistance(distanceMeters)}
+            </p>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function formatDistance(meters: number): string {
+  return meters < 1000 ? `${Math.round(meters)}m` : `${(meters / 1000).toFixed(1)}km`;
+}
+
+type AuthorAvatarProps = {
+  nickname: string;
+  imageUrl: string | null;
+};
+
+function AuthorAvatar({ nickname, imageUrl }: AuthorAvatarProps) {
+  if (!imageUrl) {
+    return (
+      <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-surface-selected text-body-md-bold text-content-interactive-primary">
+        {nickname.slice(0, 1)}
+      </div>
+    );
+  }
+
+  return (
+    // biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다.
+    <img
+      src={imageUrl}
+      alt=""
+      className="size-ds-40 shrink-0 rounded-ds-full object-cover"
+      loading="lazy"
+    />
+  );
+}
+
+type ReviewCardPhotoProps = {
+  url: string | null;
+};
+
+function ReviewCardPhoto({ url }: ReviewCardPhotoProps) {
+  if (!url) {
+    return null;
+  }
+
+  return (
+    <div className="h-[360px] w-full shrink-0 overflow-hidden bg-surface-tertiary">
+      {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
+      <img src={url} alt="" className="size-full object-cover" loading="lazy" />
+    </div>
+  );
+}
+
+type AiSummaryProps = {
+  pros: string | null;
+  cons: string | null;
+};
+
+function AiSummary({ pros, cons }: AiSummaryProps) {
+  if (!pros && !cons) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col gap-ds-8">
+      {pros ? <SummaryLine label="장점">{pros}</SummaryLine> : null}
+      {cons ? <SummaryLine label="단점">{cons}</SummaryLine> : null}
+    </div>
+  );
+}
+
+type SummaryLineProps = {
+  label: string;
+  children: string;
+};
+
+function SummaryLine({ label, children }: SummaryLineProps) {
+  return (
+    <p className="rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
+      <span className="sr-only">{label}</span>
+      {children}
+    </p>
+  );
+}
+
+type TagListProps = {
+  tags: FeedReview["tags"];
+};
+
+function TagList({ tags }: TagListProps) {
+  if (tags.length === 0) {
+    return null;
+  }
+
+  return (
+    <ul className="flex flex-wrap gap-ds-4">
+      {tags.map((tag) => (
+        <li
+          key={tag.id}
+          className="inline-flex shrink-0 items-center rounded-ds-full inset-ring inset-ring-stroke-primary bg-surface-primary px-ds-12 py-ds-4 text-body-sm-medium text-content-primary"
+        >
+          {tag.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type PlaceRowProps = {
+  place: NonNullable<FeedReview["place"]>;
+};
+
+function PlaceRow({ place }: PlaceRowProps) {
+  return (
+    <div className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <p className="truncate text-body-md-bold text-content-primary">{place.name}</p>
+        {place.roadAddress ? (
+          <p className="truncate text-body-sm-medium text-content-secondary">{place.roadAddress}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
