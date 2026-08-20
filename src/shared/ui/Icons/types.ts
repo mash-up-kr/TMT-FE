@@ -1,6 +1,13 @@
 import type { SVGProps } from "react";
 
-export interface IconProps extends Omit<SVGProps<SVGSVGElement>, "children"> {
-  thick?: boolean;
+interface IconBaseProps extends Omit<SVGProps<SVGSVGElement>, "children"> {
   size?: number | string;
+}
+
+export interface IconProps extends IconBaseProps {
+  thick?: boolean;
+}
+
+export interface FilledIconProps extends IconBaseProps {
+  filled?: boolean;
 }
