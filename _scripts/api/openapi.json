@@ -11,7 +11,804 @@
       "description": "Local"
     }
   ],
+  "tags": [
+    {
+      "name": "그룹 (mock)",
+      "description": "명세 v2 — D_01. 그룹 탐색 · D_02. 그룹 생성·상세·편집"
+    },
+    {
+      "name": "주소 검색 (mock)",
+      "description": "명세 v2 — F §2-2"
+    },
+    {
+      "name": "저장·리뷰 작성 (mock)",
+      "description": "명세 v2 — F. 리뷰 작성 · G. 이어쓰기 · I. 리뷰 상세"
+    },
+    {
+      "name": "리뷰 작성 (mock)",
+      "description": "명세 v2 — F. 리뷰 작성 · G. 이어쓰기 · I. 리뷰 상세"
+    },
+    {
+      "name": "리뷰 상세 (mock)",
+      "description": "명세 v2 — I §6-3·§6-4"
+    },
+    {
+      "name": "가게 상세 (mock)",
+      "description": "명세 v2 — B §3·§4"
+    },
+    {
+      "name": "그룹 가입·리뷰 공유 (mock)",
+      "description": "명세 v2 — H. 그룹 게시(공유)"
+    },
+    {
+      "name": "근처 탐색 (mock)",
+      "description": "명세 v2 — B. 근처 탐색"
+    },
+    {
+      "name": "매장 (mock)",
+      "description": "명세 v2 — B §2-2 · F §2"
+    },
+    {
+      "name": "미디어 (mock)",
+      "description": "명세 v2 — F §3-2"
+    },
+    {
+      "name": "큐레이션 (mock)",
+      "description": "명세 v2 — B. 근처 탐색 §2-4"
+    },
+    {
+      "name": "그룹 태그 (mock)",
+      "description": "명세 v2 — D_02 §2-1"
+    },
+    {
+      "name": "홈 (mock)",
+      "description": "명세 v2 — A. 홈"
+    }
+  ],
   "paths": {
+    "/v1/saves/{saveId}": {
+      "get": {
+        "tags": [
+          "저장·리뷰 작성 (mock)"
+        ],
+        "summary": "본인 상세",
+        "description": "이어쓰기 재진입과 상세 시트를 모두 이걸로 그린다. 소유자에게만 응답한다 (S8).",
+        "operationId": "getSave",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "saveId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaveDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "저장·리뷰 작성 (mock)"
+        ],
+        "summary": "작성 완료 (이어쓰기)",
+        "description": "전체 교체다. placeId는 바꿀 수 없고(S6), 서버는 같은 완성도 판정을 다시 돌린다 (C6).",
+        "operationId": "updateSave",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "saveId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaveResultResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places/{placeId}/favorite": {
+      "put": {
+        "tags": [
+          "가게 상세 (mock)"
+        ],
+        "summary": "찜",
+        "description": "멱등 토글 — 이미 찜한 매장에 다시 보내도 200이다 (F2).",
+        "operationId": "addFavorite",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "가게 상세 (mock)"
+        ],
+        "summary": "찜 해제",
+        "description": "찜하지 않은 매장에 보내도 200이다 (F2).",
+        "operationId": "removeFavorite",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups/{groupId}": {
+      "get": {
+        "tags": [
+          "그룹 (mock)"
+        ],
+        "summary": "그룹 상세",
+        "operationId": "groupDetail",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "그룹 (mock)"
+        ],
+        "summary": "그룹 편집",
+        "description": "생성자만 호출할 수 있다 (G13). 전체 교체라 바꾸지 않는 필드도 현재 값을 실어 보내야 한다.",
+        "operationId": "updateGroup",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups/{groupId}/review-shares": {
+      "get": {
+        "tags": [
+          "그룹 가입·리뷰 공유 (mock)"
+        ],
+        "summary": "리뷰 공유 목록",
+        "description": "내 리뷰 전체를 공유 여부와 함께 내린다 — PUT이 전체 교체라 현재 상태를 전부 알아야 한다.",
+        "operationId": "listReviewShares",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewSharesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "그룹 가입·리뷰 공유 (mock)"
+        ],
+        "summary": "리뷰 공유 (전체 교체)",
+        "description": "보낸 reviewIds가 이 그룹에 공유된 내 리뷰의 최종 집합이 된다. 멱등이라 Idempotency-Key가 필요 없다.",
+        "operationId": "replaceReviewShares",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceSharesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceSharesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/saves": {
+      "get": {
+        "tags": [
+          "저장·리뷰 작성 (mock)"
+        ],
+        "summary": "이어쓰기 목록",
+        "description": "미완성 저장만 내려간다 (C5·R8). 정렬은 updatedAt DESC, saveId DESC.",
+        "operationId": "listSaves",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageSaveListItemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "저장·리뷰 작성 (mock)"
+        ],
+        "summary": "작성 완료 (신규)",
+        "description": "저장이 생기고, 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.",
+        "operationId": "createSave",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaveResultResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places": {
+      "post": {
+        "tags": [
+          "매장 (mock)"
+        ],
+        "summary": "매장 직접 등록",
+        "description": "같은 좌표·같은 매장명의 기존 매장이 있으면 새로 만들지 않고 200으로 그 매장을 돌려준다.",
+        "operationId": "createPlace",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceCardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/media/upload-intents": {
+      "post": {
+        "tags": [
+          "미디어 (mock)"
+        ],
+        "summary": "사진 업로드 presigned URL 발급",
+        "description": "발급받은 assetId는 발급받은 사용자만 Save에 붙일 수 있다 (M2).",
+        "operationId": "createUploadIntent",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadIntentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadIntentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups": {
+      "get": {
+        "tags": [
+          "그룹 (mock)"
+        ],
+        "summary": "그룹 탐색",
+        "description": "검색·필터·정렬이 모두 한 목록에 걸린다. 파라미터 없이 부르면 추천순 전체 목록.",
+        "operationId": "listGroups",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "foodCategoryId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regionTagIds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageGroupCardResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "그룹 (mock)"
+        ],
+        "summary": "그룹 만들기",
+        "description": "4단계 입력을 한 번에 보낸다. 요청자가 자동으로 그룹장이 되고 소유권은 이전되지 않는다 (G13).",
+        "operationId": "createGroup",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups/{groupId}/memberships": {
+      "post": {
+        "tags": [
+          "그룹 가입·리뷰 공유 (mock)"
+        ],
+        "summary": "가입",
+        "description": "티켓 1장을 소비해 가입한다. 티켓 소비·멤버십 생성·자동 공유가 한 트랜잭션이다 (TX-3).",
+        "operationId": "join",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/JoinResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health/error-test-tmt": {
       "post": {
         "tags": [
@@ -34,6 +831,842 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/reviews/{reviewId}": {
+      "get": {
+        "tags": [
+          "리뷰 상세 (mock)"
+        ],
+        "summary": "공개 리뷰 상세",
+        "description": "완성된 리뷰만 대상이고 미완성 저장은 조회되지 않는다 (R8). 개인 리뷰 열람에는 게이트가 없다 (G2).",
+        "operationId": "reviewDetail",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "리뷰 상세 (mock)"
+        ],
+        "summary": "리뷰 삭제",
+        "description": "사진까지 완전 삭제되고 저장으로 되돌아가지 않으며 티켓 1장을 회수한다 (R6·R7). 회수할 티켓이 없으면 409로 거부한다.",
+        "operationId": "deleteReview",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/v1/review-form-config": {
+      "get": {
+        "tags": [
+          "리뷰 작성 (mock)"
+        ],
+        "summary": "리뷰 폼 제약·태그 목록",
+        "description": "폼 제약과 태그 목록을 한 번에 내린다. 화면의 태그 칩은 이 응답으로 그린다.",
+        "operationId": "reviewFormConfig",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewFormConfigResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places/{placeId}": {
+      "get": {
+        "tags": [
+          "가게 상세 (mock)"
+        ],
+        "summary": "가게 상세",
+        "description": "핀 클릭 시트와 가게 상세 상단이 같은 데이터를 쓴다. 사진은 이 매장 리뷰에서 최신순으로 파생한다 (P7).",
+        "operationId": "placeDetail",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places/{placeId}/reviews": {
+      "get": {
+        "tags": [
+          "가게 상세 (mock)"
+        ],
+        "summary": "가게 상세 리뷰 목록",
+        "description": "정렬은 최신순 createdAt DESC, reviewId DESC다.",
+        "operationId": "placeReviews",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageReviewCardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places/search": {
+      "get": {
+        "tags": [
+          "매장 (mock)"
+        ],
+        "summary": "매장 검색",
+        "description": "가게명·주소·음식 카테고리 태그로 찾는다. 결과 0건은 오류가 아니다 — items: []",
+        "operationId": "searchPlaces",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "curationTagId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "nearbyOnly",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPagePlaceCardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nearby/reviews": {
+      "get": {
+        "tags": [
+          "근처 탐색 (mock)"
+        ],
+        "summary": "피드형 기본 목록",
+        "description": "내 위치 반경 1km 안의 리뷰를 거리순으로 내린다 (E1·E2·E4). 반경은 서버가 고정한다.",
+        "operationId": "nearbyReviews",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageReviewCardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nearby/places": {
+      "get": {
+        "tags": [
+          "근처 탐색 (mock)"
+        ],
+        "summary": "지도형 핀",
+        "description": "커서를 쓰지 않는다 — 지도를 움직이는 것이 페이지 이동이다. 리뷰가 1건 이상 있는 매장만, 최대 30개 (E6·E8).",
+        "operationId": "nearbyPlaces",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "north",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "south",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "east",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "west",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "curationTagId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/NearbyPlacesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/home": {
+      "get": {
+        "tags": [
+          "홈 (mock)"
+        ],
+        "summary": "인사·내 그룹·추천 그룹",
+        "description": "recommendedGroups는 myGroups가 비었을 때만 채운다 — 추천순(G17) 상위 5개.",
+        "operationId": "home",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/HomeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/home/feed": {
+      "get": {
+        "tags": [
+          "홈 (mock)"
+        ],
+        "summary": "리뷰 피드",
+        "description": "가입한 그룹들에 공유된 리뷰를 하나로 합쳐 내린다. 같은 리뷰가 여러 그룹에 공유돼 있어도 한 번만 내린다 (G19).",
+        "operationId": "feed",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageReviewCardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups/{groupId}/reviews": {
+      "get": {
+        "tags": [
+          "그룹 (mock)"
+        ],
+        "summary": "그룹 상세 리뷰 목록",
+        "description": "게이트가 걸리는 곳 — 미가입·비회원은 최신 3건, 가입자는 전체 (G1). 판정은 가입 여부 하나다.",
+        "operationId": "groupReviews",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatedReviewsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups/{groupId}/join-preview": {
+      "get": {
+        "tags": [
+          "그룹 가입·리뷰 공유 (mock)"
+        ],
+        "summary": "가입 팝업 정보",
+        "description": "티켓 보유·부족 분기. preview는 참고값이고 가입이 조건을 다시 검증한다 (TX-3).",
+        "operationId": "joinPreview",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/JoinPreviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/groups/name-availability": {
+      "get": {
+        "tags": [
+          "그룹 (mock)"
+        ],
+        "summary": "그룹 이름 중복 확인",
+        "description": "참고값이다 — 생성이 유일성을 다시 검증하고 GROUP_NAME_DUPLICATED로 거절한다.",
+        "operationId": "nameAvailability",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/NameAvailabilityResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/group-tags": {
+      "get": {
+        "tags": [
+          "그룹 태그 (mock)"
+        ],
+        "summary": "그룹 태그 풀",
+        "description": "음식 카테고리는 단일 선택, 지역은 다중 선택이다 (G7). 서버 상수라 페이징하지 않는다.",
+        "operationId": "groupTags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupTagsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/curation-tags": {
+      "get": {
+        "tags": [
+          "큐레이션 (mock)"
+        ],
+        "summary": "큐레이션 칩 목록",
+        "description": "칩 값은 서버 상수다. 페이징하지 않으며 값이 바뀌면 서버 배포로 반영된다.",
+        "operationId": "curationTags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsResponseCurationTagResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/addresses/search": {
+      "get": {
+        "tags": [
+          "주소 검색 (mock)"
+        ],
+        "summary": "주소 검색",
+        "description": "addressId는 이 검색 결과 안에서만 유효한 임시 식별자다. POST /v1/places에 그대로 전달한다.",
+        "operationId": "searchAddresses",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageMockAddress"
+                }
+              }
+            }
           }
         }
       }
@@ -77,10 +1710,1267 @@
           }
         }
       }
+    },
+    "/v1/groups/{groupId}/memberships/me": {
+      "delete": {
+        "tags": [
+          "그룹 가입·리뷰 공유 (mock)"
+        ],
+        "summary": "탈퇴",
+        "description": "그 그룹에 공유했던 내 리뷰가 전부 내려간다 (G10). 티켓은 돌아오지 않는다 (T9).",
+        "operationId": "leave",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "SaveRequest": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "photoAssetIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "companionTagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "positivePointTagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rating": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "SaveResultResponse": {
+        "type": "object",
+        "properties": {
+          "saveId": {
+            "type": "string"
+          },
+          "reviewId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/TicketSummary"
+          }
+        }
+      },
+      "TicketSummary": {
+        "type": "object",
+        "properties": {
+          "grantedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "availableCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FavoriteResponse": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "favorite": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GroupRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "oneLineDescription": {
+            "type": "string"
+          },
+          "foodCategoryId": {
+            "type": "string"
+          },
+          "regionTagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageAssetId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "CoverImage": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "reviewId": {
+            "type": "string"
+          }
+        }
+      },
+      "FoodCategory": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "GroupDetailResponse": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "oneLineDescription": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoverImage"
+            }
+          },
+          "memberCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "placeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "foodCategory": {
+            "$ref": "#/components/schemas/FoodCategory"
+          },
+          "regionTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegionTag"
+            }
+          },
+          "matchedSavedPlaceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "owner": {
+            "type": "boolean"
+          },
+          "member": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RegionTag": {
+        "type": "object",
+        "properties": {
+          "regionTagId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "ReplaceSharesRequest": {
+        "type": "object",
+        "properties": {
+          "reviewIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ReplaceSharesResponse": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "sharedReviewIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreatePlaceRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "string"
+          },
+          "categoryId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "PlaceCardResponse": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "regionName": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "averageRating": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "distanceMeters": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "favorite": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UploadIntentRequest": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string"
+          },
+          "contentLength": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "UploadIntentResponse": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "uploadUrl": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        }
+      },
+      "JoinRequest": {
+        "type": "object",
+        "properties": {
+          "sourceReviewId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "JoinResponse": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "joinedAt": {
+            "type": "string"
+          },
+          "sharedReviewIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/TicketSummary"
+          }
+        }
+      },
+      "CursorPageSaveListItemResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/SaveListItemResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        }
+      },
+      "PlaceSummary": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          }
+        }
+      },
+      "SaveListItemResponse": {
+        "type": "object",
+        "properties": {
+          "saveId": {
+            "type": "string"
+          },
+          "place": {
+            "$ref": "#/components/schemas/PlaceSummary"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "AiSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "pros": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cons": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Photo": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SaveDetailResponse": {
+        "type": "object",
+        "properties": {
+          "saveId": {
+            "type": "string"
+          },
+          "reviewId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "place": {
+            "$ref": "#/components/schemas/PlaceSummary"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            }
+          },
+          "rating": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "aiSummary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AiSummaryResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "TagResponse": {
+        "type": "object",
+        "properties": {
+          "tagId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "AiSummary": {
+        "type": "object",
+        "properties": {
+          "pros": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cons": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Author": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ReviewDetailResponse": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Author"
+          },
+          "place": {
+            "$ref": "#/components/schemas/PlaceSummary"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "string"
+          },
+          "aiSummary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AiSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "mine": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "tagId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "ContentConstraint": {
+        "type": "object",
+        "properties": {
+          "maxLength": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PhotoConstraint": {
+        "type": "object",
+        "properties": {
+          "maxCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxBytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "allowedContentTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RatingConstraint": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "step": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ReviewFormConfigResponse": {
+        "type": "object",
+        "properties": {
+          "photo": {
+            "$ref": "#/components/schemas/PhotoConstraint"
+          },
+          "rating": {
+            "$ref": "#/components/schemas/RatingConstraint"
+          },
+          "content": {
+            "$ref": "#/components/schemas/ContentConstraint"
+          },
+          "companionTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagDefinition"
+            }
+          },
+          "positivePointTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagDefinition"
+            }
+          }
+        }
+      },
+      "TagDefinition": {
+        "type": "object",
+        "properties": {
+          "tagId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "PlaceDetailResponse": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "averageRating": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "phoneNumber": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "favorite": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CursorPageReviewCardResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/ReviewCardResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        }
+      },
+      "ReviewCardResponse": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Author"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "distanceMeters": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          },
+          "aiSummary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AiSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "content": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "place": {
+            "$ref": "#/components/schemas/PlaceSummary"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "CursorPagePlaceCardResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/PlaceCardResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        }
+      },
+      "NearbyPlacesResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pin"
+            }
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Pin": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GroupCardResponse": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "oneLineDescription": {
+            "type": "string"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "memberCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "placeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchedSavedPlaceCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "HomeResponse": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string"
+          },
+          "myGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyGroup"
+            }
+          },
+          "recommendedGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupCardResponse"
+            }
+          }
+        }
+      },
+      "MyGroup": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "CursorPageGroupCardResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/GroupCardResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        }
+      },
+      "Gate": {
+        "type": "object",
+        "properties": {
+          "gated": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibleCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GatedReviewsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewCardResponse"
+            }
+          },
+          "gate": {
+            "$ref": "#/components/schemas/Gate"
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasNext": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "placeName": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "contentPreview": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "shared": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ReviewSharesResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            }
+          },
+          "sharedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasNext": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GroupSummary": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "JoinPreviewResponse": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/GroupSummary"
+          },
+          "availableTicketCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiredTicketCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "joinable": {
+            "type": "boolean"
+          },
+          "blockedReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "NameAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GroupTagsResponse": {
+        "type": "object",
+        "properties": {
+          "foodCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FoodCategory"
+            }
+          },
+          "regionTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegionTag"
+            }
+          }
+        }
+      },
+      "CurationTagResponse": {
+        "type": "object",
+        "description": "큐레이션 칩",
+        "properties": {
+          "curationTagId": {
+            "type": "string",
+            "description": "칩 식별자. 검색(placesSearch)의 curationTagId로 그대로 전달",
+            "example": "curation_euljiro_yajang"
+          },
+          "label": {
+            "type": "string",
+            "description": "화면 노출 문구",
+            "example": "을지로 야장"
+          }
+        }
+      },
+      "ItemsResponseCurationTagResponse": {
+        "type": "object",
+        "description": "페이징 없는 목록 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/CurationTagResponse"
+            }
+          }
+        }
+      },
+      "CursorPageMockAddress": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/MockAddress"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        }
+      },
+      "MockAddress": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "jibunAddress": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "HealthResponse": {
         "type": "object",
         "properties": {

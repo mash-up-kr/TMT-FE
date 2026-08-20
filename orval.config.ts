@@ -4,6 +4,10 @@ export default defineConfig({
   tmt: {
     input: {
       target: "./_scripts/api/openapi.json",
+      override: {
+        // 한글 태그가 그대로 폴더·파일명이 되지 않게 스펙 단계에서 바꾼다.
+        transformer: "./orval.transformer.ts",
+      },
     },
     output: {
       // workspace 옵션은 쓰지 않는다. gen/ 밖에 src/api/index.ts를 만들고 clean이 그 파일을 지우지 못한다.
