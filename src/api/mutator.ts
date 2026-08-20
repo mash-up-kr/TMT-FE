@@ -1,4 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? "1";
 
 export class TmtApiError<TBody = unknown> extends Error {
   readonly httpStatus: number;
@@ -57,6 +58,10 @@ export const tmtFetch = async <T>(url: string, init?: RequestInit): Promise<T> =
 
   if (typeof init?.body === "string" && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
+  }
+
+  if (!headers.has("X-User-Id")) {
+    headers.set("X-User-Id", MOCK_USER_ID);
   }
 
   const response = await fetch(resolveUrl(url), { ...init, headers });
