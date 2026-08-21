@@ -6,7 +6,7 @@ export type ReviewTag = {
 /**
  * 태그 한 묶음. 두 그룹의 구조가 같아 렌더를 한 벌로 처리하려고 데이터로 둔다.
  *
- * 아직 서버 태그가 없어 `id`는 로컬 식별자다. API가 붙으면 이 값이 서버 id로 바뀐다.
+ * `id`는 리뷰 폼 설정 endpoint가 제공하는 태그 식별자다.
  */
 export type ReviewTagGroup = {
   id: string;

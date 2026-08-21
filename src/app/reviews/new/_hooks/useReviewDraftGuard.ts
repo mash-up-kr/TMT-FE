@@ -23,7 +23,7 @@ const FIRST_STEP_PATH = `${REVIEW_FLOW_BASE_PATH}/${REVIEW_STEPS[0].segment}`;
 export function useReviewDraftGuard() {
   const router = useRouter();
   const { store } = useReviewDraft();
-  const hasStore = isReviewStoreComplete(store) || process.env.NODE_ENV === "development";
+  const hasStore = isReviewStoreComplete(store);
 
   useEffect(() => {
     if (!hasStore) {

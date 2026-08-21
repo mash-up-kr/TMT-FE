@@ -194,26 +194,16 @@ export function isReviewStoreComplete(store: ReviewStore | null): store is Compl
 
 ---
 
-## 6. API가 없는 자리를 어떻게 비워뒀는가
+## 6. 생성 mock API 연결
 
-`.claude/rules/architecture.md`는 `src/api/`·orval·MSW의 **부분 도입을 금지**한다.
-이 플로우는 매장 검색·주소 검색·사진 업로드·리뷰 제출까지 최소 4개 엔드포인트를 쓰므로,
-1차에서는 UI만 만들고 데이터 연결은 비웠다.
+매장·주소 검색은 orval이 생성한 `useSearchPlaces`·`useSearchAddresses`를 사용한다. 응답의 선택 필드는
+`_utils/reviewApiMappers.ts`에서 UI 모델로 좁혀, 불완전한 항목이 시트에 표시되지 않게 한다.
 
-```tsx
-// store/page.tsx
-const storeResults: readonly StoreSearchResult[] = [];
-const addressResults: readonly AddressSearchResult[] = [];
-```
+태그는 `useReviewFormConfig`의 `companionTags`·`positivePointTags`를 쓴다. 시안의 질문 제목·힌트는
+클라이언트가 소유하고, tag id·label만 서버 응답으로 그린다.
 
-시트는 결과를 **props로 주입받는다.** API가 붙으면 이 배열의 출처만 바뀌고 시트·행 컴포넌트는
-그대로다.
-
-그 대가로 **지금 빌드에서는 1단계를 끝까지 걸을 수 없다.** 검색 결과가 항상 0건이라 직접 입력
-경로로만 흐르고, 그 경로는 주소가 있어야 완성되는데 주소 시트도 결과가 0건이다.
-
-그래서 **개발 환경에서만 "다음" 게이트와 초안 가드를 열어 둔다**(`process.env.NODE_ENV`).
-이게 없으면 2단계 이후를 열어 볼 방법이 없다. API가 붙으면 두 우회를 함께 걷어낸다.
+mock backend가 필수로 받는 주소 검색 `userId`는 `NEXT_PUBLIC_MOCK_USER_ID`를 쓰며, 없거나 잘못되면
+`1`로 안전하게 되돌린다. 별도의 MSW나 정적 fixture는 두지 않는다.
 
 ---
 
@@ -255,8 +245,7 @@ const addressResults: readonly AddressSearchResult[] = [];
 2단계 이후는 `useReviewDraftGuard`로 **매장이 없으면 1단계로 되돌린다**(§9.1). `router.replace`를
 쓰는 이유는 `push`면 되돌아간 뒤 뒤로가기가 다시 이 단계로 와서 무한 왕복이 되기 때문이다.
 
-**개발 환경에서는 이 가드와 1단계 "다음" 게이트가 열려 있다**(`process.env.NODE_ENV`). 검색 API가
-없어 1단계를 통과할 수 없기 때문이며(§6), 의도된 동작이다. 지우지 않는다.
+1단계 게이트를 통과한 초안만 다음 단계로 갈 수 있다. 검색 결과가 연결됐으므로 개발 전용 우회는 없다.
 
 ---
 
@@ -266,8 +255,8 @@ const addressResults: readonly AddressSearchResult[] = [];
 
 ### 태그 그룹은 데이터다
 
-그룹이 둘이고 구조가 같아 `_constants/tags.ts`에 배열로 두고 `TagGroupField` 하나로 렌더한다.
-그룹이 늘거나 문구가 바뀌면 배열만 고친다.
+그룹이 둘이고 구조가 같아 `TagGroupField` 하나로 렌더한다. 질문 제목·힌트는 시안이 정하고,
+칩 id·label은 리뷰 폼 설정 endpoint가 제공한다.
 
 라벨의 `(복수 가능)`은 시안에서 색이 다른 별도 조각이라 `hint`로 분리했다. 한 문자열로 합치면
 색을 나눌 수 없다.
@@ -342,7 +331,7 @@ radius full). 선택 색도 `selected`가 맞고 `aria-pressed`도 이미 붙어
 
 ### 남은 것
 
-- **제출 API가 없다.** 완료 화면은 초안을 보여주기만 하고 서버에 보내지 않는다.
+- 현재 OpenAPI에는 리뷰 제출 endpoint가 없다. 완료 화면은 초안을 보여주기만 하고 서버에 보내지 않는다.
 - 완료 후 브라우저 뒤로가기를 하면 3단계로 갈 수 있다. 플로우 전체를 히스토리에서 걷어내려면
   제출 시점과 초안 폐기 시점을 함께 정해야 해서, API 도입 때 다룬다.
 - `다른 리뷰 보러가기`가 가리키는 `/feed`는 아직 없다.
@@ -396,7 +385,7 @@ export type SearchStatus = "idle" | "loading" | "error" | "ready";
 "이 시트에 검색 전 안내나 빈 상태가 있는가"라는 도메인 판단은 시트에 남는다.
 
 > 문구는 시안이 없어 임시로 정했다. `SearchOptions.tsx` 상단 상수와 `AddressSearchSheet`의
-> `EMPTY_MESSAGE` 한 곳씩만 고치면 된다. 에러 상태의 재시도 동작은 호출할 API가 없어 넣지 않았다.
+> `EMPTY_MESSAGE` 한 곳씩만 고치면 된다. 오류 재시도는 QueryProvider의 기본 retry 정책에 맡긴다.
 
 `DirectInputOption`이 결과 목록의 일부라는 점도 여기서 나온다. 시안상 이 옵션은 **결과 유무와
 무관하게 목록 끝에 항상 붙는다.** 결과 0건 화면은 이것만 남은 상태일 뿐 별도 화면이 아니다.
@@ -575,6 +564,6 @@ PR에서 명시적으로 물어야 한다.
 
 | 미결 | 코드의 현재 선택 |
 |---|---|
-| 1. API 도입 방식 (A: UI만 / B: orval+MSW 전체) | **A**를 택해 구현됨 |
+| 1. API 연결 | 생성 mock API를 사용하고 MSW는 사용하지 않음 |
 | 6. 세그먼트 이름 | `store` / `photos` / `tags` / `rating`으로 확정해 사용 중 |
 | 7. `store/page.tsx`가 `new/_components/`를 import해도 되는가 | `reviews/new/**`를 하나의 라우트로 보는 해석으로 구현 |
