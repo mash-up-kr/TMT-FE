@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { StarIcon } from "@/shared/ui/icons";
+import { StarIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 
 /** 시안 5점 척도. */

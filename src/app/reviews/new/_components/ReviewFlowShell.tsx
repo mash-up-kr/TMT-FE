@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useState } from "react";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/icons";
+import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Progress } from "@/shared/ui/Progress";
 import {
   REVIEW_COMPLETE_PATH,

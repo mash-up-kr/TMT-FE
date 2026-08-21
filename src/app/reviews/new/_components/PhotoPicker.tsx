@@ -1,7 +1,7 @@
 "use client";
 
 import { type ChangeEvent, useId } from "react";
-import { PlusIcon, XCircleIcon } from "@/shared/ui/icons";
+import { PlusIcon, XCircleIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { MAX_REVIEW_PHOTO_COUNT, type ReviewPhoto } from "../_model/photo";
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Badge } from "@/shared/ui/Badge";
-import { AlertCircleIcon } from "@/shared/ui/icons";
+import { AlertCircleIcon } from "@/shared/ui/Icons";
 
 const OPTIONAL_MESSAGE = "정보를 입력하면 그룹에 가입할 수 있는 티켓을 드려요";
 

@@ -2,7 +2,7 @@
 
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon } from "@/shared/ui/icons";
+import { CancelIcon } from "@/shared/ui/Icons";
 import { SearchField } from "@/shared/ui/TextField";
 import type { SearchStatus } from "../../_model/search";
 import type { StoreSearchResult } from "../../_model/store";

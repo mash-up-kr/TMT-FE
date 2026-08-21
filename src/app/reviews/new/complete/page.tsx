@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
-import { MapPinIcon } from "@/shared/ui/icons";
+import { MapPinIcon } from "@/shared/ui/Icons";
 import { ReviewCompleteVisual } from "../_components/ReviewCompleteVisual";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";

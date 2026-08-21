@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
-import { SearchIcon } from "@/shared/ui/icons";
+import { SearchIcon } from "@/shared/ui/Icons";
 import { SearchField, TextField } from "@/shared/ui/TextField";
 import { StepHeader } from "../_components/StepHeader";
 import { AddressSearchSheet } from "../_components/sheets/AddressSearchSheet";
