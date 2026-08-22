@@ -11,3 +11,5 @@ export interface IconProps extends IconBaseProps {
 export interface FilledIconProps extends IconBaseProps {
   filled?: boolean;
 }
+
+export type ColorIconProps = IconBaseProps;
