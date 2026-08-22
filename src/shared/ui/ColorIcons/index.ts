@@ -16,5 +16,6 @@ export { MoodIcon } from "./MoodIcon";
 export { ResponseIcon } from "./ResponseIcon";
 export { SeatIcon } from "./SeatIcon";
 export { SubwayIcon } from "./SubwayIcon";
+export { ThumbDownIcon } from "./ThumbDownIcon";
 export { ThumbUpIcon } from "./ThumbUpIcon";
 export type { ColorIconProps } from "./types";
