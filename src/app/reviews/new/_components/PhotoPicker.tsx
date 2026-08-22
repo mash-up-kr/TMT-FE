@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, useId } from "react";
+import { type ChangeEvent, useEffect, useId, useRef } from "react";
 import { PlusIcon, XCircleIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { MAX_REVIEW_PHOTO_COUNT } from "../_constants/review";
@@ -44,11 +44,14 @@ function AddPhotoButton({ count, onAdd, className }: AddPhotoButtonProps) {
       <span className="text-body-md-medium">
         {count}/{MAX_REVIEW_PHOTO_COUNT}
       </span>
+      {/*
+        multiple을 빼서 한 번에 한 장만 고르게 한다. HTML에는 파일 개수 상한을 거는 속성이 없어
+        multiple을 열어두면 남은 자리보다 많이 골라도 막을 방법이 없고, 넘친 만큼이 말없이 사라진다.
+      */}
       <input
         id={inputId}
         type="file"
         accept="image/*"
-        multiple
         onChange={handleChange}
         className="sr-only"
       />
@@ -63,12 +66,37 @@ type PhotoPickerProps = Readonly<{
 }>;
 
 export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const previousCount = useRef(photos.length);
+
+  /**
+   * 칸 너비가 고정이라 좁은 화면에서는 두 장만 담겨도 목록이 가로로 넘친다. 그대로 두면
+   * 방금 추가한 사진과 추가 버튼이 오른쪽 밖으로 잘려 다음 장을 어디서 넣는지 보이지 않는다.
+   *
+   * 늘어났을 때만 끝으로 보낸다. 삭제로 줄어들 때는 브라우저가 스크롤 위치를 알아서 당겨준다.
+   * 되돌아온 단계에서 초안이 복원될 때 튀지 않도록 시작값은 현재 개수로 둔다.
+   */
+  useEffect(() => {
+    const grew = photos.length > previousCount.current;
+    previousCount.current = photos.length;
+
+    if (!grew || scrollRef.current === null) {
+      return;
+    }
+
+    // behavior를 넘기지 않아야 CSS scroll-behavior(=모션 설정)를 그대로 따른다.
+    scrollRef.current.scrollTo({ left: scrollRef.current.scrollWidth });
+  }, [photos.length]);
+
   if (photos.length === 0) {
     return <AddPhotoButton count={0} onAdd={onAdd} className="w-full" />;
   }
 
   return (
-    <div className="-mx-ds-20 overflow-x-auto px-ds-20">
+    <div
+      ref={scrollRef}
+      className="-mx-ds-20 scroll-smooth overflow-x-auto px-ds-20 motion-reduce:scroll-auto"
+    >
       <ul className="flex w-max items-start gap-ds-8">
         {photos.map((photo, index) => (
           <li key={photo.id} className={cn(cellHeight, cellWidth, "relative shrink-0")}>
