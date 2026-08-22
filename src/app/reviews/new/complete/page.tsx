@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
-import { ReviewCompleteVisual } from "../_components/ReviewCompleteVisual";
-import { REVIEW_FLOW_EXIT_PATH } from "../_constants/steps";
-import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
+import { ReviewCompleteVisual } from "../../_components/ReviewCompleteVisual";
+import { REVIEW_FLOW_EXIT_PATH } from "../../_constants/steps";
+import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
 
 export default function ReviewCompletePage() {
   const router = useRouter();

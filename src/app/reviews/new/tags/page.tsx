@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 import { useReviewFormConfig } from "@/api/gen/review-write/review-write.gen";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
-import { StepHeader } from "../_components/StepHeader";
-import { TagGroupField } from "../_components/TagGroupField";
-import { reviewStepPath } from "../_constants/steps";
-import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
-import { useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
-import { mapReviewTagGroups } from "../_utils/reviewApiMappers";
+import { StepHeader } from "../../_components/StepHeader";
+import { TagGroupField } from "../../_components/TagGroupField";
+import { reviewStepPath } from "../../_constants/steps";
+import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
+import { mapReviewTagGroups } from "../../_utils/reviewApiMappers";
 
 export default function TagsStepPage() {
   const router = useRouter();

@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Textarea } from "@/shared/ui/TextField";
-import { StarRatingField } from "../_components/StarRatingField";
-import { StepHeader } from "../_components/StepHeader";
-import { MAX_REVIEW_TEXT_LENGTH } from "../_constants/review";
-import { reviewCompletePath } from "../_constants/steps";
-import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
-import { useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
+import { StarRatingField } from "../../_components/StarRatingField";
+import { StepHeader } from "../../_components/StepHeader";
+import { MAX_REVIEW_TEXT_LENGTH } from "../../_constants/review";
+import { reviewCompletePath } from "../../_constants/steps";
+import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 
 export default function RatingStepPage() {
   const router = useRouter();

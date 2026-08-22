@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
-import { PhotoPicker } from "../_components/PhotoPicker";
-import { StepHeader } from "../_components/StepHeader";
-import { reviewStepPath } from "../_constants/steps";
-import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
-import { useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
+import { PhotoPicker } from "../../_components/PhotoPicker";
+import { StepHeader } from "../../_components/StepHeader";
+import { reviewStepPath } from "../../_constants/steps";
+import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 
 export default function PhotosStepPage() {
   const router = useRouter();
