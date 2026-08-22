@@ -21,7 +21,7 @@ export function MyGroupList({ groups }: MyGroupListProps) {
           <button
             type="button"
             aria-label="새 그룹 가입하기"
-            className="flex size-[60px] items-center justify-center rounded-ds-full border-sm border-stroke-primary bg-surface-secondary text-icon-primary"
+            className="flex size-[60px] items-center justify-center rounded-ds-full border-sm border-stroke-primary bg-surface-secondary text-icon-disabled"
           >
             <PlusIcon size={32} />
           </button>
