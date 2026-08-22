@@ -8,14 +8,8 @@ import { StepHeader } from "../_components/StepHeader";
 import { TagGroupField } from "../_components/TagGroupField";
 import { reviewStepPath } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
-import type { ReviewTagGroup } from "../_model/tag";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { mapReviewTags } from "../_utils/reviewApiMappers";
-
-const TAG_GROUPS: Omit<ReviewTagGroup, "tags">[] = [
-  { id: "companion", label: "누구와 함께했나요?", hint: "(복수 가능)" },
-  { id: "highlight", label: "어떤 점이 좋았나요?", hint: "(복수 가능)" },
-];
+import { mapReviewTagGroups } from "../_utils/reviewApiMappers";
 
 export default function TagsStepPage() {
   const router = useRouter();
@@ -23,10 +17,7 @@ export default function TagsStepPage() {
   const hasStore = useReviewDraftGuard();
   const formConfig = useReviewFormConfig();
 
-  const tagGroups: ReviewTagGroup[] = [
-    { ...TAG_GROUPS[0], tags: mapReviewTags(formConfig.data?.companionTags) },
-    { ...TAG_GROUPS[1], tags: mapReviewTags(formConfig.data?.positivePointTags) },
-  ];
+  const tagGroups = mapReviewTagGroups(formConfig.data);
 
   if (!hasStore) {
     return null;

@@ -1,8 +1,10 @@
 import type { MockAddress } from "@/api/gen/_model/mockAddress.gen";
 import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
+import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfigResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
+import { REVIEW_TAG_GROUPS } from "../_constants/tagGroups";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
-import type { ReviewTag } from "../_model/tag";
+import type { ReviewTag, ReviewTagGroup } from "../_model/tag";
 
 function hasText(value: string | undefined): value is string {
   return typeof value === "string" && value.trim().length > 0;
@@ -44,4 +46,11 @@ export function mapReviewTags(tags: TagDefinition[] | undefined): ReviewTag[] {
   return (tags ?? []).flatMap((tag) =>
     hasText(tag.tagId) && hasText(tag.label) ? [{ id: tag.tagId, label: tag.label }] : [],
   );
+}
+
+export function mapReviewTagGroups(config: ReviewFormConfigResponse | undefined): ReviewTagGroup[] {
+  return REVIEW_TAG_GROUPS.map(({ source, ...meta }) => ({
+    ...meta,
+    tags: mapReviewTags(config?.[source]),
+  }));
 }
