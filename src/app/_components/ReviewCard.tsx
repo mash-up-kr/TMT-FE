@@ -1,4 +1,6 @@
+import { StarIcon } from "@/shared/ui/Icons";
 import type { FeedReview } from "../_model/home";
+import AvatarTomato from "./assets/avatar-tomato.svg?react";
 
 type ReviewCardProps = {
   review: FeedReview;
@@ -43,12 +45,17 @@ function ReviewCardHeader({
 }: ReviewCardHeaderProps) {
   return (
     <header className="flex items-center gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
-      <AuthorAvatar nickname={nickname} imageUrl={profileImageUrl} />
+      <AuthorAvatar imageUrl={profileImageUrl} />
       <div className="flex min-w-0 flex-1 items-center justify-between gap-ds-8">
         <p className="truncate text-body-lg-medium text-content-primary">{nickname}</p>
         <div className="flex flex-col items-end justify-center">
           {rating === null ? null : (
-            <p className="text-body-sm-medium text-content-interactive-primary">
+            <p className="flex items-center gap-ds-2 text-body-sm-medium text-content-interactive-primary">
+              <StarIcon
+                aria-hidden="true"
+                size={12}
+                className="shrink-0 text-icon-interactive-primary"
+              />
               {rating.toFixed(1)}
             </p>
           )}
@@ -68,15 +75,14 @@ function formatDistance(meters: number): string {
 }
 
 type AuthorAvatarProps = {
-  nickname: string;
   imageUrl: string | null;
 };
 
-function AuthorAvatar({ nickname, imageUrl }: AuthorAvatarProps) {
+function AuthorAvatar({ imageUrl }: AuthorAvatarProps) {
   if (!imageUrl) {
     return (
-      <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-surface-selected text-body-md-bold text-content-interactive-primary">
-        {nickname.slice(0, 1)}
+      <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-[#ffe0e0]">
+        <AvatarTomato aria-hidden="true" className="h-[24.215px] w-[26.667px]" />
       </div>
     );
   }
