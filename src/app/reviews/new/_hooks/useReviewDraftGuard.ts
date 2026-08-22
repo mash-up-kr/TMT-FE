@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { REVIEW_FLOW_BASE_PATH, REVIEW_STEPS } from "../_constants/steps";
+import { REVIEW_STEPS, reviewStepPath } from "../_constants/steps";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 import { isReviewStoreComplete } from "../_utils/reviewStore";
 
-const FIRST_STEP_PATH = `${REVIEW_FLOW_BASE_PATH}/${REVIEW_STEPS[0].segment}`;
+const FIRST_STEP_PATH = reviewStepPath(REVIEW_STEPS[0]);
 
 /**
  * 초안 없이 열린 단계를 1단계로 돌려보낸다.

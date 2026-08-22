@@ -1,5 +1,3 @@
-export const MAX_REVIEW_PHOTO_COUNT = 3;
-
 /**
  * 첨부한 사진 한 장.
  *

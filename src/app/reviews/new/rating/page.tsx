@@ -6,11 +6,10 @@ import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Textarea } from "@/shared/ui/TextField";
 import { StarRatingField } from "../_components/StarRatingField";
 import { StepHeader } from "../_components/StepHeader";
+import { MAX_REVIEW_TEXT_LENGTH } from "../_constants/review";
 import { REVIEW_COMPLETE_PATH } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
-
-const MAX_REVIEW_TEXT_LENGTH = 500;
 
 export default function RatingStepPage() {
   const router = useRouter();

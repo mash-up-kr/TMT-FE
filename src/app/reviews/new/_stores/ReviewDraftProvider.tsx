@@ -10,7 +10,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { MAX_REVIEW_PHOTO_COUNT, type ReviewPhoto } from "../_model/photo";
+import { MAX_REVIEW_PHOTO_COUNT } from "../_constants/review";
+import type { ReviewPhoto } from "../_model/photo";
 import type { ReviewStore } from "../_model/store";
 
 type ReviewDraftContextValue = {

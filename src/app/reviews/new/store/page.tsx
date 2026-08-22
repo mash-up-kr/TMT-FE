@@ -11,7 +11,7 @@ import { SearchField, TextField } from "@/shared/ui/TextField";
 import { StepHeader } from "../_components/StepHeader";
 import { AddressSearchSheet } from "../_components/sheets/AddressSearchSheet";
 import { StoreSearchSheet } from "../_components/sheets/StoreSearchSheet";
-import { REVIEW_FLOW_BASE_PATH } from "../_constants/steps";
+import { reviewStepPath } from "../_constants/steps";
 import type { SearchStatus } from "../_model/search";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
@@ -139,7 +139,7 @@ export default function StoreStepPage() {
         <ButtonStack>
           <Button
             disabled={!isReviewStoreComplete(store)}
-            onClick={() => router.push(`${REVIEW_FLOW_BASE_PATH}/photos`)}
+            onClick={() => router.push(reviewStepPath("photos"))}
           >
             다음
           </Button>

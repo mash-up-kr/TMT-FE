@@ -8,18 +8,16 @@ import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Progress } from "@/shared/ui/Progress";
 import {
   REVIEW_COMPLETE_PATH,
-  REVIEW_FLOW_BASE_PATH,
   REVIEW_FLOW_EXIT_PATH,
   REVIEW_STEP_COUNT,
   REVIEW_STEPS,
+  reviewStepPath,
 } from "../_constants/steps";
 import { ReviewDraftProvider } from "../_stores/ReviewDraftProvider";
 import { ExitConfirmModal } from "./ExitConfirmModal";
 
 function findStepIndex(pathname: string) {
-  const index = REVIEW_STEPS.findIndex(
-    (step) => pathname === `${REVIEW_FLOW_BASE_PATH}/${step.segment}`,
-  );
+  const index = REVIEW_STEPS.findIndex((segment) => pathname === reviewStepPath(segment));
 
   return index === -1 ? null : index;
 }

@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { PhotoPicker } from "../_components/PhotoPicker";
 import { StepHeader } from "../_components/StepHeader";
-import { REVIEW_FLOW_BASE_PATH } from "../_constants/steps";
+import { reviewStepPath } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 
@@ -36,7 +36,7 @@ export default function PhotosStepPage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.push(`${REVIEW_FLOW_BASE_PATH}/tags`)}>다음</Button>
+          <Button onClick={() => router.push(reviewStepPath("tags"))}>다음</Button>
         </ButtonStack>
       </div>
     </>

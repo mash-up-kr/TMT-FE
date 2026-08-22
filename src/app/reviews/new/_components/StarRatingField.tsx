@@ -3,8 +3,7 @@
 import { useId } from "react";
 import { StarIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
-
-const MAX_RATING = 5;
+import { MAX_REVIEW_RATING } from "../_constants/review";
 
 const starSize = "size-[44px]";
 
@@ -22,7 +21,7 @@ export function StarRatingField({ label, value, onChange }: StarRatingFieldProps
       <legend className="mb-ds-12 text-body-lg-medium text-content-primary">{label}</legend>
 
       <div className="flex">
-        {Array.from({ length: MAX_RATING }, (_, index) => {
+        {Array.from({ length: MAX_REVIEW_RATING }, (_, index) => {
           const score = index + 1;
           const filled = score <= value;
 

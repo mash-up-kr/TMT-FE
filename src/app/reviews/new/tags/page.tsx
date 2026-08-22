@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { StepHeader } from "../_components/StepHeader";
 import { TagGroupField } from "../_components/TagGroupField";
-import { REVIEW_FLOW_BASE_PATH } from "../_constants/steps";
+import { reviewStepPath } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import type { ReviewTagGroup } from "../_model/tag";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
@@ -68,7 +68,7 @@ export default function TagsStepPage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.push(`${REVIEW_FLOW_BASE_PATH}/rating`)}>다음</Button>
+          <Button onClick={() => router.push(reviewStepPath("rating"))}>다음</Button>
         </ButtonStack>
       </div>
     </>
