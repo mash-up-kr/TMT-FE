@@ -1785,7 +1785,10 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "placeId"
+        ]
       },
       "SaveResultResponse": {
         "type": "object",
@@ -1800,11 +1803,15 @@
             ]
           },
           "ticket": {
-            "$ref": "#/components/schemas/TicketSummary"
+            "$ref": "#/components/schemas/TicketGrantSummary"
           }
-        }
+        },
+        "required": [
+          "saveId",
+          "ticket"
+        ]
       },
-      "TicketSummary": {
+      "TicketGrantSummary": {
         "type": "object",
         "properties": {
           "grantedCount": {
@@ -1815,7 +1822,11 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "availableCount",
+          "grantedCount"
+        ]
       },
       "FavoriteResponse": {
         "type": "object",
@@ -1826,7 +1837,10 @@
           "favorite": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "placeId"
+        ]
       },
       "GroupRequest": {
         "type": "object",
@@ -1858,7 +1872,13 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "foodCategoryId",
+          "name",
+          "oneLineDescription",
+          "regionTagIds"
+        ]
       },
       "CoverImage": {
         "type": "object",
@@ -1869,7 +1889,11 @@
           "reviewId": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "reviewId",
+          "url"
+        ]
       },
       "FoodCategory": {
         "type": "object",
@@ -1880,7 +1904,11 @@
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "categoryId",
+          "label"
+        ]
       },
       "GroupDetailResponse": {
         "type": "object",
@@ -1943,7 +1971,19 @@
           "member": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "coverImages",
+          "foodCategory",
+          "groupId",
+          "matchedSavedPlaceCount",
+          "memberCount",
+          "name",
+          "oneLineDescription",
+          "placeCount",
+          "regionTags",
+          "reviewCount"
+        ]
       },
       "RegionTag": {
         "type": "object",
@@ -1954,7 +1994,11 @@
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "label",
+          "regionTagId"
+        ]
       },
       "ReplaceSharesRequest": {
         "type": "object",
@@ -1965,7 +2009,10 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "reviewIds"
+        ]
       },
       "ReplaceSharesResponse": {
         "type": "object",
@@ -1983,7 +2030,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "groupId",
+          "sharedCount",
+          "sharedReviewIds"
+        ]
       },
       "CreatePlaceRequest": {
         "type": "object",
@@ -2000,7 +2052,11 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "addressId",
+          "name"
+        ]
       },
       "PlaceCardResponse": {
         "type": "object",
@@ -2050,7 +2106,14 @@
           "favorite": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "name",
+          "placeId",
+          "regionName",
+          "reviewCount",
+          "roadAddress"
+        ]
       },
       "UploadIntentRequest": {
         "type": "object",
@@ -2062,7 +2125,11 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "contentLength",
+          "contentType"
+        ]
       },
       "UploadIntentResponse": {
         "type": "object",
@@ -2076,7 +2143,12 @@
           "expiresAt": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "assetId",
+          "expiresAt",
+          "uploadUrl"
+        ]
       },
       "JoinRequest": {
         "type": "object",
@@ -2105,9 +2177,32 @@
             }
           },
           "ticket": {
-            "$ref": "#/components/schemas/TicketSummary"
+            "$ref": "#/components/schemas/TicketConsumeSummary"
           }
-        }
+        },
+        "required": [
+          "groupId",
+          "joinedAt",
+          "sharedReviewIds",
+          "ticket"
+        ]
+      },
+      "TicketConsumeSummary": {
+        "type": "object",
+        "properties": {
+          "consumedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "availableCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "availableCount",
+          "consumedCount"
+        ]
       },
       "CursorPageSaveListItemResponse": {
         "type": "object",
@@ -2132,7 +2227,11 @@
             "description": "다음 페이지 존재 여부",
             "example": true
           }
-        }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
       },
       "PlaceSummary": {
         "type": "object",
@@ -2146,7 +2245,12 @@
           "roadAddress": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "name",
+          "placeId",
+          "roadAddress"
+        ]
       },
       "SaveListItemResponse": {
         "type": "object",
@@ -2166,7 +2270,12 @@
           "updatedAt": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "place",
+          "saveId",
+          "updatedAt"
+        ]
       },
       "AiSummaryResponse": {
         "type": "object",
@@ -2198,7 +2307,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "order",
+          "photoId",
+          "url"
+        ]
       },
       "SaveDetailResponse": {
         "type": "object",
@@ -2253,7 +2367,14 @@
           "createdAt": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "photos",
+          "place",
+          "saveId",
+          "tags"
+        ]
       },
       "TagResponse": {
         "type": "object",
@@ -2264,7 +2385,11 @@
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "label",
+          "tagId"
+        ]
       },
       "AiSummary": {
         "type": "object",
@@ -2298,7 +2423,11 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "nickname",
+          "userId"
+        ]
       },
       "ReviewDetailResponse": {
         "type": "object",
@@ -2347,7 +2476,17 @@
           "mine": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "author",
+          "content",
+          "createdAt",
+          "photos",
+          "place",
+          "rating",
+          "reviewId",
+          "tags"
+        ]
       },
       "Tag": {
         "type": "object",
@@ -2358,7 +2497,11 @@
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "label",
+          "tagId"
+        ]
       },
       "ContentConstraint": {
         "type": "object",
@@ -2367,7 +2510,10 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "maxLength"
+        ]
       },
       "PhotoConstraint": {
         "type": "object",
@@ -2386,7 +2532,12 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "allowedContentTypes",
+          "maxBytes",
+          "maxCount"
+        ]
       },
       "RatingConstraint": {
         "type": "object",
@@ -2403,7 +2554,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "max",
+          "min",
+          "step"
+        ]
       },
       "ReviewFormConfigResponse": {
         "type": "object",
@@ -2429,7 +2585,14 @@
               "$ref": "#/components/schemas/TagDefinition"
             }
           }
-        }
+        },
+        "required": [
+          "companionTags",
+          "content",
+          "photo",
+          "positivePointTags",
+          "rating"
+        ]
       },
       "TagDefinition": {
         "type": "object",
@@ -2440,7 +2603,11 @@
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "label",
+          "tagId"
+        ]
       },
       "PlaceDetailResponse": {
         "type": "object",
@@ -2494,7 +2661,16 @@
           "favorite": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "latitude",
+          "longitude",
+          "name",
+          "photos",
+          "placeId",
+          "reviewCount",
+          "roadAddress"
+        ]
       },
       "CursorPageReviewCardResponse": {
         "type": "object",
@@ -2519,7 +2695,11 @@
             "description": "다음 페이지 존재 여부",
             "example": true
           }
-        }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
       },
       "ReviewCardResponse": {
         "type": "object",
@@ -2572,7 +2752,17 @@
           "createdAt": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "author",
+          "content",
+          "createdAt",
+          "photos",
+          "place",
+          "rating",
+          "reviewId",
+          "tags"
+        ]
       },
       "CursorPagePlaceCardResponse": {
         "type": "object",
@@ -2597,7 +2787,11 @@
             "description": "다음 페이지 존재 여부",
             "example": true
           }
-        }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
       },
       "NearbyPlacesResponse": {
         "type": "object",
@@ -2611,7 +2805,11 @@
           "truncated": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "items",
+          "truncated"
+        ]
       },
       "Pin": {
         "type": "object",
@@ -2634,7 +2832,14 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "latitude",
+          "longitude",
+          "name",
+          "placeId",
+          "reviewCount"
+        ]
       },
       "GroupCardResponse": {
         "type": "object",
@@ -2670,7 +2875,16 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "groupId",
+          "matchedSavedPlaceCount",
+          "memberCount",
+          "name",
+          "oneLineDescription",
+          "placeCount",
+          "reviewCount"
+        ]
       },
       "HomeResponse": {
         "type": "object",
@@ -2690,7 +2904,12 @@
               "$ref": "#/components/schemas/GroupCardResponse"
             }
           }
-        }
+        },
+        "required": [
+          "myGroups",
+          "nickname",
+          "recommendedGroups"
+        ]
       },
       "MyGroup": {
         "type": "object",
@@ -2707,7 +2926,11 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "groupId",
+          "name"
+        ]
       },
       "CursorPageGroupCardResponse": {
         "type": "object",
@@ -2732,7 +2955,11 @@
             "description": "다음 페이지 존재 여부",
             "example": true
           }
-        }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
       },
       "Gate": {
         "type": "object",
@@ -2753,7 +2980,10 @@
             ],
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "gated"
+        ]
       },
       "GatedReviewsResponse": {
         "type": "object",
@@ -2776,7 +3006,12 @@
           "hasNext": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "gate",
+          "hasNext",
+          "items"
+        ]
       },
       "Item": {
         "type": "object",
@@ -2799,7 +3034,14 @@
           "shared": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "contentPreview",
+          "createdAt",
+          "placeName",
+          "reviewId",
+          "thumbnailUrl"
+        ]
       },
       "ReviewSharesResponse": {
         "type": "object",
@@ -2823,7 +3065,12 @@
           "hasNext": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "hasNext",
+          "items",
+          "sharedCount"
+        ]
       },
       "GroupSummary": {
         "type": "object",
@@ -2840,7 +3087,11 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "groupId",
+          "name"
+        ]
       },
       "JoinPreviewResponse": {
         "type": "object",
@@ -2865,7 +3116,13 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "availableTicketCount",
+          "group",
+          "joinable",
+          "requiredTicketCount"
+        ]
       },
       "NameAvailabilityResponse": {
         "type": "object",
@@ -2876,7 +3133,11 @@
           "available": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "available",
+          "name"
+        ]
       },
       "GroupTagsResponse": {
         "type": "object",
@@ -2893,7 +3154,11 @@
               "$ref": "#/components/schemas/RegionTag"
             }
           }
-        }
+        },
+        "required": [
+          "foodCategories",
+          "regionTags"
+        ]
       },
       "CurationTagResponse": {
         "type": "object",
@@ -2909,7 +3174,11 @@
             "description": "화면 노출 문구",
             "example": "을지로 야장"
           }
-        }
+        },
+        "required": [
+          "curationTagId",
+          "label"
+        ]
       },
       "ItemsResponseCurationTagResponse": {
         "type": "object",
@@ -2922,7 +3191,10 @@
               "$ref": "#/components/schemas/CurationTagResponse"
             }
           }
-        }
+        },
+        "required": [
+          "items"
+        ]
       },
       "CursorPageMockAddress": {
         "type": "object",
@@ -2947,7 +3219,11 @@
             "description": "다음 페이지 존재 여부",
             "example": true
           }
-        }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
       },
       "MockAddress": {
         "type": "object",
@@ -2969,7 +3245,14 @@
             "type": "number",
             "format": "double"
           }
-        }
+        },
+        "required": [
+          "addressId",
+          "jibunAddress",
+          "latitude",
+          "longitude",
+          "roadAddress"
+        ]
       },
       "HealthResponse": {
         "type": "object",
@@ -2980,9 +3263,14 @@
           "service": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "service",
+          "status"
+        ]
       },
       "ErrorResponse": {
+        "type": "object",
         "description": "실패 응답 (RFC 9457 Problem Details)",
         "properties": {
           "title": {
@@ -2997,7 +3285,10 @@
             "example": 404
           },
           "detail": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "상황별 상세"
           },
           "code": {
@@ -3016,7 +3307,14 @@
             "description": "서버 로그 추적용",
             "example": "8f1e0c4a-2c37-4d1e-9f6b-2f0a1c9d3e55"
           }
-        }
+        },
+        "required": [
+          "code",
+          "requestId",
+          "status",
+          "timestamp",
+          "title"
+        ]
       }
     }
   }

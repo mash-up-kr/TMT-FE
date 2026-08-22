@@ -11,16 +11,16 @@ import type { PlaceSummary } from "./placeSummary.gen";
 import type { TagResponse } from "./tagResponse.gen";
 
 export interface SaveDetailResponse {
-  saveId?: string;
+  saveId: string;
   /** @nullable */
   reviewId?: string | null;
-  place?: PlaceSummary;
-  photos?: Photo[];
-  tags?: TagResponse[];
+  place: PlaceSummary;
+  photos: Photo[];
+  tags: TagResponse[];
   /** @nullable */
   rating?: number | null;
   /** @nullable */
   content?: string | null;
   aiSummary?: AiSummaryResponse | null;
-  createdAt?: string;
+  createdAt: string;
 }

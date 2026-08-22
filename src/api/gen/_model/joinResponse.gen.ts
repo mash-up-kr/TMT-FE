@@ -5,11 +5,11 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
-import type { TicketSummary } from "./ticketSummary.gen";
+import type { TicketConsumeSummary } from "./ticketConsumeSummary.gen";
 
 export interface JoinResponse {
-  groupId?: string;
-  joinedAt?: string;
-  sharedReviewIds?: string[];
-  ticket?: TicketSummary;
+  groupId: string;
+  joinedAt: string;
+  sharedReviewIds: string[];
+  ticket: TicketConsumeSummary;
 }

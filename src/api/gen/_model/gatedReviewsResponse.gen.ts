@@ -9,9 +9,9 @@ import type { Gate } from "./gate.gen";
 import type { ReviewCardResponse } from "./reviewCardResponse.gen";
 
 export interface GatedReviewsResponse {
-  items?: ReviewCardResponse[];
-  gate?: Gate;
+  items: ReviewCardResponse[];
+  gate: Gate;
   /** @nullable */
   nextCursor?: string | null;
-  hasNext?: boolean;
+  hasNext: boolean;
 }

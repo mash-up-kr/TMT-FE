@@ -7,7 +7,7 @@
  */
 
 export interface Gate {
-  gated?: boolean;
+  gated: boolean;
   /** @nullable */
   reason?: string | null;
   /** @nullable */

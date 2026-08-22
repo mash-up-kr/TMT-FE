@@ -10,20 +10,20 @@ import type { FoodCategory } from "./foodCategory.gen";
 import type { RegionTag } from "./regionTag.gen";
 
 export interface GroupDetailResponse {
-  groupId?: string;
-  name?: string;
-  oneLineDescription?: string;
+  groupId: string;
+  name: string;
+  oneLineDescription: string;
   /** @nullable */
   description?: string | null;
   /** @nullable */
   imageUrl?: string | null;
-  coverImages?: CoverImage[];
-  memberCount?: number;
-  reviewCount?: number;
-  placeCount?: number;
-  foodCategory?: FoodCategory;
-  regionTags?: RegionTag[];
-  matchedSavedPlaceCount?: number;
+  coverImages: CoverImage[];
+  memberCount: number;
+  reviewCount: number;
+  placeCount: number;
+  foodCategory: FoodCategory;
+  regionTags: RegionTag[];
+  matchedSavedPlaceCount: number;
   owner?: boolean;
   member?: boolean;
 }

@@ -7,13 +7,13 @@
  */
 
 export interface GroupCardResponse {
-  groupId?: string;
-  name?: string;
-  oneLineDescription?: string;
+  groupId: string;
+  name: string;
+  oneLineDescription: string;
   /** @nullable */
   coverImageUrl?: string | null;
-  memberCount?: number;
-  reviewCount?: number;
-  placeCount?: number;
-  matchedSavedPlaceCount?: number;
+  memberCount: number;
+  reviewCount: number;
+  placeCount: number;
+  matchedSavedPlaceCount: number;
 }

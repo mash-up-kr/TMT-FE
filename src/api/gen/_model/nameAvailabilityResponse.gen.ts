@@ -7,6 +7,6 @@
  */
 
 export interface NameAvailabilityResponse {
-  name?: string;
-  available?: boolean;
+  name: string;
+  available: boolean;
 }

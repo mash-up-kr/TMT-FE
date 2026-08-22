@@ -11,9 +11,9 @@ import type { RatingConstraint } from "./ratingConstraint.gen";
 import type { TagDefinition } from "./tagDefinition.gen";
 
 export interface ReviewFormConfigResponse {
-  photo?: PhotoConstraint;
-  rating?: RatingConstraint;
-  content?: ContentConstraint;
-  companionTags?: TagDefinition[];
-  positivePointTags?: TagDefinition[];
+  photo: PhotoConstraint;
+  rating: RatingConstraint;
+  content: ContentConstraint;
+  companionTags: TagDefinition[];
+  positivePointTags: TagDefinition[];
 }

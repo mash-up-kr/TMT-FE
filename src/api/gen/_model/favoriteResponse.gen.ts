@@ -7,6 +7,6 @@
  */
 
 export interface FavoriteResponse {
-  placeId?: string;
+  placeId: string;
   favorite?: boolean;
 }

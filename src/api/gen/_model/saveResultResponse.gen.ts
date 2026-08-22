@@ -5,11 +5,11 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
-import type { TicketSummary } from "./ticketSummary.gen";
+import type { TicketGrantSummary } from "./ticketGrantSummary.gen";
 
 export interface SaveResultResponse {
-  saveId?: string;
+  saveId: string;
   /** @nullable */
   reviewId?: string | null;
-  ticket?: TicketSummary;
+  ticket: TicketGrantSummary;
 }
