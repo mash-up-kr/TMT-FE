@@ -1,4 +1,21 @@
-import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
+import type { ComponentType } from "react";
+import {
+  CleanIcon,
+  type ColorIconProps,
+  CompanionAloneIcon,
+  CompanionColleagueIcon,
+  CompanionFamilyIcon,
+  CompanionFriendIcon,
+  CompanionLoverIcon,
+  FoodIcon,
+  MoneyIcon,
+  MoodIcon,
+  ResponseIcon,
+  SeatIcon,
+  SubwayIcon,
+  ThumbDownIcon,
+  ThumbUpIcon,
+} from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import type { FeedReview } from "../_model/home";
 import AvatarTomato from "./assets/avatar-tomato.svg?react";
@@ -154,6 +171,21 @@ function SummaryLine({ label, children, negative }: SummaryLineProps) {
   );
 }
 
+const TAG_ICONS: Record<string, ComponentType<ColorIconProps>> = {
+  tag_alone: CompanionAloneIcon,
+  tag_couple: CompanionLoverIcon,
+  tag_friend: CompanionFriendIcon,
+  tag_colleague: CompanionColleagueIcon,
+  tag_family: CompanionFamilyIcon,
+  tag_tasty: FoodIcon,
+  tag_kind: ResponseIcon,
+  tag_mood: MoodIcon,
+  tag_value: MoneyIcon,
+  tag_clean: CleanIcon,
+  tag_transit: SubwayIcon,
+  tag_spacious: SeatIcon,
+};
+
 type TagListProps = {
   tags: FeedReview["tags"];
 };
@@ -165,14 +197,19 @@ function TagList({ tags }: TagListProps) {
 
   return (
     <ul className="flex flex-wrap gap-ds-4">
-      {tags.map((tag) => (
-        <li
-          key={tag.id}
-          className="inline-flex shrink-0 items-center rounded-ds-full inset-ring inset-ring-stroke-primary bg-surface-primary px-ds-12 py-ds-4 text-body-sm-medium text-content-primary"
-        >
-          {tag.label}
-        </li>
-      ))}
+      {tags.map((tag) => {
+        const TagIcon = TAG_ICONS[tag.id];
+
+        return (
+          <li
+            key={tag.id}
+            className="inline-flex shrink-0 items-center gap-ds-4 rounded-ds-full inset-ring inset-ring-stroke-primary bg-surface-primary px-ds-12 py-ds-4 text-body-sm-medium text-content-primary"
+          >
+            {TagIcon && <TagIcon className="size-ds-16 shrink-0" />}
+            {tag.label}
+          </li>
+        );
+      })}
     </ul>
   );
 }
