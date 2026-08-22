@@ -1,5 +1,6 @@
 "use client";
 
+import { keepPreviousData } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { KeyboardEvent } from "react";
 import { useSearchAddresses } from "@/api/gen/address/address.gen";
@@ -20,22 +21,28 @@ import { mapAddressSearchResults, mapStoreSearchResults } from "../_utils/review
 import { isReviewStoreComplete } from "../_utils/reviewStore";
 import { toSearchStatus } from "../_utils/searchStatus";
 
+/** 시트가 한 번에 보여줄 만큼. 명시하지 않으면 응답 크기를 서버 기본값에 맡기게 된다. */
+const SEARCH_RESULT_LIMIT = 20;
+
+/** 검색어를 고치는 동안 이전 결과를 남겨 둔다. 매번 비웠다 채우면 목록이 깜빡인다. */
+const keepResultsWhileSearching = { placeholderData: keepPreviousData } as const;
+
 export default function StoreStepPage() {
   const router = useRouter();
   const { store, setStore } = useReviewDraft();
 
   const storeSheet = useSearchSheetState();
   const storeSearch = useSearchPlaces(
-    { query: storeSheet.query },
-    { query: { enabled: storeSheet.enabled } },
+    { query: storeSheet.query, limit: SEARCH_RESULT_LIMIT },
+    { query: { enabled: storeSheet.enabled, ...keepResultsWhileSearching } },
   );
   const storeResults = mapStoreSearchResults(storeSearch.data?.items);
   const storeStatus = toSearchStatus(storeSheet.query, storeSearch);
 
   const addressSheet = useSearchSheetState();
   const addressSearch = useSearchAddresses(
-    { userId: MOCK_USER_ID, query: addressSheet.query },
-    { query: { enabled: addressSheet.enabled } },
+    { userId: MOCK_USER_ID, query: addressSheet.query, limit: SEARCH_RESULT_LIMIT },
+    { query: { enabled: addressSheet.enabled, ...keepResultsWhileSearching } },
   );
   const addressResults = mapAddressSearchResults(addressSearch.data?.items);
   const addressStatus = toSearchStatus(addressSheet.query, addressSearch);
