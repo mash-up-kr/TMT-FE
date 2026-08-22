@@ -7,11 +7,9 @@ import { MapPinIcon } from "@/shared/ui/Icons";
 import { ReviewCompleteVisual } from "../_components/ReviewCompleteVisual";
 import { REVIEW_FLOW_EXIT_PATH } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
-import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 
 export default function ReviewCompletePage() {
   const router = useRouter();
-  const { photos } = useReviewDraft();
   const store = useReviewDraftGuard();
 
   if (store === null) {
@@ -33,7 +31,7 @@ export default function ReviewCompletePage() {
           </p>
         </header>
 
-        <ReviewCompleteVisual photos={photos} />
+        <ReviewCompleteVisual />
       </div>
 
       <div className="content-container pt-ds-12 pb-ds-32">
