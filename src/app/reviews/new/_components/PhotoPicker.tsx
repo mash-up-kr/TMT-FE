@@ -5,7 +5,6 @@ import { PlusIcon, XCircleIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { MAX_REVIEW_PHOTO_COUNT, type ReviewPhoto } from "../_model/photo";
 
-// 시안 120x120. ds 스케일에 없는 값이라 한 곳에 두고 썸네일·첨부 버튼이 함께 쓴다.
 const cellHeight = "h-[120px]";
 const cellWidth = "w-[120px]";
 
@@ -62,24 +61,16 @@ type PhotoPickerProps = Readonly<{
   onRemove: (id: string) => void;
 }>;
 
-/**
- * 사진 첨부 영역.
- *
- * 첨부 버튼은 사진이 없을 때만 가로 전체를 쓰고, 한 장이라도 붙으면 썸네일과 같은 120 정사각이
- * 되어 목록 끝에 이어 붙는다. 즉 목록과 별개의 버튼이 아니라 **목록의 마지막 칸**이다.
- */
 export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
   if (photos.length === 0) {
     return <AddPhotoButton count={0} onAdd={onAdd} className="w-full" />;
   }
 
   return (
-    // 2장부터는 시안 폭(376)이 화면(320)을 넘는다. 줄바꿈 대신 가로로 이어 붙이고 스크롤한다.
     <div className="-mx-ds-20 overflow-x-auto px-ds-20">
       <ul className="flex w-max items-start gap-ds-8">
         {photos.map((photo, index) => (
           <li key={photo.id} className={cn(cellHeight, cellWidth, "relative shrink-0")}>
-            {/* 업로드 전 로컬 파일(object URL)이라 next/image의 최적화 대상이 아니다. */}
             {/* biome-ignore lint/performance/noImgElement: object URL은 최적화할 수 없다 */}
             <img
               src={photo.previewUrl}
@@ -90,7 +81,6 @@ export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
               type="button"
               onClick={() => onRemove(photo.id)}
               aria-label={`첨부한 사진 ${index + 1} 삭제`}
-              // 아이콘은 X가 뚫린 원이다. 뒤에 흰 배경을 깔아야 X가 사진이 아닌 흰색으로 보인다.
               className={cn(
                 "absolute top-ds-4 right-ds-4 rounded-ds-full bg-surface-primary text-icon-primary",
                 "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-interactive-primary",

@@ -43,15 +43,12 @@ export default function RatingStepPage() {
           placeholder="어떤 점이 좋았나요? 편하게 남겨주세요"
           maxLength={MAX_REVIEW_TEXT_LENGTH}
           showCount
-          // 시안 입력 박스 180. 필드 상하 패딩(12x2)과 테두리(1x2)를 뺀 값을 컨트롤에 준다.
           className="min-h-[154px]"
         />
       </div>
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          {/* 선택 단계라 별점·텍스트가 없어도 넘어간다.
-              완료 후 뒤로가기로 작성 화면에 돌아오지 않도록 replace로 이동한다. */}
           <Button onClick={() => router.replace(REVIEW_COMPLETE_PATH)}>다음</Button>
         </ButtonStack>
       </div>

@@ -16,7 +16,6 @@ type TagGroupFieldProps = Readonly<{
 export function TagGroupField({ group, selectedTagIds, onToggle }: TagGroupFieldProps) {
   return (
     <fieldset>
-      {/* legend는 flex 아이템이 되지 않아 fieldset의 gap이 걸리지 않는다. 간격은 legend가 낸다. */}
       <legend className="mb-ds-12 flex items-center gap-ds-4 text-body-lg-medium">
         <span className="text-content-primary">{group.label}</span>
         <span className="text-content-tertiary">{group.hint}</span>

@@ -14,7 +14,6 @@ export default function PhotosStepPage() {
   const { photos, addPhotos, removePhoto } = useReviewDraft();
   const hasStore = useReviewDraftGuard();
 
-  // 1단계로 돌아가는 중이다. 빈 화면을 잠깐 보여주는 편이 매장 없는 입력을 받는 것보다 낫다.
   if (!hasStore) {
     return null;
   }
@@ -37,7 +36,6 @@ export default function PhotosStepPage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          {/* 선택 단계라 사진이 없어도 넘어간다 (시안 주석: 기본으로 활성화 상태 설정). */}
           <Button onClick={() => router.push(`${REVIEW_FLOW_BASE_PATH}/tags`)}>다음</Button>
         </ButtonStack>
       </div>

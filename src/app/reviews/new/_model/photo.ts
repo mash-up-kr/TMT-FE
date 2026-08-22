@@ -1,4 +1,3 @@
-/** 시안 `사진 등록`의 카운터가 `n/3`이다. */
 export const MAX_REVIEW_PHOTO_COUNT = 3;
 
 /**

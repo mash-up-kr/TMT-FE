@@ -23,7 +23,6 @@ const GUIDE_EXAMPLES = [
   "건물명, 아파트명 (반포 자이, 분당 주공 1차)",
 ];
 
-/** 검색 전에 노출되는 입력 예시. 주소는 표기 방식이 여러 가지라 시안이 예시를 함께 준다. */
 function AddressSearchGuide() {
   return (
     <div className="flex flex-col gap-ds-4">
@@ -77,7 +76,6 @@ export function AddressSearchSheet({
           autoFocus
         />
 
-        {/* 고를 수 있는 행이 결과뿐이라, 결과 0건이 곧 빈 상태다. */}
         <SearchResultArea status={status} idle={<AddressSearchGuide />}>
           {results.length === 0 ? (
             <SearchOptionMessage>{EMPTY_MESSAGE}</SearchOptionMessage>

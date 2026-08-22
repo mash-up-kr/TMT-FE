@@ -57,7 +57,6 @@ export function StoreSearchSheet({
           autoFocus
         />
 
-        {/* 직접 입력 옵션이 항상 남으므로 이 시트에는 빈 상태가 없다. */}
         <SearchResultArea status={status}>
           <SearchOptionList>
             {results.map((result) => (
