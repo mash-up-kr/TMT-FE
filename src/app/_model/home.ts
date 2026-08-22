@@ -26,19 +26,19 @@ export interface FeedReviewTag {
 export interface FeedReviewPlace {
   id: string;
   name: string;
-  roadAddress: string;
+  roadAddress: string | null;
 }
 
 export interface FeedReview {
   id: string;
   authorNickname: string;
   authorProfileImageUrl: string | null;
-  rating: number | null;
+  rating: number;
   distanceMeters: number | null;
   photoUrls: string[];
   pros: string | null;
   cons: string | null;
   content: string;
   tags: FeedReviewTag[];
-  place: FeedReviewPlace | null;
+  place: FeedReviewPlace;
 }

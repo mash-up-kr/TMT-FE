@@ -3,19 +3,9 @@ import type { GroupCardResponse } from "@/api/gen/_model/groupCardResponse.gen";
 import type { HomeResponse } from "@/api/gen/_model/homeResponse.gen";
 import type { MyGroup } from "@/api/gen/_model/myGroup.gen";
 import type { ReviewCardResponse } from "@/api/gen/_model/reviewCardResponse.gen";
-import type {
-  FeedReview,
-  FeedReviewPlace,
-  HomeGroup,
-  HomeRecommendedGroup,
-  HomeSummary,
-} from "../_model/home";
+import type { FeedReview, HomeGroup, HomeRecommendedGroup, HomeSummary } from "../_model/home";
 
-function toMyGroup(group: MyGroup): HomeGroup | null {
-  if (!group.groupId || !group.name) {
-    return null;
-  }
-
+function toMyGroup(group: MyGroup): HomeGroup {
   return {
     id: group.groupId,
     name: group.name,
@@ -23,73 +13,50 @@ function toMyGroup(group: MyGroup): HomeGroup | null {
   };
 }
 
-function toRecommendedGroup(group: GroupCardResponse): HomeRecommendedGroup | null {
-  if (!group.groupId || !group.name) {
-    return null;
-  }
-
+function toRecommendedGroup(group: GroupCardResponse): HomeRecommendedGroup {
   return {
     id: group.groupId,
     name: group.name,
     imageUrl: group.coverImageUrl ?? null,
-    description: group.oneLineDescription ?? "",
-    memberCount: group.memberCount ?? 0,
-    reviewCount: group.reviewCount ?? 0,
-    placeCount: group.placeCount ?? 0,
-    matchedCount: group.matchedSavedPlaceCount ?? 0,
+    description: group.oneLineDescription,
+    memberCount: group.memberCount,
+    reviewCount: group.reviewCount,
+    placeCount: group.placeCount,
+    matchedCount: group.matchedSavedPlaceCount,
   };
 }
 
 export function toHomeSummary(response: HomeResponse): HomeSummary {
   return {
-    nickname: response.nickname ?? "",
-    myGroups: (response.myGroups ?? []).map(toMyGroup).filter((group) => group !== null),
-    recommendedGroups: (response.recommendedGroups ?? [])
-      .map(toRecommendedGroup)
-      .filter((group) => group !== null),
+    nickname: response.nickname,
+    myGroups: response.myGroups.map(toMyGroup),
+    recommendedGroups: response.recommendedGroups.map(toRecommendedGroup),
   };
 }
 
-function toFeedReviewPlace(review: ReviewCardResponse): FeedReviewPlace | null {
-  const place = review.place;
-
-  if (!place?.placeId || !place.name) {
-    return null;
-  }
-
-  return {
-    id: place.placeId,
-    name: place.name,
-    roadAddress: place.roadAddress ?? "",
-  };
-}
-
-function toFeedReview(review: ReviewCardResponse): FeedReview | null {
-  if (!review.reviewId) {
-    return null;
-  }
-
+function toFeedReview(review: ReviewCardResponse): FeedReview {
   return {
     id: review.reviewId,
-    authorNickname: review.author?.nickname ?? "",
-    authorProfileImageUrl: review.author?.profileImageUrl ?? null,
-    rating: review.rating ?? null,
+    authorNickname: review.author.nickname,
+    authorProfileImageUrl: review.author.profileImageUrl ?? null,
+    rating: review.rating,
     distanceMeters: review.distanceMeters ?? null,
-    photoUrls: (review.photos ?? [])
+    photoUrls: review.photos
       .slice()
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-      .map((photo) => photo.url)
-      .filter((url) => url !== undefined),
+      .sort((a, b) => a.order - b.order)
+      .map((photo) => photo.url),
     pros: review.aiSummary?.pros ?? null,
     cons: review.aiSummary?.cons ?? null,
-    content: review.content ?? "",
-    tags: (review.tags ?? [])
-      .map((tag) => (tag.tagId && tag.label ? { id: tag.tagId, label: tag.label } : null))
-      .filter((tag) => tag !== null),
-    place: toFeedReviewPlace(review),
+    content: review.content,
+    tags: review.tags.map((tag) => ({ id: tag.tagId, label: tag.label })),
+    place: {
+      id: review.place.placeId,
+      name: review.place.name,
+      roadAddress: review.place.roadAddress ?? null,
+    },
   };
 }
 
 export function toFeedReviews(page: CursorPageReviewCardResponse): FeedReview[] {
-  return (page.items ?? []).map(toFeedReview).filter((review) => review !== null);
+  return page.items.map(toFeedReview);
 }
