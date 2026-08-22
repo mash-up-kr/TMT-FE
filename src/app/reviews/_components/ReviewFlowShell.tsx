@@ -13,6 +13,7 @@ import {
   reviewCompletePath,
   reviewStepPath,
 } from "../_constants/steps";
+import type { ReviewDraftSnapshot } from "../_model/draft";
 import { ReviewDraftProvider } from "../_stores/ReviewDraftProvider";
 import { ReviewFlowBaseProvider } from "../_stores/ReviewFlowBaseProvider";
 import { ExitConfirmModal } from "./ExitConfirmModal";
@@ -31,8 +32,9 @@ function findStepIndex(basePath: string, pathname: string) {
  */
 export function ReviewFlowShell({
   basePath,
+  initialDraft,
   children,
-}: Readonly<{ basePath: string; children: ReactNode }>) {
+}: Readonly<{ basePath: string; initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
   const pathname = usePathname();
   const router = useRouter();
   const [exitOpen, setExitOpen] = useState(false);
@@ -58,7 +60,7 @@ export function ReviewFlowShell({
 
   return (
     <ReviewFlowBaseProvider basePath={basePath}>
-      <ReviewDraftProvider>
+      <ReviewDraftProvider initialDraft={initialDraft}>
         <GNB
           title={isComplete ? "완료" : "리뷰 쓰기"}
           left={

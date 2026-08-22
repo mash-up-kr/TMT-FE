@@ -12,6 +12,11 @@ export const REVIEW_STEP_COUNT = REVIEW_STEPS.length;
  */
 export const NEW_REVIEW_BASE_PATH = "/reviews/new";
 
+/** 이어쓰기는 초안 식별자가 경로에 있어야 단계 이동에서 흘릴 수 없다. */
+export function draftReviewBasePath(draftId: string) {
+  return `/reviews/drafts/${draftId}`;
+}
+
 /** 단계 경로를 만드는 유일한 통로. 세그먼트가 타입이라 오타가 타입 에러로 잡힌다. */
 export function reviewStepPath(basePath: string, segment: ReviewStepSegment) {
   return `${basePath}/${segment}`;

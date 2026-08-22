@@ -12,6 +12,7 @@ import {
 } from "react";
 import { toast } from "@/shared/ui/Toast";
 import { MAX_REVIEW_PHOTO_COUNT, MAX_REVIEW_PHOTO_SIZE_BYTES } from "../_constants/review";
+import type { ReviewDraftSnapshot } from "../_model/draft";
 import type { ReviewPhoto } from "../_model/photo";
 import type { ReviewStore } from "../_model/store";
 
@@ -48,13 +49,22 @@ const ReviewDraftContext = createContext<ReviewDraftContextValue | null>(null);
  *
  * 사진의 미리보기 URL도 여기서 만들고 해제한다. 목록의 소유자와 URL의 소유자가 갈리면
  * 어느 쪽이 해제할 차례인지 알 수 없어진다.
+ *
+ * `initialDraft`는 마운트 시점에 한 번만 읽는다. 이후 값이 바뀌어도 편집 중인 내용을 덮지
+ * 않는다 — 이어쓰기에서 재조회가 일어나도 사용자가 방금 고친 입력이 되돌아가면 안 된다.
+ * 다른 초안을 열면 라우트가 갈려 Provider가 새로 마운트되므로 초기값도 다시 읽힌다.
  */
-export function ReviewDraftProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [store, setStore] = useState<ReviewStore | null>(null);
+export function ReviewDraftProvider({
+  initialDraft,
+  children,
+}: Readonly<{ initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
+  const [store, setStore] = useState<ReviewStore | null>(initialDraft?.store ?? null);
   const [photos, setPhotos] = useState<readonly ReviewPhoto[]>([]);
-  const [selectedTagIds, setSelectedTagIds] = useState<ReadonlySet<string>>(() => new Set());
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
+  const [selectedTagIds, setSelectedTagIds] = useState<ReadonlySet<string>>(
+    () => new Set(initialDraft?.selectedTagIds),
+  );
+  const [rating, setRating] = useState(initialDraft?.rating ?? 0);
+  const [reviewText, setReviewText] = useState(initialDraft?.reviewText ?? "");
 
   // 언마운트 시점에 남아 있는 URL을 해제하려면 최신 목록을 알아야 한다.
   const photosRef = useRef(photos);
