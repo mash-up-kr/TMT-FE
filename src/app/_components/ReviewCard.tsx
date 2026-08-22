@@ -146,7 +146,7 @@ function SummaryLine({ label, children, negative }: SummaryLineProps) {
   const Icon = negative ? ThumbDownIcon : ThumbUpIcon;
 
   return (
-    <p className="flex items-start gap-ds-4 rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
+    <p className="flex w-fit items-start gap-ds-4 rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
       <span className="sr-only">{label}</span>
       <Icon className="size-ds-20 shrink-0" />
       <span className="min-w-0 flex-1">{children}</span>
