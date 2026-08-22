@@ -7,6 +7,6 @@
  */
 
 export interface CoverImage {
-  url?: string;
-  reviewId?: string;
+  url: string;
+  reviewId: string;
 }

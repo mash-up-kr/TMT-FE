@@ -7,9 +7,9 @@
  */
 
 export interface Pin {
-  placeId?: string;
-  name?: string;
-  latitude?: number;
-  longitude?: number;
-  reviewCount?: number;
+  placeId: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  reviewCount: number;
 }

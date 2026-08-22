@@ -7,8 +7,8 @@
  */
 
 export interface CreatePlaceRequest {
-  name?: string;
-  addressId?: string;
+  name: string;
+  addressId: string;
   /** @nullable */
   categoryId?: string | null;
 }

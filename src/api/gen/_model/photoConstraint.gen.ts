@@ -7,7 +7,7 @@
  */
 
 export interface PhotoConstraint {
-  maxCount?: number;
-  maxBytes?: number;
-  allowedContentTypes?: string[];
+  maxCount: number;
+  maxBytes: number;
+  allowedContentTypes: string[];
 }

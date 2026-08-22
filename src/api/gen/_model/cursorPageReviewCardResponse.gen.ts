@@ -12,12 +12,12 @@ import type { ReviewCardResponse } from "./reviewCardResponse.gen";
  */
 export interface CursorPageReviewCardResponse {
   /** 결과 목록. 없으면 빈 배열 */
-  items?: ReviewCardResponse[];
+  items: ReviewCardResponse[];
   /**
    * 다음 페이지 요청에 그대로 전달. 마지막 페이지면 null
    * @nullable
    */
   nextCursor?: string | null;
   /** 다음 페이지 존재 여부 */
-  hasNext?: boolean;
+  hasNext: boolean;
 }

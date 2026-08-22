@@ -8,9 +8,9 @@
 import type { PlaceSummary } from "./placeSummary.gen";
 
 export interface SaveListItemResponse {
-  saveId?: string;
-  place?: PlaceSummary;
+  saveId: string;
+  place: PlaceSummary;
   /** @nullable */
   thumbnailUrl?: string | null;
-  updatedAt?: string;
+  updatedAt: string;
 }

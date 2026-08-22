@@ -12,15 +12,15 @@ import type { PlaceSummary } from "./placeSummary.gen";
 import type { Tag } from "./tag.gen";
 
 export interface ReviewCardResponse {
-  reviewId?: string;
-  author?: Author;
-  rating?: number;
+  reviewId: string;
+  author: Author;
+  rating: number;
   /** @nullable */
   distanceMeters?: number | null;
-  photos?: Photo[];
+  photos: Photo[];
   aiSummary?: AiSummary | null;
-  content?: string;
-  tags?: Tag[];
-  place?: PlaceSummary;
-  createdAt?: string;
+  content: string;
+  tags: Tag[];
+  place: PlaceSummary;
+  createdAt: string;
 }

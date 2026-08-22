@@ -7,9 +7,9 @@
  */
 
 export interface MockAddress {
-  addressId?: string;
-  roadAddress?: string;
-  jibunAddress?: string;
-  latitude?: number;
-  longitude?: number;
+  addressId: string;
+  roadAddress: string;
+  jibunAddress: string;
+  latitude: number;
+  longitude: number;
 }

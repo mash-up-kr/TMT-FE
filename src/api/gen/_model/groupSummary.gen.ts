@@ -7,8 +7,8 @@
  */
 
 export interface GroupSummary {
-  groupId?: string;
-  name?: string;
+  groupId: string;
+  name: string;
   /** @nullable */
   imageUrl?: string | null;
 }

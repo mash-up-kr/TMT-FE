@@ -7,6 +7,6 @@
  */
 
 export interface TagDefinition {
-  tagId?: string;
-  label?: string;
+  tagId: string;
+  label: string;
 }

@@ -6,8 +6,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface RatingConstraint {
-  min: number;
-  max: number;
-  step: number;
+export interface TicketConsumeSummary {
+  consumedCount: number;
+  availableCount: number;
 }
