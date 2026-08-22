@@ -52,7 +52,7 @@ export function HomeFeed(props: HomeFeedProps) {
   if (notice) {
     return (
       <section className="mt-ds-4 flex min-h-0 flex-1 flex-col">
-        <h2 className="bg-surface-primary px-ds-20 pt-ds-20 pb-ds-12 text-heading-sm text-content-primary">
+        <h2 className="bg-surface-primary px-ds-20 pt-ds-20 pb-ds-12 text-heading-md text-content-primary">
           최근 게시물
         </h2>
         <EmptyNotice className="bg-surface-primary px-ds-20" title={notice.title}>
