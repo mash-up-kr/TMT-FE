@@ -356,11 +356,7 @@ src/app/reviews/new/
    에셋**이다. `1028:7062`의 레이어 이름이 `KakaoTalk_Photo_…`라 사용자가 올린 사진처럼 보이지만
    아니다. 지금은 사진 유무로 갈라 두었으나 근거가 없다 — **언제 무엇을 쓰는지 디자이너 확인 필요.**
 5. **세그먼트 이름 확정** — `store` / `photos` / `tags` / `rating` 제안.
-6. **칩 아이콘 12종 익스포트 요청** — 3단계 태그 칩에 붙는 20×20 컬러 일러스트
-   (혼자·연인·친구·동료지인·가족 / 음식·응대·분위기·가성비·청결·교통·자리).
-   Figma에서 조각으로만 내려와 통째로 받을 수 없어 **현재 구현은 텍스트 칩만** 있다.
-   SVG 12개를 받으면 태그 응답과 매핑하는 UI metadata에 `icon` 필드만 더하면 된다.
-7. **규칙 해석 합의** — `reviews/new/store/page.tsx`가 `reviews/new/_components/`를 import하는 것이
+6. **규칙 해석 합의** — `reviews/new/store/page.tsx`가 `reviews/new/_components/`를 import하는 것이
    architecture rule의 "다른 라우트의 private segment import 금지"에 걸리는지.
    `reviews/new/**` 서브트리를 하나의 라우트로 보는 해석을 제안한다. 대안(단계마다 `_components` 중복)은
    명백히 더 나쁘다. 팀 합의 필요.

@@ -181,7 +181,7 @@ export function isReviewStoreComplete(store: ReviewStore | null): store is Compl
 |---|---|---|
 | 매장 검색 결과 선택 | `handleSelectResult` | `{ id, name, address }` — 완성 |
 | `'{검색어}' 직접 입력하기` | `handleDirectInput` | `{ id: null, name, address: null }` |
-| 주소 검색 결과 선택 | `handleSelectAddress` | 기존 store에 `address`만 병합 |
+| 주소 검색 결과 선택 | `handleSelectAddress` | 도로명 표시값과 `addressId`·지번·좌표를 함께 저장 |
 | 검색 필드의 지우기(X) | `onValueChange` | `null` — 게이트 닫힘 |
 
 마지막 항목이 한 번 꼬여 보이는 자리다. 검색 필드는 `readOnly`라 타이핑이 불가능하므로,
@@ -265,10 +265,8 @@ mock backend가 필수로 받는 주소 검색 `userId`는 `NEXT_PUBLIC_MOCK_USE
 radius full). 선택 색도 `selected`가 맞고 `aria-pressed`도 이미 붙어 있어 Chip은 손대지 않았다.
 그룹은 `fieldset`/`legend`로 감싸 어떤 질문에 속한 칩인지가 접근성 트리에 남는다.
 
-> **시안과 다른 점**: 칩마다 20x20 컬러 일러스트 아이콘이 붙지만 이번 범위에서 뺐다.
-> 조각이 흩어져 있고(가족 아이콘만 12조각) `download_assets`가 인스턴스 내부 노드를 지원하지
-> 않아 통째로 받을 수 없다. 디자이너 익스포트를 받으면 `tags.ts`의 각 항목에 `icon`만 더하면
-> 되도록 두었다. 짝 문서 미결 8번.
+칩의 20x20 컬러 아이콘은 `shared/ui/ColorIcons`를 사용한다. Server가 준 tag id를 Client의
+`tagIcons.ts`가 Figma 자산과 연결하고, 아이콘 자체는 API 응답에 넣지 않는다.
 
 ### 별점은 버튼 5개가 아니라 radio group이다
 
