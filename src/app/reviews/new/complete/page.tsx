@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
 import { ReviewCompleteVisual } from "../_components/ReviewCompleteVisual";
+import { REVIEW_FLOW_EXIT_PATH } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 
@@ -37,7 +38,7 @@ export default function ReviewCompletePage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" onClick={() => router.replace("/")}>
+          <Button variant="tertiary" onClick={() => router.replace(REVIEW_FLOW_EXIT_PATH)}>
             홈으로 가기
           </Button>
           {/* 피드 라우트는 아직 없다. 시안 주석 기준 이동 대상만 먼저 연결해 둔다. */}

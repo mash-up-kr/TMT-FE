@@ -13,7 +13,7 @@ import { AddressSearchSheet } from "../_components/sheets/AddressSearchSheet";
 import { StoreSearchSheet } from "../_components/sheets/StoreSearchSheet";
 import { REVIEW_FLOW_BASE_PATH } from "../_constants/steps";
 import type { SearchStatus } from "../_model/search";
-import type { StoreSearchResult } from "../_model/store";
+import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 import { mapAddressSearchResults, mapStoreSearchResults } from "../_utils/reviewApiMappers";
 import { isReviewStoreComplete } from "../_utils/reviewStore";
@@ -78,21 +78,21 @@ export default function StoreStepPage() {
   };
 
   const handleSelectResult = (result: StoreSearchResult) => {
-    setStore({ id: result.id, name: result.name, address: result.address });
+    setStore({ id: result.id, name: result.name, address: result.address, selectedAddress: null });
     setStoreSheetOpen(false);
   };
 
   const handleDirectInput = (name: string) => {
-    setStore({ id: null, name, address: null });
+    setStore({ id: null, name, address: null, selectedAddress: null });
     setStoreSheetOpen(false);
   };
 
-  const handleSelectAddress = (address: string) => {
+  const handleSelectAddress = (address: AddressSearchResult) => {
     if (store === null) {
       return;
     }
 
-    setStore({ ...store, address });
+    setStore({ ...store, address: address.roadAddress, selectedAddress: address });
     setAddressSheetOpen(false);
   };
 

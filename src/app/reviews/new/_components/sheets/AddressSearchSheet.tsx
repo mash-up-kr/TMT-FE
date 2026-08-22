@@ -43,7 +43,7 @@ type AddressSearchSheetProps = Readonly<{
   onQueryChange: (query: string) => void;
   status: SearchStatus;
   results: readonly AddressSearchResult[];
-  onSelectResult: (address: string) => void;
+  onSelectResult: (address: AddressSearchResult) => void;
 }>;
 
 export function AddressSearchSheet({
@@ -83,10 +83,10 @@ export function AddressSearchSheet({
             <SearchOptionList>
               {results.map((result) => (
                 <AddressOptionRow
-                  key={result.id}
+                  key={result.addressId}
                   roadAddress={result.roadAddress}
                   jibunAddress={result.jibunAddress}
-                  onSelect={() => onSelectResult(result.roadAddress)}
+                  onSelect={() => onSelectResult(result)}
                 />
               ))}
             </SearchOptionList>

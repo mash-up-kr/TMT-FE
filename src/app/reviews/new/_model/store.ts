@@ -6,6 +6,7 @@ export type ReviewStore = {
   id: string | null;
   name: string;
   address: string | null;
+  selectedAddress: AddressSearchResult | null;
 };
 
 /**
@@ -21,7 +22,9 @@ export type StoreSearchResult = {
 };
 
 export type AddressSearchResult = {
-  id: string;
+  addressId: string;
   roadAddress: string;
   jibunAddress: string;
+  latitude: number;
+  longitude: number;
 };

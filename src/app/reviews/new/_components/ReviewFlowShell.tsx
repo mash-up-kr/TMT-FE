@@ -9,6 +9,7 @@ import { Progress } from "@/shared/ui/Progress";
 import {
   REVIEW_COMPLETE_PATH,
   REVIEW_FLOW_BASE_PATH,
+  REVIEW_FLOW_EXIT_PATH,
   REVIEW_STEP_COUNT,
   REVIEW_STEPS,
 } from "../_constants/steps";
@@ -34,9 +35,13 @@ export function ReviewFlowShell({ children }: Readonly<{ children: ReactNode }>)
   const canGoBack = completedSteps !== null && completedSteps > 0;
   const isComplete = pathname === REVIEW_COMPLETE_PATH;
 
+  // 플로우 밖으로 나간다. 단계마다 히스토리가 쌓여 있어 back()으로는 앞 단계로 갈 뿐이다.
+  // 여기서 layout이 언마운트되며 초안과 사진 미리보기 URL이 함께 정리된다.
+  const exitFlow = () => router.replace(REVIEW_FLOW_EXIT_PATH);
+
   const handleClose = () => {
     if (isComplete) {
-      router.back();
+      exitFlow();
       return;
     }
 
@@ -74,14 +79,7 @@ export function ReviewFlowShell({ children }: Readonly<{ children: ReactNode }>)
         {children}
       </main>
 
-      <ExitConfirmModal
-        open={exitOpen}
-        onOpenChange={setExitOpen}
-        onExit={() => {
-          setExitOpen(false);
-          router.back();
-        }}
-      />
+      <ExitConfirmModal open={exitOpen} onOpenChange={setExitOpen} onExit={exitFlow} />
     </ReviewDraftProvider>
   );
 }

@@ -8,6 +8,10 @@ function hasText(value: string | undefined): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
+function hasFiniteNumber(value: number | undefined): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
 export function mapStoreSearchResults(items: PlaceCardResponse[] | undefined): StoreSearchResult[] {
   return (items ?? []).flatMap((item) =>
     hasText(item.placeId) && hasText(item.name) && hasText(item.roadAddress)
@@ -18,8 +22,20 @@ export function mapStoreSearchResults(items: PlaceCardResponse[] | undefined): S
 
 export function mapAddressSearchResults(items: MockAddress[] | undefined): AddressSearchResult[] {
   return (items ?? []).flatMap((item) =>
-    hasText(item.addressId) && hasText(item.roadAddress) && hasText(item.jibunAddress)
-      ? [{ id: item.addressId, roadAddress: item.roadAddress, jibunAddress: item.jibunAddress }]
+    hasText(item.addressId) &&
+    hasText(item.roadAddress) &&
+    hasText(item.jibunAddress) &&
+    hasFiniteNumber(item.latitude) &&
+    hasFiniteNumber(item.longitude)
+      ? [
+          {
+            addressId: item.addressId,
+            roadAddress: item.roadAddress,
+            jibunAddress: item.jibunAddress,
+            latitude: item.latitude,
+            longitude: item.longitude,
+          },
+        ]
       : [],
   );
 }
