@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import type { SearchStatus } from "../../_model/search";
 import type { AddressSearchResult } from "../../_model/store";
-import { AddressOptionRow, SearchOptionList, SearchOptionMessage } from "./SearchOptions";
+import emptyResultMascot from "../assets/address-search-empty-mascot.png";
+import { AddressOptionRow, SearchOptionList } from "./SearchOptions";
 import { SearchSheet } from "./SearchSheet";
 
-const EMPTY_MESSAGE = "검색 결과가 없어요. 다른 검색어로 찾아보세요";
+const EMPTY_TITLE = "검색결과가 없어요";
 
 const GUIDE_TITLE = "이렇게 검색해 보세요";
 
@@ -24,6 +26,28 @@ function AddressSearchGuide() {
           <li key={example}>{example}</li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+function AddressSearchEmptyState() {
+  return (
+    <div className="flex flex-col items-center gap-ds-12 py-ds-32">
+      <div className="relative h-[130px] w-[172px] shrink-0">
+        <Image src={emptyResultMascot} alt="" fill className="object-contain" />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-[77.308%] to-surface-primary to-[92.806%]"
+        />
+      </div>
+      <div className="flex flex-col items-center gap-ds-4 text-center">
+        <p className="text-heading-sm text-content-primary">{EMPTY_TITLE}</p>
+        <p className="text-body-md-medium text-content-tertiary">
+          도로명, 지번, 건물명, 아파트명으로
+          <br />
+          다시 검색해주세요
+        </p>
+      </div>
     </div>
   );
 }
@@ -60,7 +84,7 @@ export function AddressSearchSheet({
       idle={<AddressSearchGuide />}
     >
       {results.length === 0 ? (
-        <SearchOptionMessage>{EMPTY_MESSAGE}</SearchOptionMessage>
+        <AddressSearchEmptyState />
       ) : (
         <SearchOptionList>
           {results.map((result) => (
