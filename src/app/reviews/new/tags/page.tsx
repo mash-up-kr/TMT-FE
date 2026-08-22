@@ -14,7 +14,7 @@ import { mapReviewTagGroups } from "../_utils/reviewApiMappers";
 export default function TagsStepPage() {
   const router = useRouter();
   const { selectedTagIds, toggleTag } = useReviewDraft();
-  const hasStore = useReviewDraftGuard();
+  const hasStore = useReviewDraftGuard() !== null;
   const formConfig = useReviewFormConfig();
 
   const tagGroups = mapReviewTagGroups(formConfig.data);

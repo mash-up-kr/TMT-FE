@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { REVIEW_STEPS, reviewStepPath } from "../_constants/steps";
+import type { CompleteReviewStore } from "../_model/store";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 import { isReviewStoreComplete } from "../_utils/reviewStore";
 
@@ -19,11 +20,16 @@ const FIRST_STEP_PATH = reviewStepPath(REVIEW_STEPS[0]);
  * (docs/review-write-flow-implementation.md §9.1)
  *
  * `replace`를 쓰는 이유: 되돌아간 뒤 뒤로가기를 누르면 다시 이 단계로 와서 무한 왕복이 된다.
+ *
+ * 통과한 매장을 그대로 돌려준다. 판정은 이미 여기서 했으므로 호출부가 같은 값을 다시 좁히거나
+ * 옵셔널 체이닝으로 넘길 이유가 없다.
  */
-export function useReviewDraftGuard() {
+export function useReviewDraftGuard(): CompleteReviewStore | null {
   const router = useRouter();
   const { store } = useReviewDraft();
-  const hasStore = isReviewStoreComplete(store);
+  const completeStore = isReviewStoreComplete(store) ? store : null;
+  // 의존성을 매장 객체로 두면 이름 한 글자만 바뀌어도 effect가 다시 돈다.
+  const hasStore = completeStore !== null;
 
   useEffect(() => {
     if (!hasStore) {
@@ -31,5 +37,5 @@ export function useReviewDraftGuard() {
     }
   }, [hasStore, router]);
 
-  return hasStore;
+  return completeStore;
 }

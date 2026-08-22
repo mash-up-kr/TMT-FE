@@ -14,7 +14,7 @@ import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 export default function RatingStepPage() {
   const router = useRouter();
   const { rating, setRating, reviewText, setReviewText } = useReviewDraft();
-  const hasStore = useReviewDraftGuard();
+  const hasStore = useReviewDraftGuard() !== null;
 
   if (!hasStore) {
     return null;

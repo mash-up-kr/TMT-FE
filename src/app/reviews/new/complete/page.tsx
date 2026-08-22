@@ -11,10 +11,10 @@ import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 
 export default function ReviewCompletePage() {
   const router = useRouter();
-  const { store, photos } = useReviewDraft();
-  const hasStore = useReviewDraftGuard();
+  const { photos } = useReviewDraft();
+  const store = useReviewDraftGuard();
 
-  if (!hasStore) {
+  if (store === null) {
     return null;
   }
 
@@ -29,7 +29,7 @@ export default function ReviewCompletePage() {
           </h1>
           <p className="flex items-center gap-ds-4 text-body-lg-medium text-content-interactive-primary">
             <MapPinIcon size={20} />
-            {store?.name}
+            {store.name}
           </p>
         </header>
 

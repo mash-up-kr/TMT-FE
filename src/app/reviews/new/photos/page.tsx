@@ -12,7 +12,7 @@ import { useReviewDraft } from "../_stores/ReviewDraftProvider";
 export default function PhotosStepPage() {
   const router = useRouter();
   const { photos, addPhotos, removePhoto } = useReviewDraft();
-  const hasStore = useReviewDraftGuard();
+  const hasStore = useReviewDraftGuard() !== null;
 
   if (!hasStore) {
     return null;
