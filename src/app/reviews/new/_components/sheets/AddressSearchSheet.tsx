@@ -1,17 +1,9 @@
 "use client";
 
-import { BottomSheet } from "@/shared/ui/BottomSheet";
-import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon } from "@/shared/ui/Icons";
-import { SearchField } from "@/shared/ui/TextField";
 import type { SearchStatus } from "../../_model/search";
 import type { AddressSearchResult } from "../../_model/store";
-import {
-  AddressOptionRow,
-  SearchOptionList,
-  SearchOptionMessage,
-  SearchResultArea,
-} from "./SearchOptions";
+import { AddressOptionRow, SearchOptionList, SearchOptionMessage } from "./SearchOptions";
+import { SearchSheet } from "./SearchSheet";
 
 const EMPTY_MESSAGE = "검색 결과가 없어요. 다른 검색어로 찾아보세요";
 
@@ -56,43 +48,31 @@ export function AddressSearchSheet({
   onSelectResult,
 }: AddressSearchSheetProps) {
   return (
-    <BottomSheet
+    <SearchSheet
       open={open}
       onOpenChange={onOpenChange}
-      height="fixed"
       title="주소 검색"
-      right={
-        <IconButton aria-label="주소 검색 닫기" onClick={() => onOpenChange(false)}>
-          <CancelIcon thick />
-        </IconButton>
-      }
+      placeholder="건물, 지번, 도로명을 입력해 주세요"
+      searchLabel="주소 검색어"
+      query={query}
+      onQueryChange={onQueryChange}
+      status={status}
+      idle={<AddressSearchGuide />}
     >
-      <div className="flex flex-col gap-ds-12">
-        <SearchField
-          value={query}
-          onValueChange={onQueryChange}
-          placeholder="건물, 지번, 도로명을 입력해 주세요"
-          aria-label="주소 검색어"
-          autoFocus
-        />
-
-        <SearchResultArea status={status} idle={<AddressSearchGuide />}>
-          {results.length === 0 ? (
-            <SearchOptionMessage>{EMPTY_MESSAGE}</SearchOptionMessage>
-          ) : (
-            <SearchOptionList>
-              {results.map((result) => (
-                <AddressOptionRow
-                  key={result.addressId}
-                  roadAddress={result.roadAddress}
-                  jibunAddress={result.jibunAddress}
-                  onSelect={() => onSelectResult(result)}
-                />
-              ))}
-            </SearchOptionList>
-          )}
-        </SearchResultArea>
-      </div>
-    </BottomSheet>
+      {results.length === 0 ? (
+        <SearchOptionMessage>{EMPTY_MESSAGE}</SearchOptionMessage>
+      ) : (
+        <SearchOptionList>
+          {results.map((result) => (
+            <AddressOptionRow
+              key={result.addressId}
+              roadAddress={result.roadAddress}
+              jibunAddress={result.jibunAddress}
+              onSelect={() => onSelectResult(result)}
+            />
+          ))}
+        </SearchOptionList>
+      )}
+    </SearchSheet>
   );
 }
