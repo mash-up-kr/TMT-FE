@@ -1,4 +1,5 @@
-import { StarIcon } from "@/shared/ui/Icons";
+import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
+import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import type { FeedReview } from "../_model/home";
 import AvatarTomato from "./assets/avatar-tomato.svg?react";
 
@@ -24,7 +25,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           </p>
         ) : null}
         <TagList tags={review.tags} />
-        {review.place ? <PlaceRow place={review.place} /> : null}
+        <PlaceRow place={review.place} />
       </div>
     </article>
   );
@@ -33,7 +34,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
 type ReviewCardHeaderProps = {
   nickname: string;
   profileImageUrl: string | null;
-  rating: number | null;
+  rating: number;
   distanceMeters: number | null;
 };
 
@@ -49,16 +50,14 @@ function ReviewCardHeader({
       <div className="flex min-w-0 flex-1 items-center justify-between gap-ds-8">
         <p className="truncate text-body-lg-medium text-content-primary">{nickname}</p>
         <div className="flex flex-col items-end justify-center">
-          {rating === null ? null : (
-            <p className="flex items-center gap-ds-2 text-body-sm-medium text-content-interactive-primary">
-              <StarIcon
-                aria-hidden="true"
-                size={12}
-                className="shrink-0 text-icon-interactive-primary"
-              />
-              {rating.toFixed(1)}
-            </p>
-          )}
+          <p className="flex items-center gap-ds-2 text-body-sm-medium text-content-interactive-primary">
+            <StarIcon
+              aria-hidden="true"
+              size={12}
+              className="shrink-0 text-icon-interactive-primary"
+            />
+            {rating.toFixed(1)}
+          </p>
           {distanceMeters === null ? null : (
             <p className="text-body-sm-medium text-content-disabled">
               {formatDistance(distanceMeters)}
@@ -128,7 +127,11 @@ function AiSummary({ pros, cons }: AiSummaryProps) {
   return (
     <div className="flex flex-col gap-ds-8">
       {pros ? <SummaryLine label="장점">{pros}</SummaryLine> : null}
-      {cons ? <SummaryLine label="단점">{cons}</SummaryLine> : null}
+      {cons ? (
+        <SummaryLine label="단점" negative>
+          {cons}
+        </SummaryLine>
+      ) : null}
     </div>
   );
 }
@@ -136,13 +139,17 @@ function AiSummary({ pros, cons }: AiSummaryProps) {
 type SummaryLineProps = {
   label: string;
   children: string;
+  negative?: boolean;
 };
 
-function SummaryLine({ label, children }: SummaryLineProps) {
+function SummaryLine({ label, children, negative }: SummaryLineProps) {
+  const Icon = negative ? ThumbDownIcon : ThumbUpIcon;
+
   return (
-    <p className="rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
+    <p className="flex items-start gap-ds-4 rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
       <span className="sr-only">{label}</span>
-      {children}
+      <Icon className="size-ds-20 shrink-0" />
+      <span className="min-w-0 flex-1">{children}</span>
     </p>
   );
 }
@@ -171,7 +178,7 @@ function TagList({ tags }: TagListProps) {
 }
 
 type PlaceRowProps = {
-  place: NonNullable<FeedReview["place"]>;
+  place: FeedReview["place"];
 };
 
 function PlaceRow({ place }: PlaceRowProps) {
@@ -183,6 +190,12 @@ function PlaceRow({ place }: PlaceRowProps) {
           <p className="truncate text-body-sm-medium text-content-secondary">{place.roadAddress}</p>
         ) : null}
       </div>
+      <HeartIcon
+        filled
+        aria-hidden="true"
+        size={24}
+        className="shrink-0 text-icon-interactive-primary"
+      />
     </div>
   );
 }
