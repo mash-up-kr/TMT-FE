@@ -45,15 +45,17 @@ export default function TagsStepPage() {
           }
         />
 
-        {formConfig.isLoading ? (
+        {formConfig.isLoading && (
           <p role="status" className="text-body-md-medium text-content-tertiary">
             태그를 불러오는 중이에요.
           </p>
-        ) : formConfig.isError ? (
+        )}
+        {formConfig.isError && (
           <p role="status" className="text-body-md-medium text-content-error">
             태그를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
           </p>
-        ) : (
+        )}
+        {formConfig.isSuccess &&
           tagGroups.map((group) => (
             <TagGroupField
               key={group.id}
@@ -61,13 +63,11 @@ export default function TagsStepPage() {
               selectedTagIds={selectedTagIds}
               onToggle={toggleTag}
             />
-          ))
-        )}
+          ))}
       </div>
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          {/* 선택 단계라 아무것도 고르지 않아도 넘어간다. */}
           <Button onClick={() => router.push(`${REVIEW_FLOW_BASE_PATH}/rating`)}>다음</Button>
         </ButtonStack>
       </div>

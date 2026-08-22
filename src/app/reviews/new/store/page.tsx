@@ -66,12 +66,10 @@ export default function StoreStepPage() {
     addressSearch.isError,
   );
 
-  // 직접 입력 경로에서만 주소를 따로 고른다. 검색으로 고른 매장은 주소가 함께 온다.
   const needsAddressInput = store !== null && store.id === null;
 
   const openAddressSheet = () => setAddressSheetOpen(true);
 
-  // 읽기 전용 필드라 타이핑 대신 시트를 연다. 포인터 경로와 키보드 경로를 맞춘다.
   const handleAddressFieldKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -90,7 +88,11 @@ export default function StoreStepPage() {
   };
 
   const handleSelectAddress = (address: string) => {
-    setStore(store === null ? null : { ...store, address });
+    if (store === null) {
+      return;
+    }
+
+    setStore({ ...store, address });
     setAddressSheetOpen(false);
   };
 
