@@ -1,4 +1,4 @@
 import Food from "./assets/food.svg?react";
-import { createColorIcon } from "./createIcon";
+import { createColorIcon } from "./createColorIcon";
 
 export const FoodIcon = createColorIcon(Food);

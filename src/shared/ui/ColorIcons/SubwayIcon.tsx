@@ -1,4 +1,4 @@
 import Subway from "./assets/subway.svg?react";
-import { createColorIcon } from "./createIcon";
+import { createColorIcon } from "./createColorIcon";
 
 export const SubwayIcon = createColorIcon(Subway);

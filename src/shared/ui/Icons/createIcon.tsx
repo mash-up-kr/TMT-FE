@@ -1,5 +1,5 @@
 import type { ComponentType, SVGProps } from "react";
-import type { ColorIconProps, FilledIconProps, IconProps } from "./types";
+import type { FilledIconProps, IconProps } from "./types";
 
 type SvgComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -21,16 +21,6 @@ export function createIcon(Thin: SvgComponent, Thick: SvgComponent) {
 export function createFilledIcon(Outline: SvgComponent, Fill: SvgComponent) {
   return function Icon({ filled = false, size = 24, ...props }: FilledIconProps) {
     const Svg = filled ? Fill : Outline;
-    return <Svg aria-hidden="true" width={size} height={size} {...props} />;
-  };
-}
-
-/**
- * 색이 고정된 다색 아이콘을 감싼다.
- * currentColor를 쓰지 않으므로 thick/filled 축이 없고 size만 받는다.
- */
-export function createColorIcon(Svg: SvgComponent) {
-  return function Icon({ size = 24, ...props }: ColorIconProps) {
     return <Svg aria-hidden="true" width={size} height={size} {...props} />;
   };
 }

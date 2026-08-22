@@ -1,4 +1,4 @@
 import Seat from "./assets/seat.svg?react";
-import { createColorIcon } from "./createIcon";
+import { createColorIcon } from "./createColorIcon";
 
 export const SeatIcon = createColorIcon(Seat);

@@ -1,4 +1,4 @@
 import Clean from "./assets/clean.svg?react";
-import { createColorIcon } from "./createIcon";
+import { createColorIcon } from "./createColorIcon";
 
 export const CleanIcon = createColorIcon(Clean);
