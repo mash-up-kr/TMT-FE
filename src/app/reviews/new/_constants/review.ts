@@ -7,6 +7,9 @@
  */
 export const MAX_REVIEW_PHOTO_COUNT = 3;
 
+/** 사진 업로드 실패 토스트 기준. 시안 값을 정본으로 둔다. */
+export const MAX_REVIEW_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
+
 export const MAX_REVIEW_RATING = 5;
 
 export const MAX_REVIEW_TEXT_LENGTH = 500;

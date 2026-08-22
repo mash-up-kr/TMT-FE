@@ -10,7 +10,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { MAX_REVIEW_PHOTO_COUNT } from "../_constants/review";
+import { toast } from "@/shared/ui/Toast";
+import { MAX_REVIEW_PHOTO_COUNT, MAX_REVIEW_PHOTO_SIZE_BYTES } from "../_constants/review";
 import type { ReviewPhoto } from "../_model/photo";
 import type { ReviewStore } from "../_model/store";
 
@@ -18,7 +19,12 @@ type ReviewDraftContextValue = {
   store: ReviewStore | null;
   setStore: (store: ReviewStore | null) => void;
   photos: readonly ReviewPhoto[];
-  /** 남은 자리만큼만 받아들인다. 넘치는 파일은 조용히 버린다. */
+  /**
+   * 형식·용량 때문에 거른 파일은 이유별로 토스트를 띄운다.
+   *
+   * 개수 상한은 남은 자리보다 많이 넘어올 때를 위한 방어선이다. 입력이 한 번에 한 장만 받게 된 뒤로
+   * UI에서는 닿지 않지만, 상한을 지키는 책임은 목록을 소유한 여기에 남겨 둔다.
+   */
   addPhotos: (files: readonly File[]) => void;
   removePhoto: (id: string) => void;
   /** 선택한 태그 id. 그룹을 가리지 않고 한 집합에 모은다 — 상한도 최소 개수도 없다. */
@@ -30,6 +36,9 @@ type ReviewDraftContextValue = {
   reviewText: string;
   setReviewText: (text: string) => void;
 };
+
+const NON_IMAGE_MESSAGE = "이미지 파일만 업로드할 수 있어요";
+const OVERSIZE_MESSAGE = "5MB 이하 사진만 업로드할 수 있어요";
 
 const ReviewDraftContext = createContext<ReviewDraftContextValue | null>(null);
 
@@ -60,35 +69,50 @@ export function ReviewDraftProvider({ children }: Readonly<{ children: ReactNode
   }, []);
 
   const addPhotos = useCallback((files: readonly File[]) => {
-    setPhotos((current) => {
-      const room = MAX_REVIEW_PHOTO_COUNT - current.length;
+    // `accept="image/*"`는 파일 선택창의 힌트일 뿐이라 형식과 용량을 여기서 다시 본다.
+    const images = files.filter((file) => file.type.startsWith("image/"));
+    const withinSizeLimit = images.filter((file) => file.size <= MAX_REVIEW_PHOTO_SIZE_BYTES);
 
-      if (room <= 0) {
-        return current;
-      }
+    // 거른 이유마다 사용자가 취할 행동이 달라서 안내를 합치지 않는다.
+    // 형식이 틀린 파일에 용량을 말하면 줄여도 해결되지 않는 길로 안내하게 된다.
+    if (images.length < files.length) {
+      toast.error(NON_IMAGE_MESSAGE);
+    }
 
-      const added = files.slice(0, room).map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        previewUrl: URL.createObjectURL(file),
-      }));
+    if (withinSizeLimit.length < images.length) {
+      toast.error(OVERSIZE_MESSAGE);
+    }
 
-      return [...current, ...added];
-    });
+    // 음수면 slice가 뒤에서 잘라 오히려 파일을 통과시키므로 0으로 막는다.
+    const room = Math.max(0, MAX_REVIEW_PHOTO_COUNT - photosRef.current.length);
+    const accepted = withinSizeLimit.slice(0, room);
+
+    if (accepted.length === 0) {
+      return;
+    }
+
+    // URL은 updater 밖에서 만든다. React는 updater를 여러 번 부를 수 있어서 안에서 만들면
+    // 버려지는 URL이 생기고, 목록에 남지 않은 그 URL은 아무도 해제하지 못한다.
+    const added = accepted.map((file) => ({
+      id: crypto.randomUUID(),
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+
+    setPhotos((current) => [...current, ...added]);
   }, []);
 
   const removePhoto = useCallback((id: string) => {
-    setPhotos((current) => {
-      const removed = current.find((photo) => photo.id === id);
+    const removed = photosRef.current.find((photo) => photo.id === id);
 
-      if (removed === undefined) {
-        return current;
-      }
+    if (removed === undefined) {
+      return;
+    }
 
-      URL.revokeObjectURL(removed.previewUrl);
+    // addPhotos와 같은 이유로 해제도 updater 밖에서 한 번만 한다.
+    URL.revokeObjectURL(removed.previewUrl);
 
-      return current.filter((photo) => photo.id !== id);
-    });
+    setPhotos((current) => current.filter((photo) => photo.id !== id));
   }, []);
 
   const toggleTag = useCallback((id: string) => {
