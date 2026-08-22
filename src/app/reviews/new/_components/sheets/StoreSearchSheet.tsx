@@ -8,8 +8,8 @@ import { SearchSheet } from "./SearchSheet";
 type StoreSearchSheetProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  query: string;
-  onQueryChange: (query: string) => void;
+  value: string;
+  onValueChange: (value: string) => void;
   status: SearchStatus;
   results: readonly StoreSearchResult[];
   onSelectResult: (result: StoreSearchResult) => void;
@@ -19,14 +19,14 @@ type StoreSearchSheetProps = Readonly<{
 export function StoreSearchSheet({
   open,
   onOpenChange,
-  query,
-  onQueryChange,
+  value,
+  onValueChange,
   status,
   results,
   onSelectResult,
   onDirectInput,
 }: StoreSearchSheetProps) {
-  const trimmedQuery = query.trim();
+  const trimmedQuery = value.trim();
 
   return (
     <SearchSheet
@@ -35,8 +35,8 @@ export function StoreSearchSheet({
       title="매장 검색"
       placeholder="매장명을 검색해보세요"
       searchLabel="매장 검색어"
-      query={query}
-      onQueryChange={onQueryChange}
+      value={value}
+      onValueChange={onValueChange}
       status={status}
     >
       {/* 직접 입력 옵션이 항상 남으므로 이 시트에는 빈 상태가 없다. */}

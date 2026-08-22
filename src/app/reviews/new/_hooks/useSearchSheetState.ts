@@ -5,9 +5,9 @@ import { useState } from "react";
 export type SearchSheetState = Readonly<{
   open: boolean;
   setOpen: (open: boolean) => void;
-  /** 입력 원문. `SearchField`가 그대로 보여준다. */
-  input: string;
-  setInput: (input: string) => void;
+  /** 입력 원문. 화면에 그대로 보여주는 값이라 `SearchField`와 같은 이름을 쓴다. */
+  value: string;
+  setValue: (value: string) => void;
   /** 공백을 다듬은 검색어. 요청과 상태 판정은 이 값을 쓴다. */
   query: string;
   /** 시트가 열려 있고 검색어가 있을 때만 요청한다. */
@@ -23,8 +23,8 @@ export type SearchSheetState = Readonly<{
  */
 export function useSearchSheetState(): SearchSheetState {
   const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
-  const query = input.trim();
+  const [value, setValue] = useState("");
+  const query = value.trim();
 
-  return { open, setOpen, input, setInput, query, enabled: open && query.length > 0 };
+  return { open, setOpen, value, setValue, query, enabled: open && query.length > 0 };
 }

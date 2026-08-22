@@ -16,8 +16,8 @@ type SearchSheetProps = Readonly<{
   placeholder: string;
   /** 검색 입력의 접근 가능한 이름. 시트 이름과 달라야 해서 따로 받는다. */
   searchLabel: string;
-  query: string;
-  onQueryChange: (query: string) => void;
+  value: string;
+  onValueChange: (value: string) => void;
   status: SearchStatus;
   /** 검색 전에 보여줄 것. */
   idle?: ReactNode;
@@ -37,8 +37,8 @@ export function SearchSheet({
   title,
   placeholder,
   searchLabel,
-  query,
-  onQueryChange,
+  value,
+  onValueChange,
   status,
   idle,
   children,
@@ -57,8 +57,8 @@ export function SearchSheet({
     >
       <div className="flex flex-col gap-ds-12">
         <SearchField
-          value={query}
-          onValueChange={onQueryChange}
+          value={value}
+          onValueChange={onValueChange}
           placeholder={placeholder}
           aria-label={searchLabel}
           autoFocus

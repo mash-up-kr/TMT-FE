@@ -123,8 +123,8 @@ export default function StoreStepPage() {
       <StoreSearchSheet
         open={storeSheet.open}
         onOpenChange={storeSheet.setOpen}
-        query={storeSheet.input}
-        onQueryChange={storeSheet.setInput}
+        value={storeSheet.value}
+        onValueChange={storeSheet.setValue}
         status={storeStatus}
         results={storeResults}
         onSelectResult={handleSelectResult}
@@ -134,8 +134,8 @@ export default function StoreStepPage() {
       <AddressSearchSheet
         open={addressSheet.open}
         onOpenChange={addressSheet.setOpen}
-        query={addressSheet.input}
-        onQueryChange={addressSheet.setInput}
+        value={addressSheet.value}
+        onValueChange={addressSheet.setValue}
         status={addressStatus}
         results={addressResults}
         onSelectResult={handleSelectAddress}

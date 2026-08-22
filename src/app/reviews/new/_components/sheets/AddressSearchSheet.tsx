@@ -31,8 +31,8 @@ function AddressSearchGuide() {
 type AddressSearchSheetProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  query: string;
-  onQueryChange: (query: string) => void;
+  value: string;
+  onValueChange: (value: string) => void;
   status: SearchStatus;
   results: readonly AddressSearchResult[];
   onSelectResult: (address: AddressSearchResult) => void;
@@ -41,8 +41,8 @@ type AddressSearchSheetProps = Readonly<{
 export function AddressSearchSheet({
   open,
   onOpenChange,
-  query,
-  onQueryChange,
+  value,
+  onValueChange,
   status,
   results,
   onSelectResult,
@@ -54,8 +54,8 @@ export function AddressSearchSheet({
       title="주소 검색"
       placeholder="건물, 지번, 도로명을 입력해 주세요"
       searchLabel="주소 검색어"
-      query={query}
-      onQueryChange={onQueryChange}
+      value={value}
+      onValueChange={onValueChange}
       status={status}
       idle={<AddressSearchGuide />}
     >
