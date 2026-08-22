@@ -7,10 +7,20 @@ export type CurrentPosition =
   | { status: "granted"; latitude: number; longitude: number }
   | { status: "unavailable" };
 
-export function useCurrentPosition(): CurrentPosition {
+type UseCurrentPositionOptions = {
+  enabled?: boolean;
+};
+
+export function useCurrentPosition({
+  enabled = true,
+}: UseCurrentPositionOptions = {}): CurrentPosition {
   const [position, setPosition] = useState<CurrentPosition>({ status: "pending" });
 
   useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
     if (!("geolocation" in navigator)) {
       setPosition({ status: "unavailable" });
       return;
@@ -38,7 +48,7 @@ export function useCurrentPosition(): CurrentPosition {
     return () => {
       active = false;
     };
-  }, []);
+  }, [enabled]);
 
   return position;
 }
