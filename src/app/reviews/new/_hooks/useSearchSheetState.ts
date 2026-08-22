@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useDebouncedValue } from "./useDebouncedValue";
+import { useEffect, useRef, useState } from "react";
 
 /** 한글 조합 중간 상태가 100ms 안팎으로 지나가므로 그보다 넉넉히 잡는다. */
 const SEARCH_DEBOUNCE_MS = 300;
 
 export type SearchSheetState = Readonly<{
   open: boolean;
-  setOpen: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   /** 입력 원문. 화면에 그대로 보여주는 값이라 `SearchField`와 같은 이름을 쓴다. */
   value: string;
   setValue: (value: string) => void;
@@ -30,8 +29,50 @@ export type SearchSheetState = Readonly<{
  */
 export function useSearchSheetState(): SearchSheetState {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const query = useDebouncedValue(value.trim(), SEARCH_DEBOUNCE_MS);
+  const [value, setValueState] = useState("");
+  const [query, setQuery] = useState("");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  return { open, setOpen, value, setValue, query, enabled: open && query.length > 0 };
+  const clearTimer = () => {
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  const setValue = (nextValue: string) => {
+    setValueState(nextValue);
+    clearTimer();
+
+    const nextQuery = nextValue.trim();
+    if (nextQuery.length === 0) {
+      setQuery("");
+      return;
+    }
+
+    timerRef.current = setTimeout(() => {
+      setQuery(nextQuery);
+      timerRef.current = null;
+    }, SEARCH_DEBOUNCE_MS);
+  };
+
+  const onOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+
+    if (!nextOpen) {
+      clearTimer();
+      setValueState("");
+      setQuery("");
+    }
+  };
+
+  return { open, onOpenChange, value, setValue, query, enabled: query.length > 0 };
 }

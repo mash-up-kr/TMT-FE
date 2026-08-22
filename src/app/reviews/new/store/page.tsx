@@ -1,6 +1,5 @@
 "use client";
 
-import { keepPreviousData } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { KeyboardEvent } from "react";
 import { useSearchAddresses } from "@/api/gen/address/address.gen";
@@ -24,9 +23,6 @@ import { toSearchStatus } from "../_utils/searchStatus";
 /** 시트가 한 번에 보여줄 만큼. 명시하지 않으면 응답 크기를 서버 기본값에 맡기게 된다. */
 const SEARCH_RESULT_LIMIT = 20;
 
-/** 검색어를 고치는 동안 이전 결과를 남겨 둔다. 매번 비웠다 채우면 목록이 깜빡인다. */
-const keepResultsWhileSearching = { placeholderData: keepPreviousData } as const;
-
 export default function StoreStepPage() {
   const router = useRouter();
   const { store, setStore } = useReviewDraft();
@@ -34,7 +30,7 @@ export default function StoreStepPage() {
   const storeSheet = useSearchSheetState();
   const storeSearch = useSearchPlaces(
     { query: storeSheet.query, limit: SEARCH_RESULT_LIMIT },
-    { query: { enabled: storeSheet.enabled, ...keepResultsWhileSearching } },
+    { query: { enabled: storeSheet.enabled } },
   );
   const storeResults = mapStoreSearchResults(storeSearch.data?.items);
   const storeStatus = toSearchStatus(storeSheet.query, storeSearch);
@@ -42,14 +38,14 @@ export default function StoreStepPage() {
   const addressSheet = useSearchSheetState();
   const addressSearch = useSearchAddresses(
     { userId: MOCK_USER_ID, query: addressSheet.query, limit: SEARCH_RESULT_LIMIT },
-    { query: { enabled: addressSheet.enabled, ...keepResultsWhileSearching } },
+    { query: { enabled: addressSheet.enabled } },
   );
   const addressResults = mapAddressSearchResults(addressSearch.data?.items);
   const addressStatus = toSearchStatus(addressSheet.query, addressSearch);
 
   const needsAddressInput = store !== null && store.id === null;
 
-  const openAddressSheet = () => addressSheet.setOpen(true);
+  const openAddressSheet = () => addressSheet.onOpenChange(true);
 
   const handleAddressFieldKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -60,12 +56,12 @@ export default function StoreStepPage() {
 
   const handleSelectResult = (result: StoreSearchResult) => {
     setStore({ id: result.id, name: result.name, address: result.address, selectedAddress: null });
-    storeSheet.setOpen(false);
+    storeSheet.onOpenChange(false);
   };
 
   const handleDirectInput = (name: string) => {
     setStore({ id: null, name, address: null, selectedAddress: null });
-    storeSheet.setOpen(false);
+    storeSheet.onOpenChange(false);
   };
 
   const handleSelectAddress = (address: AddressSearchResult) => {
@@ -74,7 +70,7 @@ export default function StoreStepPage() {
     }
 
     setStore({ ...store, address: address.roadAddress, selectedAddress: address });
-    addressSheet.setOpen(false);
+    addressSheet.onOpenChange(false);
   };
 
   return (
@@ -94,8 +90,8 @@ export default function StoreStepPage() {
         <SearchField
           value={store?.name ?? ""}
           onValueChange={() => setStore(null)}
-          onSearch={() => storeSheet.setOpen(true)}
-          onClick={() => storeSheet.setOpen(true)}
+          onSearch={() => storeSheet.onOpenChange(true)}
+          onClick={() => storeSheet.onOpenChange(true)}
           placeholder="매장명을 검색해보세요"
           aria-label="방문 매장"
           readOnly
@@ -129,7 +125,7 @@ export default function StoreStepPage() {
 
       <StoreSearchSheet
         open={storeSheet.open}
-        onOpenChange={storeSheet.setOpen}
+        onOpenChange={storeSheet.onOpenChange}
         value={storeSheet.value}
         onValueChange={storeSheet.setValue}
         status={storeStatus}
@@ -140,7 +136,7 @@ export default function StoreStepPage() {
 
       <AddressSearchSheet
         open={addressSheet.open}
-        onOpenChange={addressSheet.setOpen}
+        onOpenChange={addressSheet.onOpenChange}
         value={addressSheet.value}
         onValueChange={addressSheet.setValue}
         status={addressStatus}

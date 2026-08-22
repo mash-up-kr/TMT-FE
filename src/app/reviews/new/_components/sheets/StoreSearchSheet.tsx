@@ -38,8 +38,14 @@ export function StoreSearchSheet({
       value={value}
       onValueChange={onValueChange}
       status={status}
+      persistent={
+        trimmedQuery.length > 0 && (
+          <SearchOptionList>
+            <DirectInputOption query={trimmedQuery} onSelect={() => onDirectInput(trimmedQuery)} />
+          </SearchOptionList>
+        )
+      }
     >
-      {/* 직접 입력 옵션이 항상 남으므로 이 시트에는 빈 상태가 없다. */}
       <SearchOptionList>
         {results.map((result) => (
           <SearchOptionRow

@@ -21,6 +21,7 @@ type SearchSheetProps = Readonly<{
   status: SearchStatus;
   /** 검색 전에 보여줄 것. */
   idle?: ReactNode;
+  persistent?: ReactNode;
   /** 결과가 준비됐을 때 그릴 것. 무엇을 비었다고 볼지는 각 시트가 판정한다. */
   children: ReactNode;
 }>;
@@ -41,6 +42,7 @@ export function SearchSheet({
   onValueChange,
   status,
   idle,
+  persistent,
   children,
 }: SearchSheetProps) {
   return (
@@ -64,7 +66,7 @@ export function SearchSheet({
           autoFocus
         />
 
-        <SearchResultArea status={status} idle={idle}>
+        <SearchResultArea status={status} idle={idle} persistent={persistent}>
           {children}
         </SearchResultArea>
       </div>

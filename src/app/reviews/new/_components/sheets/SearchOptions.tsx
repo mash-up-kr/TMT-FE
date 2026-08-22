@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Badge } from "@/shared/ui/Badge";
 import { cn } from "@/shared/utils/cn";
 import type { SearchStatus } from "../../_model/search";
 
 const LOADING_MESSAGE = "검색 중이에요";
 const ERROR_MESSAGE = "검색에 실패했어요. 잠시 후 다시 시도해 주세요";
+const LOADING_DELAY_MS = 300;
 
 const rowStyles = cn(
   "flex w-full flex-col gap-ds-4 rounded-ds-md px-ds-12 py-ds-8 text-left outline-none",
@@ -33,28 +34,59 @@ export function SearchOptionMessage({
   );
 }
 
+function useDelayedLoading(loading: boolean) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      setVisible(false);
+      return;
+    }
+
+    const timer = setTimeout(() => setVisible(true), LOADING_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  return visible;
+}
+
 export function SearchResultArea({
   status,
   idle = null,
+  persistent = null,
   children,
 }: Readonly<{
   status: SearchStatus;
   idle?: ReactNode;
+  persistent?: ReactNode;
   children: ReactNode;
 }>) {
+  const showLoading = useDelayedLoading(status === "loading");
+
   if (status === "idle") {
     return idle;
   }
 
   if (status === "loading") {
-    return <SearchOptionMessage>{LOADING_MESSAGE}</SearchOptionMessage>;
+    return (
+      <>
+        {showLoading && <SearchOptionMessage>{LOADING_MESSAGE}</SearchOptionMessage>}
+        {persistent}
+      </>
+    );
   }
 
   if (status === "error") {
-    return <SearchOptionMessage tone="error">{ERROR_MESSAGE}</SearchOptionMessage>;
+    return (
+      <>
+        <SearchOptionMessage tone="error">{ERROR_MESSAGE}</SearchOptionMessage>
+        {persistent}
+      </>
+    );
   }
 
-  return children;
+  return <>{children}</>;
 }
 
 export function SearchOptionRow({
