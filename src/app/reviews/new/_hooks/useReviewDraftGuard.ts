@@ -5,9 +5,8 @@ import { useEffect } from "react";
 import { REVIEW_STEPS, reviewStepPath } from "../_constants/steps";
 import type { CompleteReviewStore } from "../_model/store";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
 import { isReviewStoreComplete } from "../_utils/reviewStore";
-
-const FIRST_STEP_PATH = reviewStepPath(REVIEW_STEPS[0]);
 
 /**
  * 초안 없이 열린 단계를 1단계로 돌려보낸다.
@@ -26,6 +25,7 @@ const FIRST_STEP_PATH = reviewStepPath(REVIEW_STEPS[0]);
  */
 export function useReviewDraftGuard(): CompleteReviewStore | null {
   const router = useRouter();
+  const basePath = useReviewFlowBase();
   const { store } = useReviewDraft();
   const completeStore = isReviewStoreComplete(store) ? store : null;
   // 의존성을 매장 객체로 두면 이름 한 글자만 바뀌어도 effect가 다시 돈다.
@@ -33,9 +33,9 @@ export function useReviewDraftGuard(): CompleteReviewStore | null {
 
   useEffect(() => {
     if (!hasStore) {
-      router.replace(FIRST_STEP_PATH);
+      router.replace(reviewStepPath(basePath, REVIEW_STEPS[0]));
     }
-  }, [hasStore, router]);
+  }, [hasStore, router, basePath]);
 
   return completeStore;
 }

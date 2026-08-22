@@ -16,6 +16,7 @@ import { reviewStepPath } from "../_constants/steps";
 import { useSearchSheetState } from "../_hooks/useSearchSheetState";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
 import { mapAddressSearchResults, mapStoreSearchResults } from "../_utils/reviewApiMappers";
 import { isReviewStoreComplete } from "../_utils/reviewStore";
 import { toSearchStatus } from "../_utils/searchStatus";
@@ -25,6 +26,7 @@ const SEARCH_RESULT_LIMIT = 20;
 
 export default function StoreStepPage() {
   const router = useRouter();
+  const basePath = useReviewFlowBase();
   const { store, setStore } = useReviewDraft();
 
   const storeSheet = useSearchSheetState();
@@ -116,7 +118,7 @@ export default function StoreStepPage() {
         <ButtonStack>
           <Button
             disabled={!isReviewStoreComplete(store)}
-            onClick={() => router.push(reviewStepPath("photos"))}
+            onClick={() => router.push(reviewStepPath(basePath, "photos"))}
           >
             다음
           </Button>

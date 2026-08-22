@@ -9,10 +9,12 @@ import { TagGroupField } from "../_components/TagGroupField";
 import { reviewStepPath } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
 import { mapReviewTagGroups } from "../_utils/reviewApiMappers";
 
 export default function TagsStepPage() {
   const router = useRouter();
+  const basePath = useReviewFlowBase();
   const { selectedTagIds, toggleTag } = useReviewDraft();
   const hasStore = useReviewDraftGuard() !== null;
   const formConfig = useReviewFormConfig();
@@ -59,7 +61,7 @@ export default function TagsStepPage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.push(reviewStepPath("rating"))}>다음</Button>
+          <Button onClick={() => router.push(reviewStepPath(basePath, "rating"))}>다음</Button>
         </ButtonStack>
       </div>
     </>

@@ -8,9 +8,11 @@ import { StepHeader } from "../_components/StepHeader";
 import { reviewStepPath } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
 
 export default function PhotosStepPage() {
   const router = useRouter();
+  const basePath = useReviewFlowBase();
   const { photos, addPhotos, removePhoto } = useReviewDraft();
   const hasStore = useReviewDraftGuard() !== null;
 
@@ -36,7 +38,7 @@ export default function PhotosStepPage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.push(reviewStepPath("tags"))}>다음</Button>
+          <Button onClick={() => router.push(reviewStepPath(basePath, "tags"))}>다음</Button>
         </ButtonStack>
       </div>
     </>

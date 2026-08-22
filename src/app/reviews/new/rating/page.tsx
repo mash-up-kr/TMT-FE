@@ -7,12 +7,14 @@ import { Textarea } from "@/shared/ui/TextField";
 import { StarRatingField } from "../_components/StarRatingField";
 import { StepHeader } from "../_components/StepHeader";
 import { MAX_REVIEW_TEXT_LENGTH } from "../_constants/review";
-import { REVIEW_COMPLETE_PATH } from "../_constants/steps";
+import { reviewCompletePath } from "../_constants/steps";
 import { useReviewDraftGuard } from "../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
+import { useReviewFlowBase } from "../_stores/ReviewFlowBaseProvider";
 
 export default function RatingStepPage() {
   const router = useRouter();
+  const basePath = useReviewFlowBase();
   const { rating, setRating, reviewText, setReviewText } = useReviewDraft();
   const hasStore = useReviewDraftGuard() !== null;
 
@@ -48,7 +50,7 @@ export default function RatingStepPage() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.replace(REVIEW_COMPLETE_PATH)}>다음</Button>
+          <Button onClick={() => router.replace(reviewCompletePath(basePath))}>다음</Button>
         </ButtonStack>
       </div>
     </>
