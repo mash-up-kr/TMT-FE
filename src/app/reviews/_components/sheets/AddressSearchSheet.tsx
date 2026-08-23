@@ -4,10 +4,12 @@ import Image from "next/image";
 import type { SearchStatus } from "../../_model/search";
 import type { AddressSearchResult } from "../../_model/store";
 import emptyResultMascot from "../assets/address-search-empty-mascot.png";
+import { StatusMessage } from "../StatusMessage";
 import { AddressOptionRow, SearchOptionList } from "./SearchOptions";
 import { SearchSheet } from "./SearchSheet";
 
 const EMPTY_TITLE = "검색결과가 없어요";
+const TRUNCATED_MESSAGE = "결과가 많아 일부만 보여드려요. 검색어를 더 자세히 입력해 보세요";
 
 const GUIDE_TITLE = "이렇게 검색해 보세요";
 
@@ -59,6 +61,8 @@ type AddressSearchSheetProps = Readonly<{
   onValueChange: (value: string) => void;
   status: SearchStatus;
   results: readonly AddressSearchResult[];
+  /** 서버가 결과를 잘라냈는지. 더 있는데 안 보이는 상황을 사용자가 알 수 있어야 한다. */
+  truncated?: boolean;
   onSelectResult: (address: AddressSearchResult) => void;
 }>;
 
@@ -69,6 +73,7 @@ export function AddressSearchSheet({
   onValueChange,
   status,
   results,
+  truncated = false,
   onSelectResult,
 }: AddressSearchSheetProps) {
   return (
@@ -86,16 +91,22 @@ export function AddressSearchSheet({
       {results.length === 0 ? (
         <AddressSearchEmptyState />
       ) : (
-        <SearchOptionList>
-          {results.map((result) => (
-            <AddressOptionRow
-              key={result.addressId}
-              roadAddress={result.roadAddress}
-              jibunAddress={result.jibunAddress}
-              onSelect={() => onSelectResult(result)}
-            />
-          ))}
-        </SearchOptionList>
+        <>
+          <SearchOptionList>
+            {results.map((result) => (
+              <AddressOptionRow
+                key={result.addressId}
+                roadAddress={result.roadAddress}
+                jibunAddress={result.jibunAddress}
+                onSelect={() => onSelectResult(result)}
+              />
+            ))}
+          </SearchOptionList>
+          {/* 빈 결과는 빈 상태 화면이 이미 안내하므로 결과가 있을 때만 덧붙인다. */}
+          {truncated && (
+            <StatusMessage className="px-ds-12 pt-ds-12">{TRUNCATED_MESSAGE}</StatusMessage>
+          )}
+        </>
       )}
     </SearchSheet>
   );

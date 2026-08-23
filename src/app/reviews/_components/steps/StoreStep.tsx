@@ -146,6 +146,7 @@ export function StoreStep() {
         onValueChange={addressSheet.setValue}
         status={addressStatus}
         results={addressResults}
+        truncated={addressSearch.data?.truncated === true}
         onSelectResult={handleSelectAddress}
       />
     </>
