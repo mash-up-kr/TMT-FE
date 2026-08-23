@@ -1,4 +1,4 @@
-import type { MockAddress } from "@/api/gen/_model/mockAddress.gen";
+import type { AddressItem } from "@/api/gen/_model/addressItem.gen";
 import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
 import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfigResponse.gen";
 import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen";
@@ -26,20 +26,14 @@ export function mapStoreSearchResults(items: PlaceCardResponse[] | undefined): S
   );
 }
 
-export function mapAddressSearchResults(items: MockAddress[] | undefined): AddressSearchResult[] {
+export function mapAddressSearchResults(items: AddressItem[] | undefined): AddressSearchResult[] {
   return (items ?? []).flatMap((item) =>
-    hasText(item.addressId) &&
-    hasText(item.roadAddress) &&
-    hasText(item.jibunAddress) &&
-    hasFiniteNumber(item.latitude) &&
-    hasFiniteNumber(item.longitude)
+    hasText(item.addressId) && hasText(item.roadAddress) && hasText(item.jibunAddress)
       ? [
           {
             addressId: item.addressId,
             roadAddress: item.roadAddress,
             jibunAddress: item.jibunAddress,
-            latitude: item.latitude,
-            longitude: item.longitude,
           },
         ]
       : [],

@@ -23,6 +23,9 @@ import { StoreSearchSheet } from "../sheets/StoreSearchSheet";
 
 const SEARCH_RESULT_LIMIT = 20;
 
+/** 2자 미만은 서버가 VALIDATION_FAILED로 거절하므로 아예 보내지 않는다. */
+const ADDRESS_SEARCH_OPTIONS = { debounceMs: 400, minQueryLength: 2 } as const;
+
 export function StoreStep() {
   const router = useRouter();
   const basePath = useReviewFlowBase();
@@ -36,7 +39,8 @@ export function StoreStep() {
   const storeResults = mapStoreSearchResults(storeSearch.data?.items);
   const storeStatus = toSearchStatus(storeSheet.query, storeSearch);
 
-  const addressSheet = useSearchSheetState();
+  // 주소 검색만 외부 API를 타고 승인키를 서비스 전체가 공유한다. 매장 검색(내부 DB)보다 세게 누른다.
+  const addressSheet = useSearchSheetState(ADDRESS_SEARCH_OPTIONS);
   const addressSearch = useSearchAddresses(
     { userId: TEMP_USER_ID, query: addressSheet.query, limit: SEARCH_RESULT_LIMIT },
     { query: { enabled: addressSheet.enabled } },
