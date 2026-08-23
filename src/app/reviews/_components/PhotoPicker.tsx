@@ -44,10 +44,8 @@ function AddPhotoButton({ count, onAdd, className }: AddPhotoButtonProps) {
       <span className="text-body-md-medium">
         {count}/{MAX_REVIEW_PHOTO_COUNT}
       </span>
-      {/*
-        multiple을 빼서 한 번에 한 장만 고르게 한다. HTML에는 파일 개수 상한을 거는 속성이 없어
-        multiple을 열어두면 남은 자리보다 많이 골라도 막을 방법이 없고, 넘친 만큼이 말없이 사라진다.
-      */}
+      {/* multiple을 일부러 뺐다. HTML에는 파일 개수 상한이 없어 열어두면 남은 자리보다 많이
+          골라도 막을 수 없고, 넘친 만큼이 안내 없이 사라진다. */}
       <input
         id={inputId}
         type="file"
@@ -69,13 +67,6 @@ export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const previousCount = useRef(photos.length);
 
-  /**
-   * 칸 너비가 고정이라 좁은 화면에서는 두 장만 담겨도 목록이 가로로 넘친다. 그대로 두면
-   * 방금 추가한 사진과 추가 버튼이 오른쪽 밖으로 잘려 다음 장을 어디서 넣는지 보이지 않는다.
-   *
-   * 늘어났을 때만 끝으로 보낸다. 삭제로 줄어들 때는 브라우저가 스크롤 위치를 알아서 당겨준다.
-   * 되돌아온 단계에서 초안이 복원될 때 튀지 않도록 시작값은 현재 개수로 둔다.
-   */
   useEffect(() => {
     const grew = photos.length > previousCount.current;
     previousCount.current = photos.length;
@@ -84,7 +75,6 @@ export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
       return;
     }
 
-    // behavior를 넘기지 않아야 CSS scroll-behavior(=모션 설정)를 그대로 따른다.
     scrollRef.current.scrollTo({ left: scrollRef.current.scrollWidth });
   }, [photos.length]);
 

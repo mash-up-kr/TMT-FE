@@ -24,12 +24,6 @@ function findStepIndex(basePath: string, pathname: string) {
   return index === -1 ? null : index;
 }
 
-/**
- * 단계 플로우의 공통 껍데기.
- *
- * 기준 경로를 prop으로만 받고 트리 종류를 나타내는 플래그는 받지 않는다. 셸이 "새 리뷰냐
- * 이어쓰기냐"를 알기 시작하면 트리를 나눈 이유가 사라진다.
- */
 export function ReviewFlowShell({
   basePath,
   initialDraft,
@@ -39,14 +33,12 @@ export function ReviewFlowShell({
   const router = useRouter();
   const [exitOpen, setExitOpen] = useState(false);
 
-  // 프로그레스는 "현재 단계"가 아니라 "완료한 단계 수"다. 앞선 단계가 곧 완료한 단계이므로
-  // 단계 인덱스가 그대로 완료 수가 된다. 시안 인디케이터 폭(1단계 0% · 2단계 25% · 4단계 75%)이 근거다.
   const completedSteps = findStepIndex(basePath, pathname);
   const canGoBack = completedSteps !== null && completedSteps > 0;
   const isComplete = pathname === reviewCompletePath(basePath);
 
-  // 플로우 밖으로 나간다. 단계마다 히스토리가 쌓여 있어 back()으로는 앞 단계로 갈 뿐이다.
-  // 여기서 layout이 언마운트되며 초안과 사진 미리보기 URL이 함께 정리된다.
+  // back()은 단계마다 쌓인 히스토리를 한 칸 되돌릴 뿐이라 플로우 밖으로 나가지 못한다.
+  // 홈으로 replace해야 layout이 내려가면서 초안과 미리보기 URL도 함께 정리된다.
   const exitFlow = () => router.replace(REVIEW_FLOW_EXIT_PATH);
 
   const handleClose = () => {

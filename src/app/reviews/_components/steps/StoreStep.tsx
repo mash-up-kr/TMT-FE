@@ -21,7 +21,6 @@ import { StepHeader } from "../StepHeader";
 import { AddressSearchSheet } from "../sheets/AddressSearchSheet";
 import { StoreSearchSheet } from "../sheets/StoreSearchSheet";
 
-/** 시트가 한 번에 보여줄 만큼. 명시하지 않으면 응답 크기를 서버 기본값에 맡기게 된다. */
 const SEARCH_RESULT_LIMIT = 20;
 
 export function StoreStep() {

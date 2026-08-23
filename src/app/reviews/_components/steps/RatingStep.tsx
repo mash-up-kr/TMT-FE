@@ -50,6 +50,7 @@ export function RatingStep() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
+          {/* 저장 연동(createSave/updateSave)은 업로드 API 확정 후 붙인다. 지금은 완료 화면으로만 간다. */}
           <Button onClick={() => router.replace(reviewCompletePath(basePath))}>다음</Button>
         </ButtonStack>
       </div>

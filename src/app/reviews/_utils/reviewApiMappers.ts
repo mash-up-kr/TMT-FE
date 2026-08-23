@@ -59,18 +59,6 @@ export function mapReviewTagGroups(config: ReviewFormConfigResponse | undefined)
   }));
 }
 
-/**
- * 서버 초안을 이어쓰기 진입값으로 바꾼다.
- *
- * 응답의 모든 필드가 optional이라 값이 비어 있을 수 있다. 매장 이름이나 주소가 없으면 매장을
- * `null`로 두어 초안 가드가 1단계로 되돌리게 한다 — 반쯤 채워진 매장으로 다음 단계를 열면
- * 무엇을 고쳐야 하는지 알 수 없다.
- *
- * `selectedAddress`는 주소 검색으로 고른 좌표·지번까지 담는 값이라 초안 응답만으로는 복원할 수
- * 없다. 표시용 주소만 채우고 `null`로 둔다.
- *
- * 사진은 담지 않는다. 이유는 `ReviewDraftSnapshot` 주석 참고.
- */
 export function mapSaveDetailToDraft(save: SaveDetailResponse | undefined): ReviewDraftSnapshot {
   const placeName = save?.place?.name;
   const roadAddress = save?.place?.roadAddress;
