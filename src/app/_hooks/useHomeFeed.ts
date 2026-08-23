@@ -1,5 +1,3 @@
-"use client";
-
 import { useFeed } from "@/api/gen/home/home.gen";
 import type { FeedReview } from "../_model/home";
 import { toFeedReviews } from "../_utils/homeMapper";

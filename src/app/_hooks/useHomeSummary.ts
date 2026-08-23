@@ -1,5 +1,3 @@
-"use client";
-
 import { useHome } from "@/api/gen/home/home.gen";
 import type { HomeSummary } from "../_model/home";
 import { toHomeSummary } from "../_utils/homeMapper";
