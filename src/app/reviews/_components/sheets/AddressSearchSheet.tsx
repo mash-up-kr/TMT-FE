@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import emptyResultMascot from "@/shared/components/assets/tomato-mascot-empty.png";
 import type { SearchStatus } from "../../_model/search";
 import type { AddressSearchResult } from "../../_model/store";
-import emptyResultMascot from "../assets/tomato-mascot-empty.png";
 import { StatusMessage } from "../StatusMessage";
 import { AddressOptionRow, SearchOptionList } from "./SearchOptions";
 import { SearchSheet } from "./SearchSheet";
@@ -36,7 +36,14 @@ function AddressSearchEmptyState() {
   return (
     <div className="flex flex-col items-center gap-ds-12 py-ds-32">
       <div className="relative h-[130px] w-[172px] shrink-0">
-        <Image src={emptyResultMascot} alt="" fill className="object-contain" />
+        <Image
+          src={emptyResultMascot}
+          alt=""
+          width={172}
+          height={130}
+          sizes="172px"
+          className="h-full w-full object-cover object-[center_-34.254px]"
+        />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-77% to-surface-primary to-93%"
