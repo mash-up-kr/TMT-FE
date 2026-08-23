@@ -7,5 +7,5 @@
  */
 
 export interface ContentConstraint {
-  maxLength?: number;
+  maxLength: number;
 }

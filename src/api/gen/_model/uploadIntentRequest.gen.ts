@@ -7,6 +7,6 @@
  */
 
 export interface UploadIntentRequest {
-  contentType?: string;
-  contentLength?: number;
+  contentType: string;
+  contentLength: number;
 }

@@ -9,6 +9,6 @@ import type { FoodCategory } from "./foodCategory.gen";
 import type { RegionTag } from "./regionTag.gen";
 
 export interface GroupTagsResponse {
-  foodCategories?: FoodCategory[];
-  regionTags?: RegionTag[];
+  foodCategories: FoodCategory[];
+  regionTags: RegionTag[];
 }

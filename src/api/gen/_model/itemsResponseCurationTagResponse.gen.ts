@@ -12,5 +12,5 @@ import type { CurationTagResponse } from "./curationTagResponse.gen";
  */
 export interface ItemsResponseCurationTagResponse {
   /** 결과 목록. 없으면 빈 배열 */
-  items?: CurationTagResponse[];
+  items: CurationTagResponse[];
 }

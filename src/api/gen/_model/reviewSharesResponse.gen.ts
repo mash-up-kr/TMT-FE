@@ -8,9 +8,9 @@
 import type { Item } from "./item.gen";
 
 export interface ReviewSharesResponse {
-  items?: Item[];
-  sharedCount?: number;
+  items: Item[];
+  sharedCount: number;
   /** @nullable */
   nextCursor?: string | null;
-  hasNext?: boolean;
+  hasNext: boolean;
 }

@@ -7,7 +7,7 @@
  */
 
 export interface PlaceSummary {
-  placeId?: string;
-  name?: string;
-  roadAddress?: string;
+  placeId: string;
+  name: string;
+  roadAddress: string;
 }

@@ -7,7 +7,7 @@
  */
 
 export interface RatingConstraint {
-  min?: number;
-  max?: number;
-  step?: number;
+  min: number;
+  max: number;
+  step: number;
 }

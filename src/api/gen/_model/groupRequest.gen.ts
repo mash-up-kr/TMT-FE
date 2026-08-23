@@ -7,10 +7,10 @@
  */
 
 export interface GroupRequest {
-  name?: string;
-  oneLineDescription?: string;
-  foodCategoryId?: string;
-  regionTagIds?: string[];
+  name: string;
+  oneLineDescription: string;
+  foodCategoryId: string;
+  regionTagIds: string[];
   /** @nullable */
   imageAssetId?: string | null;
   /** @nullable */

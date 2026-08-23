@@ -7,7 +7,7 @@
  */
 
 export interface ReplaceSharesResponse {
-  groupId?: string;
-  sharedReviewIds?: string[];
-  sharedCount?: number;
+  groupId: string;
+  sharedReviewIds: string[];
+  sharedCount: number;
 }

@@ -7,6 +7,6 @@
  */
 
 export interface RegionTag {
-  regionTagId?: string;
-  label?: string;
+  regionTagId: string;
+  label: string;
 }

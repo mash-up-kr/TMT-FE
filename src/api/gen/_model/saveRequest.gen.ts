@@ -7,7 +7,7 @@
  */
 
 export interface SaveRequest {
-  placeId?: string;
+  placeId: string;
   photoAssetIds?: string[];
   companionTagIds?: string[];
   positivePointTagIds?: string[];
