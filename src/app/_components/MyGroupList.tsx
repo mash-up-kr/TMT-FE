@@ -26,7 +26,7 @@ export function MyGroupList({ groups }: MyGroupListProps) {
             <PlusIcon size={32} />
           </button>
           {groups.length === 0 ? (
-            <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-primary">
+            <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-disabled">
               새 그룹 가입하기
             </span>
           ) : null}
