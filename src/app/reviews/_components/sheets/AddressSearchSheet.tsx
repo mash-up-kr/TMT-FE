@@ -37,7 +37,7 @@ function AddressSearchEmptyState() {
         <Image src={emptyResultMascot} alt="" fill className="object-contain" />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-[77.308%] to-surface-primary to-[92.806%]"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-77% to-surface-primary to-93%"
         />
       </div>
       <div className="flex flex-col items-center gap-ds-4 text-center">

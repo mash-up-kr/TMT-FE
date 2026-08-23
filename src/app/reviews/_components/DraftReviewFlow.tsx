@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
 import { cn } from "@/shared/utils/cn";
-import { MOCK_USER_ID } from "../_constants/mockUser";
+import { TEMP_USER_ID } from "../_constants/mockUser";
 import { draftReviewBasePath } from "../_constants/steps";
 import { mapSaveDetailToDraft } from "../_utils/reviewApiMappers";
 import { ReviewFlowShell } from "./ReviewFlowShell";
@@ -38,12 +38,24 @@ function FlowMessage({
  *
  * 응답 전에는 단계를 그리지 않는다. 초안 가드가 "매장이 없으면 1단계로" 판정하기 때문에,
  * 로딩 중에 단계를 먼저 그리면 아직 도착하지 않은 매장을 없는 것으로 보고 되돌려 버린다.
+ *
+ * 에러를 여기서 그리는 것은 잠정이다. 프로젝트에 에러 경계가 생기면 초안 조회 실패는 그쪽으로
+ * 올린다 — 초안이 없으면 이 화면 자체가 성립하지 않으므로 경계가 맡을 실패가 맞고, 지금은
+ * "다시 시도해 주세요"라고 적어두고 재시도 수단이 없다. 옮길 때 두 가지가 함께 가야 한다.
+ *
+ * 1. 조회를 layout에서 page로 내린다. `error.tsx`는 같은 세그먼트의 layout에서 난 에러를 잡지
+ *    않으므로, 조회가 layout에 있는 채로 올리면 경계가 셸 바깥에서 잡아 GNB 없는 화면이 된다.
+ * 2. `throwOnError`는 `(error, query) => query.state.data === undefined` 형태여야 한다. 그냥
+ *    켜면 재조회 실패까지 트리를 날려 아래 게이트가 지키는 편집 내용이 사라진다.
+ *
+ * 검색 시트의 실패는 올리지 않는다. 검색이 죽어도 직접 입력으로 진행할 수 있어야 해서
+ * 실패 반경이 목록 안에 머물러야 한다.
  */
 export function DraftReviewFlow({
   draftId,
   children,
 }: Readonly<{ draftId: string; children: ReactNode }>) {
-  const save = useGetSave(draftId, { userId: MOCK_USER_ID });
+  const save = useGetSave(draftId, { userId: TEMP_USER_ID });
 
   /**
    * 판정 기준은 `isPending`·`isError`가 아니라 데이터 유무다. 이미 초안을 받아 사용자가 입력

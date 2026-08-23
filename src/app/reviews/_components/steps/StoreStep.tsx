@@ -8,7 +8,7 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { SearchIcon } from "@/shared/ui/Icons";
 import { SearchField, TextField } from "@/shared/ui/TextField";
-import { MOCK_USER_ID } from "../../_constants/mockUser";
+import { TEMP_USER_ID } from "../../_constants/mockUser";
 import { reviewStepPath } from "../../_constants/steps";
 import { useSearchSheetState } from "../../_hooks/useSearchSheetState";
 import type { AddressSearchResult, StoreSearchResult } from "../../_model/store";
@@ -39,7 +39,7 @@ export function StoreStep() {
 
   const addressSheet = useSearchSheetState();
   const addressSearch = useSearchAddresses(
-    { userId: MOCK_USER_ID, query: addressSheet.query, limit: SEARCH_RESULT_LIMIT },
+    { userId: TEMP_USER_ID, query: addressSheet.query, limit: SEARCH_RESULT_LIMIT },
     { query: { enabled: addressSheet.enabled } },
   );
   const addressResults = mapAddressSearchResults(addressSearch.data?.items);

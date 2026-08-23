@@ -1,13 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
-// 라우트 `_constants/mockUser.ts`가 같은 환경 변수를 쿼리 파라미터용으로 읽는다. import 경계상
-// 상수를 공유할 수 없으므로 두 곳이 같은 규칙으로 검증한다 (양수 정수가 아니면 기본값).
-const DEFAULT_MOCK_USER_ID = 1;
-const configuredMockUserId = Number(process.env.NEXT_PUBLIC_MOCK_USER_ID);
-const MOCK_USER_ID = String(
-  Number.isSafeInteger(configuredMockUserId) && configuredMockUserId > 0
-    ? configuredMockUserId
-    : DEFAULT_MOCK_USER_ID,
-);
+const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? "1";
 
 export class TmtApiError<TBody = unknown> extends Error {
   readonly httpStatus: number;

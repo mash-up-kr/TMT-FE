@@ -1,5 +1,5 @@
+import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { Chip } from "@/shared/ui/Chip";
-import { REVIEW_TAG_ICONS } from "../_constants/tagIcons";
 import type { ReviewTagGroup } from "../_model/tag";
 
 type TagGroupFieldProps = Readonly<{
@@ -22,17 +22,15 @@ export function TagGroupField({ group, selectedTagIds, onToggle }: TagGroupField
         <span className="text-content-tertiary">{group.hint}</span>
       </legend>
 
-      <div className="flex w-full max-w-[320px] flex-wrap gap-ds-8">
+      <div className="flex w-full flex-wrap gap-ds-8">
         {group.tags.map((tag) => {
-          const Icon = REVIEW_TAG_ICONS[tag.id];
-
           return (
             <Chip
               key={tag.id}
               size="lg"
               selected={selectedTagIds.has(tag.id)}
               onClick={() => onToggle(tag.id)}
-              leftIcon={Icon && <Icon />}
+              leftIcon={<ReviewTagIcon tagId={tag.id} />}
             >
               {tag.label}
             </Chip>
