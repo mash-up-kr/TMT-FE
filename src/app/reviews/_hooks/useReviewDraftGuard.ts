@@ -16,7 +16,6 @@ import { isReviewStoreComplete } from "../_utils/reviewStore";
  *
  * 임시 저장으로 복원하지 않는 것은 시안 제약이다 — 이탈 모달이 "모두 삭제돼요"라고 단언한다.
  * 저장 여부는 아직 합의되지 않았고, 저장을 도입하더라도 이 가드는 그대로 필요하다.
- * (docs/review-write-flow-implementation.md §9.1)
  *
  * `replace`를 쓰는 이유: 되돌아간 뒤 뒤로가기를 누르면 다시 이 단계로 와서 무한 왕복이 된다.
  *
