@@ -63,9 +63,9 @@ presigned URL 방식이다 — intent 발급 → `uploadUrl`에 파일 업로드
    명시적 저장 버튼인지에 따라 Provider 설계와 이탈 모달 문구가 갈린다. **이게 정해지지 않으면
    Phase 3 이후를 설계할 수 없다.**
 
-4. **`[step]` 동적 세그먼트 채택 여부** — 트리가 둘이 되면 정적 세그먼트는 page 파일이 8개가 된다.
-   `[step]` + `generateStaticParams`로 묶으면 정적 프리렌더를 유지하면서 없는 step은 404가 된다.
-   라우트 분리와 독립적인 선택이라 따로 정한다.
+4. **`[step]` 동적 세그먼트 채택** — 새 리뷰와 이어쓰기의 동일한 단계 집합은 각각
+   `[step]/page.tsx` 하나로 받는다. 공통 화면 선택기가 허용된 step만 렌더링하고, 나머지는
+   `notFound()`로 처리한다. 별도 정적 프리렌더는 도입하지 않는다.
 
 ## 이행 단계
 
@@ -93,10 +93,10 @@ new/page.tsx, new/{store,photos,tags,rating,complete}/page.tsx
 이동 대상: `_components`(8개 + `sheets`, `assets`), `_stores`(1), `_constants`(5),
 `_hooks`(2), `_model`(4), `_utils`(3).
 
-### Phase 2 — `new` 트리 재구성 — 해당 없음
+### Phase 2 — `new` 트리 재구성 — 완료
 
-합의 4에서 **단계를 정적 세그먼트로 유지**하기로 정해 `new` 트리는 그대로 두었다.
-덕분에 `new`의 모든 단계가 정적 프리렌더(`○`)를 유지한다.
+`new/[step]`으로 고정 단계 wrapper를 하나로 합쳤다. `REVIEW_STEPS`는 진행 표시와 단계 이동에,
+`REVIEW_ROUTE_SEGMENTS`는 동적 URL 검증과 화면 선택에 사용한다.
 
 ### Phase 3 — `drafts/[draftId]` 트리 추가 — 완료 (사진 제외)
 

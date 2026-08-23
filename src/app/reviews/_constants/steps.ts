@@ -2,7 +2,15 @@ export const REVIEW_STEPS = ["store", "photos", "tags", "rating"] as const;
 
 export type ReviewStepSegment = (typeof REVIEW_STEPS)[number];
 
+export const REVIEW_ROUTE_SEGMENTS = [...REVIEW_STEPS, "complete"] as const;
+
+export type ReviewRouteSegment = (typeof REVIEW_ROUTE_SEGMENTS)[number];
+
 export const REVIEW_STEP_COUNT = REVIEW_STEPS.length;
+
+export function isReviewRouteSegment(value: string): value is ReviewRouteSegment {
+  return REVIEW_ROUTE_SEGMENTS.some((segment) => segment === value);
+}
 
 /**
  * 플로우 진입 트리의 기준 경로.
