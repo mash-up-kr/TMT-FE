@@ -7,7 +7,7 @@
  */
 
 export interface UploadIntentResponse {
-  assetId?: string;
-  uploadUrl?: string;
-  expiresAt?: string;
+  assetId: string;
+  uploadUrl: string;
+  expiresAt: string;
 }

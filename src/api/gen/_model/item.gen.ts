@@ -7,10 +7,10 @@
  */
 
 export interface Item {
-  reviewId?: string;
-  placeName?: string;
-  thumbnailUrl?: string;
-  contentPreview?: string;
-  createdAt?: string;
-  shared?: boolean;
+  reviewId: string;
+  placeName: string;
+  thumbnailUrl: string;
+  contentPreview: string;
+  createdAt: string;
+  isShared: boolean;
 }

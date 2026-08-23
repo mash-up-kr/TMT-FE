@@ -7,18 +7,18 @@
  */
 
 export interface PlaceCardResponse {
-  placeId?: string;
-  name?: string;
-  roadAddress?: string;
-  regionName?: string;
+  placeId: string;
+  name: string;
+  roadAddress: string;
+  regionName: string;
   /** @nullable */
   categoryName?: string | null;
   /** @nullable */
   averageRating?: number | null;
-  reviewCount?: number;
+  reviewCount: number;
   /** @nullable */
   thumbnailUrl?: string | null;
   /** @nullable */
   distanceMeters?: number | null;
-  favorite?: boolean;
+  isFavorite: boolean;
 }

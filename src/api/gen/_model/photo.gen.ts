@@ -7,7 +7,7 @@
  */
 
 export interface Photo {
-  photoId?: string;
-  url?: string;
-  order?: number;
+  photoId: string;
+  url: string;
+  order: number;
 }

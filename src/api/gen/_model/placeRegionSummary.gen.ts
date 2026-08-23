@@ -6,7 +6,9 @@
  * OpenAPI spec version: v1
  */
 
-export interface TicketSummary {
-  grantedCount?: number;
-  availableCount?: number;
+export interface PlaceRegionSummary {
+  placeId: string;
+  name: string;
+  regionName: string;
+  isFavorite: boolean;
 }

@@ -12,14 +12,14 @@ import type { PlaceSummary } from "./placeSummary.gen";
 import type { Tag } from "./tag.gen";
 
 export interface ReviewDetailResponse {
-  reviewId?: string;
-  author?: Author;
-  place?: PlaceSummary;
-  photos?: Photo[];
-  tags?: Tag[];
-  rating?: number;
-  content?: string;
+  reviewId: string;
+  author: Author;
+  place: PlaceSummary;
+  photos: Photo[];
+  tags: Tag[];
+  rating: number;
+  content: string;
   aiSummary?: AiSummary | null;
-  createdAt?: string;
-  mine?: boolean;
+  createdAt: string;
+  isMine: boolean;
 }

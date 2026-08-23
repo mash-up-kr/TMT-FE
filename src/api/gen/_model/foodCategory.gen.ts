@@ -7,6 +7,6 @@
  */
 
 export interface FoodCategory {
-  categoryId?: string;
-  label?: string;
+  categoryId: string;
+  label: string;
 }

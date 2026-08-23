@@ -6,9 +6,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface CreatePlaceRequest {
-  name?: string;
-  addressId?: string;
-  /** @nullable */
-  categoryId?: string | null;
+export interface PlacePhoto {
+  url: string;
+  reviewId: string;
 }

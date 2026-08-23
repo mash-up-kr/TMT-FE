@@ -9,7 +9,7 @@ import type { GroupCardResponse } from "./groupCardResponse.gen";
 import type { MyGroup } from "./myGroup.gen";
 
 export interface HomeResponse {
-  nickname?: string;
-  myGroups?: MyGroup[];
-  recommendedGroups?: GroupCardResponse[];
+  nickname: string;
+  myGroups: MyGroup[];
+  recommendedGroups: GroupCardResponse[];
 }

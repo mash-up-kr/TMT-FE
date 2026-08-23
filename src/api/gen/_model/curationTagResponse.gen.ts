@@ -11,7 +11,7 @@
  */
 export interface CurationTagResponse {
   /** 칩 식별자. 검색(placesSearch)의 curationTagId로 그대로 전달 */
-  curationTagId?: string;
+  curationTagId: string;
   /** 화면 노출 문구 */
-  label?: string;
+  label: string;
 }

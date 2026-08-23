@@ -5,12 +5,12 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
-import type { Item } from "./item.gen";
+import type { AddressItem } from "./addressItem.gen";
 
-export interface ReviewSharesResponse {
-  items: Item[];
-  sharedCount: number;
+export interface AddressSearchResponse {
+  items: AddressItem[];
   /** @nullable */
   nextCursor?: string | null;
   hasNext: boolean;
+  truncated: boolean;
 }

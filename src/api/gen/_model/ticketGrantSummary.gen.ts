@@ -6,6 +6,7 @@
  * OpenAPI spec version: v1
  */
 
-export type CreatePlaceParams = {
-  userId: number;
-};
+export interface TicketGrantSummary {
+  grantedCount: number;
+  availableCount: number;
+}

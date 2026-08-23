@@ -7,8 +7,8 @@
  */
 
 export interface Author {
-  userId?: string;
-  nickname?: string;
+  userId: string;
+  nickname: string;
   /** @nullable */
   profileImageUrl?: string | null;
 }

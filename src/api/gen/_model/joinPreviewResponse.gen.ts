@@ -8,10 +8,10 @@
 import type { GroupSummary } from "./groupSummary.gen";
 
 export interface JoinPreviewResponse {
-  group?: GroupSummary;
-  availableTicketCount?: number;
-  requiredTicketCount?: number;
-  joinable?: boolean;
+  group: GroupSummary;
+  availableTicketCount: number;
+  requiredTicketCount: number;
+  joinable: boolean;
   /** @nullable */
   blockedReason?: string | null;
 }

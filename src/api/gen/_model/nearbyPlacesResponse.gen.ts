@@ -8,6 +8,6 @@
 import type { Pin } from "./pin.gen";
 
 export interface NearbyPlacesResponse {
-  items?: Pin[];
-  truncated?: boolean;
+  items: Pin[];
+  truncated: boolean;
 }

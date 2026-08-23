@@ -209,7 +209,7 @@ export const getUpdateSaveUrl = (saveId: string, params: UpdateSaveParams) => {
 };
 
 /**
- * 전체 교체다. placeId는 바꿀 수 없고(S6), 서버는 같은 완성도 판정을 다시 돌린다 (C6).
+ * 전체 교체다. 매장은 바꿀 수 없어 newPlace를 받지 않는다(S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).
  * @summary 작성 완료 (이어쓰기)
  */
 export const updateSave = async (
@@ -435,7 +435,7 @@ export const getCreateSaveUrl = (params: CreateSaveParams) => {
 };
 
 /**
- * 저장이 생기고, 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.
+ * placeId와 newPlace 중 정확히 하나를 보낸다. 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.
  * @summary 작성 완료 (신규)
  */
 export const createSave = async (

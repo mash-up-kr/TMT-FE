@@ -6,8 +6,9 @@
  * OpenAPI spec version: v1
  */
 
-export interface RatingConstraint {
-  min: number;
-  max: number;
-  step: number;
+export interface AddressItem {
+  addressId: string;
+  roadAddress: string;
+  jibunAddress: string;
+  regionName: string;
 }

@@ -10,23 +10,17 @@ import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import type { BodyType, ErrorType } from "../../mutator";
+import { useQuery } from "@tanstack/react-query";
+import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { CreatePlaceParams } from "../_model/createPlaceParams.gen";
-import type { CreatePlaceRequest } from "../_model/createPlaceRequest.gen";
 import type { CursorPagePlaceCardResponse } from "../_model/cursorPagePlaceCardResponse.gen";
-import type { PlaceCardResponse } from "../_model/placeCardResponse.gen";
 import type { SearchPlacesParams } from "../_model/searchPlacesParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -46,99 +40,6 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getCreatePlaceUrl = (params: CreatePlaceParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/v1/places?${stringifiedParams}` : `/v1/places`;
-};
-
-/**
- * 같은 좌표·같은 매장명의 기존 매장이 있으면 새로 만들지 않고 200으로 그 매장을 돌려준다.
- * @summary 매장 직접 등록
- */
-export const createPlace = async (
-  createPlaceRequest: CreatePlaceRequest,
-  params: CreatePlaceParams,
-  options?: Parameters<typeof tmtFetch>[1],
-): Promise<PlaceCardResponse> => {
-  return tmtFetch<PlaceCardResponse>(getCreatePlaceUrl(params), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createPlaceRequest),
-  });
-};
-
-export const getCreatePlaceMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createPlace>>,
-    TError,
-    { data: BodyType<CreatePlaceRequest>; params: CreatePlaceParams },
-    TContext
-  >;
-  request?: SecondParameter<typeof tmtFetch>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof createPlace>>,
-  TError,
-  { data: BodyType<CreatePlaceRequest>; params: CreatePlaceParams },
-  TContext
-> => {
-  const mutationKey = ["createPlace"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createPlace>>,
-    { data: BodyType<CreatePlaceRequest>; params: CreatePlaceParams }
-  > = (props) => {
-    const { data, params } = props ?? {};
-
-    return createPlace(data, params, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type CreatePlaceMutationResult = NonNullable<Awaited<ReturnType<typeof createPlace>>>;
-export type CreatePlaceMutationBody = BodyType<CreatePlaceRequest>;
-export type CreatePlaceMutationError = ErrorType<unknown>;
-
-/**
- * @summary 매장 직접 등록
- */
-export const useCreatePlace = <TError = ErrorType<unknown>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof createPlace>>,
-      TError,
-      { data: BodyType<CreatePlaceRequest>; params: CreatePlaceParams },
-      TContext
-    >;
-    request?: SecondParameter<typeof tmtFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof createPlace>>,
-  TError,
-  { data: BodyType<CreatePlaceRequest>; params: CreatePlaceParams },
-  TContext
-> => {
-  return useMutation(getCreatePlaceMutationOptions(options), queryClient);
-};
 export const getSearchPlacesUrl = (params?: SearchPlacesParams) => {
   const normalizedParams = new URLSearchParams();
 

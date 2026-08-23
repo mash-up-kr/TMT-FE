@@ -7,5 +7,5 @@
  */
 
 export interface ReplaceSharesRequest {
-  reviewIds?: string[];
+  reviewIds: string[];
 }

@@ -6,8 +6,9 @@
  * OpenAPI spec version: v1
  */
 
-export interface RatingConstraint {
-  min: number;
-  max: number;
-  step: number;
+export interface NewPlaceRequest {
+  name: string;
+  addressId: string;
+  /** @nullable */
+  categoryId?: string | null;
 }

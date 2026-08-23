@@ -11,15 +11,18 @@
  */
 export interface ErrorResponse {
   /** 사용자에게 보여줄 수 있는 문구 */
-  title?: string;
+  title: string;
   /** HTTP 상태 코드 */
-  status?: number;
-  /** 상황별 상세 */
-  detail?: string;
+  status: number;
+  /**
+   * 상황별 상세
+   * @nullable
+   */
+  detail?: string | null;
   /** 오류 식별자. 클라이언트 분기의 기준 */
-  code?: string;
+  code: string;
   /** 발생 시각 (ISO-8601 UTC) */
-  timestamp?: string;
+  timestamp: string;
   /** 서버 로그 추적용 */
-  requestId?: string;
+  requestId: string;
 }
