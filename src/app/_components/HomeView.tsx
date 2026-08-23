@@ -1,6 +1,6 @@
+import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import type { CurrentPosition } from "../_hooks/useCurrentPosition";
 import type { FeedReview, HomeSummary } from "../_model/home";
-import { EmptyNotice } from "./EmptyNotice";
 import { HomeFeed } from "./HomeFeed";
 import { MyGroupList } from "./MyGroupList";
 import { RecommendedGroupList } from "./RecommendedGroupList";

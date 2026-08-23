@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/shared/utils/cn";
-import tomatoEmpty from "./assets/tomato-x.png";
+import tomatoEmpty from "./assets/tomato-mascot-empty.png";
 
 type EmptyNoticeProps = {
   title: string;
