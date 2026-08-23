@@ -24,6 +24,6 @@ export interface GroupDetailResponse {
   foodCategory: FoodCategory;
   regionTags: RegionTag[];
   matchedSavedPlaceCount: number;
-  isMember: boolean;
   isOwner: boolean;
+  isMember: boolean;
 }
