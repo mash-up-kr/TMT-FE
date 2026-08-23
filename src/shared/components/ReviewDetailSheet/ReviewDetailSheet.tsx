@@ -68,7 +68,7 @@ export function ReviewDetailSheet({
         ) : undefined
       }
     >
-      <div className="flex flex-col gap-ds-20">
+      <div className="flex flex-col gap-ds-20 pb-ds-12">
         <section className="flex flex-col gap-ds-12">
           <PlaceName name={placeName} rating={rating} />
           <PlaceInfo address={address} categoryName={categoryName} />
