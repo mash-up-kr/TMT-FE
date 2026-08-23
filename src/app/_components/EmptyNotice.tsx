@@ -16,22 +16,26 @@ export function EmptyNotice({ title, children, className }: EmptyNoticeProps) {
         className,
       )}
     >
-      {/* 시안 실측값. 원본 비율(854×1024)을 유지한 채 위로 밀어 다리를 잘라내고,
-          잘린 경계는 아래쪽 gradient로 배경에 녹인다. */}
-      <div aria-hidden="true" className="relative h-[130px] w-[172px] shrink-0 overflow-hidden">
+      {/* 세로로 긴 원본(854×1024)을 가로 프레임에 담는다. 비율을 지킨 채 위를 기준으로
+          맞춰 아래(다리)만 잘리게 하고, 잘린 경계는 gradient로 배경에 녹인다. */}
+      <div aria-hidden="true" className="relative h-[130px] w-[172px] shrink-0">
         <Image
           src={tomatoPencil}
           alt=""
           width={172}
-          height={206}
+          height={130}
           sizes="172px"
-          className="absolute top-[-34.254px] left-0 w-full"
+          className="h-full w-full object-[center_-7px]"
         />
         <div className="absolute inset-0 bg-linear-to-b from-transparent from-[77.31%] to-surface-primary to-[92.81%]" />
       </div>
       <div className="flex flex-col gap-ds-4 text-center">
         <p className="text-heading-sm text-content-primary">{title}</p>
-        {children ? <p className="text-body-md-regular text-content-tertiary">{children}</p> : null}
+        {children ? (
+          <p className="text-body-md-regular text-content-tertiary">
+            {children}
+          </p>
+        ) : null}
       </div>
     </div>
   );
