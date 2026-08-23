@@ -72,7 +72,7 @@ export function ReviewDetailSheet({
         <section className="flex flex-col gap-ds-12">
           <PlaceName name={placeName} rating={rating} />
           <PlaceInfo address={address} categoryName={categoryName} />
-          {tags.length > 0 ? <TagList tags={tags} /> : null}
+          <TagList tags={tags} />
         </section>
 
         {photos.length > 0 ? <PhotoStrip photos={photos} /> : null}
@@ -143,6 +143,10 @@ type TagListProps = {
 function TagList({ tags }: TagListProps) {
   const dragScroll = useDragScroll<HTMLUListElement>();
 
+  if (tags.length === 0) {
+    return null;
+  }
+
   return (
     <ul
       {...dragScroll}
@@ -177,7 +181,12 @@ function PhotoStrip({ photos }: PhotoStripProps) {
         )}
       >
         {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-        <img src={photos[0].url} alt="" className="size-full object-cover" loading="lazy" />
+        <img
+          src={photos[0].url}
+          alt="리뷰 사진"
+          className="size-full object-cover"
+          loading="lazy"
+        />
       </div>
     );
   }
@@ -200,7 +209,7 @@ function PhotoStrip({ photos }: PhotoStripProps) {
           {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
           <img
             src={photo.url}
-            alt=""
+            alt={`리뷰 사진 ${index + 1}`}
             draggable={false}
             className="size-full object-cover"
             loading="lazy"
