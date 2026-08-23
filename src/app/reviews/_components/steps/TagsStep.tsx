@@ -9,8 +9,12 @@ import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 import { mapReviewTagGroups } from "../../_utils/reviewApiMappers";
+import { StatusMessage } from "../StatusMessage";
 import { StepHeader } from "../StepHeader";
 import { TagGroupField } from "../TagGroupField";
+
+const LOADING_MESSAGE = "태그를 불러오는 중이에요";
+const ERROR_MESSAGE = "태그를 불러오지 못했어요. 잠시 후 다시 시도해 주세요";
 
 export function TagsStep() {
   const router = useRouter();
@@ -38,16 +42,8 @@ export function TagsStep() {
           }
         />
 
-        {formConfig.isLoading && (
-          <p role="status" className="text-body-md-medium text-content-tertiary">
-            태그를 불러오는 중이에요.
-          </p>
-        )}
-        {formConfig.isError && (
-          <p role="status" className="text-body-md-medium text-content-error">
-            태그를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
-          </p>
-        )}
+        {formConfig.isLoading && <StatusMessage>{LOADING_MESSAGE}</StatusMessage>}
+        {formConfig.isError && <StatusMessage tone="error">{ERROR_MESSAGE}</StatusMessage>}
         {formConfig.isSuccess &&
           tagGroups.map((group) => (
             <TagGroupField

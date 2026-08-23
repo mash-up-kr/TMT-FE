@@ -2,10 +2,13 @@ import { type ReactNode, useEffect, useState } from "react";
 import { Badge } from "@/shared/ui/Badge";
 import { cn } from "@/shared/utils/cn";
 import type { SearchStatus } from "../../_model/search";
+import { StatusMessage } from "../StatusMessage";
 
 const LOADING_MESSAGE = "검색 중이에요";
 const ERROR_MESSAGE = "검색에 실패했어요. 잠시 후 다시 시도해 주세요";
 const LOADING_DELAY_MS = 300;
+
+const messagePadding = "px-ds-12 py-ds-20";
 
 const rowStyles = cn(
   "flex w-full flex-col gap-ds-4 rounded-ds-md px-ds-12 py-ds-8 text-left outline-none",
@@ -15,23 +18,6 @@ const rowStyles = cn(
 
 export function SearchOptionList({ children }: Readonly<{ children: ReactNode }>) {
   return <ul className="flex flex-col gap-ds-4">{children}</ul>;
-}
-
-export function SearchOptionMessage({
-  tone = "default",
-  children,
-}: Readonly<{ tone?: "default" | "error"; children: ReactNode }>) {
-  return (
-    <p
-      role="status"
-      className={cn(
-        "px-ds-12 py-ds-20 text-center text-body-md-medium",
-        tone === "error" ? "text-content-error" : "text-content-tertiary",
-      )}
-    >
-      {children}
-    </p>
-  );
 }
 
 function useDelayedLoading(loading: boolean) {
@@ -71,7 +57,7 @@ export function SearchResultArea({
   if (status === "loading") {
     return (
       <>
-        {showLoading && <SearchOptionMessage>{LOADING_MESSAGE}</SearchOptionMessage>}
+        {showLoading && <StatusMessage className={messagePadding}>{LOADING_MESSAGE}</StatusMessage>}
         {persistent}
       </>
     );
@@ -80,7 +66,9 @@ export function SearchResultArea({
   if (status === "error") {
     return (
       <>
-        <SearchOptionMessage tone="error">{ERROR_MESSAGE}</SearchOptionMessage>
+        <StatusMessage tone="error" className={messagePadding}>
+          {ERROR_MESSAGE}
+        </StatusMessage>
         {persistent}
       </>
     );
