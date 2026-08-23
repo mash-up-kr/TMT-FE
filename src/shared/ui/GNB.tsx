@@ -40,17 +40,30 @@ export function GNB({ left, right, title, align = "center", className }: GNBProp
       <div className={cn("flex items-center justify-start gap-ds-8", collapseLeft && "contents")}>
         {left}
       </div>
-      {hasHeading ? (
-        <div className="flex min-w-0 items-center justify-center">
-          {title ? (
-            <p className="truncate text-heading-sm text-content-primary">{title}</p>
-          ) : (
-            <TMTLogo />
-          )}
-        </div>
-      ) : null}
+      <GNBHeading title={title} />
       <div className="flex items-center justify-end gap-ds-8">{right}</div>
     </header>
+  );
+}
+
+/**
+ * 헤딩 칸의 세 가지 상태를 한 곳에 모은다.
+ * 생략이면 로고, 문자열이면 텍스트, `null`이면 칸 자체를 렌더하지 않는다 —
+ * 트랙 계산(resolveColumns)의 hasHeading과 같은 기준(title !== null)을 쓴다.
+ */
+function GNBHeading({ title }: { title?: string | null }) {
+  if (title === null) {
+    return null;
+  }
+
+  return (
+    <div className="flex min-w-0 items-center justify-center">
+      {title ? (
+        <p className="truncate text-heading-sm text-content-primary">{title}</p>
+      ) : (
+        <TMTLogo />
+      )}
+    </div>
   );
 }
 
