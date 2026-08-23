@@ -3,7 +3,7 @@
 import Image from "next/image";
 import type { SearchStatus } from "../../_model/search";
 import type { AddressSearchResult } from "../../_model/store";
-import emptyResultMascot from "../assets/address-search-empty-mascot.png";
+import emptyResultMascot from "../assets/tomato-mascot-empty.png";
 import { StatusMessage } from "../StatusMessage";
 import { AddressOptionRow, SearchOptionList } from "./SearchOptions";
 import { SearchSheet } from "./SearchSheet";
