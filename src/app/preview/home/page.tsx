@@ -10,10 +10,10 @@
 
 import { useState } from "react";
 import imageDummy from "@/shared/assets/dummy-image.png";
+import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { cn } from "@/shared/utils/cn";
 import { HomeShell } from "../../_components/HomeShell";
 import { HomeView } from "../../_components/HomeView";
-import type { CurrentPosition } from "../../_hooks/useCurrentPosition";
 import type { FeedReview, HomeRecommendedGroup, HomeSummary } from "../../_model/home";
 
 /**

@@ -1,7 +1,7 @@
 "use client";
 
+import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { LoadingIcon } from "@/shared/ui/Icons";
-import { useCurrentPosition } from "../_hooks/useCurrentPosition";
 import { useHomeFeed } from "../_hooks/useHomeFeed";
 import { useHomeSummary } from "../_hooks/useHomeSummary";
 import { HomeShell } from "./HomeShell";

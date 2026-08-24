@@ -1,6 +1,6 @@
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
-import type { CurrentPosition } from "../_hooks/useCurrentPosition";
+import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import type { FeedReview } from "../_model/home";
 
 type HomeFeedProps = {
