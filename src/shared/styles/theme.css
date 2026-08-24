@@ -335,6 +335,16 @@
 }
 
 /* ===================== content container ===================== */
+/* ===================== scrollbar ===================== */
+/* 가로 스트립(태그·사진 등)에서 스크롤바를 감춘다. 스크롤 동작 자체는 유지된다. */
+@utility scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility content-container {
   box-sizing: border-box;
   width: 100%;
