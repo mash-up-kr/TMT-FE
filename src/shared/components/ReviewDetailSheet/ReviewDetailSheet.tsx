@@ -104,7 +104,7 @@ function PlaceName({ name, rating }: PlaceNameProps) {
   return (
     <div className="flex items-center gap-ds-4">
       <h2 className="truncate text-heading-md text-content-primary">{name}</h2>
-      {rating === null ? null : (
+      {rating !== null && (
         <p className="flex shrink-0 items-center gap-ds-2 text-body-md-medium text-content-interactive-primary">
           <StarIcon size={16} className="shrink-0 text-icon-interactive-primary" />
           {rating.toFixed(1)}
