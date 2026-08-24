@@ -1,6 +1,8 @@
 import type { ComponentProps, ComponentType } from "react";
+import fallbackImage from "@/shared/assets/dummy.png";
 import { type IconProps, MembersIcon, ReviewsIcon, StoreIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
+import { handleImageError } from "@/shared/utils/handleImageError";
 import SparkleIcon from "./assets/sparkle.svg?react";
 
 /** 지표·뱃지에 쓰는 아이콘 크기. 시안이 12px 고정이라 ds 스케일 대신 값으로 둔다. */
@@ -58,10 +60,14 @@ type GroupCardThumbnailProps = {
 function GroupCardThumbnail({ src }: GroupCardThumbnailProps) {
   return (
     <div className="h-25 w-full shrink-0 bg-surface-secondary">
-      {src ? (
-        // biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다.
-        <img src={src} alt="" className="size-full object-cover" loading="lazy" />
-      ) : null}
+      {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
+      <img
+        src={src ?? fallbackImage.src}
+        alt=""
+        className="size-full object-cover"
+        loading="lazy"
+        onError={({ currentTarget }) => handleImageError(currentTarget, fallbackImage.src)}
+      />
     </div>
   );
 }

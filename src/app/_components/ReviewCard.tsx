@@ -1,6 +1,9 @@
+import imageFallback from "@/shared/assets/dummy-image.png";
+import profileFallback from "@/shared/assets/dummy-profile.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
+import { handleImageError } from "@/shared/utils/handleImageError";
 import type { FeedReview } from "../_model/home";
 import AvatarTomato from "./assets/avatar-tomato.svg?react";
 
@@ -94,6 +97,7 @@ function AuthorAvatar({ imageUrl }: AuthorAvatarProps) {
       alt=""
       className="size-ds-40 shrink-0 rounded-ds-full object-cover"
       loading="lazy"
+      onError={({ currentTarget }) => handleImageError(currentTarget, profileFallback.src)}
     />
   );
 }
@@ -110,7 +114,13 @@ function ReviewCardPhoto({ url }: ReviewCardPhotoProps) {
   return (
     <div className="h-[360px] w-full shrink-0 overflow-hidden bg-surface-tertiary">
       {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-      <img src={url} alt="" className="size-full object-cover" loading="lazy" />
+      <img
+        src={url}
+        alt=""
+        className="size-full object-cover"
+        loading="lazy"
+        onError={({ currentTarget }) => handleImageError(currentTarget, imageFallback.src)}
+      />
     </div>
   );
 }
