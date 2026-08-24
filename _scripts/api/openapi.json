@@ -111,7 +111,7 @@
           "저장·리뷰 작성 (mock)"
         ],
         "summary": "작성 완료 (이어쓰기)",
-        "description": "전체 교체다. placeId는 바꿀 수 없고(S6), 서버는 같은 완성도 판정을 다시 돌린다 (C6).",
+        "description": "전체 교체다. 매장은 바꿀 수 없어 newPlace를 받지 않는다(S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).",
         "operationId": "updateSave",
         "parameters": [
           {
@@ -494,7 +494,7 @@
           "저장·리뷰 작성 (mock)"
         ],
         "summary": "작성 완료 (신규)",
-        "description": "저장이 생기고, 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.",
+        "description": "placeId와 newPlace 중 정확히 하나를 보낸다. 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.",
         "operationId": "createSave",
         "parameters": [
           {
@@ -532,49 +532,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/SaveResultResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/places": {
-      "post": {
-        "tags": [
-          "매장 (mock)"
-        ],
-        "summary": "매장 직접 등록",
-        "description": "같은 좌표·같은 매장명의 기존 매장이 있으면 새로 만들지 않고 200으로 그 매장을 돌려준다.",
-        "operationId": "createPlace",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePlaceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlaceCardResponse"
                 }
               }
             }
@@ -1619,7 +1576,7 @@
           "주소 검색 (mock)"
         ],
         "summary": "주소 검색",
-        "description": "addressId는 이 검색 결과 안에서만 유효한 임시 식별자다. POST /v1/places에 그대로 전달한다.",
+        "description": "addressId는 불투명 토큰이다. 해석하지 말고 POST /v1/saves의 newPlace.addressId에 그대로 전달한다.\n\nmock 재현용 검색어 — `장애`: 502 ADDRESS_PROVIDER_UNAVAILABLE, `좌표없음`: 저장 시 404 ADDRESS_NOT_FOUND, `많음`: truncated=true",
         "operationId": "searchAddresses",
         "parameters": [
           {
@@ -1663,7 +1620,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/CursorPageMockAddress"
+                  "$ref": "#/components/schemas/AddressSearchResponse"
                 }
               }
             }
@@ -1748,11 +1705,45 @@
   },
   "components": {
     "schemas": {
+      "NewPlaceRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "string"
+          },
+          "categoryId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "addressId",
+          "name"
+        ]
+      },
       "SaveRequest": {
         "type": "object",
         "properties": {
           "placeId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newPlace": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NewPlaceRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "photoAssetIds": {
             "type": "array",
@@ -1785,10 +1776,7 @@
               "null"
             ]
           }
-        },
-        "required": [
-          "placeId"
-        ]
+        }
       },
       "SaveResultResponse": {
         "type": "object",
@@ -1802,11 +1790,15 @@
               "null"
             ]
           },
+          "placeId": {
+            "type": "string"
+          },
           "ticket": {
             "$ref": "#/components/schemas/TicketGrantSummary"
           }
         },
         "required": [
+          "placeId",
           "saveId",
           "ticket"
         ]
@@ -1834,11 +1826,12 @@
           "placeId": {
             "type": "string"
           },
-          "favorite": {
+          "isFavorite": {
             "type": "boolean"
           }
         },
         "required": [
+          "isFavorite",
           "placeId"
         ]
       },
@@ -1965,10 +1958,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "owner": {
+          "isOwner": {
             "type": "boolean"
           },
-          "member": {
+          "isMember": {
             "type": "boolean"
           }
         },
@@ -1976,6 +1969,8 @@
           "coverImages",
           "foodCategory",
           "groupId",
+          "isMember",
+          "isOwner",
           "matchedSavedPlaceCount",
           "memberCount",
           "name",
@@ -2035,84 +2030,6 @@
           "groupId",
           "sharedCount",
           "sharedReviewIds"
-        ]
-      },
-      "CreatePlaceRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "addressId": {
-            "type": "string"
-          },
-          "categoryId": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        },
-        "required": [
-          "addressId",
-          "name"
-        ]
-      },
-      "PlaceCardResponse": {
-        "type": "object",
-        "properties": {
-          "placeId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "roadAddress": {
-            "type": "string"
-          },
-          "regionName": {
-            "type": "string"
-          },
-          "categoryName": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "averageRating": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "format": "double"
-          },
-          "reviewCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "thumbnailUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "distanceMeters": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "int32"
-          },
-          "favorite": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "name",
-          "placeId",
-          "regionName",
-          "reviewCount",
-          "roadAddress"
         ]
       },
       "UploadIntentRequest": {
@@ -2233,7 +2150,7 @@
           "items"
         ]
       },
-      "PlaceSummary": {
+      "PlaceAddressSummary": {
         "type": "object",
         "properties": {
           "placeId": {
@@ -2259,7 +2176,7 @@
             "type": "string"
           },
           "place": {
-            "$ref": "#/components/schemas/PlaceSummary"
+            "$ref": "#/components/schemas/PlaceAddressSummary"
           },
           "thumbnailUrl": {
             "type": [
@@ -2312,6 +2229,31 @@
           "order",
           "photoId",
           "url"
+        ]
+      },
+      "PlaceSummary": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "placeId",
+          "roadAddress"
         ]
       },
       "SaveDetailResponse": {
@@ -2473,7 +2415,7 @@
           "createdAt": {
             "type": "string"
           },
-          "mine": {
+          "isMine": {
             "type": "boolean"
           }
         },
@@ -2481,6 +2423,7 @@
           "author",
           "content",
           "createdAt",
+          "isMine",
           "photos",
           "place",
           "rating",
@@ -2638,7 +2581,7 @@
           "photos": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Photo"
+              "$ref": "#/components/schemas/PlacePhoto"
             }
           },
           "roadAddress": {
@@ -2658,11 +2601,12 @@
               "null"
             ]
           },
-          "favorite": {
+          "isFavorite": {
             "type": "boolean"
           }
         },
         "required": [
+          "isFavorite",
           "latitude",
           "longitude",
           "name",
@@ -2670,6 +2614,21 @@
           "placeId",
           "reviewCount",
           "roadAddress"
+        ]
+      },
+      "PlacePhoto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "reviewId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reviewId",
+          "url"
         ]
       },
       "CursorPageReviewCardResponse": {
@@ -2699,6 +2658,29 @@
         "required": [
           "hasNext",
           "items"
+        ]
+      },
+      "PlaceRegionSummary": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "regionName": {
+            "type": "string"
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isFavorite",
+          "name",
+          "placeId",
+          "regionName"
         ]
       },
       "ReviewCardResponse": {
@@ -2747,7 +2729,7 @@
             }
           },
           "place": {
-            "$ref": "#/components/schemas/PlaceSummary"
+            "$ref": "#/components/schemas/PlaceRegionSummary"
           },
           "createdAt": {
             "type": "string"
@@ -2791,6 +2773,64 @@
         "required": [
           "hasNext",
           "items"
+        ]
+      },
+      "PlaceCardResponse": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "regionName": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "averageRating": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "distanceMeters": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isFavorite",
+          "name",
+          "placeId",
+          "regionName",
+          "reviewCount",
+          "roadAddress"
         ]
       },
       "NearbyPlacesResponse": {
@@ -3031,13 +3071,14 @@
           "createdAt": {
             "type": "string"
           },
-          "shared": {
+          "isShared": {
             "type": "boolean"
           }
         },
         "required": [
           "contentPreview",
           "createdAt",
+          "isShared",
           "placeName",
           "reviewId",
           "thumbnailUrl"
@@ -3196,36 +3237,7 @@
           "items"
         ]
       },
-      "CursorPageMockAddress": {
-        "type": "object",
-        "description": "커서 기반 페이지 응답",
-        "properties": {
-          "items": {
-            "type": "array",
-            "description": "결과 목록. 없으면 빈 배열",
-            "items": {
-              "$ref": "#/components/schemas/MockAddress"
-            }
-          },
-          "nextCursor": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
-          },
-          "hasNext": {
-            "type": "boolean",
-            "description": "다음 페이지 존재 여부",
-            "example": true
-          }
-        },
-        "required": [
-          "hasNext",
-          "items"
-        ]
-      },
-      "MockAddress": {
+      "AddressItem": {
         "type": "object",
         "properties": {
           "addressId": {
@@ -3237,21 +3249,43 @@
           "jibunAddress": {
             "type": "string"
           },
-          "latitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double"
+          "regionName": {
+            "type": "string"
           }
         },
         "required": [
           "addressId",
           "jibunAddress",
-          "latitude",
-          "longitude",
+          "regionName",
           "roadAddress"
+        ]
+      },
+      "AddressSearchResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AddressItem"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasNext": {
+            "type": "boolean"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "hasNext",
+          "items",
+          "truncated"
         ]
       },
       "HealthResponse": {

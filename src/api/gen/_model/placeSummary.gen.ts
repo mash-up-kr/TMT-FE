@@ -10,4 +10,6 @@ export interface PlaceSummary {
   placeId: string;
   name: string;
   roadAddress: string;
+  /** @nullable */
+  categoryName?: string | null;
 }

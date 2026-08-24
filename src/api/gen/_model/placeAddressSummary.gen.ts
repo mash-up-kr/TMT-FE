@@ -6,10 +6,8 @@
  * OpenAPI spec version: v1
  */
 
-export interface MockAddress {
-  addressId: string;
+export interface PlaceAddressSummary {
+  placeId: string;
+  name: string;
   roadAddress: string;
-  jibunAddress: string;
-  latitude: number;
-  longitude: number;
 }

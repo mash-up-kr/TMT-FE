@@ -11,5 +11,6 @@ export interface SaveResultResponse {
   saveId: string;
   /** @nullable */
   reviewId?: string | null;
+  placeId: string;
   ticket: TicketGrantSummary;
 }

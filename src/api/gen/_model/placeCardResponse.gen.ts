@@ -20,5 +20,5 @@ export interface PlaceCardResponse {
   thumbnailUrl?: string | null;
   /** @nullable */
   distanceMeters?: number | null;
-  favorite?: boolean;
+  isFavorite: boolean;
 }

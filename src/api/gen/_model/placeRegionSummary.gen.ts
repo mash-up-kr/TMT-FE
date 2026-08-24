@@ -6,9 +6,9 @@
  * OpenAPI spec version: v1
  */
 
-export interface CreatePlaceRequest {
+export interface PlaceRegionSummary {
+  placeId: string;
   name: string;
-  addressId: string;
-  /** @nullable */
-  categoryId?: string | null;
+  regionName: string;
+  isFavorite: boolean;
 }

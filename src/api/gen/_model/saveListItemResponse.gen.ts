@@ -5,11 +5,11 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
-import type { PlaceSummary } from "./placeSummary.gen";
+import type { PlaceAddressSummary } from "./placeAddressSummary.gen";
 
 export interface SaveListItemResponse {
   saveId: string;
-  place: PlaceSummary;
+  place: PlaceAddressSummary;
   /** @nullable */
   thumbnailUrl?: string | null;
   updatedAt: string;

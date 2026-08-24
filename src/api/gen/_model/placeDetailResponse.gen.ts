@@ -5,7 +5,7 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
-import type { Photo } from "./photo.gen";
+import type { PlacePhoto } from "./placePhoto.gen";
 
 export interface PlaceDetailResponse {
   placeId: string;
@@ -15,11 +15,11 @@ export interface PlaceDetailResponse {
   /** @nullable */
   averageRating?: number | null;
   reviewCount: number;
-  photos: Photo[];
+  photos: PlacePhoto[];
   roadAddress: string;
   latitude: number;
   longitude: number;
   /** @nullable */
   phoneNumber?: string | null;
-  favorite?: boolean;
+  isFavorite: boolean;
 }

@@ -52,7 +52,7 @@ function toFeedReview(review: ReviewCardResponse): FeedReview {
     place: {
       id: review.place.placeId,
       name: review.place.name,
-      roadAddress: review.place.roadAddress ?? null,
+      regionName: review.place.regionName,
     },
   };
 }

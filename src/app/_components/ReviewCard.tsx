@@ -188,9 +188,7 @@ function PlaceRow({ place }: PlaceRowProps) {
     <div className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8">
       <div className="flex min-w-0 flex-1 flex-col">
         <p className="truncate text-body-md-bold text-content-primary">{place.name}</p>
-        {place.roadAddress ? (
-          <p className="truncate text-body-sm-medium text-content-secondary">{place.roadAddress}</p>
-        ) : null}
+        <p className="truncate text-body-sm-medium text-content-secondary">{place.regionName}</p>
       </div>
       <HeartIcon
         filled

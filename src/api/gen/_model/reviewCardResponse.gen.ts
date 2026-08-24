@@ -8,7 +8,7 @@
 import type { AiSummary } from "./aiSummary.gen";
 import type { Author } from "./author.gen";
 import type { Photo } from "./photo.gen";
-import type { PlaceSummary } from "./placeSummary.gen";
+import type { PlaceRegionSummary } from "./placeRegionSummary.gen";
 import type { Tag } from "./tag.gen";
 
 export interface ReviewCardResponse {
@@ -21,6 +21,6 @@ export interface ReviewCardResponse {
   aiSummary?: AiSummary | null;
   content: string;
   tags: Tag[];
-  place: PlaceSummary;
+  place: PlaceRegionSummary;
   createdAt: string;
 }

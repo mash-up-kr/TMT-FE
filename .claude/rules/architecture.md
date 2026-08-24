@@ -98,7 +98,8 @@ shared/providers/   →  api/mutator
 ```
 
 - 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
-- 금지: shared → app, 라우트 간 직접 import, 다른 라우트의 private segment import.
+- 허용: 상위 라우트의 private segment를 그 하위 세그먼트가 import (`reviews/_*` ← `reviews/new`, `reviews/drafts/[id]`). 하위 세그먼트들이 공통으로 쓰는 코드는 그들을 품는 라우트에 둔다.
+- 금지: shared → app, 형제 라우트 간 직접 import, 다른 라우트의 private segment import.
 - `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
 - `shared/providers/`만 `api/mutator`를 import할 수 있다. 전역 react-query retry 정책이 API 에러 타입에 의존하기 때문이다.
 - `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.

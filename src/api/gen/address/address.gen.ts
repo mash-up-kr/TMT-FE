@@ -20,7 +20,7 @@ import type {
 import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { CursorPageMockAddress } from "../_model/cursorPageMockAddress.gen";
+import type { AddressSearchResponse } from "../_model/addressSearchResponse.gen";
 import type { SearchAddressesParams } from "../_model/searchAddressesParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -57,14 +57,16 @@ export const getSearchAddressesUrl = (params: SearchAddressesParams) => {
 };
 
 /**
- * addressId는 이 검색 결과 안에서만 유효한 임시 식별자다. POST /v1/places에 그대로 전달한다.
+ * addressId는 불투명 토큰이다. 해석하지 말고 POST /v1/saves의 newPlace.addressId에 그대로 전달한다.
+ *
+ * mock 재현용 검색어 — `장애`: 502 ADDRESS_PROVIDER_UNAVAILABLE, `좌표없음`: 저장 시 404 ADDRESS_NOT_FOUND, `많음`: truncated=true
  * @summary 주소 검색
  */
 export const searchAddresses = async (
   params: SearchAddressesParams,
   options?: Parameters<typeof tmtFetch>[1],
-): Promise<CursorPageMockAddress> => {
-  return tmtFetch<CursorPageMockAddress>(getSearchAddressesUrl(params), {
+): Promise<AddressSearchResponse> => {
+  return tmtFetch<AddressSearchResponse>(getSearchAddressesUrl(params), {
     ...options,
     method: "GET",
   });

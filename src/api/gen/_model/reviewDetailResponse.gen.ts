@@ -21,5 +21,5 @@ export interface ReviewDetailResponse {
   content: string;
   aiSummary?: AiSummary | null;
   createdAt: string;
-  mine?: boolean;
+  isMine: boolean;
 }

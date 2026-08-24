@@ -1,0 +1,118 @@
+"use client";
+
+import Image from "next/image";
+import emptyResultMascot from "@/shared/components/assets/tomato-mascot-empty.png";
+import type { SearchStatus } from "../../_model/search";
+import type { AddressSearchResult } from "../../_model/store";
+import { StatusMessage } from "../StatusMessage";
+import { AddressOptionRow, SearchOptionList } from "./SearchOptions";
+import { SearchSheet } from "./SearchSheet";
+
+const EMPTY_TITLE = "검색결과가 없어요";
+const TRUNCATED_MESSAGE = "결과가 많아 일부만 보여드려요. 검색어를 더 자세히 입력해 보세요";
+
+const GUIDE_TITLE = "이렇게 검색해 보세요";
+
+const GUIDE_EXAMPLES = [
+  "도로명 + 건물번호 (위례성대로 2)",
+  "건물명 + 번지 (방이동 44-2)",
+  "건물명, 아파트명 (반포 자이, 분당 주공 1차)",
+];
+
+function AddressSearchGuide() {
+  return (
+    <div className="flex flex-col gap-ds-4">
+      <p className="text-body-md-bold text-content-secondary">{GUIDE_TITLE}</p>
+      <ul className="list-disc ps-ds-16 text-body-md-regular text-content-tertiary">
+        {GUIDE_EXAMPLES.map((example) => (
+          <li key={example}>{example}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function AddressSearchEmptyState() {
+  return (
+    <div className="flex flex-col items-center gap-ds-12 py-ds-32">
+      <div className="relative h-[130px] w-[172px] shrink-0">
+        <Image
+          src={emptyResultMascot}
+          alt=""
+          width={172}
+          height={130}
+          sizes="172px"
+          className="h-full w-full object-cover object-[center_-34.254px]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-77% to-surface-primary to-93%"
+        />
+      </div>
+      <div className="flex flex-col items-center gap-ds-4 text-center">
+        <p className="text-heading-sm text-content-primary">{EMPTY_TITLE}</p>
+        <p className="text-body-md-medium text-content-tertiary">
+          도로명, 지번, 건물명, 아파트명으로
+          <br />
+          다시 검색해주세요
+        </p>
+      </div>
+    </div>
+  );
+}
+
+type AddressSearchSheetProps = Readonly<{
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  value: string;
+  onValueChange: (value: string) => void;
+  status: SearchStatus;
+  results: readonly AddressSearchResult[];
+  truncated: boolean;
+  onSelectResult: (address: AddressSearchResult) => void;
+}>;
+
+export function AddressSearchSheet({
+  open,
+  onOpenChange,
+  value,
+  onValueChange,
+  status,
+  results,
+  truncated,
+  onSelectResult,
+}: AddressSearchSheetProps) {
+  return (
+    <SearchSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="주소 검색"
+      placeholder="건물, 지번, 도로명을 입력해 주세요"
+      searchLabel="주소 검색어"
+      value={value}
+      onValueChange={onValueChange}
+      status={status}
+      idle={<AddressSearchGuide />}
+    >
+      {results.length === 0 ? (
+        <AddressSearchEmptyState />
+      ) : (
+        <>
+          <SearchOptionList>
+            {results.map((result) => (
+              <AddressOptionRow
+                key={result.addressId}
+                roadAddress={result.roadAddress}
+                jibunAddress={result.jibunAddress}
+                onSelect={() => onSelectResult(result)}
+              />
+            ))}
+          </SearchOptionList>
+          {truncated && (
+            <StatusMessage className="px-ds-12 pt-ds-12">{TRUNCATED_MESSAGE}</StatusMessage>
+          )}
+        </>
+      )}
+    </SearchSheet>
+  );
+}

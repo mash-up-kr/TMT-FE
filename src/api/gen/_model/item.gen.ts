@@ -12,5 +12,5 @@ export interface Item {
   thumbnailUrl: string;
   contentPreview: string;
   createdAt: string;
-  shared?: boolean;
+  isShared: boolean;
 }

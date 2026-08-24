@@ -5,9 +5,12 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
+import type { NewPlaceRequest } from "./newPlaceRequest.gen";
 
 export interface SaveRequest {
-  placeId: string;
+  /** @nullable */
+  placeId?: string | null;
+  newPlace?: NewPlaceRequest | null;
   photoAssetIds?: string[];
   companionTagIds?: string[];
   positivePointTagIds?: string[];

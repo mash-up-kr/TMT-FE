@@ -26,7 +26,7 @@ export interface FeedReviewTag {
 export interface FeedReviewPlace {
   id: string;
   name: string;
-  roadAddress: string | null;
+  regionName: string;
 }
 
 export interface FeedReview {
