@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-/** 한글 조합 중간 상태가 100ms 안팎으로 지나가므로 그보다 넉넉히 잡는다. */
-const DEFAULT_DEBOUNCE_MS = 300;
+import { useState } from "react";
+import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 
 /**
  * 검색 시트마다 호출 억제 강도가 다르다. 내부 DB를 보는 매장 검색은 기본값으로 충분하지만,
@@ -25,54 +23,30 @@ export type SearchSheetState = Readonly<{
 }>;
 
 export function useSearchSheetState({
-  debounceMs = DEFAULT_DEBOUNCE_MS,
+  debounceMs,
   minQueryLength = 1,
 }: SearchSheetOptions = {}): SearchSheetState {
   const [open, setOpen] = useState(false);
   const [value, setValueState] = useState("");
-  const [query, setQuery] = useState("");
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearTimer = () => {
-    if (timerRef.current !== null) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
-
-  const setValue = (nextValue: string) => {
-    setValueState(nextValue);
-    clearTimer();
-
-    const nextQuery = nextValue.trim();
-    if (nextQuery.length < minQueryLength) {
-      setQuery("");
-      return;
-    }
-
-    timerRef.current = setTimeout(() => {
-      setQuery(nextQuery);
-      timerRef.current = null;
-    }, debounceMs);
-  };
+  const debouncedValue = useDebouncedValue(value, debounceMs);
+  const valueWithoutSpace = value.trim();
+  const query = debouncedValue.trim();
+  const enabled = valueWithoutSpace.length >= minQueryLength && query.length >= minQueryLength;
 
   const onOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
 
     if (!nextOpen) {
-      clearTimer();
       setValueState("");
-      setQuery("");
     }
   };
 
-  return { open, onOpenChange, value, setValue, query, enabled: query.length >= minQueryLength };
+  return {
+    open,
+    onOpenChange,
+    value,
+    setValue: setValueState,
+    query: enabled ? query : "",
+    enabled,
+  };
 }
