@@ -11,7 +11,13 @@ type ImageWithFallbackProps = Omit<ComponentPropsWithoutRef<"img">, "alt" | "onE
   fallbackSrc: FallbackImageSource;
 };
 
-export function ImageWithFallback({ src, fallbackSrc, alt, ...props }: ImageWithFallbackProps) {
+export function ImageWithFallback({
+  src,
+  fallbackSrc,
+  alt,
+  loading = "lazy",
+  ...props
+}: ImageWithFallbackProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const fallbackImageSrc = typeof fallbackSrc === "string" ? fallbackSrc : fallbackSrc.src;
   const resolvedSrc = src === null || failedSrc === src ? fallbackImageSrc : src;
@@ -21,6 +27,7 @@ export function ImageWithFallback({ src, fallbackSrc, alt, ...props }: ImageWith
     <img
       {...props}
       alt={alt}
+      loading={loading}
       src={resolvedSrc}
       onError={() => {
         if (src !== null && resolvedSrc !== fallbackImageSrc) {
