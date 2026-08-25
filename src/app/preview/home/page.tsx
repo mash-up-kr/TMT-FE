@@ -9,6 +9,7 @@
  */
 
 import { useState } from "react";
+import imageDummy from "@/shared/assets/dummy-image.png";
 import { cn } from "@/shared/utils/cn";
 import { HomeShell } from "../../_components/HomeShell";
 import { HomeView } from "../../_components/HomeView";
@@ -25,6 +26,7 @@ const SWITCHER = [
 ].join(" ");
 
 const GRANTED: CurrentPosition = { status: "granted", latitude: 37.5445, longitude: 126.9506 };
+const BROKEN_IMAGE_URL = "/image-not-found.png";
 
 /** mock 서버가 미가입 유저(user 9)에게 실제로 내려주는 값. */
 const RECOMMENDED: HomeRecommendedGroup[] = [
@@ -66,7 +68,7 @@ const REVIEW: FeedReview = {
   authorProfileImageUrl: null,
   rating: 5,
   distanceMeters: 505,
-  photoUrls: ["https://picsum.photos/seed/tmt-coffee/720/720"],
+  photoUrls: [imageDummy.src],
   pros: "분위기가 좋아요",
   cons: "가격이 좀 나가고 웨이팅이 많아요",
   content: "맛도 있고 분위기도 좋아요. 원두도 종류가 많았어요",
@@ -125,6 +127,21 @@ const SCENARIOS: Scenario[] = [
     },
   },
   {
+    key: "fallback-group-card",
+    label: "fallback · 추천 그룹",
+    hideNav: false,
+    props: {
+      summary: {
+        ...NOT_JOINED,
+        recommendedGroups: RECOMMENDED.map((group) => ({ ...group, imageUrl: BROKEN_IMAGE_URL })),
+      },
+      position: GRANTED,
+      feedIsPending: false,
+      feedIsError: false,
+      reviews: undefined,
+    },
+  },
+  {
     key: "feed",
     label: "가입 · 피드 3",
     hideNav: true,
@@ -137,6 +154,27 @@ const SCENARIOS: Scenario[] = [
         REVIEW,
         { ...REVIEW, id: "review_2", photoUrls: [], pros: null, cons: null, rating: 3 },
         { ...REVIEW, id: "review_3", distanceMeters: 1240, tags: [] },
+      ],
+    },
+  },
+  {
+    key: "fallback-feed",
+    label: "fallback · 피드",
+    hideNav: true,
+    props: {
+      summary: {
+        ...JOINED,
+        myGroups: JOINED.myGroups.map((group) => ({ ...group, imageUrl: BROKEN_IMAGE_URL })),
+      },
+      position: GRANTED,
+      feedIsPending: false,
+      feedIsError: false,
+      reviews: [
+        {
+          ...REVIEW,
+          authorProfileImageUrl: BROKEN_IMAGE_URL,
+          photoUrls: [BROKEN_IMAGE_URL],
+        },
       ],
     },
   },

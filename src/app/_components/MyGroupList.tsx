@@ -1,4 +1,6 @@
+import fallbackImage from "@/shared/assets/dummy.png";
 import { PlusIcon } from "@/shared/ui/Icons";
+import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { HomeGroup } from "../_model/home";
 
 type MyGroupListProps = {
@@ -11,7 +13,7 @@ export function MyGroupList({ groups }: MyGroupListProps) {
       <ul className="-mx-ds-20 flex gap-ds-4 overflow-x-auto px-ds-20">
         {groups.map((group) => (
           <li key={group.id} className="flex w-[76px] shrink-0 flex-col items-center gap-ds-8">
-            <GroupThumbnail name={group.name} imageUrl={group.imageUrl} />
+            <GroupThumbnail src={group.imageUrl} />
             <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-primary">
               {group.name}
             </span>
@@ -37,26 +39,18 @@ export function MyGroupList({ groups }: MyGroupListProps) {
 }
 
 type GroupThumbnailProps = {
-  name: string;
-  imageUrl: string | null;
+  src: string | null;
 };
 
-function GroupThumbnail({ name, imageUrl }: GroupThumbnailProps) {
-  if (!imageUrl) {
-    return (
-      <div className="flex size-[60px] items-center justify-center rounded-ds-full border-sm border-stroke-primary bg-surface-tertiary text-body-lg-bold text-content-tertiary">
-        {name.slice(0, 1)}
-      </div>
-    );
-  }
-
+function GroupThumbnail({ src }: GroupThumbnailProps) {
   return (
-    // biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다.
-    <img
-      src={imageUrl}
+    <ImageWithFallback
+      src={src}
+      fallbackSrc={fallbackImage}
       alt=""
+      width={60}
+      height={60}
       className="size-[60px] shrink-0 rounded-ds-full border-sm border-stroke-primary object-cover"
-      loading="lazy"
     />
   );
 }

@@ -1,5 +1,7 @@
 import type { ComponentProps, ComponentType } from "react";
+import fallbackImage from "@/shared/assets/dummy.png";
 import { type IconProps, MembersIcon, ReviewsIcon, StoreIcon } from "@/shared/ui/Icons";
+import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 import SparkleIcon from "./assets/sparkle.svg?react";
 
@@ -57,11 +59,13 @@ type GroupCardThumbnailProps = {
 /** 이미지가 비어도 회색 면이 남아 카드 높이가 흔들리지 않는다. */
 function GroupCardThumbnail({ src }: GroupCardThumbnailProps) {
   return (
-    <div className="h-25 w-full shrink-0 bg-surface-secondary">
-      {src ? (
-        // biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다.
-        <img src={src} alt="" className="size-full object-cover" loading="lazy" />
-      ) : null}
+    <div className="relative h-25 w-full shrink-0 bg-surface-secondary">
+      <ImageWithFallback
+        src={src}
+        fallbackSrc={fallbackImage}
+        alt=""
+        className="size-full object-cover"
+      />
     </div>
   );
 }

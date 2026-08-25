@@ -1,6 +1,9 @@
+import imageFallback from "@/shared/assets/dummy-image.png";
+import profileFallback from "@/shared/assets/dummy-profile.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
+import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { FeedReview } from "../_model/home";
 import AvatarTomato from "./assets/avatar-tomato.svg?react";
 
@@ -88,12 +91,13 @@ function AuthorAvatar({ imageUrl }: AuthorAvatarProps) {
   }
 
   return (
-    // biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다.
-    <img
+    <ImageWithFallback
       src={imageUrl}
+      fallbackSrc={profileFallback}
       alt=""
+      width={40}
+      height={40}
       className="size-ds-40 shrink-0 rounded-ds-full object-cover"
-      loading="lazy"
     />
   );
 }
@@ -108,9 +112,13 @@ function ReviewCardPhoto({ url }: ReviewCardPhotoProps) {
   }
 
   return (
-    <div className="h-[360px] w-full shrink-0 overflow-hidden bg-surface-tertiary">
-      {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-      <img src={url} alt="" className="size-full object-cover" loading="lazy" />
+    <div className="relative h-[360px] w-full shrink-0 overflow-hidden bg-surface-tertiary">
+      <ImageWithFallback
+        src={url}
+        fallbackSrc={imageFallback}
+        alt=""
+        className="size-full object-cover"
+      />
     </div>
   );
 }
