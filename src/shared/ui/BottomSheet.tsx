@@ -114,7 +114,7 @@ export function BottomSheet({
               <div
                 className={cn(
                   // min-h-0이 빠지면 본문이 줄지 않아 시트가 max-h를 넘긴다.
-                  "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20",
+                  "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20 pt-ds-12",
                   !footer && "pb-ds-20",
                 )}
               >
