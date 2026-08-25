@@ -9,5 +9,5 @@ export type ReviewCardData = {
   cons: string | null;
   content: string;
   tags: { id: string; label: string }[];
-  place: { id: string; name: string; regionName: string };
+  place: { id: string; name: string; regionName: string; isFavorite: boolean };
 };
