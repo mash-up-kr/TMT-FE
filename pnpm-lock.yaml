@@ -48,6 +48,9 @@ importers:
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.9.3)
+      '@types/navermaps':
+        specifier: ^3.9.2
+        version: 3.9.2
       '@types/node':
         specifier: ^20
         version: 20.19.39
@@ -1394,8 +1397,14 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
+  '@types/geojson@7946.0.16':
+    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
+
   '@types/hast@3.0.5':
     resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
+
+  '@types/navermaps@3.9.2':
+    resolution: {integrity: sha512-pPO38MFRRY+2wka0VdG3U9RlwLEVBwJVYy50KtQzwxNdJVVfas8Qlv4USx3wxvly7GNX9Cew2qfjdKEmLoQPKQ==}
 
   '@types/node@20.19.39':
     resolution: {integrity: sha512-orrrD74MBUyK8jOAD/r0+lfa1I2MO6I+vAkmAWzMYbCcgrN4lCrmK52gRFQq/JRxfYPfonkr4b0jcY7Olqdqbw==}
@@ -3621,9 +3630,15 @@ snapshots:
       '@tanstack/query-core': 5.100.8
       react: 19.2.4
 
+  '@types/geojson@7946.0.16': {}
+
   '@types/hast@3.0.5':
     dependencies:
       '@types/unist': 3.0.3
+
+  '@types/navermaps@3.9.2':
+    dependencies:
+      '@types/geojson': 7946.0.16
 
   '@types/node@20.19.39':
     dependencies:
