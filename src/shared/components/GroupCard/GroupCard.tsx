@@ -1,8 +1,8 @@
 import type { ComponentProps, ComponentType } from "react";
 import fallbackImage from "@/shared/assets/dummy.png";
 import { type IconProps, MembersIcon, ReviewsIcon, StoreIcon } from "@/shared/ui/Icons";
+import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
-import { handleImageError } from "@/shared/utils/handleImageError";
 import SparkleIcon from "./assets/sparkle.svg?react";
 
 /** 지표·뱃지에 쓰는 아이콘 크기. 시안이 12px 고정이라 ds 스케일 대신 값으로 둔다. */
@@ -33,6 +33,8 @@ export function GroupCard({
   className,
   ...props
 }: GroupCardProps) {
+  const thumbnailSrc = thumbnail ?? fallbackImage;
+
   return (
     <div
       data-slot="group-card"
@@ -42,7 +44,7 @@ export function GroupCard({
       )}
       {...props}
     >
-      <GroupCardThumbnail src={thumbnail} />
+      <GroupCardThumbnail src={thumbnailSrc} />
       <div className="flex flex-col gap-ds-12 p-ds-16">
         <GroupCardHeading title={title} description={description} />
         <GroupCardStats members={memberCount} reviews={reviewCount} places={placeCount} />
@@ -53,20 +55,20 @@ export function GroupCard({
 }
 
 type GroupCardThumbnailProps = {
-  src: string | null;
+  src: string | typeof fallbackImage;
 };
 
 /** 이미지가 비어도 회색 면이 남아 카드 높이가 흔들리지 않는다. */
 function GroupCardThumbnail({ src }: GroupCardThumbnailProps) {
   return (
-    <div className="h-25 w-full shrink-0 bg-surface-secondary">
-      {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-      <img
-        src={src ?? fallbackImage.src}
+    <div className="relative h-25 w-full shrink-0 bg-surface-secondary">
+      <ImageWithFallback
+        src={src}
+        fallbackSrc={fallbackImage}
         alt=""
+        fill
+        sizes="100vw"
         className="size-full object-cover"
-        loading="lazy"
-        onError={({ currentTarget }) => handleImageError(currentTarget, fallbackImage.src)}
       />
     </div>
   );
