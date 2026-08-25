@@ -1,23 +1,29 @@
 "use client";
 
-import Image, { type ImageProps } from "next/image";
+import type { ComponentPropsWithoutRef } from "react";
 import { useState } from "react";
 
-type ImageWithFallbackProps = Omit<ImageProps, "onError" | "src"> & {
-  src: ImageProps["src"];
-  fallbackSrc: ImageProps["src"];
+type FallbackImageSource = string | { src: string };
+
+type ImageWithFallbackProps = Omit<ComponentPropsWithoutRef<"img">, "alt" | "onError" | "src"> & {
+  alt: string;
+  src: string | null;
+  fallbackSrc: FallbackImageSource;
 };
 
-export function ImageWithFallback({ src, fallbackSrc, ...props }: ImageWithFallbackProps) {
-  const [failedSrc, setFailedSrc] = useState<ImageProps["src"] | null>(null);
-  const resolvedSrc = failedSrc === src ? fallbackSrc : src;
+export function ImageWithFallback({ src, fallbackSrc, alt, ...props }: ImageWithFallbackProps) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const fallbackImageSrc = typeof fallbackSrc === "string" ? fallbackSrc : fallbackSrc.src;
+  const resolvedSrc = src === null || failedSrc === src ? fallbackImageSrc : src;
 
   return (
-    <Image
+    // biome-ignore lint/performance/noImgElement: 실제 이미지 호스트가 확정되면 next/image로 전환한다.
+    <img
       {...props}
+      alt={alt}
       src={resolvedSrc}
       onError={() => {
-        if (resolvedSrc !== fallbackSrc) {
+        if (src !== null && resolvedSrc !== fallbackImageSrc) {
           setFailedSrc(src);
         }
       }}

@@ -13,7 +13,7 @@ export function MyGroupList({ groups }: MyGroupListProps) {
       <ul className="-mx-ds-20 flex gap-ds-4 overflow-x-auto px-ds-20">
         {groups.map((group) => (
           <li key={group.id} className="flex w-[76px] shrink-0 flex-col items-center gap-ds-8">
-            <GroupThumbnail src={group.imageUrl ?? fallbackImage} />
+            <GroupThumbnail src={group.imageUrl} />
             <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-primary">
               {group.name}
             </span>
@@ -39,7 +39,7 @@ export function MyGroupList({ groups }: MyGroupListProps) {
 }
 
 type GroupThumbnailProps = {
-  src: string | typeof fallbackImage;
+  src: string | null;
 };
 
 function GroupThumbnail({ src }: GroupThumbnailProps) {
@@ -50,7 +50,6 @@ function GroupThumbnail({ src }: GroupThumbnailProps) {
       alt=""
       width={60}
       height={60}
-      sizes="60px"
       className="size-[60px] shrink-0 rounded-ds-full border-sm border-stroke-primary object-cover"
     />
   );

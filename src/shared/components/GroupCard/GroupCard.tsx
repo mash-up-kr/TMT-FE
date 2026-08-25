@@ -33,8 +33,6 @@ export function GroupCard({
   className,
   ...props
 }: GroupCardProps) {
-  const thumbnailSrc = thumbnail ?? fallbackImage;
-
   return (
     <div
       data-slot="group-card"
@@ -44,7 +42,7 @@ export function GroupCard({
       )}
       {...props}
     >
-      <GroupCardThumbnail src={thumbnailSrc} />
+      <GroupCardThumbnail src={thumbnail} />
       <div className="flex flex-col gap-ds-12 p-ds-16">
         <GroupCardHeading title={title} description={description} />
         <GroupCardStats members={memberCount} reviews={reviewCount} places={placeCount} />
@@ -55,7 +53,7 @@ export function GroupCard({
 }
 
 type GroupCardThumbnailProps = {
-  src: string | typeof fallbackImage;
+  src: string | null;
 };
 
 /** 이미지가 비어도 회색 면이 남아 카드 높이가 흔들리지 않는다. */
@@ -66,8 +64,6 @@ function GroupCardThumbnail({ src }: GroupCardThumbnailProps) {
         src={src}
         fallbackSrc={fallbackImage}
         alt=""
-        fill
-        sizes="100vw"
         className="size-full object-cover"
       />
     </div>

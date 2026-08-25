@@ -97,7 +97,6 @@ function AuthorAvatar({ imageUrl }: AuthorAvatarProps) {
       alt=""
       width={40}
       height={40}
-      sizes="40px"
       className="size-ds-40 shrink-0 rounded-ds-full object-cover"
     />
   );
@@ -118,8 +117,6 @@ function ReviewCardPhoto({ url }: ReviewCardPhotoProps) {
         src={url}
         fallbackSrc={imageFallback}
         alt=""
-        fill
-        sizes="100vw"
         className="size-full object-cover"
       />
     </div>
