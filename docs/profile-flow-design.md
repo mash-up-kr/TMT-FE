@@ -328,17 +328,28 @@ type ProfileTicketHistoryItem = {
 
 좋아요 탭과 매장 추천 격자는 위치를 선택적으로 받는다. `latitude`·`longitude`를 주면 응답의 `distanceMeters`가 채워지고, 안 주면 비어 온다. 위치는 화면 필수 조건이 아니다.
 
-### 4.5 계약이 OpenAPI에 반영되기 전에는 표시 컴포넌트만 선구현한다
+### 4.5 OpenAPI 반영 전에는 fixture로 화면을 그린다
 
-계약은 확정됐지만 아직 OpenAPI에 없다. 배포 전에는 화면 모델을 props로 받는 표시 컴포넌트까지만 구현한다. 기존 `home`·`feed`·`groups` API를 조합하거나 fixture·MSW 같은 mock 데이터를 추가하는 근거로 쓰지 않는다.
+계약은 확정됐고 OpenAPI 반영만 남았다. 그동안 `_fixtures/`의 계약 응답으로 화면을 그린다. architecture rule의 Mock 정책이 허용하는 예외이며, 조건은 그 문서에 있다.
 
-| 지금 구현 가능 | OpenAPI 반영 뒤 구현 |
-| --- | --- |
-| `ProfileIdentity`, `ProfileTabs`, `ProfilePage`, `ProfileTabBody` | `MeProfileScreen`, `UserProfileScreen`의 query·mapper 연결 |
-| `ReviewGrid`, `GroupList`, `FavoriteList`, `TicketCard`, `TicketHistoryList`의 props 기반 표시·빈 상태 | cursor, loading, error, 재시도, 다음 페이지 조회 |
-| `ProfileTab`, `parseProfileTab`, ViewModel 타입 | route page, `useInfiniteQuery`, 찜 해제 mutation, 매장 추천 |
+**fixture는 화면 모델이 아니라 계약 응답 모양으로 쓴다.** 그래야 `profileMappers.ts`를 지금 작성해 연동 후 그대로 쓸 수 있다.
 
-선구현 컴포넌트는 생성 API 타입을 import하지 않고 이 문서의 ViewModel만 받는다. 실제 route page는 만들지 않으며, 컴포넌트를 확인하기 위한 임시 preview route·하드코딩 fixture도 만들지 않는다.
+```text
+route page  →  Screen  →  _hooks/useProfileData  →  profileMappers  →  ViewModel  →  표시 컴포넌트
+                          ^^^^^^^^^^^^^^^^^^^^^^
+                          연동 시 교체하는 유일한 지점
+```
+
+연동 시 하는 일은 네 가지다.
+
+1. `pnpm api:sync`
+2. `_fixtures/contract.ts`의 손으로 쓴 응답 타입을 생성 타입 import로 교체
+3. `_hooks/useProfileData.ts`의 `queryFn`을 생성 client 호출로 교체하고, 목록은 `useInfiniteQuery`로 바꾼다
+4. `_fixtures/` 삭제
+
+Screen·mapper·컴포넌트·라우트는 건드리지 않는다. 손으로 쓴 응답 타입과 생성 타입이 어긋나면 2단계에서 타입 에러가 나는 것이 정상이고, 그 자리가 곧 고칠 자리다.
+
+fixture로 덮지 않는 것도 있다. 매장 추천(`POST /v1/recommendations/places`)은 화면이 없어 배너를 이동하지 않는 상태로 두고, 좋아요 해제는 서버 호출 없이 토스트와 pending 상태만 재현한다.
 
 ## 5. 상태·접근성 정책
 
