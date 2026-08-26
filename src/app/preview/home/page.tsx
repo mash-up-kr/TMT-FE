@@ -10,9 +10,9 @@
 
 import { useState } from "react";
 import imageDummy from "@/shared/assets/dummy-image.png";
+import { AppShell } from "@/shared/components/AppShell/AppShell";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { cn } from "@/shared/utils/cn";
-import { HomeShell } from "../../_components/HomeShell";
 import { HomeView } from "../../_components/HomeView";
 import type { FeedReview, HomeRecommendedGroup, HomeSummary } from "../../_model/home";
 
@@ -76,7 +76,7 @@ const REVIEW: FeedReview = {
     { id: "tag_alone", label: "혼자" },
     { id: "tag_tasty", label: "음식이 맛있어요" },
   ],
-  place: { id: "place_2", name: "오즈 커피", regionName: "마포구 도화동" },
+  place: { id: "place_2", name: "오즈 커피", regionName: "마포구 도화동", isFavorite: false },
 };
 
 const NOT_JOINED: HomeSummary = {
@@ -234,9 +234,9 @@ export default function HomePreview() {
 
   return (
     <>
-      <HomeShell hideNav={scenario.hideNav}>
+      <AppShell tab="home" hideNav={scenario.hideNav}>
         <HomeView {...scenario.props} />
-      </HomeShell>
+      </AppShell>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>
         {SCENARIOS.map((item) => (
