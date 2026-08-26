@@ -8,15 +8,15 @@ import type { ProfileReviewItem } from "../_model/profile";
 /** 상세 응답은 아직 계약 밖이라 fixture로 채운다. 연동 시 `detail`만 query 결과로 바꾼다. */
 export function useReviewDetailSheet() {
   const [selected, setSelected] = useState<ProfileReviewItem | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   return {
-    isOpen: selected !== null,
+    isOpen,
     detail: toReviewDetailFixture(selected) satisfies ReviewDetail,
-    open: (review: ProfileReviewItem) => setSelected(review),
-    onOpenChange: (next: boolean) => {
-      if (!next) {
-        setSelected(null);
-      }
+    open: (review: ProfileReviewItem) => {
+      setSelected(review);
+      setIsOpen(true);
     },
+    onOpenChange: setIsOpen,
   };
 }
