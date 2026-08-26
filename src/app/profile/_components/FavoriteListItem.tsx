@@ -1,0 +1,63 @@
+"use client";
+
+import Link from "next/link";
+import { IconButton } from "@/shared/ui/IconButton";
+import { HeartIcon } from "@/shared/ui/Icons";
+import type { ProfileFavoriteItem } from "../_model/profile";
+
+type FavoriteListItemProps = {
+  place: ProfileFavoriteItem;
+  href: string;
+  onUnfavorite: (placeId: string) => void;
+  /** 해제 요청이 진행 중인 동안 이 행의 하트만 잠근다. */
+  pending?: boolean;
+};
+
+export function FavoriteListItem({ place, href, onUnfavorite, pending }: FavoriteListItemProps) {
+  return (
+    <li className="flex items-center gap-ds-8 border-stroke-secondary border-b bg-surface-primary py-ds-16">
+      <Link href={href} className="flex min-w-0 flex-1 items-center gap-ds-12">
+        <PlaceThumbnail url={place.thumbnailUrl} />
+        <span className="flex min-w-0 flex-1 flex-col gap-ds-4">
+          <span className="truncate text-body-lg-bold text-content-primary">{place.name}</span>
+          <span className="flex h-[20px] items-center gap-ds-4 text-body-md-medium text-content-secondary">
+            <span className="truncate">{place.roadAddress}</span>
+            {place.categoryName ? (
+              <>
+                <span aria-hidden="true" className="h-[12px] w-px shrink-0 bg-content-tertiary" />
+                <span className="shrink-0">{place.categoryName}</span>
+              </>
+            ) : null}
+          </span>
+        </span>
+      </Link>
+      <IconButton
+        aria-label={`${place.name} 좋아요 해제`}
+        aria-busy={pending}
+        disabled={pending}
+        className="shrink-0 disabled:opacity-50"
+        onClick={() => onUnfavorite(place.placeId)}
+      >
+        <HeartIcon filled size={28} className="text-icon-interactive-primary" />
+      </IconButton>
+    </li>
+  );
+}
+
+function PlaceThumbnail({ url }: { url: string | null }) {
+  if (!url) {
+    return (
+      <span aria-hidden="true" className="size-ds-48 shrink-0 rounded-ds-sm bg-surface-tertiary" />
+    );
+  }
+
+  return (
+    // biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다.
+    <img
+      src={url}
+      alt=""
+      className="size-ds-48 shrink-0 rounded-ds-sm object-cover"
+      loading="lazy"
+    />
+  );
+}
