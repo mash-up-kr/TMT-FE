@@ -46,7 +46,6 @@ export function toProfileReviewItems(
 }
 
 type GroupMappingOptions = {
-  /** 타인 프로필은 일치 칩을 그리지 않으므로 값을 넘기지 않는다. */
   withMatchedCount: boolean;
 };
 
@@ -75,7 +74,6 @@ export function toProfileFavoriteItems(
   }));
 }
 
-/** 매장 · 그룹 · 둘 다 없음 세 갈래다. 회원가입 보상이 마지막에 해당한다. */
 function toTicketEntrySource(response: TicketEntryResponse): TicketEntrySource {
   if (response.place) {
     return {
@@ -91,10 +89,7 @@ function toTicketEntrySource(response: TicketEntryResponse): TicketEntrySource {
   return { kind: "none" };
 }
 
-/**
- * amount가 null이면 아직 티켓이 오가지 않은 저장이다.
- * 그 경우에도 saveId가 없으면 재개할 수 없으므로 이력 행에서 제외한다.
- */
+/** saveId 없는 작성 중 행은 재개할 수 없어 목록에서 제외한다. */
 export function toTicketHistoryItems(
   responses: readonly TicketEntryResponse[],
 ): ProfileTicketHistoryItem[] {

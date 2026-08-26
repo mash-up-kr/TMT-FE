@@ -11,10 +11,7 @@ export type ProfileIdentityModel = {
 
 export type ProfileTabCounts = Record<ProfileTab, number>;
 
-/**
- * 프로필을 보는 사람이 주인인지 남인지. 타인 화면에서는 배너·하트·일치 칩이 사라지고
- * 그룹 썸네일 크기도 달라진다(1674:60998 vs 1692:24507).
- */
+/** 타인 화면에서는 배너·하트·일치 칩이 사라지고 그룹 썸네일 크기도 달라진다. */
 export type ProfileViewer = "mine" | "other";
 
 export type ProfileGroupItem = {
@@ -26,12 +23,7 @@ export type ProfileGroupItem = {
   matchedSavedPlaceCount?: number;
 };
 
-/**
- * 리뷰 탭 2열 그리드의 한 칸. 카드가 아니라 썸네일만 그린다.
- *
- * `saveId`는 소유자에게만 내려온다. 내 프로필은 본인 저장 상세를, 타인 프로필은
- * 리뷰 상세를 여는 갈래가 여기서 갈린다.
- */
+/** `saveId`는 소유자에게만 내려온다. 내 프로필만 본인 저장 상세를 열 수 있다. */
 export type ProfileReviewItem = {
   reviewId: string;
   saveId?: string;
@@ -59,21 +51,13 @@ export const TICKET_ENTRY_TYPES = [
 
 export type TicketEntryType = (typeof TICKET_ENTRY_TYPES)[number];
 
-/**
- * 티켓 이력 행의 출처. 매장에서 온 것, 그룹에서 온 것, 어느 쪽도 아닌 것 셋이다.
- * 회원가입 보상은 매장도 그룹도 없다.
- */
+/** 회원가입 보상처럼 매장도 그룹도 없는 행이 있다. */
 export type TicketEntrySource =
   | { kind: "place"; placeId: string; name: string; roadAddress: string }
   | { kind: "group"; groupId: string; name: string }
   | { kind: "none" };
 
-/**
- * 티켓 증감 이력 한 줄. 발급·소비·회수와 아직 티켓이 오가지 않은 저장이 한 목록에 섞인다.
- *
- * 상태는 응답의 amount가 null인지로 갈린다. 재개 핸들은 saveId이며,
- * "작성 중" 표시만으로 이동시키지 않기 위해 상태와 식별자를 한 갈래로 묶는다.
- */
+/** "작성 중" 표시만으로 이동시키지 않도록 상태와 재개 식별자를 한 갈래로 묶는다. */
 export type ProfileTicketHistoryItem = {
   entryId: string;
   type: TicketEntryType;

@@ -8,10 +8,6 @@ type ProfileQueryFallbackProps = {
   errorMessage: string;
 };
 
-/**
- * 첫 조회가 아직 데이터를 주지 않았을 때 그 자리에 놓인다.
- * 오류면 재시도 control을, 아니면 skeleton을 그린다. 데이터가 있으면 호출부가 직접 그린다.
- */
 export function ProfileQueryFallback({ query, errorMessage }: ProfileQueryFallbackProps) {
   if (query.isError) {
     return (

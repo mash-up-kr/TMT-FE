@@ -1,10 +1,4 @@
-/**
- * 계약이 확정되고 OpenAPI 반영만 남은 동안 화면을 그리기 위한 fixture.
- *
- * 화면 모델이 아니라 **계약 응답 모양**으로 둔다. mapper를 지금 작성해 두면
- * 연동 시점에 `_hooks/`의 데이터 출처만 바꾸면 된다.
- * 생성 client가 나오면 이 폴더를 통째로 지운다.
- */
+/** 화면 모델이 아니라 계약 응답 모양으로 둔다. 생성 client가 나오면 이 폴더를 지운다. */
 
 import dummy from "@/shared/assets/dummy.png";
 import dummyImage from "@/shared/assets/dummy-image.png";
@@ -95,7 +89,6 @@ function favorites(count: number, viewerFavorited: boolean): ProfileFavoriteResp
     reviewCount: 18 + index,
     thumbnailUrl: index === 1 ? null : dummyImage.src,
     distanceMeters: null,
-    // 내 좋아요 목록에서는 항상 true, 타인 목록에서는 조회자 기준이라 다를 수 있다.
     isFavorite: viewerFavorited ? true : index % 2 === 0,
   }));
 }
@@ -103,7 +96,7 @@ function favorites(count: number, viewerFavorited: boolean): ProfileFavoriteResp
 export const MY_FAVORITES = page(favorites(4, true));
 export const OTHER_FAVORITES = page(favorites(4, false));
 
-/** 계약 §4-1의 세 갈래를 모두 담는다 — 매장·그룹·출처 없음 */
+/** 출처 세 갈래(매장·그룹·없음)를 모두 담는다. */
 export const MY_TICKETS: TicketHistoryResponse = {
   availableCount: 4,
   ...page([

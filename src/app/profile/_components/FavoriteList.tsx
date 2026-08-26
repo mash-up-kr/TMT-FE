@@ -7,9 +7,7 @@ import { FavoriteListItem } from "./FavoriteListItem";
 type FavoriteListProps = {
   places: readonly ProfileFavoriteItem[];
   getPlaceHref: (placeId: string) => string;
-  /** 없으면 하트를 렌더하지 않는다. 타인 프로필 좋아요 탭이 그렇다. */
   onUnfavorite?: (placeId: string) => void;
-  /** 해제 요청이 진행 중인 매장. 그 행의 하트만 잠근다. */
   pendingPlaceId?: string | null;
 };
 

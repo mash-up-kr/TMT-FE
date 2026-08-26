@@ -17,10 +17,6 @@ type ProfileTabPageViewProps = {
   tabBody: Omit<ProfileTabBodyProps, "page">;
 };
 
-/**
- * 요약과 탭 목록, 두 query의 결과를 프로필 본문으로 조립한다.
- * 내/타인 Screen이 공유하며, 두 화면의 차이는 props로만 들어온다.
- */
 export function ProfileTabPageView({
   summary,
   tabPage,

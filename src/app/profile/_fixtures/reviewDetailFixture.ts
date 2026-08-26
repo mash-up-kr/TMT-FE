@@ -1,4 +1,4 @@
-/** 리뷰 상세 바텀시트용 fixture. 상세 계약이 붙으면 이 파일도 함께 지운다. */
+/** 상세 계약이 붙으면 이 파일도 함께 지운다. */
 
 import dummyImage from "@/shared/assets/dummy-image.png";
 import type { ReviewDetail } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";

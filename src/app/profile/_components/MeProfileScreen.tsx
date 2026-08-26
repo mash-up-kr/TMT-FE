@@ -18,7 +18,7 @@ import { PlaceRecommendationCard } from "./PlaceRecommendationCard";
 import { ProfileTabPageView } from "./ProfileTabPageView";
 import { TicketCard } from "./TicketCard";
 
-/** 해제 요청이 서버를 오가는 동안을 흉내 낸다. 연동 시 useMutation의 isPending으로 바뀐다. */
+/** 연동 시 useMutation의 isPending으로 바뀐다. */
 const UNFAVORITE_DELAY_MS = 400;
 
 export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
@@ -28,7 +28,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
   const sheet = useReviewDetailSheet();
   const [pendingPlaceId, setPendingPlaceId] = useState<string | null>(null);
 
-  // 계약 3-3: 해제해도 항목은 목록에 남고 다음 조회에서 빠진다.
+  // 해제해도 항목은 목록에 남고 다음 조회에서 빠진다.
   const unfavorite = (placeId: string) => {
     setPendingPlaceId(placeId);
     setTimeout(() => {

@@ -7,7 +7,6 @@ import type { ProfileReviewItem } from "../_model/profile";
 
 type ReviewGridProps = {
   reviews: readonly ProfileReviewItem[];
-  /** 항목을 누르면 리뷰 상세 바텀시트를 연다. */
   onSelect: (review: ProfileReviewItem) => void;
 };
 

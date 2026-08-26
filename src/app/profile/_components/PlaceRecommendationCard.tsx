@@ -1,12 +1,7 @@
 import { ChevronRightIcon } from "@/shared/ui/Icons";
 import PotIllustration from "./assets/pot.svg?react";
 
-/**
- * 매장 추천 진입 배너.
- *
- * 목적지 화면(계약 5-1의 격자)이 아직 없어 지금은 이동하지 않는다.
- * 화면이 생기면 Link로 감싼다.
- */
+/** 목적지 화면이 아직 없어 이동하지 않는다. 화면이 생기면 Link로 감싼다. */
 export function PlaceRecommendationCard() {
   return (
     <div className="flex items-center gap-ds-12 rounded-ds-md bg-surface-secondary p-ds-16">

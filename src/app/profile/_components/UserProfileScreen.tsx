@@ -18,7 +18,6 @@ type UserProfileScreenProps = {
   activeTab: ProfileTab;
 };
 
-/** 타인 프로필. 배너·티켓·하단 내비가 없고 그룹 일치 칩과 좋아요 하트도 없다. */
 export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps) {
   const router = useRouter();
   const summary = useUserProfileSummary(userId);

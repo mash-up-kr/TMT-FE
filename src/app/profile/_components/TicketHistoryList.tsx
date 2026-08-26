@@ -7,7 +7,6 @@ import { TicketHistoryItem } from "./TicketHistoryItem";
 type TicketHistoryListProps = {
   items: readonly ProfileTicketHistoryItem[];
   getSaveHref: (saveId: string) => string;
-  /** 빈 상태에서 리뷰 작성 플로우로 보내는 경로. */
   writeReviewHref: string;
 };
 

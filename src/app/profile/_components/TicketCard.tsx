@@ -3,11 +3,10 @@ import { cn } from "@/shared/utils/cn";
 
 type TicketCardProps = {
   count: number;
-  /** 티켓 이력으로 보내는 경로. 이력 화면 상단의 요약처럼 이동이 없는 자리에서는 생략한다. */
+  /** 없으면 이동하지 않는 요약으로 그린다. */
   href?: string;
 };
 
-/** 티켓 가장자리의 반원 절취선. Figma는 좌우 각 3개, 지름 12, 중심 y = 16 / 40 / 64. */
 const NOTCH_OFFSETS = ["top-ds-16", "top-ds-40", "top-ds-64"];
 
 const frameStyles =

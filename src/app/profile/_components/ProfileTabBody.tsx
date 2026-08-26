@@ -12,7 +12,6 @@ export type ProfileTabBodyProps = {
   getGroupHref: (groupId: string) => string;
   getPlaceHref: (placeId: string) => string;
   onSelectReview: (review: ProfileReviewItem) => void;
-  /** 내 프로필에만 있다. 없으면 하트를 그리지 않는다. */
   onUnfavorite?: (placeId: string) => void;
   pendingPlaceId?: string | null;
 };

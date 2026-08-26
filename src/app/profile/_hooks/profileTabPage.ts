@@ -18,7 +18,7 @@ export type ProfileTabResponses = {
   favorites: CursorPage<ProfileFavoriteResponse>;
 };
 
-/** 탭 응답을 화면 모델로 바꾼다. 타인 프로필은 일치 수를 버린다. */
+/** 타인 프로필은 일치 수를 버린다. */
 export function toProfileTabPage(
   tab: ProfileTab,
   responses: ProfileTabResponses,
