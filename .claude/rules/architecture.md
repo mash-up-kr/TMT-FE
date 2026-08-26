@@ -144,7 +144,7 @@ MSW를 포함한 **mock layer 라이브러리는 도입하지 않는다.** `src/
 - 교체 지점은 `_hooks/` 한 곳이다. Screen·mapper·컴포넌트·라우트는 연동 시 건드리지 않는다.
 - `pnpm api:sync`로 생성 client가 나오면 **같은 PR에서 `_fixtures/`를 삭제한다.** 남겨두지 않는다.
 
-이 예외를 쓰는 라우트는 그 사실과 삭제 조건을 해당 기능 문서에 적는다. 계약이 없는 endpoint는 여전히 fixture로 채우지 않는다.
+`_fixtures/` 안의 파일은 상단 주석에 정본 계약의 위치와 삭제 조건을 남긴다. 계약이 없는 endpoint는 여전히 fixture로 채우지 않는다.
 
 API 또는 mock 구조를 바꾸는 변경에서는 dependency, `pnpm api:sync`, orval 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 갱신하고 이 문서의 현재 상태도 함께 고친다.
 
