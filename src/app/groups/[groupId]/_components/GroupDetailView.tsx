@@ -55,10 +55,7 @@ export function GroupDetailView({ group, reviewList, joinAction }: GroupDetailVi
         title={group.name}
         className="shrink-0"
         left={
-          <IconButton
-            aria-label="그룹 목록으로 돌아가기"
-            onClick={() => router.push(ROUTES.GROUPS.ROOT)}
-          >
+          <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
             <ChevronLeftIcon size={28} />
           </IconButton>
         }
