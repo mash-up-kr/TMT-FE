@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
-import { TEMP_USER_ID } from "../_constants/mockUser";
 import { draftReviewBasePath } from "../_constants/steps";
 import { mapSaveDetailToDraft } from "../_utils/reviewApiMappers";
 import { ReviewFlowShell } from "./ReviewFlowShell";
@@ -15,7 +14,7 @@ export function DraftReviewFlow({
   draftId,
   children,
 }: Readonly<{ draftId: string; children: ReactNode }>) {
-  const save = useGetSave(draftId, { userId: TEMP_USER_ID });
+  const save = useGetSave(draftId);
 
   // isError가 아니라 data 유무로 가른다. 이미 초안을 받아 입력 중인데 재조회가 실패해도
   // 셸이 내려가지 않아야 입력한 내용이 남는다.
