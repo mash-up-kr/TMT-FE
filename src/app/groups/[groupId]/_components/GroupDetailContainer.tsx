@@ -46,9 +46,9 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
   const handleJoin = async () => {
     try {
       await join.mutateAsync({ groupId, params: { userId: SERVER_IGNORES_USER_ID } });
-      const refreshedDetail = await detail.refetch();
+      void detail.refetch({ throwOnError: false });
 
-      return !refreshedDetail.isError;
+      return true;
     } catch {
       return false;
     }
