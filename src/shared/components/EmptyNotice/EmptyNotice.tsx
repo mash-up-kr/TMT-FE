@@ -1,14 +1,17 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 import tomatoEmpty from "@/shared/components/assets/tomato-mascot-empty.png";
 import { cn } from "@/shared/utils/cn";
 
 type EmptyNoticeProps = {
   title: string;
   children?: string;
+  /** 다음 행동으로 보내는 control. 있을 때만 문구 아래에 놓인다. */
+  action?: ReactNode;
   className?: string;
 };
 
-export function EmptyNotice({ title, children, className }: EmptyNoticeProps) {
+export function EmptyNotice({ title, children, action, className }: EmptyNoticeProps) {
   return (
     <div
       className={cn(
@@ -33,6 +36,7 @@ export function EmptyNotice({ title, children, className }: EmptyNoticeProps) {
         <p className="text-heading-sm text-content-primary">{title}</p>
         {children ? <p className="text-body-md-regular text-content-tertiary">{children}</p> : null}
       </div>
+      {action}
     </div>
   );
 }

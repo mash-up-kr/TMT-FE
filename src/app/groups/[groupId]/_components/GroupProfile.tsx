@@ -1,6 +1,6 @@
 import groupFallbackImage from "@/shared/assets/dummy.png";
 import coverFallbackImage from "@/shared/assets/dummy-small.png";
-import { MatchedStoreBadge } from "@/shared/components/MatchedStoreBadge/MatchedStoreBadge";
+import { MatchedPlaceBadge } from "@/shared/components/MatchedPlaceBadge/MatchedPlaceBadge";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { GroupProfileData } from "../_model/groupDetail";
 
@@ -57,7 +57,11 @@ export function GroupProfile({ group }: GroupProfileProps) {
           ))}
         </ul>
 
-        <MatchedStoreBadge count={group.matchedSavedPlaceCount} />
+        {group.matchedSavedPlaceCount > 0 ? (
+          <MatchedPlaceBadge>
+            내가 저장한 가게와 {group.matchedSavedPlaceCount}개 일치해요
+          </MatchedPlaceBadge>
+        ) : null}
       </div>
     </section>
   );
