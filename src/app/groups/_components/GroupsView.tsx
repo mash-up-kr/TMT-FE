@@ -7,7 +7,7 @@ import { useGroupFilters } from "../_hooks/useGroupFilters";
 import type { GroupListItem } from "../_model/group";
 import { toGroupListItem } from "../_utils/toGroupListItem";
 import { toGroupListParams } from "../_utils/toGroupListParams";
-import { GroupFilterBar } from "./GroupFilterBar";
+import { GroupFilters } from "./GroupFilters";
 import { GroupList, GroupListEmpty } from "./GroupList";
 import { GroupSearchBar } from "./GroupSearchBar";
 
@@ -32,7 +32,7 @@ export function GroupsView({ previewState }: GroupsViewProps) {
     <>
       <div className="flex shrink-0 flex-col gap-ds-12 px-ds-20 py-ds-12">
         <GroupSearchBar value={filters.keyword} onValueChange={setKeyword} />
-        <GroupFilterBar
+        <GroupFilters
           sort={filters.sort}
           categoryId={filters.categoryId}
           regionTagIds={filters.regionTagIds}
