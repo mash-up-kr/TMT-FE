@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import type { ComponentPropsWithRef } from "react";
 import { cn } from "@/shared/utils/cn";
 import { FeedIcon, GroupIcon, HomeIcon, MyIcon, PlusIcon } from "./Icons";
@@ -7,8 +8,8 @@ export type BottomNavValue = "home" | "feed" | "group" | "my";
 
 export type BottomNavProps = ComponentPropsWithRef<"nav"> & {
   value: BottomNavValue;
-  tabHrefs: Record<BottomNavValue, string>;
-  createHref: string;
+  onValueChange: (value: BottomNavValue) => void;
+  onCreate: () => void;
 };
 
 const items = [
@@ -18,19 +19,20 @@ const items = [
   { value: "my", label: "마이", Icon: MyIcon },
 ] as const;
 
-export function BottomNav({ value, tabHrefs, createHref, className, ...props }: BottomNavProps) {
+export function BottomNav({ value, onValueChange, onCreate, className, ...props }: BottomNavProps) {
   const renderItem = (item: (typeof items)[number]) => {
     const active = item.value === value;
 
     return (
-      <Link
+      <button
         key={item.value}
-        href={tabHrefs[item.value]}
+        type="button"
         aria-current={active ? "page" : undefined}
         className={cn(
           "flex min-w-0 flex-1 flex-col items-center gap-ds-4 overflow-hidden rounded-ds-full py-[calc(var(--spacing-ds-4)+var(--spacing-ds-2))]",
           active && "bg-surface-navigation-selected",
         )}
+        onClick={() => onValueChange(item.value)}
       >
         <item.Icon
           aria-hidden="true"
@@ -47,7 +49,7 @@ export function BottomNav({ value, tabHrefs, createHref, className, ...props }: 
         >
           {item.label}
         </span>
-      </Link>
+      </button>
     );
   };
 
@@ -62,13 +64,14 @@ export function BottomNav({ value, tabHrefs, createHref, className, ...props }: 
     >
       {items.slice(0, 2).map(renderItem)}
       <div className="flex min-w-0 flex-1 items-center justify-center">
-        <Link
-          href={createHref}
+        <button
+          type="button"
           aria-label="만들기"
           className="inline-flex size-ds-48 shrink-0 items-center justify-center rounded-ds-full bg-surface-interactive-primary text-content-interactive-inverse active:bg-surface-interactive-primary-pressed"
+          onClick={onCreate}
         >
           <PlusIcon aria-hidden="true" className="size-ds-24 shrink-0" />
-        </Link>
+        </button>
       </div>
       {items.slice(2).map(renderItem)}
     </nav>
