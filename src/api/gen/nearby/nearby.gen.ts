@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPageReviewCardResponse } from "../_model/cursorPageReviewCardResponse.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { NearbyPlacesParams } from "../_model/nearbyPlacesParams.gen";
 import type { NearbyPlacesResponse } from "../_model/nearbyPlacesResponse.gen";
 import type { NearbyReviewsParams } from "../_model/nearbyReviewsParams.gen";
@@ -78,7 +79,7 @@ export const getNearbyReviewsQueryKey = (params?: NearbyReviewsParams) => {
 
 export const getNearbyReviewsQueryOptions = <
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyReviewsParams,
   options?: {
@@ -101,11 +102,11 @@ export const getNearbyReviewsQueryOptions = <
 };
 
 export type NearbyReviewsQueryResult = NonNullable<Awaited<ReturnType<typeof nearbyReviews>>>;
-export type NearbyReviewsQueryError = ErrorType<unknown>;
+export type NearbyReviewsQueryError = ErrorType<ErrorResponse>;
 
 export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params: undefined | NearbyReviewsParams,
   options: {
@@ -124,7 +125,7 @@ export function useNearbyReviews<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyReviewsParams,
   options?: {
@@ -143,7 +144,7 @@ export function useNearbyReviews<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyReviewsParams,
   options?: {
@@ -158,7 +159,7 @@ export function useNearbyReviews<
 
 export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyReviewsParams,
   options?: {
@@ -212,7 +213,7 @@ export const getNearbyPlacesQueryKey = (params?: NearbyPlacesParams) => {
 
 export const getNearbyPlacesQueryOptions = <
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyPlacesParams,
   options?: {
@@ -235,11 +236,11 @@ export const getNearbyPlacesQueryOptions = <
 };
 
 export type NearbyPlacesQueryResult = NonNullable<Awaited<ReturnType<typeof nearbyPlaces>>>;
-export type NearbyPlacesQueryError = ErrorType<unknown>;
+export type NearbyPlacesQueryError = ErrorType<ErrorResponse>;
 
 export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params: undefined | NearbyPlacesParams,
   options: {
@@ -258,7 +259,7 @@ export function useNearbyPlaces<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyPlacesParams,
   options?: {
@@ -277,7 +278,7 @@ export function useNearbyPlaces<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyPlacesParams,
   options?: {
@@ -292,7 +293,7 @@ export function useNearbyPlaces<
 
 export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: NearbyPlacesParams,
   options?: {

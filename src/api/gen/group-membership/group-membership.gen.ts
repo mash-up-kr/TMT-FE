@@ -23,14 +23,11 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { JoinParams } from "../_model/joinParams.gen";
-import type { JoinPreviewParams } from "../_model/joinPreviewParams.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { JoinPreviewResponse } from "../_model/joinPreviewResponse.gen";
 import type { JoinRequest } from "../_model/joinRequest.gen";
 import type { JoinResponse } from "../_model/joinResponse.gen";
-import type { LeaveParams } from "../_model/leaveParams.gen";
 import type { ListReviewSharesParams } from "../_model/listReviewSharesParams.gen";
-import type { ReplaceReviewSharesParams } from "../_model/replaceReviewSharesParams.gen";
 import type { ReplaceSharesRequest } from "../_model/replaceSharesRequest.gen";
 import type { ReplaceSharesResponse } from "../_model/replaceSharesResponse.gen";
 import type { ReviewSharesResponse } from "../_model/reviewSharesResponse.gen";
@@ -52,7 +49,7 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getListReviewSharesUrl = (groupId: string, params: ListReviewSharesParams) => {
+export const getListReviewSharesUrl = (groupId: string, params?: ListReviewSharesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -74,7 +71,7 @@ export const getListReviewSharesUrl = (groupId: string, params: ListReviewShares
  */
 export const listReviewShares = async (
   groupId: string,
-  params: ListReviewSharesParams,
+  params?: ListReviewSharesParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<ReviewSharesResponse> => {
   return tmtFetch<ReviewSharesResponse>(getListReviewSharesUrl(groupId, params), {
@@ -89,10 +86,10 @@ export const getListReviewSharesQueryKey = (groupId: string, params?: ListReview
 
 export const getListReviewSharesQueryOptions = <
   TData = Awaited<ReturnType<typeof listReviewShares>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: ListReviewSharesParams,
+  params?: ListReviewSharesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listReviewShares>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -116,14 +113,14 @@ export const getListReviewSharesQueryOptions = <
 };
 
 export type ListReviewSharesQueryResult = NonNullable<Awaited<ReturnType<typeof listReviewShares>>>;
-export type ListReviewSharesQueryError = ErrorType<unknown>;
+export type ListReviewSharesQueryError = ErrorType<ErrorResponse>;
 
 export function useListReviewShares<
   TData = Awaited<ReturnType<typeof listReviewShares>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: ListReviewSharesParams,
+  params: undefined | ListReviewSharesParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listReviewShares>>, TError, TData>> &
       Pick<
@@ -140,10 +137,10 @@ export function useListReviewShares<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useListReviewShares<
   TData = Awaited<ReturnType<typeof listReviewShares>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: ListReviewSharesParams,
+  params?: ListReviewSharesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listReviewShares>>, TError, TData>> &
       Pick<
@@ -160,10 +157,10 @@ export function useListReviewShares<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useListReviewShares<
   TData = Awaited<ReturnType<typeof listReviewShares>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: ListReviewSharesParams,
+  params?: ListReviewSharesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listReviewShares>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -176,10 +173,10 @@ export function useListReviewShares<
 
 export function useListReviewShares<
   TData = Awaited<ReturnType<typeof listReviewShares>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: ListReviewSharesParams,
+  params?: ListReviewSharesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listReviewShares>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -195,20 +192,8 @@ export function useListReviewShares<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getReplaceReviewSharesUrl = (groupId: string, params: ReplaceReviewSharesParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/groups/${groupId}/review-shares?${stringifiedParams}`
-    : `/v1/groups/${groupId}/review-shares`;
+export const getReplaceReviewSharesUrl = (groupId: string) => {
+  return `/v1/groups/${groupId}/review-shares`;
 };
 
 /**
@@ -218,10 +203,9 @@ export const getReplaceReviewSharesUrl = (groupId: string, params: ReplaceReview
 export const replaceReviewShares = async (
   groupId: string,
   replaceSharesRequest: ReplaceSharesRequest,
-  params: ReplaceReviewSharesParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<ReplaceSharesResponse> => {
-  return tmtFetch<ReplaceSharesResponse>(getReplaceReviewSharesUrl(groupId, params), {
+  return tmtFetch<ReplaceSharesResponse>(getReplaceReviewSharesUrl(groupId), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -230,20 +214,20 @@ export const replaceReviewShares = async (
 };
 
 export const getReplaceReviewSharesMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof replaceReviewShares>>,
     TError,
-    { groupId: string; data: BodyType<ReplaceSharesRequest>; params: ReplaceReviewSharesParams },
+    { groupId: string; data: BodyType<ReplaceSharesRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof replaceReviewShares>>,
   TError,
-  { groupId: string; data: BodyType<ReplaceSharesRequest>; params: ReplaceReviewSharesParams },
+  { groupId: string; data: BodyType<ReplaceSharesRequest> },
   TContext
 > => {
   const mutationKey = ["replaceReviewShares"];
@@ -255,11 +239,11 @@ export const getReplaceReviewSharesMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof replaceReviewShares>>,
-    { groupId: string; data: BodyType<ReplaceSharesRequest>; params: ReplaceReviewSharesParams }
+    { groupId: string; data: BodyType<ReplaceSharesRequest> }
   > = (props) => {
-    const { groupId, data, params } = props ?? {};
+    const { groupId, data } = props ?? {};
 
-    return replaceReviewShares(groupId, data, params, requestOptions);
+    return replaceReviewShares(groupId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -269,17 +253,17 @@ export type ReplaceReviewSharesMutationResult = NonNullable<
   Awaited<ReturnType<typeof replaceReviewShares>>
 >;
 export type ReplaceReviewSharesMutationBody = BodyType<ReplaceSharesRequest>;
-export type ReplaceReviewSharesMutationError = ErrorType<unknown>;
+export type ReplaceReviewSharesMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 리뷰 공유 (전체 교체)
  */
-export const useReplaceReviewShares = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useReplaceReviewShares = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof replaceReviewShares>>,
       TError,
-      { groupId: string; data: BodyType<ReplaceSharesRequest>; params: ReplaceReviewSharesParams },
+      { groupId: string; data: BodyType<ReplaceSharesRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -288,25 +272,13 @@ export const useReplaceReviewShares = <TError = ErrorType<unknown>, TContext = u
 ): UseMutationResult<
   Awaited<ReturnType<typeof replaceReviewShares>>,
   TError,
-  { groupId: string; data: BodyType<ReplaceSharesRequest>; params: ReplaceReviewSharesParams },
+  { groupId: string; data: BodyType<ReplaceSharesRequest> },
   TContext
 > => {
   return useMutation(getReplaceReviewSharesMutationOptions(options), queryClient);
 };
-export const getJoinUrl = (groupId: string, params: JoinParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/groups/${groupId}/memberships?${stringifiedParams}`
-    : `/v1/groups/${groupId}/memberships`;
+export const getJoinUrl = (groupId: string) => {
+  return `/v1/groups/${groupId}/memberships`;
 };
 
 /**
@@ -315,11 +287,10 @@ export const getJoinUrl = (groupId: string, params: JoinParams) => {
  */
 export const join = async (
   groupId: string,
-  params: JoinParams,
   joinRequest?: JoinRequest,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<JoinResponse> => {
-  return tmtFetch<JoinResponse>(getJoinUrl(groupId, params), {
+  return tmtFetch<JoinResponse>(getJoinUrl(groupId), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -327,18 +298,21 @@ export const join = async (
   });
 };
 
-export const getJoinMutationOptions = <TError = ErrorType<unknown>, TContext = unknown>(options?: {
+export const getJoinMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof join>>,
     TError,
-    { groupId: string; params: JoinParams; data?: BodyType<JoinRequest> },
+    { groupId: string; data?: BodyType<JoinRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof join>>,
   TError,
-  { groupId: string; params: JoinParams; data?: BodyType<JoinRequest> },
+  { groupId: string; data?: BodyType<JoinRequest> },
   TContext
 > => {
   const mutationKey = ["join"];
@@ -350,11 +324,11 @@ export const getJoinMutationOptions = <TError = ErrorType<unknown>, TContext = u
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof join>>,
-    { groupId: string; params: JoinParams; data?: BodyType<JoinRequest> }
+    { groupId: string; data?: BodyType<JoinRequest> }
   > = (props) => {
-    const { groupId, params, data } = props ?? {};
+    const { groupId, data } = props ?? {};
 
-    return join(groupId, params, data, requestOptions);
+    return join(groupId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -362,17 +336,17 @@ export const getJoinMutationOptions = <TError = ErrorType<unknown>, TContext = u
 
 export type JoinMutationResult = NonNullable<Awaited<ReturnType<typeof join>>>;
 export type JoinMutationBody = BodyType<JoinRequest> | undefined;
-export type JoinMutationError = ErrorType<unknown>;
+export type JoinMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 가입
  */
-export const useJoin = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useJoin = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof join>>,
       TError,
-      { groupId: string; params: JoinParams; data?: BodyType<JoinRequest> },
+      { groupId: string; data?: BodyType<JoinRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -381,25 +355,13 @@ export const useJoin = <TError = ErrorType<unknown>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof join>>,
   TError,
-  { groupId: string; params: JoinParams; data?: BodyType<JoinRequest> },
+  { groupId: string; data?: BodyType<JoinRequest> },
   TContext
 > => {
   return useMutation(getJoinMutationOptions(options), queryClient);
 };
-export const getJoinPreviewUrl = (groupId: string, params: JoinPreviewParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/groups/${groupId}/join-preview?${stringifiedParams}`
-    : `/v1/groups/${groupId}/join-preview`;
+export const getJoinPreviewUrl = (groupId: string) => {
+  return `/v1/groups/${groupId}/join-preview`;
 };
 
 /**
@@ -408,25 +370,23 @@ export const getJoinPreviewUrl = (groupId: string, params: JoinPreviewParams) =>
  */
 export const joinPreview = async (
   groupId: string,
-  params: JoinPreviewParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<JoinPreviewResponse> => {
-  return tmtFetch<JoinPreviewResponse>(getJoinPreviewUrl(groupId, params), {
+  return tmtFetch<JoinPreviewResponse>(getJoinPreviewUrl(groupId), {
     ...options,
     method: "GET",
   });
 };
 
-export const getJoinPreviewQueryKey = (groupId: string, params?: JoinPreviewParams) => {
-  return [`/v1/groups/${groupId}/join-preview`, ...(params ? [params] : [])] as const;
+export const getJoinPreviewQueryKey = (groupId: string) => {
+  return [`/v1/groups/${groupId}/join-preview`] as const;
 };
 
 export const getJoinPreviewQueryOptions = <
   TData = Awaited<ReturnType<typeof joinPreview>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: JoinPreviewParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof joinPreview>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -434,10 +394,10 @@ export const getJoinPreviewQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getJoinPreviewQueryKey(groupId, params);
+  const queryKey = queryOptions?.queryKey ?? getJoinPreviewQueryKey(groupId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof joinPreview>>> = ({ signal }) =>
-    joinPreview(groupId, params, { signal, ...requestOptions });
+    joinPreview(groupId, { signal, ...requestOptions });
 
   return {
     queryKey,
@@ -450,14 +410,13 @@ export const getJoinPreviewQueryOptions = <
 };
 
 export type JoinPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof joinPreview>>>;
-export type JoinPreviewQueryError = ErrorType<unknown>;
+export type JoinPreviewQueryError = ErrorType<ErrorResponse>;
 
 export function useJoinPreview<
   TData = Awaited<ReturnType<typeof joinPreview>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: JoinPreviewParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof joinPreview>>, TError, TData>> &
       Pick<
@@ -474,10 +433,9 @@ export function useJoinPreview<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useJoinPreview<
   TData = Awaited<ReturnType<typeof joinPreview>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: JoinPreviewParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof joinPreview>>, TError, TData>> &
       Pick<
@@ -494,10 +452,9 @@ export function useJoinPreview<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useJoinPreview<
   TData = Awaited<ReturnType<typeof joinPreview>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: JoinPreviewParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof joinPreview>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -510,17 +467,16 @@ export function useJoinPreview<
 
 export function useJoinPreview<
   TData = Awaited<ReturnType<typeof joinPreview>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: JoinPreviewParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof joinPreview>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getJoinPreviewQueryOptions(groupId, params, options);
+  const queryOptions = getJoinPreviewQueryOptions(groupId, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -529,20 +485,8 @@ export function useJoinPreview<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getLeaveUrl = (groupId: string, params: LeaveParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/groups/${groupId}/memberships/me?${stringifiedParams}`
-    : `/v1/groups/${groupId}/memberships/me`;
+export const getLeaveUrl = (groupId: string) => {
+  return `/v1/groups/${groupId}/memberships/me`;
 };
 
 /**
@@ -551,27 +495,29 @@ export const getLeaveUrl = (groupId: string, params: LeaveParams) => {
  */
 export const leave = async (
   groupId: string,
-  params: LeaveParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<void> => {
-  return tmtFetch<void>(getLeaveUrl(groupId, params), {
+  return tmtFetch<void>(getLeaveUrl(groupId), {
     ...options,
     method: "DELETE",
   });
 };
 
-export const getLeaveMutationOptions = <TError = ErrorType<unknown>, TContext = unknown>(options?: {
+export const getLeaveMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof leave>>,
     TError,
-    { groupId: string; params: LeaveParams },
+    { groupId: string },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof leave>>,
   TError,
-  { groupId: string; params: LeaveParams },
+  { groupId: string },
   TContext
 > => {
   const mutationKey = ["leave"];
@@ -581,13 +527,12 @@ export const getLeaveMutationOptions = <TError = ErrorType<unknown>, TContext = 
       : { ...options, mutation: { ...options.mutation, mutationKey } }
     : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof leave>>,
-    { groupId: string; params: LeaveParams }
-  > = (props) => {
-    const { groupId, params } = props ?? {};
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof leave>>, { groupId: string }> = (
+    props,
+  ) => {
+    const { groupId } = props ?? {};
 
-    return leave(groupId, params, requestOptions);
+    return leave(groupId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -595,27 +540,22 @@ export const getLeaveMutationOptions = <TError = ErrorType<unknown>, TContext = 
 
 export type LeaveMutationResult = NonNullable<Awaited<ReturnType<typeof leave>>>;
 
-export type LeaveMutationError = ErrorType<unknown>;
+export type LeaveMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 탈퇴
  */
-export const useLeave = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useLeave = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof leave>>,
       TError,
-      { groupId: string; params: LeaveParams },
+      { groupId: string },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof leave>>,
-  TError,
-  { groupId: string; params: LeaveParams },
-  TContext
-> => {
+): UseMutationResult<Awaited<ReturnType<typeof leave>>, TError, { groupId: string }, TContext> => {
   return useMutation(getLeaveMutationOptions(options), queryClient);
 };

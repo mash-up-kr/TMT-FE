@@ -19,8 +19,8 @@ import type {
 } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
-
 import { tmtFetch } from "../../mutator";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { ReviewFormConfigResponse } from "../_model/reviewFormConfigResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -63,7 +63,7 @@ export const getReviewFormConfigQueryKey = () => {
 
 export const getReviewFormConfigQueryOptions = <
   TData = Awaited<ReturnType<typeof reviewFormConfig>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(options?: {
   query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewFormConfig>>, TError, TData>>;
   request?: SecondParameter<typeof tmtFetch>;
@@ -83,11 +83,11 @@ export const getReviewFormConfigQueryOptions = <
 };
 
 export type ReviewFormConfigQueryResult = NonNullable<Awaited<ReturnType<typeof reviewFormConfig>>>;
-export type ReviewFormConfigQueryError = ErrorType<unknown>;
+export type ReviewFormConfigQueryError = ErrorType<ErrorResponse>;
 
 export function useReviewFormConfig<
   TData = Awaited<ReturnType<typeof reviewFormConfig>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewFormConfig>>, TError, TData>> &
@@ -105,7 +105,7 @@ export function useReviewFormConfig<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useReviewFormConfig<
   TData = Awaited<ReturnType<typeof reviewFormConfig>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewFormConfig>>, TError, TData>> &
@@ -123,7 +123,7 @@ export function useReviewFormConfig<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useReviewFormConfig<
   TData = Awaited<ReturnType<typeof reviewFormConfig>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewFormConfig>>, TError, TData>>;
@@ -137,7 +137,7 @@ export function useReviewFormConfig<
 
 export function useReviewFormConfig<
   TData = Awaited<ReturnType<typeof reviewFormConfig>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewFormConfig>>, TError, TData>>;

@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { AddressSearchResponse } from "../_model/addressSearchResponse.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { SearchAddressesParams } from "../_model/searchAddressesParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -40,7 +41,7 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getSearchAddressesUrl = (params: SearchAddressesParams) => {
+export const getSearchAddressesUrl = (params?: SearchAddressesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -63,7 +64,7 @@ export const getSearchAddressesUrl = (params: SearchAddressesParams) => {
  * @summary 주소 검색
  */
 export const searchAddresses = async (
-  params: SearchAddressesParams,
+  params?: SearchAddressesParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<AddressSearchResponse> => {
   return tmtFetch<AddressSearchResponse>(getSearchAddressesUrl(params), {
@@ -78,9 +79,9 @@ export const getSearchAddressesQueryKey = (params?: SearchAddressesParams) => {
 
 export const getSearchAddressesQueryOptions = <
   TData = Awaited<ReturnType<typeof searchAddresses>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: SearchAddressesParams,
+  params?: SearchAddressesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchAddresses>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -101,13 +102,13 @@ export const getSearchAddressesQueryOptions = <
 };
 
 export type SearchAddressesQueryResult = NonNullable<Awaited<ReturnType<typeof searchAddresses>>>;
-export type SearchAddressesQueryError = ErrorType<unknown>;
+export type SearchAddressesQueryError = ErrorType<ErrorResponse>;
 
 export function useSearchAddresses<
   TData = Awaited<ReturnType<typeof searchAddresses>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: SearchAddressesParams,
+  params: undefined | SearchAddressesParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchAddresses>>, TError, TData>> &
       Pick<
@@ -124,9 +125,9 @@ export function useSearchAddresses<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useSearchAddresses<
   TData = Awaited<ReturnType<typeof searchAddresses>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: SearchAddressesParams,
+  params?: SearchAddressesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchAddresses>>, TError, TData>> &
       Pick<
@@ -143,9 +144,9 @@ export function useSearchAddresses<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useSearchAddresses<
   TData = Awaited<ReturnType<typeof searchAddresses>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: SearchAddressesParams,
+  params?: SearchAddressesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchAddresses>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -158,9 +159,9 @@ export function useSearchAddresses<
 
 export function useSearchAddresses<
   TData = Awaited<ReturnType<typeof searchAddresses>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: SearchAddressesParams,
+  params?: SearchAddressesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchAddresses>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;

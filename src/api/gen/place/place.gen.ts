@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPagePlaceCardResponse } from "../_model/cursorPagePlaceCardResponse.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { SearchPlacesParams } from "../_model/searchPlacesParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -76,7 +77,7 @@ export const getSearchPlacesQueryKey = (params?: SearchPlacesParams) => {
 
 export const getSearchPlacesQueryOptions = <
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: SearchPlacesParams,
   options?: {
@@ -99,11 +100,11 @@ export const getSearchPlacesQueryOptions = <
 };
 
 export type SearchPlacesQueryResult = NonNullable<Awaited<ReturnType<typeof searchPlaces>>>;
-export type SearchPlacesQueryError = ErrorType<unknown>;
+export type SearchPlacesQueryError = ErrorType<ErrorResponse>;
 
 export function useSearchPlaces<
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params: undefined | SearchPlacesParams,
   options: {
@@ -122,7 +123,7 @@ export function useSearchPlaces<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useSearchPlaces<
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: SearchPlacesParams,
   options?: {
@@ -141,7 +142,7 @@ export function useSearchPlaces<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useSearchPlaces<
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: SearchPlacesParams,
   options?: {
@@ -156,7 +157,7 @@ export function useSearchPlaces<
 
 export function useSearchPlaces<
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: SearchPlacesParams,
   options?: {

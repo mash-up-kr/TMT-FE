@@ -7,7 +7,6 @@
  */
 
 export type SearchAddressesParams = {
-  userId: number;
   query?: string;
   cursor?: string;
   limit?: number;

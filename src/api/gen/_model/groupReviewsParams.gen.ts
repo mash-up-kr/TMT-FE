@@ -7,7 +7,6 @@
  */
 
 export type GroupReviewsParams = {
-  userId?: number;
   latitude?: number;
   longitude?: number;
   cursor?: string;

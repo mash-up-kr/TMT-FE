@@ -19,8 +19,8 @@ import type {
 } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
-
 import { tmtFetch } from "../../mutator";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { GroupTagsResponse } from "../_model/groupTagsResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -63,7 +63,7 @@ export const getGroupTagsQueryKey = () => {
 
 export const getGroupTagsQueryOptions = <
   TData = Awaited<ReturnType<typeof groupTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(options?: {
   query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupTags>>, TError, TData>>;
   request?: SecondParameter<typeof tmtFetch>;
@@ -83,11 +83,11 @@ export const getGroupTagsQueryOptions = <
 };
 
 export type GroupTagsQueryResult = NonNullable<Awaited<ReturnType<typeof groupTags>>>;
-export type GroupTagsQueryError = ErrorType<unknown>;
+export type GroupTagsQueryError = ErrorType<ErrorResponse>;
 
 export function useGroupTags<
   TData = Awaited<ReturnType<typeof groupTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupTags>>, TError, TData>> &
@@ -105,7 +105,7 @@ export function useGroupTags<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGroupTags<
   TData = Awaited<ReturnType<typeof groupTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupTags>>, TError, TData>> &
@@ -123,7 +123,7 @@ export function useGroupTags<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGroupTags<
   TData = Awaited<ReturnType<typeof groupTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupTags>>, TError, TData>>;
@@ -137,7 +137,7 @@ export function useGroupTags<
 
 export function useGroupTags<
   TData = Awaited<ReturnType<typeof groupTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupTags>>, TError, TData>>;

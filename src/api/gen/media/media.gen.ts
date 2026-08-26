@@ -15,26 +15,14 @@ import type {
 import { useMutation } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { CreateUploadIntentParams } from "../_model/createUploadIntentParams.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { UploadIntentRequest } from "../_model/uploadIntentRequest.gen";
 import type { UploadIntentResponse } from "../_model/uploadIntentResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getCreateUploadIntentUrl = (params: CreateUploadIntentParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/media/upload-intents?${stringifiedParams}`
-    : `/v1/media/upload-intents`;
+export const getCreateUploadIntentUrl = () => {
+  return `/v1/media/upload-intents`;
 };
 
 /**
@@ -43,10 +31,9 @@ export const getCreateUploadIntentUrl = (params: CreateUploadIntentParams) => {
  */
 export const createUploadIntent = async (
   uploadIntentRequest: UploadIntentRequest,
-  params: CreateUploadIntentParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<UploadIntentResponse> => {
-  return tmtFetch<UploadIntentResponse>(getCreateUploadIntentUrl(params), {
+  return tmtFetch<UploadIntentResponse>(getCreateUploadIntentUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -55,20 +42,20 @@ export const createUploadIntent = async (
 };
 
 export const getCreateUploadIntentMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createUploadIntent>>,
     TError,
-    { data: BodyType<UploadIntentRequest>; params: CreateUploadIntentParams },
+    { data: BodyType<UploadIntentRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createUploadIntent>>,
   TError,
-  { data: BodyType<UploadIntentRequest>; params: CreateUploadIntentParams },
+  { data: BodyType<UploadIntentRequest> },
   TContext
 > => {
   const mutationKey = ["createUploadIntent"];
@@ -80,11 +67,11 @@ export const getCreateUploadIntentMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createUploadIntent>>,
-    { data: BodyType<UploadIntentRequest>; params: CreateUploadIntentParams }
+    { data: BodyType<UploadIntentRequest> }
   > = (props) => {
-    const { data, params } = props ?? {};
+    const { data } = props ?? {};
 
-    return createUploadIntent(data, params, requestOptions);
+    return createUploadIntent(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -94,17 +81,17 @@ export type CreateUploadIntentMutationResult = NonNullable<
   Awaited<ReturnType<typeof createUploadIntent>>
 >;
 export type CreateUploadIntentMutationBody = BodyType<UploadIntentRequest>;
-export type CreateUploadIntentMutationError = ErrorType<unknown>;
+export type CreateUploadIntentMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 사진 업로드 presigned URL 발급
  */
-export const useCreateUploadIntent = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useCreateUploadIntent = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createUploadIntent>>,
       TError,
-      { data: BodyType<UploadIntentRequest>; params: CreateUploadIntentParams },
+      { data: BodyType<UploadIntentRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -113,7 +100,7 @@ export const useCreateUploadIntent = <TError = ErrorType<unknown>, TContext = un
 ): UseMutationResult<
   Awaited<ReturnType<typeof createUploadIntent>>,
   TError,
-  { data: BodyType<UploadIntentRequest>; params: CreateUploadIntentParams },
+  { data: BodyType<UploadIntentRequest> },
   TContext
 > => {
   return useMutation(getCreateUploadIntentMutationOptions(options), queryClient);

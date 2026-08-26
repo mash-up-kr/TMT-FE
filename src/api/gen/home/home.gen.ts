@@ -21,8 +21,8 @@ import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPageReviewCardResponse } from "../_model/cursorPageReviewCardResponse.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { FeedParams } from "../_model/feedParams.gen";
-import type { HomeParams } from "../_model/homeParams.gen";
 import type { HomeResponse } from "../_model/homeResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -42,54 +42,38 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getHomeUrl = (params: HomeParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/v1/home?${stringifiedParams}` : `/v1/home`;
+export const getHomeUrl = () => {
+  return `/v1/home`;
 };
 
 /**
  * recommendedGroups는 myGroups가 비었을 때만 채운다 — 추천순(G17) 상위 5개.
  * @summary 인사·내 그룹·추천 그룹
  */
-export const home = async (
-  params: HomeParams,
-  options?: Parameters<typeof tmtFetch>[1],
-): Promise<HomeResponse> => {
-  return tmtFetch<HomeResponse>(getHomeUrl(params), {
+export const home = async (options?: Parameters<typeof tmtFetch>[1]): Promise<HomeResponse> => {
+  return tmtFetch<HomeResponse>(getHomeUrl(), {
     ...options,
     method: "GET",
   });
 };
 
-export const getHomeQueryKey = (params?: HomeParams) => {
-  return [`/v1/home`, ...(params ? [params] : [])] as const;
+export const getHomeQueryKey = () => {
+  return [`/v1/home`] as const;
 };
 
 export const getHomeQueryOptions = <
   TData = Awaited<ReturnType<typeof home>>,
-  TError = ErrorType<unknown>,
->(
-  params: HomeParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
-    request?: SecondParameter<typeof tmtFetch>;
-  },
-) => {
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
+  request?: SecondParameter<typeof tmtFetch>;
+}) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getHomeQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getHomeQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof home>>> = ({ signal }) =>
-    home(params, { signal, ...requestOptions });
+    home({ signal, ...requestOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof home>>,
@@ -99,10 +83,12 @@ export const getHomeQueryOptions = <
 };
 
 export type HomeQueryResult = NonNullable<Awaited<ReturnType<typeof home>>>;
-export type HomeQueryError = ErrorType<unknown>;
+export type HomeQueryError = ErrorType<ErrorResponse>;
 
-export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = ErrorType<unknown>>(
-  params: HomeParams,
+export function useHome<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>> &
       Pick<
@@ -117,8 +103,10 @@ export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = Error
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = ErrorType<unknown>>(
-  params: HomeParams,
+export function useHome<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>> &
       Pick<
@@ -133,8 +121,10 @@ export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = Error
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = ErrorType<unknown>>(
-  params: HomeParams,
+export function useHome<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -145,15 +135,17 @@ export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = Error
  * @summary 인사·내 그룹·추천 그룹
  */
 
-export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = ErrorType<unknown>>(
-  params: HomeParams,
+export function useHome<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getHomeQueryOptions(params, options);
+  const queryOptions = getHomeQueryOptions(options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -162,7 +154,7 @@ export function useHome<TData = Awaited<ReturnType<typeof home>>, TError = Error
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getFeedUrl = (params: FeedParams) => {
+export const getFeedUrl = (params?: FeedParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -181,7 +173,7 @@ export const getFeedUrl = (params: FeedParams) => {
  * @summary 리뷰 피드
  */
 export const feed = async (
-  params: FeedParams,
+  params?: FeedParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<CursorPageReviewCardResponse> => {
   return tmtFetch<CursorPageReviewCardResponse>(getFeedUrl(params), {
@@ -196,9 +188,9 @@ export const getFeedQueryKey = (params?: FeedParams) => {
 
 export const getFeedQueryOptions = <
   TData = Awaited<ReturnType<typeof feed>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: FeedParams,
+  params?: FeedParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof feed>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -219,10 +211,13 @@ export const getFeedQueryOptions = <
 };
 
 export type FeedQueryResult = NonNullable<Awaited<ReturnType<typeof feed>>>;
-export type FeedQueryError = ErrorType<unknown>;
+export type FeedQueryError = ErrorType<ErrorResponse>;
 
-export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = ErrorType<unknown>>(
-  params: FeedParams,
+export function useFeed<
+  TData = Awaited<ReturnType<typeof feed>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params: undefined | FeedParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof feed>>, TError, TData>> &
       Pick<
@@ -237,8 +232,11 @@ export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = Error
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = ErrorType<unknown>>(
-  params: FeedParams,
+export function useFeed<
+  TData = Awaited<ReturnType<typeof feed>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: FeedParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof feed>>, TError, TData>> &
       Pick<
@@ -253,8 +251,11 @@ export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = Error
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = ErrorType<unknown>>(
-  params: FeedParams,
+export function useFeed<
+  TData = Awaited<ReturnType<typeof feed>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: FeedParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof feed>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -265,8 +266,11 @@ export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = Error
  * @summary 리뷰 피드
  */
 
-export function useFeed<TData = Awaited<ReturnType<typeof feed>>, TError = ErrorType<unknown>>(
-  params: FeedParams,
+export function useFeed<
+  TData = Awaited<ReturnType<typeof feed>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: FeedParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof feed>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;

@@ -7,7 +7,6 @@
  */
 
 export type ListReviewSharesParams = {
-  userId: number;
   cursor?: string;
   limit?: number;
 };
