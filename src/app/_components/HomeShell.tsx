@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 import { TabScreenLayout } from "@/shared/components/TabScreenLayout";
 import { GNB } from "@/shared/ui/GNB";

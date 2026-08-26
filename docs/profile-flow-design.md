@@ -214,14 +214,16 @@ PR #52의 `reviews/drafts/[draftId]`는 저장 식별자를 경로로 소유하�
 
 행 전체와 하트는 중첩 interactive element가 되지 않도록 분리한다.
 
-해제해도 **항목은 목록에서 즉시 사라지지 않는다.** 취소를 되돌릴 수 있어야 하므로 다음 조회에서 빠진다 (계약 §3-3). 따라서 목록에서 item을 제거하는 낙관적 갱신을 하지 않는다. 갱신 대상은 하트 상태와 프로필 요약의 `favoritePlaceCount`다.
+해제해도 **항목은 목록에서 즉시 사라지지 않는다.** 다음 조회에서 빠진다 (계약 §3-3). 따라서 목록에서 item을 제거하는 낙관적 갱신을 하지 않는다.
+
+이 화면에서 하트를 다시 켜는 토글은 만들지 않는다. 하트는 채워진 상태로 두고, 누르면 해제 요청과 토스트만 일어난다. 갱신 대상은 프로필 요약의 `favoritePlaceCount`다.
 
 ```mermaid
 flowchart LR
     ROW["좋아요 행 본문 선택"] --> PLACE["매장 상세 이동"]
     HEART["하트 버튼 선택"] --> MUT["DELETE /v1/places/{placeId}/favorite"]
     MUT -->|성공| TOAST["좋아요를 취소했어요 토스트<br/>항목은 남고 카운트만 갱신"]
-    MUT -->|실패| RESTORE["하트 상태·카운트 복원 및 오류 표시"]
+    MUT -->|실패| RESTORE["카운트 복원 및 오류 표시"]
 ```
 
 타인 프로필 좋아요 탭에는 **하트가 없다** (계약 §6-1). 읽기 전용이며, 응답의 `isFavorite`는 조회자 기준이라 `true`가 아닐 수 있다.
@@ -324,7 +326,7 @@ type ProfileTicketHistoryItem = {
 
 첫 page param은 명시적으로 `null`이고, `getNextPageParam`은 `hasNext`가 참일 때만 `nextCursor`를 반환한다. 자동 다음 페이지 요청은 `hasNextPage && !isFetching`일 때만 수행한다. TanStack Query v5는 explicit `initialPageParam`과 `getNextPageParam`을 요구하며, 이 패턴은 [Infinite Queries 공식 문서](https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries)와 일치한다.
 
-좋아요 해제 mutation은 **목록에서 item을 제거하지 않는다**(§3.3). 하트 상태와 내 프로필 요약의 `favoritePlaceCount`만 갱신하고, 실패하면 둘 다 되돌린다.
+좋아요 해제 mutation은 **목록에서 item을 제거하지 않고 하트 모양도 바꾸지 않는다**(§3.3). 내 프로필 요약의 `favoritePlaceCount`만 갱신하고, 실패하면 되돌린다.
 
 좋아요 탭과 매장 추천 격자는 위치를 선택적으로 받는다. `latitude`·`longitude`를 주면 응답의 `distanceMeters`가 채워지고, 안 주면 비어 온다. 위치는 화면 필수 조건이 아니다.
 
@@ -360,7 +362,7 @@ fixture로 덮지 않는 것도 있다. 매장 추천(`POST /v1/recommendations/
 | 탭 empty | 각 leaf 목록 | 해당 탭의 빈 상태와 다음 행동을 표시. 다른 탭 count는 유지 |
 | 첫 페이지 error | 각 Profile Screen 또는 `ProfileTabBody` | 오류 원인과 재시도 버튼을 표시 |
 | 다음 페이지 error | 해당 leaf 목록 | 기존 item은 유지하고 하단에 재시도 control 표시 |
-| 좋아요 해제 pending | `FavoriteListItem` | 해당 하트만 disabled·진행 상태, 다른 행은 조작 가능. 성공해도 item은 목록에 남는다 |
+| 좋아요 해제 pending | `FavoriteListItem` | 해당 하트만 disabled·진행 상태, 다른 행은 조작 가능. 성공해도 item과 하트 모양은 그대로 남는다 |
 
 - 탭은 `aria-current="page"`를 갖는 link다. 색 이외에도 현재 URL로 선택 상태가 식별된다.
 - 좋아요 행의 상세 이동과 해제 control은 형제 요소다. clickable row 안에 heart button을 넣지 않는다.
@@ -384,7 +386,7 @@ fixture로 덮지 않는 것도 있다. 매장 추천(`POST /v1/recommendations/
 - 내/타인 공통 본문이 같은 `ProfilePage`를 사용하면서, 내 전용 요소가 타인 화면에 렌더되지 않는다.
 - 잘못된 tab은 404이고, `me`는 사용자 ID로 해석되지 않는다.
 - 각 탭의 첫 페이지·빈 상태·첫 오류·다음 페이지 오류가 구분된다.
-- 좋아요 해제 성공 시 item은 남고 카운트만 줄며, 실패 시 하트와 카운트가 원래 값으로 복원된다.
+- 좋아요 해제 성공 시 item은 남고 카운트만 줄며, 실패 시 카운트가 원래 값으로 복원된다.
 - 티켓 이력이 매장·그룹·출처 없음 세 행을 모두 그리고, `saveId`가 있는 항목만 이동한다.
 - 타인 프로필의 그룹 탭에 일치 칩이, 좋아요 탭에 하트가 렌더되지 않는다.
 - Figma export 외의 임의 SVG를 만들지 않으며, 기존 디자인 토큰·공용 primitive를 우선 사용한다.

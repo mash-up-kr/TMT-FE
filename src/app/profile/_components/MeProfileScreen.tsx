@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import { ROUTES } from "@/shared/constants/routes";
-import { BottomNav } from "@/shared/ui/BottomNav";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { BlankIcon, PlusIcon } from "@/shared/ui/Icons";
@@ -36,20 +36,23 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
     }, 400);
   };
 
+  const header = (
+    <GNB
+      align="left"
+      className="shrink-0"
+      title={null}
+      left={<BlankIcon size={28} />}
+      right={
+        <IconButton aria-label="리뷰 작성하기" onClick={() => router.push(ROUTES.REVIEWS.NEW)}>
+          <PlusIcon size={28} />
+        </IconButton>
+      }
+    />
+  );
+
   return (
     <>
-      <GNB
-        align="left"
-        className="shrink-0"
-        title={null}
-        left={<BlankIcon size={28} />}
-        right={
-          <IconButton aria-label="리뷰 작성하기" onClick={() => router.push(ROUTES.REVIEWS.NEW)}>
-            <PlusIcon size={28} />
-          </IconButton>
-        }
-      />
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <BottomNavScreenLayout activeTab="my" header={header}>
         {summary.data ? (
           <ProfilePage
             profile={summary.data.profile}
@@ -88,14 +91,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
             errorMessage="프로필을 불러오지 못했어요"
           />
         )}
-      </div>
-      <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
-        <BottomNav
-          value="my"
-          onValueChange={() => {}}
-          onCreate={() => router.push(ROUTES.REVIEWS.NEW)}
-        />
-      </div>
+      </BottomNavScreenLayout>
       <ReviewDetailSheet
         open={sheet.isOpen}
         onOpenChange={sheet.onOpenChange}

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon } from "@/shared/ui/Icons";
@@ -29,19 +30,22 @@ export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps)
   const tabPage = useUserProfileTabPage(userId, activeTab);
   const sheet = useReviewDetailSheet();
 
+  const header = (
+    <GNB
+      align="left"
+      className="shrink-0"
+      title={null}
+      left={
+        <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
+          <ChevronLeftIcon size={28} />
+        </IconButton>
+      }
+    />
+  );
+
   return (
     <>
-      <GNB
-        align="left"
-        className="shrink-0"
-        title={null}
-        left={
-          <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
-            <ChevronLeftIcon size={28} />
-          </IconButton>
-        }
-      />
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <ScreenLayout header={header}>
         {summary.data ? (
           <ProfilePage
             profile={summary.data.profile}
@@ -72,7 +76,7 @@ export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps)
             errorMessage="프로필을 불러오지 못했어요"
           />
         )}
-      </div>
+      </ScreenLayout>
       <ReviewDetailSheet
         open={sheet.isOpen}
         onOpenChange={sheet.onOpenChange}

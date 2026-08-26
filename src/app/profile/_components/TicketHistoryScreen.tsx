@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { ROUTES } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -16,40 +17,41 @@ export function TicketHistoryScreen() {
   const router = useRouter();
   const history = useTicketHistory();
 
+  const header = (
+    <GNB
+      className="shrink-0"
+      title="내 티켓"
+      left={
+        <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
+          <ChevronLeftIcon size={28} />
+        </IconButton>
+      }
+      right={
+        <IconButton aria-label="닫기" onClick={() => router.push(ROUTES.PROFILE.ME)}>
+          <CancelIcon size={28} />
+        </IconButton>
+      }
+    />
+  );
+
   return (
-    <>
-      <GNB
-        className="shrink-0"
-        title="내 티켓"
-        left={
-          <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
-            <ChevronLeftIcon size={28} />
-          </IconButton>
-        }
-        right={
-          <IconButton aria-label="닫기" onClick={() => router.push(ROUTES.PROFILE.ME)}>
-            <CancelIcon size={28} />
-          </IconButton>
-        }
-      />
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        <div className="content-container py-ds-24">
-          <TicketCard count={history.data?.availableCount ?? 0} />
-        </div>
-        {history.data ? (
-          <TicketHistoryList
-            items={history.data.items}
-            getSaveHref={saveHref}
-            writeReviewHref={ROUTES.REVIEWS.NEW}
-          />
-        ) : (
-          <ProfileScreenStatus
-            query={history}
-            skeleton={<ProfileTabSkeleton />}
-            errorMessage="티켓 이력을 불러오지 못했어요"
-          />
-        )}
+    <ScreenLayout header={header}>
+      <div className="content-container py-ds-24">
+        <TicketCard count={history.data?.availableCount ?? 0} />
       </div>
-    </>
+      {history.data ? (
+        <TicketHistoryList
+          items={history.data.items}
+          getSaveHref={saveHref}
+          writeReviewHref={ROUTES.REVIEWS.NEW}
+        />
+      ) : (
+        <ProfileScreenStatus
+          query={history}
+          skeleton={<ProfileTabSkeleton />}
+          errorMessage="티켓 이력을 불러오지 못했어요"
+        />
+      )}
+    </ScreenLayout>
   );
 }
