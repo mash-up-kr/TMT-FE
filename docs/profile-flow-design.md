@@ -1,10 +1,10 @@
 # 프로필 플로우 설계
 
-> 상태: 구현 전 설계
+> 상태: 표시 컴포넌트 구현 완료 · API 연동 대기
 >
-> 기준: `feat/#199-mypage` (`0fe59bb`), 2026-08-24
+> 기준: `feat/#199-mypage`, 2026-08-27
 >
-> 이 문서는 현재 구현을 설명하지 않는다. Figma와 현재 OpenAPI, 리뷰 작성 플로우 PR #52를 근거로 확정할 프로필 기능의 구조와 정책을 정의한다.
+> 이 문서는 프로필 기능의 **프론트 구조와 경계**를 정한다. API 계약 자체는 [\[설계\] API 명세 v2 — J. 마이페이지 · J-01. 타인 프로필](https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/59310095)이 정본이고, 여기서 다시 정의하지 않는다.
 
 ## 1. 목표와 범위
 
@@ -51,8 +51,10 @@ src/app/profile/
 │   ├── GroupListItem.tsx
 │   ├── FavoriteList.tsx
 │   ├── FavoriteListItem.tsx
+│   ├── PlaceRecommendationCard.tsx
 │   ├── TicketCard.tsx
 │   ├── TicketHistoryScreen.tsx
+│   ├── TicketHistoryList.tsx
 │   └── TicketHistoryItem.tsx
 ├── _hooks/
 │   ├── useProfileTabPage.ts
@@ -136,6 +138,8 @@ export type ProfileTabPage =
 
 `ProfileTabBody`의 단일 `switch`가 이 union을 좁힌다. 이후 leaf 컴포넌트는 자기 item 타입만 받는다. 이 분기는 세 화면의 실제 차이를 한 곳에 모으기 위한 것이며, 모든 목록을 하나의 config 배열로 일반화하지 않는다.
 
+내/타인 차이는 leaf가 `isMine` 같은 boolean으로 알지 않는다. 타인 화면에서 사라지는 것은 **control과 배지**이므로, 해당 prop을 주지 않으면 렌더되지 않는 형태로 표현한다 — 좋아요 행은 `onUnfavorite`가 없으면 하트를 그리지 않고, 그룹 행은 `matchedSavedPlaceCount`가 없으면 일치 칩을 그리지 않는다.
+
 ```tsx
 switch (page.tab) {
   case "reviews":
@@ -189,7 +193,7 @@ sequenceDiagram
     participant R as /profile/me/tickets
     participant TS as TicketHistoryScreen
     participant API as 생성 API client
-    participant D as /reviews/drafts/[draftId]
+    participant D as /reviews/drafts/[saveId]
 
     U->>C: 내 티켓 선택
     C->>R: Link로 티켓 이력 이동
@@ -198,86 +202,115 @@ sequenceDiagram
     API-->>TS: 잔여 수와 증감 이력
     alt 작성 중 이력
         U->>TS: 작성 중 항목 선택
-        TS->>D: draftId 경로로 재개
+        TS->>D: saveId 경로로 재개
     else 증감 이력
         TS-->>U: 제목·주소·증감값 표시
     end
 ```
 
-PR #52의 `reviews/drafts/[draftId]`는 초안 식별자를 경로로 소유하고, 해당 초안을 읽어 공통 작성 Shell에 주입하는 선례다. 티켓 이력이 `draftId`를 제공할 때만 그 경로로 이동한다. 단순히 “작성 중”이라는 문자열만으로는 이동하지 않는다.
+PR #52의 `reviews/drafts/[draftId]`는 저장 식별자를 경로로 소유하고, 해당 저장을 읽어 공통 작성 Shell에 주입하는 선례다. 계약이 내려주는 핸들은 `saveId`이며(§4-1), 이력 항목이 `saveId`를 제공할 때만 그 경로로 이동한다. 단순히 “작성 중”이라는 문자열만으로는 이동하지 않는다.
 
 ### 3.3 좋아요 해제
 
-현재 Figma는 내 좋아요 목록의 하트와 매장 상세 이동을 동시에 제공한다. 행 전체와 하트는 중첩 interactive element가 되지 않도록 분리한다.
+행 전체와 하트는 중첩 interactive element가 되지 않도록 분리한다.
+
+해제해도 **항목은 목록에서 즉시 사라지지 않는다.** 취소를 되돌릴 수 있어야 하므로 다음 조회에서 빠진다 (계약 §3-3). 따라서 목록에서 item을 제거하는 낙관적 갱신을 하지 않는다. 갱신 대상은 하트 상태와 프로필 요약의 `favoritePlaceCount`다.
 
 ```mermaid
 flowchart LR
     ROW["좋아요 행 본문 선택"] --> PLACE["매장 상세 이동"]
-    HEART["하트 버튼 선택"] --> MUT["찜 해제 mutation"]
-    MUT -->|성공| CACHE["좋아요 페이지·프로필 요약 갱신"]
-    MUT -->|실패| RESTORE["목록·카운트 복원 및 오류 표시"]
+    HEART["하트 버튼 선택"] --> MUT["DELETE /v1/places/{placeId}/favorite"]
+    MUT -->|성공| TOAST["좋아요를 취소했어요 토스트<br/>항목은 남고 카운트만 갱신"]
+    MUT -->|실패| RESTORE["하트 상태·카운트 복원 및 오류 표시"]
 ```
 
-타인 프로필 좋아요 탭의 하트 제어는 Figma 근거가 없다. 해당 탭을 공개하더라도 초기 정책은 읽기 전용이며, viewer가 자신의 좋아요를 바꾸는 control을 추가하려면 별도 디자인과 API 계약이 필요하다.
+타인 프로필 좋아요 탭에는 **하트가 없다** (계약 §6-1). 읽기 전용이며, 응답의 `isFavorite`는 조회자 기준이라 `true`가 아닐 수 있다.
 
 ## 4. 데이터 계약과 매핑 정책
 
-### 4.1 현재 OpenAPI로 가능한 것과 불가능한 것
+### 4.1 계약 정본
 
-현재 `src/api/gen/`은 Orval의 `mock: false` 설정으로 생성된 client다. OpenAPI tag 이름에는 `(mock)`이 있으나 프론트 fixture나 마이페이지 응답은 생성하지 않는다.
+계약 정본은 Confluence [\[설계\] API 명세 v2 — J. 마이페이지 · J-01. 타인 프로필](https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/59310095)(장민서, v6, 2026-08-23)이다. 공통 응답 래퍼·에러·커서 규약은 [공통 API 규약 v1](https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/51249170)을 따른다.
 
-| 현재 계약 | 재사용 가능성 | 사용하지 않는 이유 또는 한계 |
-| --- | --- | --- |
-| `GET /v1/home` → `HomeResponse` | 닉네임, `myGroups`의 최소 정보 | 이메일·티켓·탭 카운트·내 리뷰·좋아요가 없고 그룹 설명·일치 수가 부족함 |
-| `GET /v1/home/feed` → `CursorPageReviewCardResponse` | 없음 | 가입 그룹에 공유된 피드이며 내 리뷰 목록이 아님 |
-| `GET /v1/groups` → `CursorPageGroupCardResponse` | 그룹 행의 필드 모양 | 전체 그룹 탐색 API이며 내 가입 그룹 목록이 아님 |
-| `GET /v1/saves` → `CursorPageSaveListItemResponse` | 작성 중 리뷰의 매장·썸네일 후보 | 티켓 증감 이력과 `draftId` 재개 정책을 표현하지 못함 |
-| `PlaceCardResponse`, favorite mutation | 좋아요 행의 매장 정보·해제 mutation | 좋아요 목록 endpoint가 없음 |
-| `TicketSummary` | 잔여 티켓 수 표현 | 리뷰 저장·그룹 가입 응답에만 포함되고 이력 endpoint가 없음 |
+이 문서는 계약을 다시 정의하지 않는다. 화면 구조와 프론트 경계만 정하고, 필드와 응답 형태는 계약을 가리킨다. 계약과 이 문서가 어긋나면 계약이 정본이다.
 
-따라서 화면을 `home`, `feed`, `groups` 호출의 조합으로 만들지 않는다. 의미가 다른 목록을 섞으면 필터와 권한 정책이 UI에 새어 나온다.
+계약은 아직 OpenAPI에 반영되지 않았다. `pnpm api:sync`는 백엔드가 스펙으로 발행한 것만 가져오므로, 배포 전에는 생성 client가 나오지 않는다.
 
-### 4.2 필요한 OpenAPI 계약
+### 4.2 endpoint
 
-백엔드는 아래 profile resource family를 추가한다. 프론트는 계약 반영 후 `pnpm api:sync`를 실행하고 생성된 client·타입만 사용한다.
+| # | 메서드 · 경로 | 화면 | 인증 |
+| --- | --- | --- | --- |
+| 1 | `GET /v1/users/me` | 프로필 · 배너 2종 · 칩 카운트 | 필수 |
+| 2 | `GET /v1/users/me/reviews` | 리뷰 탭 · 매장 추천 진입 격자 | 필수 |
+| 3 | `GET /v1/users/me/groups` | 그룹 탭 | 필수 |
+| 4 | `GET /v1/users/me/favorites` | 좋아요 탭 | 필수 |
+| 5 | `GET /v1/users/me/tickets` | 내 티켓 | 필수 |
+| 6 | `POST /v1/recommendations/places` | 매장 추천받기 | 필수 |
+| 7 | `GET /v1/users/{userId}` | 타인 프로필 · 칩 카운트 | 선택 |
+| 8 | `GET /v1/users/{userId}/reviews` | 타인 리뷰 탭 | 선택 |
+| 9 | `GET /v1/users/{userId}/groups` | 타인 그룹 탭 | 선택 |
+| 10 | `GET /v1/users/{userId}/favorites` | 타인 좋아요 탭 | 선택 |
 
-| endpoint | 응답 책임 |
-| --- | --- |
-| `GET /v1/profiles/me` | 내 프로필, 이메일, 탭별 전체 count, 잔여 티켓 수 |
-| `GET /v1/profiles/me/{tab}` | 내 리뷰·가입 그룹·좋아요의 cursor 페이지 |
-| `GET /v1/profiles/{userId}` | 타인 프로필, 공개 탭별 전체 count |
-| `GET /v1/profiles/{userId}/{tab}` | 타인 공개 탭의 cursor 페이지 |
-| `GET /v1/profiles/me/tickets` | 티켓 증감 이력, 작성 중 항목의 `draftId?` |
+탭은 `{tab}` 동적 세그먼트가 아니라 **탭마다 별개 경로**다. 라우트의 `[tab]`은 URL 세그먼트일 뿐이고, 호출할 endpoint는 Screen이 탭 값으로 고른다.
 
-각 목록은 기존 cursor 응답 관례(`items`, `nextCursor`, `hasNext`)를 유지한다. 대표 이미지, 그룹의 `matchedSavedPlaceCount`, 좋아요의 음식 카테고리, 작성 중 티켓의 `draftId`처럼 Figma가 직접 그리는 필드는 서버가 화면 목적에 맞게 내려준다. 프론트가 여러 endpoint를 추가 호출해 조립하지 않는다.
+찜 토글은 마이페이지 전용 endpoint를 두지 않고 `PUT`·`DELETE /v1/places/{placeId}/favorite`를 그대로 쓴다.
+
+목록 항목은 기존 스키마를 재사용한다 — 그룹 탭은 `GroupCardResponse`, 좋아요 탭은 `PlaceCardResponse`다. 새 응답 타입을 만들지 않는다.
+
+**마이페이지는 전 구간 인증 필수**이고, **타인 프로필은 인증 선택**이다. 비로그인이면 조회자 기준 필드가 각각 `0`(`matchedSavedPlaceCount`) · `false`(`isFavorite`)로 내려온다.
 
 ### 4.3 Screen과 ViewModel 경계
 
-생성된 API 타입은 `_components`로 전달하지 않는다. Screen이 `_utils/profileMappers.ts`에서 nullable·누락 필드를 검증해 화면 모델로 바꾼다.
+생성된 API 타입은 `_components`로 전달하지 않는다. Screen이 `_utils/profileMappers.ts`에서 nullable·누락 필드를 검증해 화면 모델로 바꾼다. 화면 모델의 필드 이름은 계약 응답을 그대로 따라 매핑 지점을 눈에 보이게 둔다.
 
 ```ts
 type ProfileIdentityModel = {
   nickname: string;
-  imageUrl: string | null;
+  profileImageUrl: string | null;
   email?: string;
 };
 
 type ProfileSummaryModel = {
   profile: ProfileIdentityModel;
-  counts: Record<ProfileTab, number>;
-  availableTicketCount?: number;
-};
-
-type ProfileFavoriteItem = {
-  placeId: string;
-  name: string;
-  roadAddress: string;
-  categoryName: string | null;
-  thumbnailUrl: string | null;
+  counts: Record<ProfileTab, number>;   // reviewCount / joinedGroupCount / favoritePlaceCount
+  availableTicketCount?: number;        // 내 프로필만
 };
 ```
 
+목록 항목은 계약이 재사용하라고 지정한 스키마를 따른다.
+
+| 탭 | 계약 응답 | 화면 모델 |
+| --- | --- | --- |
+| 리뷰 | `reviewId` · `saveId?` · `thumbnailUrl` · `place{placeId,name,categoryName?}` · `createdAt` | `ProfileReviewItem` |
+| 그룹 | `GroupCardResponse` | `ProfileGroupItem` |
+| 좋아요 | `PlaceCardResponse` | `ProfileFavoriteItem` |
+
+리뷰 항목의 `saveId`는 **소유자에게만 내려온다.** 내 프로필은 `saveId`로 본인 상세를, 타인 프로필은 `reviewId`로 리뷰 상세를 연다. 화면 모델도 이 갈래를 그대로 갖는다.
+
 필수 식별자나 이름이 없는 item은 mapper에서 제외한다. 타인 프로필은 email과 티켓을 모델에 넣지 않으며, UI에서 `isMine`으로 숨기지 않는다.
+
+#### 티켓 이력 항목
+
+한 목록에 발급·소비·회수와 미완성 저장이 시각 역순으로 섞인다. 구분은 `amount`의 `null` 여부이고, **행의 출처는 매장 · 그룹 · 둘 다 없음 세 가지다.** `SIGNUP_REWARD`는 매장도 그룹도 없다.
+
+```ts
+type TicketEntrySource =
+  | { kind: "place"; placeId: string; name: string; roadAddress: string }
+  | { kind: "group"; groupId: string; name: string }
+  | { kind: "none" };
+
+type ProfileTicketHistoryItem = {
+  entryId: string;
+  type: TicketEntryType;
+  source: TicketEntrySource;
+  occurredAt: string;
+} & (
+  | { status: "inProgress"; saveId: string }   // amount === null
+  | { status: "settled"; amount: number }
+);
+```
+
+`status`는 `amount`의 `null` 여부로 정한다. 재개 핸들은 `saveId`이고, 없으면 이동하지 않는다. "작성 중"이라는 표시만으로 이동시키지 않기 위해 상태와 식별자를 한 갈래로 묶는다.
 
 ### 4.4 cursor와 cache 정책
 
@@ -291,19 +324,21 @@ type ProfileFavoriteItem = {
 
 첫 page param은 명시적으로 `null`이고, `getNextPageParam`은 `hasNext`가 참일 때만 `nextCursor`를 반환한다. 자동 다음 페이지 요청은 `hasNextPage && !isFetching`일 때만 수행한다. TanStack Query v5는 explicit `initialPageParam`과 `getNextPageParam`을 요구하며, 이 패턴은 [Infinite Queries 공식 문서](https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries)와 일치한다.
 
-좋아요 해제 mutation은 해당 좋아요 목록과 내 프로필 요약 query를 함께 갱신한다. 낙관적 갱신을 사용할 경우 이전 `pages`와 `pageParams` 구조를 통째로 보존해 실패 시 그대로 복원한다.
+좋아요 해제 mutation은 **목록에서 item을 제거하지 않는다**(§3.3). 하트 상태와 내 프로필 요약의 `favoritePlaceCount`만 갱신하고, 실패하면 둘 다 되돌린다.
 
-### 4.5 API 계약 전에는 표시 컴포넌트만 선구현한다
+좋아요 탭과 매장 추천 격자는 위치를 선택적으로 받는다. `latitude`·`longitude`를 주면 응답의 `distanceMeters`가 채워지고, 안 주면 비어 온다. 위치는 화면 필수 조건이 아니다.
 
-현재 OpenAPI에는 profile resource family가 없으므로, API 연동을 기다리는 동안에는 화면 모델을 props로 받는 표시 컴포넌트만 구현할 수 있다. 이 선구현은 Figma 골격·접근성·내/타인 조합 경계를 먼저 고정하기 위한 것이며, 기존 `home`·`feed`·`groups` API를 조합하거나 fixture·MSW 같은 mock 데이터를 추가하는 근거가 아니다.
+### 4.5 계약이 OpenAPI에 반영되기 전에는 표시 컴포넌트만 선구현한다
 
-| 지금 구현 가능 | API 계약 뒤 구현 |
+계약은 확정됐지만 아직 OpenAPI에 없다. 배포 전에는 화면 모델을 props로 받는 표시 컴포넌트까지만 구현한다. 기존 `home`·`feed`·`groups` API를 조합하거나 fixture·MSW 같은 mock 데이터를 추가하는 근거로 쓰지 않는다.
+
+| 지금 구현 가능 | OpenAPI 반영 뒤 구현 |
 | --- | --- |
-| `ProfileIdentity`, `ProfileTabs`, `ProfilePage`, `ProfileTabBody` | `MeProfileScreen`, `UserProfileScreen`의 생성 API query·mapper 연결 |
-| `ReviewGrid`, `GroupList`, `FavoriteList`, `TicketCard`, `TicketHistoryItem`의 props 기반 표시·빈 상태 | cursor, loading, error, 재시도, 다음 페이지 조회 |
-| `ProfileTab`, `parseProfileTab`, ViewModel 타입 | profile route page, `useInfiniteQuery`, 좋아요 mutation, 티켓 이력 query |
+| `ProfileIdentity`, `ProfileTabs`, `ProfilePage`, `ProfileTabBody` | `MeProfileScreen`, `UserProfileScreen`의 query·mapper 연결 |
+| `ReviewGrid`, `GroupList`, `FavoriteList`, `TicketCard`, `TicketHistoryList`의 props 기반 표시·빈 상태 | cursor, loading, error, 재시도, 다음 페이지 조회 |
+| `ProfileTab`, `parseProfileTab`, ViewModel 타입 | route page, `useInfiniteQuery`, 찜 해제 mutation, 매장 추천 |
 
-선구현 컴포넌트는 생성 API 타입을 import하지 않고 이 문서의 ViewModel만 받는다. 실제 route page는 API 데이터가 없으므로 만들지 않으며, 컴포넌트를 확인하기 위한 임시 preview route·하드코딩 fixture도 만들지 않는다. OpenAPI 계약이 반영되면 Screen과 mapper를 추가해 선구현 컴포넌트를 연결한다.
+선구현 컴포넌트는 생성 API 타입을 import하지 않고 이 문서의 ViewModel만 받는다. 실제 route page는 만들지 않으며, 컴포넌트를 확인하기 위한 임시 preview route·하드코딩 fixture도 만들지 않는다.
 
 ## 5. 상태·접근성 정책
 
@@ -314,21 +349,23 @@ type ProfileFavoriteItem = {
 | 탭 empty | 각 leaf 목록 | 해당 탭의 빈 상태와 다음 행동을 표시. 다른 탭 count는 유지 |
 | 첫 페이지 error | 각 Profile Screen 또는 `ProfileTabBody` | 오류 원인과 재시도 버튼을 표시 |
 | 다음 페이지 error | 해당 leaf 목록 | 기존 item은 유지하고 하단에 재시도 control 표시 |
-| 좋아요 해제 pending | `FavoriteListItem` | 해당 하트만 disabled·진행 상태, 다른 행은 조작 가능 |
+| 좋아요 해제 pending | `FavoriteListItem` | 해당 하트만 disabled·진행 상태, 다른 행은 조작 가능. 성공해도 item은 목록에 남는다 |
 
 - 탭은 `aria-current="page"`를 갖는 link다. 색 이외에도 현재 URL로 선택 상태가 식별된다.
 - 좋아요 행의 상세 이동과 해제 control은 형제 요소다. clickable row 안에 heart button을 넣지 않는다.
 - 썸네일 없는 item은 대체 텍스트를 가진 이미지 영역 또는 의미 없는 placeholder로 렌더하며, 이미지 URL을 alt 텍스트로 쓰지 않는다.
 - GNB 아이콘, 닫기, 하트에는 접근 가능한 이름을 준다. 기존 `IconButton`을 우선 사용한다.
+- 타인 프로필에서는 하트와 일치 칩을 **렌더하지 않는다.** 비활성 control을 두지 않는다.
 
 ## 6. 구현 순서와 완료 기준
 
-1. API와 무관한 `ProfileTab`, route parser, ViewModel과 표시 컴포넌트를 구현한다. 기존 `GNB`, `Chip`, `BottomNav`, `IconButton`, icon을 재사용한다.
-2. 백엔드가 profile resource family를 OpenAPI에 반영한다.
+1. `ProfileTab`, route parser, ViewModel과 표시 컴포넌트를 구현한다. 기존 `GNB`, `Chip`, `BottomNav`, `IconButton`, `Badge`, `EmptyNotice`, icon을 재사용한다.
+2. 백엔드가 계약을 OpenAPI에 반영하고 배포한다.
 3. 프론트에서 `pnpm api:sync`로 생성 client와 타입을 갱신한다.
 4. `profile/_utils/profileMappers.ts`와 Screen을 추가해 생성 응답을 ViewModel으로 변환한다.
-5. 실제 profile route page와 리뷰·그룹·좋아요·티켓 leaf를 연결하고 cursor·loading·empty·error·mutation 정책을 적용한다.
-6. Figma 화면별 시각 검증과 `pnpm verify`를 수행한다.
+5. 실제 route page와 리뷰·그룹·좋아요·티켓 leaf를 연결하고 cursor·loading·empty·error·mutation 정책을 적용한다.
+6. 매장 추천(격자 8칸 + `＋`, `POST /v1/recommendations/places`)을 붙인다.
+7. Figma 화면별 시각 검증과 `pnpm verify`를 수행한다.
 
 완료로 판단하려면 아래를 모두 만족해야 한다.
 
@@ -336,8 +373,9 @@ type ProfileFavoriteItem = {
 - 내/타인 공통 본문이 같은 `ProfilePage`를 사용하면서, 내 전용 요소가 타인 화면에 렌더되지 않는다.
 - 잘못된 tab은 404이고, `me`는 사용자 ID로 해석되지 않는다.
 - 각 탭의 첫 페이지·빈 상태·첫 오류·다음 페이지 오류가 구분된다.
-- 좋아요 해제 실패 시 해당 item과 count가 원래 값으로 복원된다.
-- 티켓의 작성 중 이력만 유효한 `draftId` 경로로 연결된다.
+- 좋아요 해제 성공 시 item은 남고 카운트만 줄며, 실패 시 하트와 카운트가 원래 값으로 복원된다.
+- 티켓 이력이 매장·그룹·출처 없음 세 행을 모두 그리고, `saveId`가 있는 항목만 이동한다.
+- 타인 프로필의 그룹 탭에 일치 칩이, 좋아요 탭에 하트가 렌더되지 않는다.
 - Figma export 외의 임의 SVG를 만들지 않으며, 기존 디자인 토큰·공용 primitive를 우선 사용한다.
 
 ## 7. 구조 재검토 기록
@@ -350,6 +388,25 @@ type ProfileFavoriteItem = {
 | 모든 탭 행을 `ProfileListItem`으로 통합 | 기각 | 2열 이미지, 그룹 배지, 하트 mutation의 구조와 접근성 계약이 다름 |
 | 탭을 client state로만 관리 | 기각 | 탭마다 다른 목록·cursor query·공유 가능한 URL이 있으므로 route state가 더 정확함 |
 
+### 7.1 계약 대조로 바뀐 것 (2026-08-27)
+
+BE 계약을 확인하기 전에는 필요한 endpoint를 추정해 적어뒀다. 실제 계약과 대조해 아래를 고쳤다.
+
+| 항목 | 추정 | 계약 |
+| --- | --- | --- |
+| 경로 | `/v1/profiles/*` | `/v1/users/*` |
+| 탭 조회 | `{tab}` 동적 세그먼트 하나 | 탭마다 별개 경로 |
+| 목록 항목 | 프로필 전용 응답 | `GroupCardResponse` · `PlaceCardResponse` 재사용 |
+| 티켓 재개 핸들 | `draftId` | `saveId` |
+| 티켓 이력 출처 | 매장 고정 | 매장 · 그룹 · 없음 세 갈래 |
+| 좋아요 해제 | 목록에서 제거 후 실패 시 복원 | 목록에 남기고 다음 조회에서 제외 |
+| 타인 프로필 하트 | Figma 근거 없어 읽기 전용으로 추정 | 하트 자체를 렌더하지 않음 (계약 §6-1) |
+| 매장 추천 | 이동 계약만 | `POST /v1/recommendations/places` + 격자 8칸 |
+
+구조 결정(상단 고정 + 탭별 페이징, 카운트를 상단 응답에 싣기, `ProfilePage` 공통 골격, 탭을 URL로 소유, 식별자 있을 때만 이동)은 계약과 어긋나지 않아 그대로 둔다.
+
+### 7.2 기각안
+
 이 설계는 세 개의 실제 탭과 두 개의 profile subject만 대상으로 한다. 세 번째 subject 유형이나 두 번째 삽입 위치가 실제로 생기기 전에는 slot 추가, context, 전역 store, 공용 profile feature 계층을 만들지 않는다.
 
 ## 참고
@@ -357,5 +414,8 @@ type ProfileFavoriteItem = {
 - [Next.js App Router: Dynamic Segments](https://nextjs.org/docs/app/getting-started/layouts-and-pages#dynamic-segments)
 - [Next.js App Router: Linking and Navigating](https://nextjs.org/docs/app/getting-started/linking-and-navigating)
 - [TanStack Query: Infinite Queries](https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries)
+- [\[설계\] API 명세 v2 — J. 마이페이지 · J-01. 타인 프로필](https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/59310095) — 계약 정본
+- [공통 API 규약 v1](https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/51249170)
+- [도메인 설계 v2](https://ttalkkak.atlassian.net/wiki/spaces/ttalkkak/pages/57049090)
 - [PR #52: 리뷰 작성 플로우의 route/screen 선례](https://github.com/mash-up-kr/TMT-FE/pull/52)
 - `src/api/gen/`, `_scripts/api/openapi.json`, `src/shared/ui/`, `src/shared/styles/theme.css`

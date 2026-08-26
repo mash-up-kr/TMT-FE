@@ -7,7 +7,7 @@ type ProfileIdentityProps = {
 export function ProfileIdentity({ profile }: ProfileIdentityProps) {
   return (
     <div className="flex items-center gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
-      <ProfileAvatar imageUrl={profile.imageUrl} />
+      <ProfileAvatar imageUrl={profile.profileImageUrl} />
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-ds-4">
         <p className="truncate text-heading-sm text-content-primary">{profile.nickname}</p>
         {profile.email ? (

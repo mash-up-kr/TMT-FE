@@ -6,16 +6,12 @@ import { TicketHistoryItem } from "./TicketHistoryItem";
 
 type TicketHistoryListProps = {
   items: readonly ProfileTicketHistoryItem[];
-  getDraftHref: (draftId: string) => string;
+  getSaveHref: (saveId: string) => string;
   /** 빈 상태에서 리뷰 작성 플로우로 보내는 경로. */
   writeReviewHref: string;
 };
 
-export function TicketHistoryList({
-  items,
-  getDraftHref,
-  writeReviewHref,
-}: TicketHistoryListProps) {
+export function TicketHistoryList({ items, getSaveHref, writeReviewHref }: TicketHistoryListProps) {
   if (items.length === 0) {
     return (
       <EmptyNotice
@@ -38,7 +34,7 @@ export function TicketHistoryList({
   return (
     <ul className="bg-surface-primary">
       {items.map((item) => (
-        <TicketHistoryItem key={item.id} item={item} getDraftHref={getDraftHref} />
+        <TicketHistoryItem key={item.entryId} item={item} getSaveHref={getSaveHref} />
       ))}
     </ul>
   );

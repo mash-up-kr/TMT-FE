@@ -8,7 +8,8 @@ import type { ProfileFavoriteItem } from "../_model/profile";
 type FavoriteListItemProps = {
   place: ProfileFavoriteItem;
   href: string;
-  onUnfavorite: (placeId: string) => void;
+  /** 없으면 하트를 렌더하지 않는다. 타인 프로필 좋아요 탭이 그렇다. */
+  onUnfavorite?: (placeId: string) => void;
   /** 해제 요청이 진행 중인 동안 이 행의 하트만 잠근다. */
   pending?: boolean;
 };
@@ -31,15 +32,17 @@ export function FavoriteListItem({ place, href, onUnfavorite, pending }: Favorit
           </span>
         </span>
       </Link>
-      <IconButton
-        aria-label={`${place.name} 좋아요 해제`}
-        aria-busy={pending}
-        disabled={pending}
-        className="shrink-0 disabled:opacity-50"
-        onClick={() => onUnfavorite(place.placeId)}
-      >
-        <HeartIcon filled size={28} className="text-icon-interactive-primary" />
-      </IconButton>
+      {onUnfavorite ? (
+        <IconButton
+          aria-label={`${place.name} 좋아요 해제`}
+          aria-busy={pending}
+          disabled={pending}
+          className="shrink-0 disabled:opacity-50"
+          onClick={() => onUnfavorite(place.placeId)}
+        >
+          <HeartIcon filled size={28} className="text-icon-interactive-primary" />
+        </IconButton>
+      ) : null}
     </li>
   );
 }

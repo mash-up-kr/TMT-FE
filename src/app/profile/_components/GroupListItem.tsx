@@ -11,15 +11,15 @@ export function GroupListItem({ group, href }: GroupListItemProps) {
   return (
     <li className="border-stroke-secondary border-b py-ds-16 last:border-b-0">
       <Link href={href} className="flex items-start gap-ds-12">
-        <GroupThumbnail url={group.imageUrl} />
+        <GroupThumbnail url={group.coverImageUrl} />
         <div className="flex min-w-0 flex-1 flex-col gap-ds-12">
           <div className="flex flex-col gap-ds-4">
             <p className="truncate text-body-lg-bold text-content-primary">{group.name}</p>
             <p className="line-clamp-2 text-body-md-medium text-content-secondary">
-              {group.description}
+              {group.oneLineDescription}
             </p>
           </div>
-          {group.matchedSavedPlaceCount > 0 ? (
+          {group.matchedSavedPlaceCount ? (
             <MatchedPlaceBadge>
               {`내가 저장한 가게와 ${group.matchedSavedPlaceCount}곳 일치해요`}
             </MatchedPlaceBadge>

@@ -7,7 +7,8 @@ import { FavoriteListItem } from "./FavoriteListItem";
 type FavoriteListProps = {
   places: readonly ProfileFavoriteItem[];
   getPlaceHref: (placeId: string) => string;
-  onUnfavorite: (placeId: string) => void;
+  /** 없으면 하트를 렌더하지 않는다. 타인 프로필 좋아요 탭이 그렇다. */
+  onUnfavorite?: (placeId: string) => void;
   /** 해제 요청이 진행 중인 매장. 그 행의 하트만 잠근다. */
   pendingPlaceId?: string | null;
 };
@@ -19,8 +20,6 @@ export function FavoriteList({
   pendingPlaceId,
 }: FavoriteListProps) {
   if (places.length === 0) {
-    // 그룹 탭 빈 상태(1674:61016)와 같은 형태. 좋아요 탭 빈 상태는 아직 Figma에 없어
-    // 문구를 지어내지 않고 제목만 둔다.
     return <EmptyNotice title="아직 좋아요한 매장이 없어요" className="py-ds-48" />;
   }
 
