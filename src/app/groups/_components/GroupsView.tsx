@@ -6,6 +6,7 @@ import { LoadingIcon } from "@/shared/ui/Icons";
 import { useGroupFilters } from "../_hooks/useGroupFilters";
 import type { GroupListItem } from "../_model/group";
 import { toGroupListItem } from "../_utils/toGroupListItem";
+import { toGroupListParams } from "../_utils/toGroupListParams";
 import { GroupFilterBar } from "./GroupFilterBar";
 import { GroupList, GroupListEmpty } from "./GroupList";
 import { GroupSearchBar } from "./GroupSearchBar";
@@ -21,12 +22,9 @@ export function GroupsView({ previewState }: GroupsViewProps) {
   const { filters, setKeyword, setSort, setCategory, setRegions } = useGroupFilters();
   const searchQuery = useDebouncedValue(filters.keyword.trim());
 
-  const { data, isPending, isError, refetch } = useListGroups({
-    query: searchQuery || undefined,
-    sort: filters.sort,
-    foodCategoryId: filters.categoryId ?? undefined,
-    regionTagIds: filters.regionTagIds.length > 0 ? filters.regionTagIds : undefined,
-  });
+  const { data, isPending, isError, refetch } = useListGroups(
+    toGroupListParams(filters, searchQuery),
+  );
 
   const groups = (data?.items ?? []).map(toGroupListItem).filter((item) => item !== null);
 
