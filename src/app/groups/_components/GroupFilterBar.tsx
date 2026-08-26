@@ -11,6 +11,7 @@ import {
   type GroupFilterId,
   type GroupSort,
 } from "../_constants/filters";
+import { toGroupTagOptions } from "../_utils/toGroupTagOptions";
 import { FilterOption } from "./FilterOption";
 
 type GroupFilterBarProps = {
@@ -35,15 +36,7 @@ export function GroupFilterBar({
   const [categoryDraft, setCategoryDraft] = useState<string | null>(categoryId);
   const [regionDraft, setRegionDraft] = useState<string[]>(regionTagIds);
   const { data: tags, isPending: tagsPending, isError: tagsError } = useGroupTags();
-
-  const categories =
-    tags?.foodCategories?.flatMap(({ categoryId: id, label }) =>
-      id && label ? [{ id, label }] : [],
-    ) ?? [];
-  const regions =
-    tags?.regionTags?.flatMap(({ regionTagId: id, label }) =>
-      id && label ? [{ id, label }] : [],
-    ) ?? [];
+  const { categories, regions } = toGroupTagOptions(tags);
   const categoryLabel =
     categories.find((category) => category.id === categoryId)?.label ?? "카테고리";
   const selectedRegions = regions.filter((region) => regionTagIds.includes(region.id));
