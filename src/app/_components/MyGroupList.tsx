@@ -1,4 +1,6 @@
+import Link from "next/link";
 import fallbackImage from "@/shared/assets/dummy-small.png";
+import { ROUTES } from "@/shared/constants/routes";
 import { PlusIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { HomeGroup } from "../_model/home";
@@ -13,10 +15,15 @@ export function MyGroupList({ groups }: MyGroupListProps) {
       <ul className="-mx-ds-20 flex gap-ds-4 overflow-x-auto px-ds-20">
         {groups.map((group) => (
           <li key={group.id} className="flex w-19 shrink-0 flex-col items-center gap-ds-8">
-            <GroupThumbnail src={group.imageUrl} />
-            <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-primary">
-              {group.name}
-            </span>
+            <Link
+              href={ROUTES.GROUPS.DETAIL(group.id)}
+              className="flex w-full flex-col items-center gap-ds-8"
+            >
+              <GroupThumbnail src={group.imageUrl} />
+              <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-primary">
+                {group.name}
+              </span>
+            </Link>
           </li>
         ))}
         <li className="flex w-19 shrink-0 flex-col items-center gap-ds-8">

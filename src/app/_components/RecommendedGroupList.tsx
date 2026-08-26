@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { GroupCard } from "@/shared/components/GroupCard/GroupCard";
+import { ROUTES } from "@/shared/constants/routes";
 import type { HomeRecommendedGroup } from "../_model/home";
 
 /** 시안이 300px 고정 카드를 가로로 넘기는 구조라 ds 스케일 대신 값으로 둔다. */
@@ -19,15 +21,17 @@ export function RecommendedGroupList({ groups }: RecommendedGroupListProps) {
       <ul className="-mx-ds-20 flex gap-ds-12 overflow-x-auto px-ds-20">
         {groups.map((group) => (
           <li key={group.id} className={`${CARD_WIDTH} shrink-0`}>
-            <GroupCard
-              thumbnail={group.imageUrl}
-              title={group.name}
-              description={group.description}
-              memberCount={group.memberCount}
-              reviewCount={group.reviewCount}
-              placeCount={group.placeCount}
-              matchedCount={group.matchedCount}
-            />
+            <Link href={ROUTES.GROUPS.DETAIL(group.id)} className="block">
+              <GroupCard
+                thumbnail={group.imageUrl}
+                title={group.name}
+                description={group.description}
+                memberCount={group.memberCount}
+                reviewCount={group.reviewCount}
+                placeCount={group.placeCount}
+                matchedCount={group.matchedCount}
+              />
+            </Link>
           </li>
         ))}
       </ul>
