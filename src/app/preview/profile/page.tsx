@@ -1,142 +1,111 @@
 "use client";
 
 import { useState } from "react";
-import dummyImage from "@/shared/assets/dummy-image.png";
-import { ROUTES } from "@/shared/constants/routes";
-import { BottomNav } from "@/shared/ui/BottomNav";
+import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { BlankIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
+import { BlankIcon, CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
-import { FavoriteList } from "../../profile/_components/FavoriteList";
-import { GroupList } from "../../profile/_components/GroupList";
 import { PlaceRecommendationCard } from "../../profile/_components/PlaceRecommendationCard";
 import { ProfileBody } from "../../profile/_components/ProfileBody";
+import { ProfileTabBody } from "../../profile/_components/ProfileTabBody";
 import { TicketCard } from "../../profile/_components/TicketCard";
 import { TicketHistoryList } from "../../profile/_components/TicketHistoryList";
-import type {
-  ProfileFavoriteItem,
-  ProfileGroupItem,
-  ProfileIdentityModel,
-  ProfileTicketHistoryItem,
-} from "../../profile/_model/profile";
+import * as fixtures from "../../profile/_fixtures/profileFixtures";
+import type { ProfileTabResponses } from "../../profile/_hooks/profileTabPage";
+import { toProfileTabPage } from "../../profile/_hooks/profileTabPage";
+import { PROFILE_TABS, type ProfileTab, type ProfileViewer } from "../../profile/_model/profile";
+import {
+  toProfileIdentity,
+  toProfileTabCounts,
+  toTicketHistoryItems,
+} from "../../profile/_utils/profileMappers";
 
-type ProfilePreviewState =
-  | "groups"
-  | "groups-empty"
-  | "favorites"
-  | "favorites-empty"
-  | "tickets"
-  | "tickets-empty";
+const PREVIEW_HREF = "/preview/profile";
 
-const SCENARIOS: readonly { key: ProfilePreviewState; label: string }[] = [
-  { key: "groups", label: "그룹" },
-  { key: "groups-empty", label: "그룹 · 빈 상태" },
-  { key: "favorites", label: "좋아요" },
-  { key: "favorites-empty", label: "좋아요 · 빈 상태" },
-  { key: "tickets", label: "티켓" },
-  { key: "tickets-empty", label: "티켓 · 빈 상태" },
-];
-
-const PROFILE: ProfileIdentityModel = {
-  nickname: "하아얀",
-  email: "hayaan@example.com",
-  profileImageUrl: dummyImage.src,
+const RESPONSES: Record<ProfileViewer, ProfileTabResponses> = {
+  mine: {
+    reviews: fixtures.MY_REVIEWS,
+    groups: fixtures.MY_GROUPS,
+    favorites: fixtures.MY_FAVORITES,
+  },
+  other: {
+    reviews: fixtures.OTHER_REVIEWS,
+    groups: fixtures.OTHER_GROUPS,
+    favorites: fixtures.OTHER_FAVORITES,
+  },
 };
 
-const COUNTS = { reviews: 12, groups: 2, favorites: 3 } as const;
+const EMPTY_RESPONSES: ProfileTabResponses = {
+  reviews: fixtures.EMPTY_PAGE,
+  groups: fixtures.EMPTY_PAGE,
+  favorites: fixtures.EMPTY_PAGE,
+};
 
-const GROUPS: readonly ProfileGroupItem[] = [
-  {
-    groupId: "group-1",
-    name: "마포 맛집 탐험대",
-    oneLineDescription: "마포구의 숨은 맛집을 함께 찾아요",
-    coverImageUrl: dummyImage.src,
-    matchedSavedPlaceCount: 3,
-  },
-  {
-    groupId: "group-2",
-    name: "주말 브런치 모임",
-    oneLineDescription: "토요일마다 새로운 브런치 가게를 방문해요",
-    coverImageUrl: null,
-    matchedSavedPlaceCount: 0,
-  },
-];
+const SUMMARY_RESPONSES = { mine: fixtures.ME, other: fixtures.OTHER_USER } as const;
 
-const FAVORITES: readonly ProfileFavoriteItem[] = [
-  {
-    placeId: "place-1",
-    name: "오즈 커피",
-    roadAddress: "서울 마포구 도화길 12",
-    categoryName: "카페",
-    thumbnailUrl: dummyImage.src,
-  },
-  {
-    placeId: "place-2",
-    name: "또간집 식당",
-    roadAddress: "서울 마포구 백범로 21",
-    categoryName: null,
-    thumbnailUrl: null,
-  },
-];
+const VIEWERS = [
+  { viewer: "mine", label: "내" },
+  { viewer: "other", label: "타인" },
+] as const satisfies readonly { viewer: ProfileViewer; label: string }[];
 
-const TICKETS: readonly ProfileTicketHistoryItem[] = [
-  {
-    entryId: "ticket-1",
-    type: "SAVE_IN_PROGRESS",
-    status: "inProgress",
-    saveId: "save-1",
-    source: {
-      kind: "place",
-      placeId: "place-1",
-      name: "오즈 커피",
-      roadAddress: "서울 마포구 도화길 12",
-    },
-    occurredAt: "2026-08-27T09:00:00+09:00",
-  },
-  {
-    entryId: "ticket-2",
-    type: "REVIEW_REWARD",
-    status: "settled",
-    amount: 1,
-    source: {
-      kind: "place",
-      placeId: "place-2",
-      name: "또간집 식당",
-      roadAddress: "서울 마포구 백범로 21",
-    },
-    occurredAt: "2026-08-26T18:30:00+09:00",
-  },
-  {
-    entryId: "ticket-3",
-    type: "GROUP_JOIN",
-    status: "settled",
-    amount: -1,
-    source: { kind: "group", groupId: "group-1", name: "마포 맛집 탐험대" },
-    occurredAt: "2026-08-25T12:00:00+09:00",
-  },
+const TAB_LABELS: Record<ProfileTab, string> = {
+  reviews: "리뷰",
+  groups: "그룹",
+  favorites: "좋아요",
+};
+
+type ProfileScenario = {
+  key: string;
+  label: string;
+  viewer: ProfileViewer;
+  tab: ProfileTab;
+  isEmpty: boolean;
+};
+
+const PROFILE_SCENARIOS: readonly ProfileScenario[] = VIEWERS.flatMap(({ viewer, label }) =>
+  PROFILE_TABS.flatMap((tab) =>
+    [false, true].map((isEmpty) => ({
+      key: `${viewer}-${tab}${isEmpty ? "-empty" : ""}`,
+      label: `${label} · ${TAB_LABELS[tab]}${isEmpty ? " · 빈 상태" : ""}`,
+      viewer,
+      tab,
+      isEmpty,
+    })),
+  ),
+);
+
+const TICKET_SCENARIOS = [
+  { key: "tickets", label: "티켓", isEmpty: false },
+  { key: "tickets-empty", label: "티켓 · 빈 상태", isEmpty: true },
+] as const;
+
+const SCENARIO_KEYS = [
+  ...PROFILE_SCENARIOS.map((scenario) => scenario.key),
+  ...TICKET_SCENARIOS.map((scenario) => scenario.key),
 ];
 
 const SWITCHER = [
-  "fixed top-ds-12 left-ds-12 z-overlay flex w-[168px] flex-col gap-ds-4",
+  "fixed top-ds-12 left-ds-12 z-overlay flex max-h-[calc(100dvh-var(--spacing-ds-24))] w-[152px] flex-col gap-ds-2 overflow-y-auto",
   "min-[431px]:left-auto min-[431px]:right-[calc(50%_+_215px_+_var(--spacing-ds-16))]",
 ].join(" ");
 
 export default function ProfilePreviewPage() {
-  const [state, setState] = useState<ProfilePreviewState>("groups");
+  const [scenarioKey, setScenarioKey] = useState(SCENARIO_KEYS[0]);
 
   return (
     <>
-      <ProfilePreviewContent state={state} />
+      <ProfilePreviewContent scenarioKey={scenarioKey} />
       <nav aria-label="프로필 프리뷰 상태" className={SWITCHER}>
-        {SCENARIOS.map((scenario) => (
+        {[...PROFILE_SCENARIOS, ...TICKET_SCENARIOS].map((scenario) => (
           <button
             key={scenario.key}
             type="button"
-            onClick={() => setState(scenario.key)}
+            onClick={() => setScenarioKey(scenario.key)}
             className={cn(
               "rounded-ds-xs px-ds-8 py-ds-4 text-left text-body-sm-medium",
-              state === scenario.key
+              scenarioKey === scenario.key
                 ? "bg-surface-inverse text-content-interactive-inverse"
                 : "bg-surface-primary text-content-secondary",
             )}
@@ -149,83 +118,112 @@ export default function ProfilePreviewPage() {
   );
 }
 
-function ProfilePreviewContent({ state }: { state: ProfilePreviewState }) {
-  if (state === "tickets" || state === "tickets-empty") {
-    return <TicketsPreview empty={state === "tickets-empty"} />;
+function ProfilePreviewContent({ scenarioKey }: { scenarioKey: string }) {
+  const ticketScenario = TICKET_SCENARIOS.find((scenario) => scenario.key === scenarioKey);
+  if (ticketScenario) {
+    return <TicketsPreview isEmpty={ticketScenario.isEmpty} />;
   }
 
-  const activeTab = state === "groups" || state === "groups-empty" ? "groups" : "favorites";
-  const empty = state.endsWith("-empty");
+  const scenario = PROFILE_SCENARIOS.find((candidate) => candidate.key === scenarioKey);
+  if (!scenario) {
+    return null;
+  }
+
+  return <ProfilePreview scenario={scenario} />;
+}
+
+function ProfilePreview({ scenario }: { scenario: ProfileScenario }) {
+  const { viewer, tab, isEmpty } = scenario;
+  const summaryResponse = SUMMARY_RESPONSES[viewer];
+  const page = toProfileTabPage(tab, isEmpty ? EMPTY_RESPONSES : RESPONSES[viewer], viewer);
+
+  const body = (
+    <ProfileBody
+      profile={toProfileIdentity(summaryResponse)}
+      counts={toProfileTabCounts(summaryResponse)}
+      activeTab={tab}
+      basePath={PREVIEW_HREF}
+      beforeTabs={
+        viewer === "mine" && (
+          <>
+            <PlaceRecommendationCard />
+            <TicketCard count={fixtures.ME.availableTicketCount} href={PREVIEW_HREF} />
+          </>
+        )
+      }
+    >
+      <ProfileTabBody
+        page={page}
+        viewer={viewer}
+        getGroupHref={() => PREVIEW_HREF}
+        getPlaceHref={() => PREVIEW_HREF}
+        onSelectReview={() => {}}
+        onUnfavorite={viewer === "mine" ? () => {} : undefined}
+      />
+    </ProfileBody>
+  );
+
+  if (viewer === "other") {
+    return (
+      <ScreenLayout
+        header={
+          <GNB
+            align="left"
+            className="shrink-0"
+            title={null}
+            left={
+              <IconButton aria-label="뒤로 가기">
+                <ChevronLeftIcon size={28} />
+              </IconButton>
+            }
+          />
+        }
+      >
+        {body}
+      </ScreenLayout>
+    );
+  }
 
   return (
-    <>
-      <GNB align="left" title={null} left={<BlankIcon size={28} />} />
-      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-surface-primary">
-        <ProfileBody
-          profile={PROFILE}
-          activeTab={activeTab}
-          basePath="/profile/me"
-          counts={COUNTS}
-          beforeTabs={
-            <>
-              <PlaceRecommendationCard />
-              <TicketCard count={3} href="/preview/profile" />
-            </>
-          }
-        >
-          {activeTab === "groups" ? (
-            <GroupList
-              groups={empty ? [] : GROUPS}
-              getGroupHref={() => "/preview/profile"}
-              viewer="mine"
-            />
-          ) : (
-            <FavoriteList
-              places={empty ? [] : FAVORITES}
-              getPlaceHref={() => "/preview/profile"}
-              onUnfavorite={() => {}}
-            />
-          )}
-        </ProfileBody>
-      </main>
-      <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
-        <BottomNav
-          value="my"
-          tabHrefs={{
-            home: ROUTES.ROOT,
-            feed: ROUTES.FEED,
-            group: ROUTES.GROUPS.ROOT,
-            my: ROUTES.PROFILE.ME,
-          }}
-          createHref={ROUTES.GROUPS.NEW}
-        />
-      </div>
-    </>
+    <BottomNavScreenLayout
+      activeTab="my"
+      header={<GNB align="left" className="shrink-0" title={null} left={<BlankIcon size={28} />} />}
+    >
+      {body}
+    </BottomNavScreenLayout>
   );
 }
 
-function TicketsPreview({ empty }: { empty: boolean }) {
+function TicketsPreview({ isEmpty }: { isEmpty: boolean }) {
+  const response = isEmpty ? fixtures.EMPTY_TICKETS : fixtures.MY_TICKETS;
+
   return (
-    <>
-      <GNB
-        title="내 티켓"
-        left={
-          <IconButton aria-label="뒤로 가기">
-            <ChevronLeftIcon />
-          </IconButton>
-        }
-      />
-      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-surface-primary">
-        <div className="content-container py-ds-20">
-          <TicketCard count={empty ? 0 : 3} />
-        </div>
-        <div aria-hidden="true" className="h-ds-12 shrink-0 bg-surface-secondary" />
-        <TicketHistoryList
-          items={empty ? [] : TICKETS}
-          getSaveHref={() => "/preview/profile"}
-          writeReviewHref="/reviews/new"
+    <ScreenLayout
+      header={
+        <GNB
+          className="shrink-0"
+          title="내 티켓"
+          left={
+            <IconButton aria-label="뒤로 가기">
+              <ChevronLeftIcon size={28} />
+            </IconButton>
+          }
+          right={
+            <IconButton aria-label="닫기">
+              <CancelIcon size={28} />
+            </IconButton>
+          }
         />
-      </main>
-    </>
+      }
+    >
+      <div className="content-container py-ds-24">
+        <TicketCard count={response.availableCount} />
+      </div>
+      <TicketHistoryList
+        items={toTicketHistoryItems(response.items)}
+        getSaveHref={() => PREVIEW_HREF}
+        writeReviewHref={PREVIEW_HREF}
+      />
+    </ScreenLayout>
   );
 }
