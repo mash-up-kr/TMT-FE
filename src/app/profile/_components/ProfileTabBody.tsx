@@ -1,15 +1,14 @@
 "use client";
 
-import type { ProfileTabPage } from "../_hooks/useProfileData";
-import type { ProfileReviewItem } from "../_model/profile";
+import type { ProfileTabPage } from "../_hooks/profileQueries";
+import type { ProfileReviewItem, ProfileViewer } from "../_model/profile";
 import { FavoriteList } from "./FavoriteList";
 import { GroupList } from "./GroupList";
-import type { GroupListVariant } from "./GroupListItem";
 import { ReviewGrid } from "./ReviewGrid";
 
-type ProfileTabBodyProps = {
+export type ProfileTabBodyProps = {
   page: ProfileTabPage;
-  variant: GroupListVariant;
+  viewer: ProfileViewer;
   getGroupHref: (groupId: string) => string;
   getPlaceHref: (placeId: string) => string;
   onSelectReview: (review: ProfileReviewItem) => void;
@@ -20,7 +19,7 @@ type ProfileTabBodyProps = {
 
 export function ProfileTabBody({
   page,
-  variant,
+  viewer,
   getGroupHref,
   getPlaceHref,
   onSelectReview,
@@ -31,7 +30,7 @@ export function ProfileTabBody({
     case "reviews":
       return <ReviewGrid reviews={page.items} onSelect={onSelectReview} />;
     case "groups":
-      return <GroupList groups={page.items} getGroupHref={getGroupHref} variant={variant} />;
+      return <GroupList groups={page.items} getGroupHref={getGroupHref} viewer={viewer} />;
     case "favorites":
       return (
         <FavoriteList

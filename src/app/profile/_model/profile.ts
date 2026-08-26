@@ -11,6 +11,12 @@ export type ProfileIdentityModel = {
 
 export type ProfileTabCounts = Record<ProfileTab, number>;
 
+/**
+ * 프로필을 보는 사람이 주인인지 남인지. 타인 화면에서는 배너·하트·일치 칩이 사라지고
+ * 그룹 썸네일 크기도 달라진다(1674:60998 vs 1692:24507).
+ */
+export type ProfileViewer = "mine" | "other";
+
 export type ProfileGroupItem = {
   groupId: string;
   name: string;

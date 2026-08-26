@@ -1,6 +1,12 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Badge } from "@/shared/ui/Badge";
-import type { ProfileTicketHistoryItem, TicketEntrySource } from "../_model/profile";
+import { cn } from "@/shared/utils/cn";
+import type {
+  ProfileTicketHistoryItem,
+  TicketEntrySource,
+  TicketEntryType,
+} from "../_model/profile";
 
 type TicketHistoryItemProps = {
   item: ProfileTicketHistoryItem;
@@ -9,50 +15,69 @@ type TicketHistoryItemProps = {
 };
 
 export function TicketHistoryItem({ item, getSaveHref }: TicketHistoryItemProps) {
-  const body = (
-    <>
-      <div className="flex min-w-0 flex-1 flex-col gap-ds-4 text-content-primary">
-        <p className="truncate text-body-lg-bold">{titleOf(item.source, item.type)}</p>
-        {item.source.kind === "place" ? (
-          <p className="truncate text-body-md-regular">{item.source.roadAddress}</p>
-        ) : null}
-      </div>
-      {item.status === "inProgress" ? (
-        <Badge size="md">작성 중</Badge>
-      ) : (
-        <p className="shrink-0 text-right text-body-lg-medium text-content-primary">
-          {formatAmount(item.amount)}
-        </p>
-      )}
-    </>
-  );
-
   return (
     <li>
-      {item.status === "inProgress" ? (
-        <Link
-          href={getSaveHref(item.saveId)}
-          className="content-container flex items-center gap-ds-12 py-ds-12 active:bg-surface-interactive-tertiary"
-        >
-          {body}
-        </Link>
-      ) : (
-        <div className="content-container flex items-center gap-ds-12 py-ds-12">{body}</div>
-      )}
+      <TicketHistoryRow item={item} getSaveHref={getSaveHref}>
+        <TicketHistoryTitle source={item.source} type={item.type} />
+        <TicketHistoryTrailing item={item} />
+      </TicketHistoryRow>
     </li>
   );
 }
 
-const TYPE_TITLES: Record<string, string> = {
+type TicketHistoryRowProps = TicketHistoryItemProps & { children: ReactNode };
+
+/** 작성 중 행만 저장 상세로 이어진다. 증감 이력은 눌리지 않는다. */
+function TicketHistoryRow({ item, getSaveHref, children }: TicketHistoryRowProps) {
+  const rowStyles = "content-container flex items-center gap-ds-12 py-ds-12";
+
+  if (item.status === "inProgress") {
+    return (
+      <Link
+        href={getSaveHref(item.saveId)}
+        className={cn(rowStyles, "active:bg-surface-interactive-tertiary")}
+      >
+        {children}
+      </Link>
+    );
+  }
+
+  return <div className={rowStyles}>{children}</div>;
+}
+
+const SOURCELESS_TITLES: Partial<Record<TicketEntryType, string>> = {
   SIGNUP_REWARD: "회원가입 축하 티켓",
 };
 
+type TicketHistoryTitleProps = {
+  source: TicketEntrySource;
+  type: TicketEntryType;
+};
+
 /** 출처가 없는 행도 제목이 비지 않아야 한다. 회원가입 보상이 그렇다. */
-function titleOf(source: TicketEntrySource, type: string): string {
-  if (source.kind === "none") {
-    return TYPE_TITLES[type] ?? "티켓 변동";
+function TicketHistoryTitle({ source, type }: TicketHistoryTitleProps) {
+  const title = source.kind === "none" ? (SOURCELESS_TITLES[type] ?? "티켓 변동") : source.name;
+
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-ds-4 text-content-primary">
+      <p className="truncate text-body-lg-bold">{title}</p>
+      {source.kind === "place" && (
+        <p className="truncate text-body-md-regular">{source.roadAddress}</p>
+      )}
+    </div>
+  );
+}
+
+function TicketHistoryTrailing({ item }: { item: ProfileTicketHistoryItem }) {
+  if (item.status === "inProgress") {
+    return <Badge size="md">작성 중</Badge>;
   }
-  return source.name;
+
+  return (
+    <p className="shrink-0 text-right text-body-lg-medium text-content-primary">
+      {formatAmount(item.amount)}
+    </p>
+  );
 }
 
 /** 증감은 부호가 의미를 가진다. */

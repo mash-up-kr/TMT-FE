@@ -42,7 +42,7 @@ src/app/profile/
 ├── _components/
 │   ├── MeProfileScreen.tsx
 │   ├── UserProfileScreen.tsx
-│   ├── ProfilePage.tsx
+│   ├── ProfileBody.tsx
 │   ├── ProfileIdentity.tsx
 │   ├── ProfileTabs.tsx
 │   ├── ProfileTabBody.tsx
@@ -84,10 +84,10 @@ export function parseProfileTab(value: string): ProfileTab | null {
 
 ### 2.2 공통화는 프로필 본문까지만 한다
 
-공통 컴포넌트는 `ProfilePage` 하나다. 이 컴포넌트는 프로필 정보, 탭, 탭 본문 위치만 책임진다.
+공통 컴포넌트는 `ProfileBody` 하나다. 이 컴포넌트는 프로필 정보, 탭, 탭 본문 위치만 책임진다.
 
 ```tsx
-type ProfilePageProps = {
+type ProfileBodyProps = {
   profile: ProfileIdentityModel;
   activeTab: ProfileTab;
   basePath: string;
@@ -102,18 +102,18 @@ type ProfilePageProps = {
 | --- | --- | --- |
 | `ProfileIdentity` | 아바타, 닉네임, 선택적 이메일 | 현재 사용자 여부, API 응답 |
 | `ProfileTabs` | `basePath`로 세 탭 링크를 만들고 활성 탭을 표시 | query, 목록 아이템 |
-| `ProfilePage` | Identity → `beforeTabs` → Tabs → children 순서 보장 | GNB, BottomNav, API |
+| `ProfileBody` | Identity → `beforeTabs` → Tabs → children 순서 보장 | GNB, BottomNav, API |
 | `ProfileTabBody` | 판별된 탭 모델을 각 전용 본문으로 전달 | 라우팅, API 응답 |
 | `MeProfileScreen` | 내 프로필 query·매퍼·내 전용 조합 | 타인 ID 해석 |
 | `UserProfileScreen` | 타인 ID query·매퍼·뒤로가기 조합 | 티켓·매장 추천·하단 내비 |
 
-내/타인 차이는 `isMine`, `showTicket`, `showBottomNav` 같은 prop 묶음으로 `ProfilePage`에 전달하지 않는다. 내 화면은 `MyGNB`, 추천 카드, `TicketCard`, `BottomNav`를 조합하고, 타인 화면은 뒤로가기 GNB만 조합한다. 공통 부분은 유지하면서 차이를 숨기지 않는 것이 이 구조의 경계다.
+내/타인 차이는 `isMine`, `showTicket`, `showBottomNav` 같은 prop 묶음으로 `ProfileBody`에 전달하지 않는다. 내 화면은 `MyGNB`, 추천 카드, `TicketCard`, `BottomNav`를 조합하고, 타인 화면은 뒤로가기 GNB만 조합한다. 공통 부분은 유지하면서 차이를 숨기지 않는 것이 이 구조의 경계다.
 
 ```mermaid
 flowchart TD
     ME["/profile/me/[tab]"] --> MS["MeProfileScreen<br/>내 데이터 조합"]
     USER["/profile/[userId]/[tab]"] --> US["UserProfileScreen<br/>타인 데이터 조합"]
-    MS --> PP["ProfilePage<br/>프로필 본문 순서"]
+    MS --> PP["ProfileBody<br/>프로필 본문 순서"]
     US --> PP
     PP --> ID["ProfileIdentity"]
     PP --> TAB["ProfileTabs"]
@@ -165,7 +165,7 @@ sequenceDiagram
     participant R as /profile/.../[tab]
     participant S as Profile Screen
     participant API as 생성 API client
-    participant P as ProfilePage
+    participant P as ProfileBody
 
     U->>T: 그룹 탭 선택
     T->>R: Link로 /groups 이동
@@ -337,7 +337,7 @@ type ProfileTicketHistoryItem = {
 **fixture는 화면 모델이 아니라 계약 응답 모양으로 쓴다.** 그래야 `profileMappers.ts`를 지금 작성해 연동 후 그대로 쓸 수 있다.
 
 ```text
-route page  →  Screen  →  _hooks/useProfileData  →  profileMappers  →  ViewModel  →  표시 컴포넌트
+route page  →  Screen  →  _hooks/profileQueries  →  profileMappers  →  ViewModel  →  표시 컴포넌트
                           ^^^^^^^^^^^^^^^^^^^^^^
                           연동 시 교체하는 유일한 지점
 ```
@@ -346,7 +346,7 @@ route page  →  Screen  →  _hooks/useProfileData  →  profileMappers  →  V
 
 1. `pnpm api:sync`
 2. `_fixtures/contract.ts`의 손으로 쓴 응답 타입을 생성 타입 import로 교체
-3. `_hooks/useProfileData.ts`의 `queryFn`을 생성 client 호출로 교체하고, 목록은 `useInfiniteQuery`로 바꾼다
+3. `_hooks/profileQueries.ts`의 `queryFn`을 생성 client 호출로 교체하고, 목록은 `useInfiniteQuery`로 바꾼다
 4. `_fixtures/` 삭제
 
 Screen·mapper·컴포넌트·라우트는 건드리지 않는다. 손으로 쓴 응답 타입과 생성 타입이 어긋나면 2단계에서 타입 에러가 나는 것이 정상이고, 그 자리가 곧 고칠 자리다.
@@ -383,7 +383,7 @@ fixture로 덮지 않는 것도 있다. 매장 추천(`POST /v1/recommendations/
 완료로 판단하려면 아래를 모두 만족해야 한다.
 
 - `/profile/me/reviews`, `/groups`, `/favorites`, `/tickets`와 `/profile/{userId}/reviews`가 직접 진입·새로고침·뒤로가기로 올바르게 동작한다.
-- 내/타인 공통 본문이 같은 `ProfilePage`를 사용하면서, 내 전용 요소가 타인 화면에 렌더되지 않는다.
+- 내/타인 공통 본문이 같은 `ProfileBody`를 사용하면서, 내 전용 요소가 타인 화면에 렌더되지 않는다.
 - 잘못된 tab은 404이고, `me`는 사용자 ID로 해석되지 않는다.
 - 각 탭의 첫 페이지·빈 상태·첫 오류·다음 페이지 오류가 구분된다.
 - 좋아요 해제 성공 시 item은 남고 카운트만 줄며, 실패 시 카운트가 원래 값으로 복원된다.
@@ -397,7 +397,7 @@ fixture로 덮지 않는 것도 있다. 매장 추천(`POST /v1/recommendations/
 | --- | --- | --- |
 | `/my`에 내 프로필 전용 구현, 타인 프로필 별도 구현 | 기각 | 프로필 정보·탭·리뷰 그리드가 중복되고 이후 그룹·좋아요 변경이 두 경로로 갈라짐 |
 | 단일 `ProfileShell`에 `isMine`, `showTicket`, `showBottomNav` 등 variant 누적 | 기각 | 두 화면의 실제 차이를 boolean 조합으로 숨겨 지원하지 않는 상태를 만들기 쉬움 |
-| `ProfilePage` + `beforeTabs` 한 자리, 내/타인 Screen 조합 | 채택 | Figma의 공통 본문과 내 전용 삽입 위치를 그대로 드러내며, prop API가 고정됨 |
+| `ProfileBody` + `beforeTabs` 한 자리, 내/타인 Screen 조합 | 채택 | Figma의 공통 본문과 내 전용 삽입 위치를 그대로 드러내며, prop API가 고정됨 |
 | 모든 탭 행을 `ProfileListItem`으로 통합 | 기각 | 2열 이미지, 그룹 배지, 하트 mutation의 구조와 접근성 계약이 다름 |
 | 탭을 client state로만 관리 | 기각 | 탭마다 다른 목록·cursor query·공유 가능한 URL이 있으므로 route state가 더 정확함 |
 
@@ -416,7 +416,7 @@ BE 계약을 확인하기 전에는 필요한 endpoint를 추정해 적어뒀다
 | 타인 프로필 하트 | Figma 근거 없어 읽기 전용으로 추정 | 하트 자체를 렌더하지 않음 (계약 §6-1) |
 | 매장 추천 | 이동 계약만 | `POST /v1/recommendations/places` + 격자 8칸 |
 
-구조 결정(상단 고정 + 탭별 페이징, 카운트를 상단 응답에 싣기, `ProfilePage` 공통 골격, 탭을 URL로 소유, 식별자 있을 때만 이동)은 계약과 어긋나지 않아 그대로 둔다.
+구조 결정(상단 고정 + 탭별 페이징, 카운트를 상단 응답에 싣기, `ProfileBody` 공통 골격, 탭을 URL로 소유, 식별자 있을 때만 이동)은 계약과 어긋나지 않아 그대로 둔다.
 
 ### 7.2 기각안
 

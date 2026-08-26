@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { cn } from "@/shared/utils/cn";
 
 type TicketCardProps = {
   count: number;
@@ -18,7 +18,7 @@ export function TicketCard({ count, href }: TicketCardProps) {
     return (
       <Link
         href={href}
-        className={`${frameStyles} active:bg-surface-interactive-secondary-pressed`}
+        className={cn(frameStyles, "active:bg-surface-interactive-secondary-pressed")}
       >
         <TicketCardBody count={count} />
       </Link>
@@ -32,7 +32,7 @@ export function TicketCard({ count, href }: TicketCardProps) {
   );
 }
 
-function TicketCardBody({ count }: { count: number }): ReactNode {
+function TicketCardBody({ count }: { count: number }) {
   return (
     <>
       <span className="text-body-lg-medium">내 티켓</span>
@@ -52,11 +52,17 @@ function TicketNotch({ offset }: { offset: string }) {
     <>
       <span
         aria-hidden="true"
-        className={`-translate-x-1/2 -translate-y-1/2 absolute left-0 size-ds-12 rounded-ds-full bg-surface-primary ${offset}`}
+        className={cn(
+          "-translate-x-1/2 -translate-y-1/2 absolute left-0 size-ds-12 rounded-ds-full bg-surface-primary",
+          offset,
+        )}
       />
       <span
         aria-hidden="true"
-        className={`-translate-y-1/2 absolute right-0 size-ds-12 translate-x-1/2 rounded-ds-full bg-surface-primary ${offset}`}
+        className={cn(
+          "-translate-y-1/2 absolute right-0 size-ds-12 translate-x-1/2 rounded-ds-full bg-surface-primary",
+          offset,
+        )}
       />
     </>
   );

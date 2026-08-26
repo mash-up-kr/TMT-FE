@@ -6,10 +6,9 @@ import { ROUTES } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
-import { useTicketHistory } from "../_hooks/useProfileData";
-import { saveHref } from "../_utils/profileHrefs";
-import { ProfileScreenStatus } from "./ProfileScreenStatus";
-import { ProfileTabSkeleton } from "./ProfileTabSkeleton";
+import { useTicketHistory } from "../_hooks/useTicketHistory";
+import { toSaveHref } from "../_utils/profileHrefs";
+import { ProfileQueryFallback } from "./ProfileQueryFallback";
 import { TicketCard } from "./TicketCard";
 import { TicketHistoryList } from "./TicketHistoryList";
 
@@ -42,15 +41,11 @@ export function TicketHistoryScreen() {
       {history.data ? (
         <TicketHistoryList
           items={history.data.items}
-          getSaveHref={saveHref}
+          getSaveHref={toSaveHref}
           writeReviewHref={ROUTES.REVIEWS.NEW}
         />
       ) : (
-        <ProfileScreenStatus
-          query={history}
-          skeleton={<ProfileTabSkeleton />}
-          errorMessage="티켓 이력을 불러오지 못했어요"
-        />
+        <ProfileQueryFallback query={history} errorMessage="티켓 이력을 불러오지 못했어요" />
       )}
     </ScreenLayout>
   );

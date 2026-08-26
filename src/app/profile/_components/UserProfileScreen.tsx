@@ -6,24 +6,19 @@ import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon } from "@/shared/ui/Icons";
-import { useUserProfileSummary, useUserProfileTabPage } from "../_hooks/useProfileData";
 import { useReviewDetailSheet } from "../_hooks/useReviewDetailSheet";
+import { useUserProfileSummary } from "../_hooks/useUserProfileSummary";
+import { useUserProfileTabPage } from "../_hooks/useUserProfileTabPage";
 import type { ProfileTab } from "../_model/profile";
-import { groupHref, placeHref, userProfileHref } from "../_utils/profileHrefs";
-import { ProfilePage } from "./ProfilePage";
-import { ProfileScreenStatus } from "./ProfileScreenStatus";
-import { ProfileTabBody } from "./ProfileTabBody";
-import { ProfileTabSkeleton } from "./ProfileTabSkeleton";
+import { toGroupHref, toPlaceHref, toUserProfileHref } from "../_utils/profileHrefs";
+import { ProfileTabPageView } from "./ProfileTabPageView";
 
 type UserProfileScreenProps = {
   userId: string;
   activeTab: ProfileTab;
 };
 
-/**
- * 타인 프로필. 배너·티켓·하단 내비가 없고, 그룹 일치 칩과 좋아요 하트도 없다.
- * 프로필과 탭 사이 12px 밴드도 없다 — beforeTabs가 없으면 ProfilePage가 밴드를 그리지 않는다.
- */
+/** 타인 프로필. 배너·티켓·하단 내비가 없고 그룹 일치 칩과 좋아요 하트도 없다. */
 export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps) {
   const router = useRouter();
   const summary = useUserProfileSummary(userId);
@@ -46,36 +41,18 @@ export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps)
   return (
     <>
       <ScreenLayout header={header}>
-        {summary.data ? (
-          <ProfilePage
-            profile={summary.data.profile}
-            activeTab={activeTab}
-            basePath={userProfileHref(userId)}
-            counts={summary.data.counts}
-          >
-            {tabPage.data ? (
-              <ProfileTabBody
-                page={tabPage.data}
-                variant="other"
-                getGroupHref={groupHref}
-                getPlaceHref={placeHref}
-                onSelectReview={sheet.open}
-              />
-            ) : (
-              <ProfileScreenStatus
-                query={tabPage}
-                skeleton={<ProfileTabSkeleton />}
-                errorMessage="목록을 불러오지 못했어요"
-              />
-            )}
-          </ProfilePage>
-        ) : (
-          <ProfileScreenStatus
-            query={summary}
-            skeleton={<ProfileTabSkeleton />}
-            errorMessage="프로필을 불러오지 못했어요"
-          />
-        )}
+        <ProfileTabPageView
+          summary={summary}
+          tabPage={tabPage}
+          activeTab={activeTab}
+          basePath={toUserProfileHref(userId)}
+          tabBody={{
+            viewer: "other",
+            getGroupHref: toGroupHref,
+            getPlaceHref: toPlaceHref,
+            onSelectReview: sheet.open,
+          }}
+        />
       </ScreenLayout>
       <ReviewDetailSheet
         open={sheet.isOpen}

@@ -19,14 +19,14 @@ export function ProfileTabs({ activeTab, basePath, counts }: ProfileTabsProps) {
     <nav aria-label="프로필 탭" className="bg-surface-primary px-ds-20 py-ds-12">
       <ul className="flex flex-wrap content-center items-center gap-ds-8">
         {PROFILE_TABS.map((tab) => {
-          const active = tab === activeTab;
+          const isActive = tab === activeTab;
 
           return (
             <li key={tab}>
               <Link
                 href={`${basePath}/${tab}`}
-                aria-current={active ? "page" : undefined}
-                className={chipStyles({ selected: active })}
+                aria-current={isActive ? "page" : undefined}
+                className={chipStyles({ selected: isActive })}
               >
                 {`${TAB_LABELS[tab]} ${counts[tab]}`}
               </Link>

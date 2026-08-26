@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { userProfileHref } from "../_utils/profileHrefs";
+import { toUserProfileHref } from "../_utils/profileHrefs";
 
 export default async function Page({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = await params;
@@ -9,5 +9,5 @@ export default async function Page({ params }: { params: Promise<{ userId: strin
     notFound();
   }
 
-  redirect(`${userProfileHref(userId)}/reviews`);
+  redirect(`${toUserProfileHref(userId)}/reviews`);
 }
