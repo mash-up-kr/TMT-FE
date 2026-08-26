@@ -15,7 +15,3 @@ export function toSaveHref(saveId: string): string {
 export function toUserProfileHref(userId: string): string {
   return ROUTES.PROFILE.DETAIL.replace("[userId]", userId);
 }
-
-export function toTicketsHref(): string {
-  return `${ROUTES.PROFILE.ME}/tickets`;
-}

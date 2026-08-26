@@ -13,7 +13,7 @@ import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { useMyProfileTabPage } from "../_hooks/useMyProfileTabPage";
 import { useReviewDetailSheet } from "../_hooks/useReviewDetailSheet";
 import type { ProfileTab } from "../_model/profile";
-import { toGroupHref, toPlaceHref, toTicketsHref } from "../_utils/profileHrefs";
+import { toGroupHref, toPlaceHref } from "../_utils/profileHrefs";
 import { PlaceRecommendationCard } from "./PlaceRecommendationCard";
 import { ProfileTabPageView } from "./ProfileTabPageView";
 import { TicketCard } from "./TicketCard";
@@ -62,7 +62,10 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
           beforeTabs={
             <>
               <PlaceRecommendationCard />
-              <TicketCard count={summary.data?.availableTicketCount ?? 0} href={toTicketsHref()} />
+              <TicketCard
+                count={summary.data?.availableTicketCount ?? 0}
+                href={ROUTES.PROFILE.TICKETS}
+              />
             </>
           }
           tabBody={{
