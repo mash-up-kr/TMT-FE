@@ -20,6 +20,21 @@ export type ProfileGroupItem = {
   matchedSavedPlaceCount?: number;
 };
 
+/**
+ * 리뷰 탭 2열 그리드의 한 칸. 카드가 아니라 썸네일만 그린다.
+ *
+ * `saveId`는 소유자에게만 내려온다. 내 프로필은 본인 저장 상세를, 타인 프로필은
+ * 리뷰 상세를 여는 갈래가 여기서 갈린다.
+ */
+export type ProfileReviewItem = {
+  reviewId: string;
+  saveId?: string;
+  thumbnailUrl: string;
+  placeId: string;
+  placeName: string;
+  categoryName: string | null;
+};
+
 export type ProfileFavoriteItem = {
   placeId: string;
   name: string;
