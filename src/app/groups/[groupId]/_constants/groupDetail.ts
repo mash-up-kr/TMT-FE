@@ -1,10 +1,10 @@
 import type { ReviewCardData } from "@/shared/components/ReviewCard/ReviewCard";
-import type { GroupDetailScreenData } from "../_components/GroupDetailScreen";
+import type { GroupDetailViewData } from "../_components/GroupDetailView";
 import groupCover from "./assets/group-cover.png";
 import reviewCoffee from "./assets/review-coffee.png";
 import reviewSushi from "./assets/review-sushi.png";
 
-const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailScreenData> = {
+const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailViewData> = {
   group_1: {
     name: "성수 커피 탐험대",
     oneLineDescription: "조용히 커피 맛에 집중하는 사람들",
@@ -92,11 +92,11 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
   },
 ];
 
-export function getGroupDetailPageFixture(groupId: string): GroupDetailScreenData | undefined {
+export function getGroupDetailPageFixture(groupId: string): GroupDetailViewData | undefined {
   return GROUP_DETAIL_PAGE_FIXTURES[groupId];
 }
 
-export function requireGroupDetailPageFixture(groupId: string): GroupDetailScreenData {
+export function requireGroupDetailPageFixture(groupId: string): GroupDetailViewData {
   const fixture = getGroupDetailPageFixture(groupId);
 
   if (!fixture) {

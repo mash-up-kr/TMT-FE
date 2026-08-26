@@ -1,62 +1,134 @@
 "use client";
 
-import { useGroupDetail } from "@/api/gen/group/group.gen";
-import { useJoinPreview } from "@/api/gen/group-membership/group-membership.gen";
-import { toReviewCardData } from "@/app/_utils/reviewMapper";
-import { LoadingIcon } from "@/shared/ui/Icons";
-import { useGroupReviewPages } from "../_hooks/useGroupReviewPages";
-import { toGroupDetailScreenData } from "../_utils/toGroupDetailScreenData";
-import { GroupDetailScreen } from "./GroupDetailScreen";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
+import { ROUTES } from "@/shared/constants/routes";
+import { Button } from "@/shared/ui/Button";
+import { GNB } from "@/shared/ui/GNB";
+import { IconButton } from "@/shared/ui/IconButton";
+import { ChevronLeftIcon } from "@/shared/ui/Icons";
+import type { GroupJoinAction, GroupJoinInfo, GroupReviewListState } from "../_model/groupDetail";
+import { GroupProfile, type GroupProfileData } from "./GroupProfile";
+import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
+import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
 
-const SERVER_IGNORES_USER_ID = 1;
-
-type GroupDetailViewProps = {
-  groupId: string;
+export type GroupDetailViewData = GroupProfileData & {
+  availableTicketCount: number;
+  isJoinable: boolean;
+  isMember: boolean;
 };
 
-export function GroupDetailView({ groupId }: GroupDetailViewProps) {
-  const detail = useGroupDetail(groupId);
-  const reviews = useGroupReviewPages(groupId, detail.data?.isMember);
-  const joinPreview = useJoinPreview(
-    groupId,
-    { userId: SERVER_IGNORES_USER_ID },
-    { query: { enabled: detail.data?.isMember === false } },
-  );
+type GroupDetailViewProps = {
+  group: GroupDetailViewData;
+  reviewList: GroupReviewListState;
+  joinAction: GroupJoinAction;
+};
 
-  if (detail.isPending || reviews.isPending) {
-    return <GroupDetailLoading />;
-  }
+export function GroupDetailView({ group, reviewList, joinAction }: GroupDetailViewProps) {
+  const router = useRouter();
+  const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
+  const isNonMember = !group.isMember;
 
-  if (!detail.data || detail.isError || reviews.isError) {
-    return <GroupDetailError />;
-  }
+  const sheetJoinAction: GroupJoinAction = {
+    ...joinAction,
+    onJoin: async () => {
+      const didJoin = await joinAction.onJoin();
+
+      if (didJoin) {
+        setIsJoinSheetOpen(false);
+      }
+
+      return didJoin;
+    },
+  };
+
+  const groupJoinInfo: GroupJoinInfo = {
+    name: group.name,
+    imageUrl: group.imageUrl,
+    availableTicketCount: group.availableTicketCount,
+  };
 
   return (
-    <GroupDetailScreen
-      group={toGroupDetailScreenData(detail.data, joinPreview.data)}
-      reviews={reviews.data.pages.flatMap((page) => page.items.map(toReviewCardData))}
-      hasNextReviewPage={reviews.hasNextPage}
-      isFetchingNextReviewPage={reviews.isFetchingNextPage}
-      onLoadMoreReviews={() => reviews.fetchNextPage()}
-    />
-  );
-}
+    <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
+      <GNB
+        title={group.name}
+        className="shrink-0"
+        left={
+          <IconButton
+            aria-label="그룹 목록으로 돌아가기"
+            onClick={() => router.push(ROUTES.GROUPS.ROOT)}
+          >
+            <ChevronLeftIcon size={28} />
+          </IconButton>
+        }
+      />
 
-export function GroupDetailLoading() {
-  return (
-    <div className="flex flex-1 items-center justify-center bg-surface-secondary">
-      <LoadingIcon className="animate-spin text-icon-tertiary" />
+      <main className="min-h-0 flex-1 overflow-y-auto">
+        <GroupProfile group={group} />
+        <GroupReviewList isContentRestricted={isNonMember} reviewList={reviewList} />
+      </main>
+
+      {isNonMember && <JoinGate onJoin={() => setIsJoinSheetOpen(true)} />}
+
+      {isNonMember &&
+        (group.isJoinable ? (
+          <JoinGroupTicketSheet
+            open={isJoinSheetOpen}
+            onOpenChangeAction={setIsJoinSheetOpen}
+            group={groupJoinInfo}
+            joinAction={sheetJoinAction}
+          />
+        ) : (
+          <GroupTicketShortageSheet
+            open={isJoinSheetOpen}
+            onOpenChangeAction={setIsJoinSheetOpen}
+            onWriteReviewAction={() => router.push(ROUTES.REVIEWS.NEW)}
+            group={groupJoinInfo}
+          />
+        ))}
     </div>
   );
 }
 
-// 차후 페이지 뷰가 생기면 조금 더 서비스에 맞는 형태로 처리해둘 것
-export function GroupDetailError() {
+type GroupReviewListProps = {
+  isContentRestricted: boolean;
+  reviewList: GroupReviewListState;
+};
+
+function GroupReviewList({ isContentRestricted, reviewList }: GroupReviewListProps) {
   return (
-    <div role="alert" className="flex flex-1 items-center justify-center bg-surface-secondary">
-      <p className="text-body-md-regular text-content-secondary">
-        그룹 상세 데이터를 불러오지 못했어요.
-      </p>
+    <section className="mt-ds-4" aria-label="그룹 리뷰">
+      <h2 className="sr-only">그룹 리뷰</h2>
+      <ul className="flex flex-col gap-ds-4">
+        {reviewList.reviews.map((review) => (
+          <li key={review.id}>
+            <ReviewCard review={review} isContentRestricted={isContentRestricted} />
+          </li>
+        ))}
+        {reviewList.hasNextPage ? (
+          <li className="px-ds-20 pb-ds-20">
+            <Button
+              className="w-full"
+              variant="tertiary"
+              loading={reviewList.isFetchingNextPage}
+              onClick={reviewList.onLoadMore}
+            >
+              리뷰 더보기
+            </Button>
+          </li>
+        ) : null}
+      </ul>
+    </section>
+  );
+}
+
+function JoinGate({ onJoin }: { onJoin: () => void }) {
+  return (
+    <div className="shrink-0 border-t border-stroke-secondary bg-surface-primary px-ds-20 py-ds-12">
+      <Button className="w-full" onClick={onJoin}>
+        그룹 가입하고 리뷰 보러가기
+      </Button>
     </div>
   );
 }

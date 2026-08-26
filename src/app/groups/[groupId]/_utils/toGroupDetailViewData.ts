@@ -1,11 +1,11 @@
 import type { GroupDetailResponse } from "@/api/gen/_model/groupDetailResponse.gen";
 import type { JoinPreviewResponse } from "@/api/gen/_model/joinPreviewResponse.gen";
-import type { GroupDetailScreenData } from "@/app/groups/[groupId]/_components/GroupDetailScreen";
+import type { GroupDetailViewData } from "@/app/groups/[groupId]/_components/GroupDetailView";
 
-export function toGroupDetailScreenData(
+export function toGroupDetailViewData(
   detail: GroupDetailResponse,
   joinPreview?: JoinPreviewResponse,
-): GroupDetailScreenData {
+): GroupDetailViewData {
   return {
     name: detail.name,
     oneLineDescription: detail.oneLineDescription,
