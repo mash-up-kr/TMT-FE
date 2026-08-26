@@ -7,10 +7,11 @@ import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { ChevronLeftIcon, LogOutIcon } from "@/shared/ui/Icons";
+import { ChevronLeftIcon } from "@/shared/ui/Icons";
 import { GroupProfile, type GroupProfileData } from "./GroupProfile";
 import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
 import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
+import { LeaveGroupIcon } from "./LeaveGroupIcon";
 
 export type GroupDetailScreenData = GroupProfileData & {
   availableTicketCount: number;
@@ -49,7 +50,7 @@ export function GroupDetailScreen({
         right={
           group.isMember ? (
             <IconButton aria-label="그룹 탈퇴">
-              <LogOutIcon size={28} />
+              <LeaveGroupIcon size={28} />
             </IconButton>
           ) : undefined
         }
