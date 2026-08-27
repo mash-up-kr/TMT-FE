@@ -12,13 +12,18 @@ import { toReviewCardData } from "@/shared/utils/reviewMapper";
 import { useGroupReviewPages } from "../_hooks/useGroupReviewPages";
 import type { GroupReviewListState } from "../_model/groupDetail";
 import { toGroupDetailViewData } from "../_utils/groupDetailMapper";
+import { getGroupLeaveErrorTitle } from "../_utils/groupLeaveError";
 import { GroupDetailView } from "./GroupDetailView";
 
 type GroupDetailContainerProps = {
   groupId: string;
+  initialFirstReviewSheetOpen?: boolean;
 };
 
-export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
+export function GroupDetailContainer({
+  groupId,
+  initialFirstReviewSheetOpen,
+}: GroupDetailContainerProps) {
   const queryClient = useQueryClient();
   const detail = useGroupDetail(groupId);
   const reviews = useGroupReviewPages(groupId, detail.data?.isMember);
@@ -64,9 +69,9 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
         queryClient.invalidateQueries({ queryKey: getListGroupsQueryKey() }),
       ]);
 
-      return true;
-    } catch {
-      return false;
+      return { success: true } as const;
+    } catch (error) {
+      return { success: false, errorTitle: getGroupLeaveErrorTitle(error) } as const;
     }
   };
   const reviewItems = reviews.data.pages.flatMap((page) => page.items.map(toReviewCardData));
@@ -84,6 +89,7 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
       group={toGroupDetailViewData(detail.data, joinPreview.data)}
       reviewList={reviewList}
       joinAction={{ onJoin: handleJoin, isPending: join.isPending }}
+      initialFirstReviewSheetOpen={initialFirstReviewSheetOpen}
       leaveAction={{
         onLeaveAction: handleLeave,
         isPending: leave.isPending,

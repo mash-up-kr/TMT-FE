@@ -19,6 +19,7 @@ export function toGroupDetailViewData(
     matchedSavedPlaceCount: detail.matchedSavedPlaceCount,
     availableTicketCount: joinPreview?.availableTicketCount ?? 0,
     isJoinable: joinPreview?.joinable ?? false,
+    isOwner: detail.isOwner,
     isMember: detail.isMember,
   };
 }

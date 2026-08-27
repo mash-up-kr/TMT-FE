@@ -3,15 +3,37 @@ import type { ReactNode } from "react";
 import tomatoEmpty from "@/shared/components/assets/tomato-mascot-empty.png";
 import { cn } from "@/shared/utils/cn";
 
-type EmptyNoticeProps = {
+type EmptyNoticeBaseProps = {
   title: string;
-  children?: string;
   /** 다음 행동으로 보내는 control. 있을 때만 문구 아래에 놓인다. */
   action?: ReactNode;
   className?: string;
 };
 
-export function EmptyNotice({ title, children, action, className }: EmptyNoticeProps) {
+type EmptyNoticeProps = EmptyNoticeBaseProps &
+  (
+    | {
+        variant?: "default";
+        eyebrow?: never;
+        children?: string;
+      }
+    | {
+        variant: "prominent";
+        eyebrow: string;
+        children?: never;
+      }
+  );
+
+export function EmptyNotice({
+  title,
+  variant = "default",
+  eyebrow,
+  children,
+  action,
+  className,
+}: EmptyNoticeProps) {
+  const isProminent = variant === "prominent";
+
   return (
     <div
       className={cn(
@@ -32,8 +54,16 @@ export function EmptyNotice({ title, children, action, className }: EmptyNoticeP
         />
         <div className="absolute inset-0 bg-linear-to-b from-transparent from-[77.31%] to-surface-primary to-[92.81%]" />
       </div>
-      <div className="flex flex-col gap-ds-4 text-center">
-        <p className="text-heading-sm text-content-primary">{title}</p>
+      <div className={cn("flex flex-col text-center", isProminent ? "gap-ds-8" : "gap-ds-4")}>
+        {eyebrow ? <p className="text-body-lg-regular text-content-primary">{eyebrow}</p> : null}
+        <p
+          className={cn(
+            "whitespace-pre-line text-content-primary",
+            isProminent ? "text-heading-lg" : "text-heading-sm",
+          )}
+        >
+          {title}
+        </p>
         {children ? <p className="text-body-md-regular text-content-tertiary">{children}</p> : null}
       </div>
       {action}

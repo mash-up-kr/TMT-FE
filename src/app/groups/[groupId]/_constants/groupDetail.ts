@@ -18,6 +18,7 @@ const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailViewData> = {
     matchedSavedPlaceCount: 7,
     availableTicketCount: 1,
     isJoinable: true,
+    isOwner: false,
     isMember: false,
   },
   group_2: {
@@ -33,6 +34,7 @@ const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailViewData> = {
     matchedSavedPlaceCount: 4,
     availableTicketCount: 1,
     isJoinable: true,
+    isOwner: false,
     isMember: false,
   },
 };

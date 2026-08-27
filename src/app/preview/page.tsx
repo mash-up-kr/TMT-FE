@@ -8,6 +8,11 @@ const PREVIEWS = [
     description: "가입 여부, 피드, 이미지 fallback, 로딩·오류·위치 상태",
   },
   {
+    href: "/preview/groups/new",
+    title: "그룹 생성",
+    description: "4단계 입력, 태그 조회, 생성 진행·성공·실패 상태",
+  },
+  {
     href: "/preview/profile",
     title: "프로필",
     description: "그룹, 좋아요, 티켓의 기본·빈 상태",
