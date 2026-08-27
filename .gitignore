@@ -53,3 +53,6 @@ next-env.d.ts
 
 # .claude 내부 개인 작업 파일
 /.claude/private/
+
+# Claude Code가 만드는 로컬 워크트리 (중첩 레포라 biome·tsc 검사에서도 빠져야 한다)
+/.claude/worktrees/

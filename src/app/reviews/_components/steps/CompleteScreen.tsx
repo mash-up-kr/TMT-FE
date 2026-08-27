@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
@@ -39,8 +40,7 @@ export function CompleteScreen() {
           <Button variant="tertiary" onClick={() => router.replace(REVIEW_FLOW_EXIT_PATH)}>
             홈으로 가기
           </Button>
-          {/* 피드 라우트는 아직 없다. 시안 주석 기준 이동 대상만 먼저 연결해 둔다. */}
-          <Button onClick={() => router.replace("/feed")}>다른 리뷰 보러가기</Button>
+          <Button onClick={() => router.replace(ROUTES.FEED)}>다른 리뷰 보러가기</Button>
         </ButtonStack>
       </div>
     </>

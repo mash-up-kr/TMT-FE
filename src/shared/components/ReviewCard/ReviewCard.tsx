@@ -1,21 +1,31 @@
+import Link from "next/link";
 import AvatarTomato from "@/shared/assets/avatar-tomato.svg?react";
 import imageFallback from "@/shared/assets/dummy-image.png";
 import profileFallback from "@/shared/assets/dummy-profile.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
+import { placeDetailPath } from "@/shared/constants/routes";
 import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
+import { formatDistance } from "@/shared/utils/formatDistance";
 
 const RESTRICTED_CONTENT_CLASS = "pointer-events-none select-none blur-[4px]";
 
 type ReviewCardProps = {
   review: ReviewCardData;
   isContentRestricted?: boolean;
+  maxVisibleTags?: number;
+  hidePlace?: boolean;
 };
 
-export function ReviewCard({ review, isContentRestricted = false }: ReviewCardProps) {
+export function ReviewCard({
+  review,
+  isContentRestricted = false,
+  maxVisibleTags,
+  hidePlace = false,
+}: ReviewCardProps) {
   return (
     <article className="flex flex-col bg-surface-primary">
       <ReviewCardHeader
@@ -42,8 +52,8 @@ export function ReviewCard({ review, isContentRestricted = false }: ReviewCardPr
             {review.content}
           </p>
         ) : null}
-        <TagList tags={review.tags} />
-        <PlaceRow place={review.place} />
+        <TagList tags={review.tags} maxVisible={maxVisibleTags} />
+        {hidePlace ? null : <PlaceRow place={review.place} />}
       </div>
     </article>
   );
@@ -85,10 +95,6 @@ function ReviewCardHeader({
       </div>
     </header>
   );
-}
-
-function formatDistance(meters: number): string {
-  return meters < 1000 ? `${Math.round(meters)}m` : `${(meters / 1000).toFixed(1)}km`;
 }
 
 function AuthorAvatar({ imageUrl }: { imageUrl: string | null }) {
@@ -176,39 +182,55 @@ function SummaryLine({ label, children, negative, isContentRestricted }: Summary
   );
 }
 
-function TagList({ tags }: { tags: ReviewCardData["tags"] }) {
+const TAG_CHIP_CLASS =
+  "inline-flex shrink-0 items-center gap-ds-4 rounded-ds-full inset-ring inset-ring-stroke-primary bg-surface-primary px-ds-12 py-ds-4 text-body-sm-medium text-content-primary";
+
+type TagListProps = {
+  tags: ReviewCardData["tags"];
+  maxVisible?: number;
+};
+
+function TagList({ tags, maxVisible }: TagListProps) {
   if (tags.length === 0) {
     return null;
   }
 
+  const visible = maxVisible ? tags.slice(0, maxVisible) : tags;
+  const hiddenCount = tags.length - visible.length;
+
   return (
     <ul className="flex flex-wrap gap-ds-4">
-      {tags.map((tag) => (
-        <li
-          key={tag.id}
-          className="inline-flex shrink-0 items-center gap-ds-4 rounded-ds-full inset-ring inset-ring-stroke-primary bg-surface-primary px-ds-12 py-ds-4 text-body-sm-medium text-content-primary"
-        >
+      {visible.map((tag) => (
+        <li key={tag.id} className={TAG_CHIP_CLASS}>
           <ReviewTagIcon tagId={tag.id} className="size-ds-16 shrink-0" />
           {tag.label}
         </li>
       ))}
+      {hiddenCount > 0 ? (
+        <li className={TAG_CHIP_CLASS} aria-label={`태그 ${hiddenCount}개 더 있음`}>
+          +{hiddenCount}
+        </li>
+      ) : null}
     </ul>
   );
 }
 
 function PlaceRow({ place }: { place: ReviewCardData["place"] }) {
   return (
-    <div className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8">
+    <Link
+      href={placeDetailPath(place.id)}
+      className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8"
+    >
       <div className="flex min-w-0 flex-1 flex-col">
         <p className="truncate text-body-md-bold text-content-primary">{place.name}</p>
         <p className="truncate text-body-sm-medium text-content-secondary">{place.regionName}</p>
       </div>
       <HeartIcon
-        filled
+        filled={place.isFavorite}
         aria-hidden="true"
         size={24}
         className="shrink-0 text-icon-interactive-primary"
       />
-    </div>
+    </Link>
   );
 }

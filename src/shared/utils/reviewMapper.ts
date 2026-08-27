@@ -20,6 +20,7 @@ export function toReviewCardData(review: ReviewCardResponse): ReviewCardData {
       id: review.place.placeId,
       name: review.place.name,
       regionName: review.place.regionName,
+      isFavorite: review.place.isFavorite,
     },
   };
 }
