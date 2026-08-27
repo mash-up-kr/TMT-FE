@@ -33,9 +33,10 @@ function show(type: ToastType, title: string, content?: ToastContent) {
   return toastManager.add({ title, description: options?.description, data: { type, ...options } });
 }
 
-/** 토스트를 띄운다. 반환값은 `toastManager.close(id)`로 직접 닫을 때 쓴다. */
+/** 토스트를 띄운다. 반환값은 `toast.close(id)`로 직접 닫을 때 쓴다. */
 export const toast = {
   success: (title: string, content?: ToastContent) => show("success", title, content),
   warning: (title: string, content?: ToastContent) => show("warning", title, content),
   error: (title: string, content?: ToastContent) => show("error", title, content),
+  close: (id?: string) => toastManager.close(id),
 };

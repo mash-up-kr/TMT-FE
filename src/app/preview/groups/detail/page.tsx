@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   GroupDetailContainer,
   GroupDetailError,
@@ -159,7 +159,43 @@ export default function GroupDetailPreviewPage() {
   const [scenarioKey, setScenarioKey] = useState<(typeof SCENARIOS)[number]["key"]>(
     "mock-not-joined-joinable",
   );
+  const previewToastIdRef = useRef<string | null>(null);
   const scenario = SCENARIOS.find((item) => item.key === scenarioKey) ?? SCENARIOS[0];
+
+  useEffect(() => {
+    return () => {
+      if (previewToastIdRef.current) {
+        toast.close(previewToastIdRef.current);
+      }
+    };
+  }, []);
+
+  function handleScenarioChange(key: (typeof SCENARIOS)[number]["key"]) {
+    if (previewToastIdRef.current) {
+      toast.close(previewToastIdRef.current);
+      previewToastIdRef.current = null;
+    }
+
+    setScenarioKey(key);
+
+    if (key === "leave-success") {
+      previewToastIdRef.current = toast.success("그룹 탈퇴가 완료되었어요.");
+    }
+
+    if (key === "leave-error") {
+      previewToastIdRef.current = toast.error("그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");
+    }
+
+    if (key === "join-error") {
+      previewToastIdRef.current = toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.", {
+        bottomInset: GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
+      });
+    }
+
+    if (key === "join-success") {
+      previewToastIdRef.current = toast.success("그룹 가입이 완료되었어요.");
+    }
+  }
 
   return (
     <>
@@ -181,27 +217,7 @@ export default function GroupDetailPreviewPage() {
               <button
                 key={item.key}
                 type="button"
-                onClick={() => {
-                  setScenarioKey(item.key);
-
-                  if (item.key === "leave-success") {
-                    toast.success("그룹 탈퇴가 완료되었어요.");
-                  }
-
-                  if (item.key === "leave-error") {
-                    toast.error("그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");
-                  }
-
-                  if (item.key === "join-error") {
-                    toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.", {
-                      bottomInset: GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
-                    });
-                  }
-
-                  if (item.key === "join-success") {
-                    toast.success("그룹 가입이 완료되었어요.");
-                  }
-                }}
+                onClick={() => handleScenarioChange(item.key)}
                 className={cn(
                   "rounded-ds-xs px-ds-8 py-ds-4 text-left text-body-sm-medium",
                   item.key === scenario.key
