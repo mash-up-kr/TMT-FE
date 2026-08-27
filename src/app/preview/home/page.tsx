@@ -10,8 +10,10 @@
 
 import { useState } from "react";
 import imageDummy from "@/shared/assets/dummy-image.png";
-import { AppShell } from "@/shared/components/AppShell/AppShell";
+import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
+import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
+import { GNB } from "@/shared/ui/GNB";
 import { cn } from "@/shared/utils/cn";
 import { HomeView } from "../../_components/HomeView";
 import type { FeedReview, HomeRecommendedGroup, HomeSummary } from "../../_model/home";
@@ -224,9 +226,12 @@ export default function HomePreview() {
 
   return (
     <>
-      <AppShell tab="home">
+      <BottomNavScreenLayout
+        activeTab="home"
+        header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
+      >
         <HomeView {...scenario.props} />
-      </AppShell>
+      </BottomNavScreenLayout>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>
         {SCENARIOS.map((item) => (

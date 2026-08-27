@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TabScreenLayout } from "@/shared/components/TabScreenLayout";
+import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -29,19 +29,25 @@ export default function GroupsPreviewPage() {
 
   return (
     <>
-      <TabScreenLayout activeTab="group">
-        <GNB
-          align="left"
-          title={null}
-          left={<TMTLogoHomeLink />}
-          right={
-            <IconButton aria-label="그룹 만들기">
-              <PlusIcon />
-            </IconButton>
-          }
-        />
+      <BottomNavScreenLayout
+        activeTab="group"
+        bodyScrollable={false}
+        header={
+          <GNB
+            align="left"
+            className="shrink-0"
+            title={null}
+            left={<TMTLogoHomeLink />}
+            right={
+              <IconButton aria-label="그룹 만들기">
+                <PlusIcon size={28} />
+              </IconButton>
+            }
+          />
+        }
+      >
         <GroupsView previewState={state === "default" ? undefined : state} />
-      </TabScreenLayout>
+      </BottomNavScreenLayout>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>
         {SCENARIOS.map((scenario) => (
