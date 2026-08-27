@@ -233,6 +233,9 @@
   --layout-grid-margin: var(--number-unit-20);
   --layout-frame-max: 430px;
   --layout-bottom-navigation-width: 320px;
+  /* 상단 바 높이. 내용물(로고 20·아이콘 24|28·타이틀 26)이 높이를 정하게 두면 화면마다 달라져
+     고정한다. 52 = 상하 패딩 12 + 가장 큰 슬롯 28. */
+  --layout-gnb-height: 52px;
   /* 화면 위에 떠 있는 것(모달·바텀시트·토스트)과 화면 가장자리 사이 여백.
      본문 그리드 마진과 의미가 달라 따로 둔다 — 화면 끝에 닿지 않게 하는 값이다. */
   --layout-floating-inset-block: var(--number-unit-32);

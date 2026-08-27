@@ -19,6 +19,9 @@ type GNBProps = Readonly<{
  *
  * 슬롯은 항상 좌·중앙·우 세 칸이고 정렬은 트랙 정의로만 가른다. 계층을 align에 따라 바꾸면
  * 슬롯 간격과 축소 계약이 분기마다 달라져 같은 종류의 누락이 반복된다.
+ *
+ * 높이는 `--layout-gnb-height`가 소유한다. 슬롯 내용물(로고 20·아이콘 24|28·타이틀 26)에
+ * 맡기면 화면마다 44~52로 갈린다. 슬롯 쪽에서 높이를 맞추려 들지 않는다.
  */
 export function GNB({ left, right, title, align = "center", className }: GNBProps) {
   const hasHeading = title !== null;
@@ -32,7 +35,7 @@ export function GNB({ left, right, title, align = "center", className }: GNBProp
   return (
     <header
       className={cn(
-        "grid w-full items-center gap-ds-8 bg-surface-primary px-ds-20 py-ds-12",
+        "grid min-h-(--layout-gnb-height) w-full items-center gap-ds-8 bg-surface-primary px-ds-20 py-ds-12",
         resolveColumns(align, !collapseLeft, hasHeading),
         className,
       )}
