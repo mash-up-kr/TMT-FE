@@ -2,8 +2,14 @@ import { GroupDetailContainer } from "./_components/GroupDetailContainer";
 
 export default async function GroupDetailPage({
   params,
-}: Readonly<{ params: Promise<{ groupId: string }> }>) {
-  const { groupId } = await params;
+  searchParams,
+}: Readonly<{
+  params: Promise<{ groupId: string }>;
+  searchParams: Promise<{ created?: string | string[] }>;
+}>) {
+  const [{ groupId }, { created }] = await Promise.all([params, searchParams]);
 
-  return <GroupDetailContainer groupId={groupId} />;
+  return (
+    <GroupDetailContainer groupId={groupId} initialFirstReviewSheetOpen={created === "true"} />
+  );
 }

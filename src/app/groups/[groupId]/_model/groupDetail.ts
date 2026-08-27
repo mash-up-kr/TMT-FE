@@ -16,6 +16,7 @@ export type GroupProfileData = {
 export type GroupDetailViewData = GroupProfileData & {
   availableTicketCount: number;
   isJoinable: boolean;
+  isOwner: boolean;
   isMember: boolean;
 };
 
@@ -30,8 +31,12 @@ export type GroupJoinAction = Readonly<{
   isPending: boolean;
 }>;
 
+export type GroupLeaveResult =
+  | Readonly<{ success: true }>
+  | Readonly<{ success: false; errorTitle?: string }>;
+
 export type GroupLeaveAction = Readonly<{
-  onLeaveAction: () => Promise<boolean>;
+  onLeaveAction: () => Promise<GroupLeaveResult>;
   isPending: boolean;
 }>;
 

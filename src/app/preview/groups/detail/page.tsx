@@ -118,6 +118,16 @@ const SCENARIOS = [
   },
   {
     section: "그룹 탈퇴",
+    key: "leave-owner-error",
+    label: "그룹장 · 탈퇴 불가",
+    isMember: true,
+    isJoinable: true,
+    availableTicketCount: 1,
+    joinSheetState: undefined,
+    leaveModalState: undefined,
+  },
+  {
+    section: "그룹 탈퇴",
     key: "leave-success",
     label: "탈퇴 완료",
     isMember: true,
@@ -128,6 +138,26 @@ const SCENARIOS = [
   },
   { section: "공통 상태", key: "loading", label: "로딩" },
   { section: "공통 상태", key: "error", label: "불러오기 실패" },
+  {
+    section: "공통 상태",
+    key: "empty-reviews",
+    label: "그룹장 · 리뷰 0",
+    isMember: true,
+    isJoinable: true,
+    availableTicketCount: 1,
+    joinSheetState: undefined,
+    leaveModalState: undefined,
+  },
+  {
+    section: "공통 상태",
+    key: "first-review-prompt",
+    label: "생성 · 첫 리뷰 유도",
+    isMember: true,
+    isJoinable: true,
+    availableTicketCount: 1,
+    joinSheetState: undefined,
+    leaveModalState: undefined,
+  },
   { section: "공통 상태", key: "api", label: "API · group_1" },
 ] as const;
 
@@ -146,12 +176,12 @@ const PREVIEW_JOIN_ACTIONS = {
 } as const satisfies Record<"idle" | "pending", GroupJoinAction>;
 
 const PREVIEW_LEAVE_ACTION: GroupLeaveAction = {
-  onLeaveAction: async () => false,
+  onLeaveAction: async () => ({ success: false }),
   isPending: false,
 };
 
 const PREVIEW_LEAVE_ACTIONS = {
-  idle: { ...PREVIEW_LEAVE_ACTION, onLeaveAction: async () => true },
+  idle: { ...PREVIEW_LEAVE_ACTION, onLeaveAction: async () => ({ success: true }) },
   pending: { ...PREVIEW_LEAVE_ACTION, isPending: true },
 } as const satisfies Record<"idle" | "pending", GroupLeaveAction>;
 
@@ -184,6 +214,10 @@ export default function GroupDetailPreviewPage() {
 
     if (key === "leave-error") {
       previewToastIdRef.current = toast.error("그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");
+    }
+
+    if (key === "leave-owner-error") {
+      previewToastIdRef.current = toast.error("그룹장은 탈퇴할 수 없습니다.");
     }
 
     if (key === "join-error") {
@@ -244,6 +278,10 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
     ...MOCK_GROUP,
     isMember: scenario.isMember,
     isJoinable: scenario.isJoinable,
+    isOwner:
+      scenario.key === "leave-owner-error" ||
+      scenario.key === "empty-reviews" ||
+      scenario.key === "first-review-prompt",
     availableTicketCount: scenario.availableTicketCount,
   };
   const joinAction = scenario.joinSheetState
@@ -257,9 +295,16 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
     <>
       <GroupDetailView
         group={group}
-        reviewList={{ reviews: GROUP_DETAIL_PAGE_REVIEWS, hasNextPage: false }}
+        reviewList={{
+          reviews:
+            scenario.key === "empty-reviews" || scenario.key === "first-review-prompt"
+              ? []
+              : GROUP_DETAIL_PAGE_REVIEWS,
+          hasNextPage: false,
+        }}
         joinAction={joinAction}
         leaveAction={leaveAction}
+        initialFirstReviewSheetOpen={scenario.key === "first-review-prompt"}
       />
       {scenario.joinSheetState ? (
         <JoinGroupTicketSheet
