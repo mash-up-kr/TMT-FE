@@ -68,7 +68,7 @@ export function Modal({
             ) : null}
             <div
               className={cn(
-                "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-none px-ds-20",
+                "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-none p-ds-20",
                 !hasHeader && "pt-ds-20",
                 !footer && "pb-ds-20",
               )}
