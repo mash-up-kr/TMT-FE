@@ -126,7 +126,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "fallback-group-card",
     label: "fallback · 추천 그룹",
-    hideNav: false,
     props: {
       summary: {
         ...NOT_JOINED,
@@ -156,7 +155,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "fallback-feed",
     label: "fallback · 피드",
-    hideNav: true,
     props: {
       summary: {
         ...JOINED,
