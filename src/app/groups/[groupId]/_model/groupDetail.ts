@@ -1,5 +1,24 @@
 import type { ReviewCardData } from "@/shared/model/review";
 
+export type GroupProfileData = {
+  name: string;
+  oneLineDescription: string;
+  description: string | null;
+  coverImageUrl: string | null;
+  imageUrl: string | null;
+  memberCount: number;
+  reviewCount: number;
+  placeCount: number;
+  tags: string[];
+  matchedSavedPlaceCount: number;
+};
+
+export type GroupDetailViewData = GroupProfileData & {
+  availableTicketCount: number;
+  isJoinable: boolean;
+  isMember: boolean;
+};
+
 export type GroupJoinInfo = Readonly<{
   name: string;
   imageUrl: string | null;

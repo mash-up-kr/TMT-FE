@@ -2,19 +2,7 @@ import groupFallbackImage from "@/shared/assets/dummy.png";
 import coverFallbackImage from "@/shared/assets/dummy-small.png";
 import { MatchedStoreBadge } from "@/shared/components/MatchedStoreBadge/MatchedStoreBadge";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
-
-export type GroupProfileData = {
-  name: string;
-  oneLineDescription: string;
-  description: string | null;
-  coverImageUrl: string | null;
-  imageUrl: string | null;
-  memberCount: number;
-  reviewCount: number;
-  placeCount: number;
-  tags: string[];
-  matchedSavedPlaceCount: number;
-};
+import type { GroupProfileData } from "../_model/groupDetail";
 
 type GroupProfileProps = {
   group: GroupProfileData;

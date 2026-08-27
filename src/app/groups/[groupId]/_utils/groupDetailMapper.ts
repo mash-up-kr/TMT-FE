@@ -1,6 +1,6 @@
 import type { GroupDetailResponse } from "@/api/gen/_model/groupDetailResponse.gen";
 import type { JoinPreviewResponse } from "@/api/gen/_model/joinPreviewResponse.gen";
-import type { GroupDetailViewData } from "@/app/groups/[groupId]/_components/GroupDetailView";
+import type { GroupDetailViewData } from "../_model/groupDetail";
 
 export function toGroupDetailViewData(
   detail: GroupDetailResponse,

@@ -8,16 +8,15 @@ import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon } from "@/shared/ui/Icons";
-import type { GroupJoinAction, GroupJoinInfo, GroupReviewListState } from "../_model/groupDetail";
-import { GroupProfile, type GroupProfileData } from "./GroupProfile";
+import type {
+  GroupDetailViewData,
+  GroupJoinAction,
+  GroupJoinInfo,
+  GroupReviewListState,
+} from "../_model/groupDetail";
+import { GroupProfile } from "./GroupProfile";
 import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
 import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
-
-export type GroupDetailViewData = GroupProfileData & {
-  availableTicketCount: number;
-  isJoinable: boolean;
-  isMember: boolean;
-};
 
 type GroupDetailViewProps = {
   group: GroupDetailViewData;

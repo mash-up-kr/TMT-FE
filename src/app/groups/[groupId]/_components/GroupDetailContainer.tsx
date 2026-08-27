@@ -6,7 +6,7 @@ import { LoadingIcon } from "@/shared/ui/Icons";
 import { toReviewCardData } from "@/shared/utils/reviewMapper";
 import { useGroupReviewPages } from "../_hooks/useGroupReviewPages";
 import type { GroupReviewListState } from "../_model/groupDetail";
-import { toGroupDetailViewData } from "../_utils/toGroupDetailViewData";
+import { toGroupDetailViewData } from "../_utils/groupDetailMapper";
 import { GroupDetailView } from "./GroupDetailView";
 
 const SERVER_IGNORES_USER_ID = 1;

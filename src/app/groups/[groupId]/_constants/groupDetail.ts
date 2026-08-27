@@ -1,5 +1,5 @@
 import type { ReviewCardData } from "@/shared/model/review";
-import type { GroupDetailViewData } from "../_components/GroupDetailView";
+import type { GroupDetailViewData } from "../_model/groupDetail";
 import groupCover from "./assets/group-cover.png";
 import reviewCoffee from "./assets/review-coffee.png";
 import reviewSushi from "./assets/review-sushi.png";
