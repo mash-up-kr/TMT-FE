@@ -48,6 +48,7 @@ export function GroupDetailView({
 
       if (didJoin) {
         setIsJoinSheetOpen(false);
+        toast.success("그룹 가입이 완료되었어요.");
       } else {
         toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.", {
           bottomInset: GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
@@ -70,7 +71,7 @@ export function GroupDetailView({
 
       if (didLeave) {
         setIsLeaveModalOpen(false);
-        toast.success("그룹 탈퇴가 완료되었어요");
+        toast.success("그룹 탈퇴가 완료되었어요.");
         router.replace(ROUTES.GROUPS.ROOT);
       } else {
         toast.error("그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");

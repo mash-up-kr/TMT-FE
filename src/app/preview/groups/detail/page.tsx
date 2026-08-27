@@ -185,7 +185,7 @@ export default function GroupDetailPreviewPage() {
                   setScenarioKey(item.key);
 
                   if (item.key === "leave-success") {
-                    toast.success("그룹 탈퇴가 완료되었어요");
+                    toast.success("그룹 탈퇴가 완료되었어요.");
                   }
 
                   if (item.key === "leave-error") {
@@ -196,6 +196,10 @@ export default function GroupDetailPreviewPage() {
                     toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.", {
                       bottomInset: GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
                     });
+                  }
+
+                  if (item.key === "join-success") {
+                    toast.success("그룹 가입이 완료되었어요.");
                   }
                 }}
                 className={cn(
