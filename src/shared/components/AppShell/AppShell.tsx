@@ -7,10 +7,11 @@ import { BottomNav, type BottomNavValue } from "@/shared/ui/BottomNav";
 import { GNB } from "@/shared/ui/GNB";
 import { BlankIcon } from "@/shared/ui/Icons";
 
-/** 아직 없는 탭은 라우트가 생길 때 채운다. 매핑에 없으면 이동하지 않는다. */
-const TAB_ROUTES: Partial<Record<BottomNavValue, string>> = {
+const TAB_ROUTES: Record<BottomNavValue, string> = {
   home: ROUTES.ROOT,
   feed: ROUTES.FEED,
+  group: ROUTES.GROUPS.ROOT,
+  my: ROUTES.PROFILE.ME,
 };
 
 type AppShellProps = {
@@ -33,13 +34,7 @@ export function AppShell({ tab, children, floating }: AppShellProps) {
       <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
         <BottomNav
           value={tab}
-          onValueChange={(next) => {
-            const href = TAB_ROUTES[next];
-
-            if (href) {
-              router.push(href);
-            }
-          }}
+          onValueChange={(next) => router.push(TAB_ROUTES[next])}
           onCreate={() => {}}
         />
       </div>
