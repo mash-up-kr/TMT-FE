@@ -40,5 +40,9 @@ export const ROUTES = {
 /** 동적 세그먼트를 채워 실제 pathname을 만든다. 템플릿 문자열을 화면에 흩지 않기 위한 것이다. */
 export const placeDetailPath = (placeId: string) => `/places/${placeId}`;
 
+/** 그룹 생성 직후 상세 화면에서 최초 안내를 노출한다. */
+export const groupDetailPathAfterCreate = (groupId: string) =>
+  `${ROUTES.GROUPS.DETAIL(groupId)}?created=true`;
+
 /** 검색어를 들고 피드로 돌아간다. 검색 상태는 URL이 소유한다. */
 export const feedPathWithQuery = (query: string) => `${ROUTES.FEED}?q=${encodeURIComponent(query)}`;

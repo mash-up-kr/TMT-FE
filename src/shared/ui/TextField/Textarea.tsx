@@ -15,6 +15,8 @@ export type TextareaProps = Readonly<
     invalid?: boolean;
     /** 라벨 우측에 `현재 / 최대` 글자 수 표시 (maxLength 필요) */
     showCount?: boolean;
+    /** 글자 수 표시 위치. 기본값은 기존과 같은 라벨 우측이다. */
+    counterPlacement?: "label" | "field";
     rows?: number;
     containerClassName?: string;
   }
@@ -32,6 +34,7 @@ export function Textarea({
   helpTone,
   invalid = false,
   showCount = false,
+  counterPlacement = "label",
   rows = 4,
   disabled = false,
   maxLength,
@@ -82,7 +85,7 @@ export function Textarea({
       label={label}
       required={required}
       optional={optional}
-      labelAside={counter}
+      labelAside={counterPlacement === "label" ? counter : undefined}
       helpMessage={helpMessage}
       helpMessageId={helpId}
       helpTone={helpTone}
@@ -90,6 +93,7 @@ export function Textarea({
       disabled={disabled}
       controlAlign="start"
       containerClassName={containerClassName}
+      boxClassName={counterPlacement === "field" && hasCounter ? "relative" : undefined}
     >
       <textarea
         {...rest}
@@ -104,8 +108,16 @@ export function Textarea({
         onChange={handleChange}
         aria-invalid={invalid || undefined}
         aria-describedby={describedBy}
-        className={cn(controlClass(size), "resize-none", className)}
+        className={cn(
+          controlClass(size),
+          "resize-none",
+          counterPlacement === "field" && hasCounter && "pb-ds-20",
+          className,
+        )}
       />
+      {counterPlacement === "field" && hasCounter ? (
+        <span className="absolute right-ds-16 bottom-ds-12">{counter}</span>
+      ) : null}
     </FieldFrame>
   );
 }
