@@ -1,7 +1,7 @@
 import { ROUTES } from "@/shared/constants/routes";
 
 export function toGroupHref(groupId: string): string {
-  return ROUTES.GROUPS.DETAIL.replace("[groupId]", groupId);
+  return ROUTES.GROUPS.DETAIL(groupId);
 }
 
 export function toPlaceHref(placeId: string): string {

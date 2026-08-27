@@ -5,10 +5,7 @@ import SparkleIcon from "./assets/sparkle.svg?react";
 /** 시안이 12px 고정이라 ds 스케일 대신 값으로 둔다. */
 const ICON_SIZE = 12;
 
-type MatchedPlaceBadgeProps = ComponentProps<"p"> & {
-  /** 문구는 화면마다 세는 단위가 달라 호출부가 소유한다. */
-  children: string;
-};
+type MatchedPlaceBadgeProps = ComponentProps<"p">;
 
 /** 저장한 가게와 겹치는 정도를 알리는 강조 뱃지. */
 export function MatchedPlaceBadge({ children, className, ...props }: MatchedPlaceBadgeProps) {

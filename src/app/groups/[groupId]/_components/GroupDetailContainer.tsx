@@ -9,8 +9,6 @@ import type { GroupReviewListState } from "../_model/groupDetail";
 import { toGroupDetailViewData } from "../_utils/groupDetailMapper";
 import { GroupDetailView } from "./GroupDetailView";
 
-const SERVER_IGNORES_USER_ID = 1;
-
 type GroupDetailContainerProps = {
   groupId: string;
 };
@@ -19,11 +17,9 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
   const detail = useGroupDetail(groupId);
   const reviews = useGroupReviewPages(groupId, detail.data?.isMember);
   const join = useJoin();
-  const joinPreview = useJoinPreview(
-    groupId,
-    { userId: SERVER_IGNORES_USER_ID },
-    { query: { enabled: detail.data?.isMember === false } },
-  );
+  const joinPreview = useJoinPreview(groupId, {
+    query: { enabled: detail.data?.isMember === false },
+  });
 
   if (detail.isPending) {
     return <GroupDetailLoading />;
@@ -45,7 +41,7 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
 
   const handleJoin = async () => {
     try {
-      await join.mutateAsync({ groupId, params: { userId: SERVER_IGNORES_USER_ID } });
+      await join.mutateAsync({ groupId });
       void detail.refetch({ throwOnError: false });
 
       return true;
