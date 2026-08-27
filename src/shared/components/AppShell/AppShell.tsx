@@ -3,16 +3,9 @@
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
-import { ROUTES } from "@/shared/constants/routes";
 import { BottomNav, type BottomNavValue } from "@/shared/ui/BottomNav";
 import { GNB } from "@/shared/ui/GNB";
-
-const TAB_ROUTES: Record<BottomNavValue, string> = {
-  home: ROUTES.ROOT,
-  feed: ROUTES.FEED,
-  group: ROUTES.GROUPS.ROOT,
-  my: ROUTES.PROFILE.ME,
-};
+import { BOTTOM_NAV_ROUTES } from "../bottomNavRoutes";
 
 type AppShellProps = {
   tab: BottomNavValue;
@@ -34,7 +27,7 @@ export function AppShell({ tab, children, floating }: AppShellProps) {
       <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
         <BottomNav
           value={tab}
-          onValueChange={(next) => router.push(TAB_ROUTES[next])}
+          onValueChange={(next) => router.push(BOTTOM_NAV_ROUTES[next])}
           onCreate={() => {}}
         />
       </div>

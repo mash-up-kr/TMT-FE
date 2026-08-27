@@ -5,19 +5,13 @@ import type { ReactNode } from "react";
 import { ROUTES } from "@/shared/constants/routes";
 import { BottomNav, type BottomNavValue } from "@/shared/ui/BottomNav";
 import { cn } from "@/shared/utils/cn";
+import { BOTTOM_NAV_ROUTES } from "./bottomNavRoutes";
 
 type TabScreenLayoutProps = {
   /** 지금 열려 있는 탭. 하단 바에서 강조된다. */
   activeTab: BottomNavValue;
   children: ReactNode;
   className?: string;
-};
-
-const TAB_ROUTES: Record<BottomNavValue, string> = {
-  home: ROUTES.ROOT,
-  feed: ROUTES.FEED,
-  group: ROUTES.GROUPS.ROOT,
-  my: ROUTES.PROFILE.ME,
 };
 
 /**
@@ -36,7 +30,7 @@ export function TabScreenLayout({ activeTab, children, className }: TabScreenLay
       <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
         <BottomNav
           value={activeTab}
-          onValueChange={(value) => router.push(TAB_ROUTES[value])}
+          onValueChange={(value) => router.push(BOTTOM_NAV_ROUTES[value])}
           onCreate={() => router.push(ROUTES.GROUPS.NEW)}
         />
       </div>
