@@ -78,6 +78,26 @@ export function Textarea({
     </span>
   ) : undefined;
 
+  const inFieldCounter = counterPlacement === "field" && hasCounter;
+
+  const control = (
+    <textarea
+      {...rest}
+      ref={ref}
+      id={textareaId}
+      rows={rows}
+      disabled={disabled}
+      required={required}
+      maxLength={maxLength}
+      value={value}
+      defaultValue={defaultValue}
+      onChange={handleChange}
+      aria-invalid={invalid || undefined}
+      aria-describedby={describedBy}
+      className={cn(controlClass(size), "resize-none", inFieldCounter && "block w-full", className)}
+    />
+  );
+
   return (
     <FieldFrame
       htmlFor={textareaId}
@@ -93,31 +113,17 @@ export function Textarea({
       disabled={disabled}
       controlAlign="start"
       containerClassName={containerClassName}
-      boxClassName={counterPlacement === "field" && hasCounter ? "relative" : undefined}
     >
-      <textarea
-        {...rest}
-        ref={ref}
-        id={textareaId}
-        rows={rows}
-        disabled={disabled}
-        required={required}
-        maxLength={maxLength}
-        value={value}
-        defaultValue={defaultValue}
-        onChange={handleChange}
-        aria-invalid={invalid || undefined}
-        aria-describedby={describedBy}
-        className={cn(
-          controlClass(size),
-          "resize-none",
-          counterPlacement === "field" && hasCounter && "pb-ds-20",
-          className,
-        )}
-      />
-      {counterPlacement === "field" && hasCounter ? (
-        <span className="absolute right-ds-16 bottom-ds-12">{counter}</span>
-      ) : null}
+      {inFieldCounter ? (
+        // 카운터를 textarea 위에 겹치면 스크롤된 텍스트가 그 아래를 지나가 가려진다.
+        // 형제로 두어 스크롤 영역 밖에 자기 자리를 갖게 한다.
+        <div className="min-w-0 flex-1">
+          {control}
+          <span className="mt-ds-4 block text-right">{counter}</span>
+        </div>
+      ) : (
+        control
+      )}
     </FieldFrame>
   );
 }
