@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { BottomNav, type BottomNavValue } from "@/shared/ui/BottomNav";
 import { GNB } from "@/shared/ui/GNB";
-import { BlankIcon } from "@/shared/ui/Icons";
 
 const TAB_ROUTES: Record<BottomNavValue, string> = {
   home: ROUTES.ROOT,
@@ -26,7 +26,7 @@ export function AppShell({ tab, children, floating }: AppShellProps) {
 
   return (
     <>
-      <GNB align="left" className="shrink-0" title={null} left={<BlankIcon size={28} />} />
+      <GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</div>
         {floating}

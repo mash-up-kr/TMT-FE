@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
+import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { BlankIcon, CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
+import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { PlaceRecommendationCard } from "../../profile/_components/PlaceRecommendationCard";
 import { ProfileBody } from "../../profile/_components/ProfileBody";
@@ -187,7 +188,7 @@ function ProfilePreview({ scenario }: { scenario: ProfileScenario }) {
   return (
     <BottomNavScreenLayout
       activeTab="my"
-      header={<GNB align="left" className="shrink-0" title={null} left={<BlankIcon size={28} />} />}
+      header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
     >
       {body}
     </BottomNavScreenLayout>

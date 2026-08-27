@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef, useState } from "react";
+import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { feedPathWithQuery } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
-import { BlankIcon } from "@/shared/ui/Icons";
 import { SearchField } from "@/shared/ui/TextField";
 
 /**
@@ -38,7 +38,7 @@ export function NearbySearchScreen() {
 
   return (
     <>
-      <GNB align="left" className="shrink-0" title={null} left={<BlankIcon size={28} />} />
+      <GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />
       <div className="flex min-h-0 flex-1 flex-col gap-ds-12 overflow-y-auto px-ds-20 py-ds-12">
         <SearchField
           autoFocus
