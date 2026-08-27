@@ -14,7 +14,7 @@ export function GroupList({ groups }: GroupListProps) {
   }
 
   return (
-    <ul className="flex flex-col gap-ds-20">
+    <ul className="flex flex-col gap-ds-20 pb-ds-20">
       {groups.map((group) => (
         <li key={group.id}>
           <Link
@@ -39,8 +39,10 @@ export function GroupList({ groups }: GroupListProps) {
 
 export function GroupListEmpty() {
   return (
-    <EmptyNotice title="검색 결과가 없어요">
-      찾으시는 음식 종류, 가게명 등으로 검색해 보세요
-    </EmptyNotice>
+    <div className="flex min-h-0 flex-1 items-center justify-center py-ds-32">
+      <EmptyNotice title="검색 결과가 없어요">
+        찾으시는 음식 종류, 가게명 등으로 검색해 보세요
+      </EmptyNotice>
+    </div>
   );
 }

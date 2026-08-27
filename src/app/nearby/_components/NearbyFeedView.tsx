@@ -1,9 +1,9 @@
 "use client";
 
-import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { useNearbyFeed } from "../_hooks/useNearbyFeed";
+import { NearbyNotice } from "./NearbyNotice";
 
 /** 시안이 태그 2개 + `+N` 접힘 고정이라 값으로 둔다. */
 const MAX_VISIBLE_TAGS = 2;
@@ -17,24 +17,20 @@ export function NearbyFeedView({ position }: NearbyFeedViewProps) {
   const { data: reviews, isPending, isError } = useNearbyFeed(position);
 
   if (position === null || isPending) {
-    return (
-      <EmptyNotice className="bg-surface-primary px-ds-20" title="게시물을 불러오는 중이에요." />
-    );
+    return <NearbyNotice title="게시물을 불러오는 중이에요." />;
   }
 
   if (isError) {
-    return (
-      <EmptyNotice className="bg-surface-primary px-ds-20" title="게시물을 불러오지 못했어요." />
-    );
+    return <NearbyNotice title="게시물을 불러오지 못했어요." />;
   }
 
   if (!reviews || reviews.length === 0) {
     return (
-      <EmptyNotice className="bg-surface-primary px-ds-20" title="근처에 올라온 리뷰가 없어요.">
+      <NearbyNotice title="근처에 올라온 리뷰가 없어요.">
         {position.isFallback
           ? "위치 권한이 없어 강남역 주변 1km를 보여드리고 있어요."
           : "내 위치에서 1km 안의 리뷰를 보여드려요."}
-      </EmptyNotice>
+      </NearbyNotice>
     );
   }
 

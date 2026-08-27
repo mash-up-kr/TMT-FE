@@ -7,7 +7,6 @@ type EmptyNoticeBaseProps = {
   title: string;
   /** 다음 행동으로 보내는 control. 있을 때만 문구 아래에 놓인다. */
   action?: ReactNode;
-  className?: string;
 };
 
 type EmptyNoticeProps = EmptyNoticeBaseProps &
@@ -24,23 +23,18 @@ type EmptyNoticeProps = EmptyNoticeBaseProps &
       }
   );
 
+/** 빈 상태의 내용만 그린다. 남은 높이와 정렬, 바깥 여백은 사용처가 정한다. */
 export function EmptyNotice({
   title,
   variant = "default",
   eyebrow,
   children,
   action,
-  className,
 }: EmptyNoticeProps) {
   const isProminent = variant === "prominent";
 
   return (
-    <div
-      className={cn(
-        "flex flex-1 flex-col items-center justify-center gap-ds-12 py-ds-32",
-        className,
-      )}
-    >
+    <div data-slot="empty-notice" className="flex shrink-0 flex-col items-center gap-ds-12">
       {/* 시안 실측값. 세로로 긴 원본을 폭에 맞춰 확대하면 프레임(130px)보다 높아지므로
           위로 밀어 다리를 잘라내고, 잘린 경계는 gradient로 배경에 녹인다. */}
       <div aria-hidden="true" className="relative h-[130px] w-[172px] shrink-0">
@@ -64,7 +58,13 @@ export function EmptyNotice({
         >
           {title}
         </p>
-        {children ? <p className="text-body-md-regular text-content-tertiary">{children}</p> : null}
+        {isProminent ? null : (
+          <div className="min-h-ds-20">
+            {children ? (
+              <p className="text-body-md-regular text-content-tertiary">{children}</p>
+            ) : null}
+          </div>
+        )}
       </div>
       {action}
     </div>

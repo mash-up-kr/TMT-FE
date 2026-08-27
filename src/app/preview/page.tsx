@@ -3,6 +3,11 @@ import { ChevronRightIcon } from "@/shared/ui/Icons";
 
 const PREVIEWS = [
   {
+    href: "/preview/empty-notice",
+    title: "EmptyNotice",
+    description: "기본·설명·액션·강조 변형과 배치 영역",
+  },
+  {
     href: "/preview/home",
     title: "홈",
     description: "가입 여부, 피드, 이미지 fallback, 로딩·오류·위치 상태",

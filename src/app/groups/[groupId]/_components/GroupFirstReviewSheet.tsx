@@ -32,12 +32,13 @@ export function GroupFirstReviewSheet({
         </ButtonStack>
       }
     >
-      <EmptyNotice
-        variant="prominent"
-        eyebrow="아직 게시된 리뷰가 없어요."
-        title={"그룹 첫 리뷰를\n등록해보세요!"}
-        className="py-0"
-      />
+      <div className="pb-ds-12">
+        <EmptyNotice
+          variant="prominent"
+          eyebrow="아직 게시된 리뷰가 없어요."
+          title={"그룹 첫 리뷰를\n등록해보세요!"}
+        />
+      </div>
     </BottomSheet>
   );
 }

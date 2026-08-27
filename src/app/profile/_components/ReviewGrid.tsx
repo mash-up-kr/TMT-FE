@@ -1,9 +1,9 @@
 "use client";
 
 import dummyImage from "@/shared/assets/dummy-image.png";
-import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { ProfileReviewItem } from "../_model/profile";
+import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
 
 type ReviewGridProps = {
   reviews: readonly ProfileReviewItem[];
@@ -12,7 +12,7 @@ type ReviewGridProps = {
 
 export function ReviewGrid({ reviews, onSelect }: ReviewGridProps) {
   if (reviews.length === 0) {
-    return <EmptyNotice title="아직 작성한 리뷰가 없어요" className="py-ds-48" />;
+    return <ProfileEmptyNotice title="아직 작성한 리뷰가 없어요" />;
   }
 
   return (

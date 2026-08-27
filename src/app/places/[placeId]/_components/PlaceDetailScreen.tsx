@@ -32,7 +32,7 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
             <LoadingIcon className="animate-spin text-icon-secondary" />
           </output>
         ) : detail.isError ? (
-          <EmptyNotice title="가게 정보를 불러오지 못했어요." />
+          <PlaceDetailNotice title="가게 정보를 불러오지 못했어요." />
         ) : (
           <>
             <section className="flex shrink-0 flex-col">
@@ -98,13 +98,13 @@ function PlaceReviews({ count, isPending, isError, reviews }: PlaceReviewsProps)
       <h2 className="px-ds-20 text-heading-sm text-content-primary">리뷰 {count}</h2>
 
       {isPending ? (
-        <EmptyNotice title="리뷰를 불러오는 중이에요." />
+        <PlaceDetailNotice title="리뷰를 불러오는 중이에요." />
       ) : isError ? (
-        <EmptyNotice title="리뷰를 불러오지 못했어요." />
+        <PlaceDetailNotice title="리뷰를 불러오지 못했어요." />
       ) : !reviews || reviews.length === 0 ? (
-        <EmptyNotice title="아직 올라온 리뷰가 없어요.">
+        <PlaceDetailNotice title="아직 올라온 리뷰가 없어요.">
           이 가게의 첫 번째 리뷰를 남겨보세요!
-        </EmptyNotice>
+        </PlaceDetailNotice>
       ) : (
         <ul className="flex flex-col">
           {reviews.map((review) => (
@@ -115,5 +115,13 @@ function PlaceReviews({ count, isPending, isError, reviews }: PlaceReviewsProps)
         </ul>
       )}
     </section>
+  );
+}
+
+function PlaceDetailNotice({ title, children }: { title: string; children?: string }) {
+  return (
+    <div className="flex min-h-0 flex-1 items-center justify-center px-ds-20 py-ds-32">
+      <EmptyNotice title={title}>{children}</EmptyNotice>
+    </div>
   );
 }
