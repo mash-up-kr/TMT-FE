@@ -2,8 +2,6 @@ import { useSearchPlaces } from "@/api/gen/place/place.gen";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { type PlaceCard, toPlaceCards } from "../_utils/nearbyMapper";
 
-const SERVER_IGNORES_USER_ID = 1;
-
 type PlaceSearchInput = {
   query: string | null;
   curationTagId: string | null;
@@ -25,7 +23,6 @@ export function usePlaceSearch({ query, curationTagId, position }: PlaceSearchIn
 
   return useSearchPlaces<PlaceCard[]>(
     {
-      userId: SERVER_IGNORES_USER_ID,
       query: query ?? undefined,
       curationTagId: curationTagId ?? undefined,
       latitude: position?.latitude,

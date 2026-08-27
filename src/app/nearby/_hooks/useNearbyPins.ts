@@ -1,8 +1,6 @@
 import { useNearbyPlaces } from "@/api/gen/nearby/nearby.gen";
 import { type NearbyPins, toNearbyPins } from "../_utils/nearbyMapper";
 
-const SERVER_IGNORES_USER_ID = 1;
-
 export interface MapBounds {
   north: number;
   south: number;
@@ -17,7 +15,6 @@ export interface MapBounds {
 export function useNearbyPins(bounds: MapBounds | null) {
   return useNearbyPlaces<NearbyPins>(
     {
-      userId: SERVER_IGNORES_USER_ID,
       north: bounds?.north,
       south: bounds?.south,
       east: bounds?.east,
