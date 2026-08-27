@@ -32,7 +32,11 @@ const RAISED_PATHS: readonly ((pathname: string) => boolean)[] = [
   (path) => path === ROUTES.ROOT,
   (path) => path === ROUTES.FEED,
   (path) => path === ROUTES.GROUPS.ROOT,
-  (path) => path.startsWith(ROUTES.PROFILE.ME) && path !== ROUTES.PROFILE.TICKETS,
+  // 매장 추천은 `/profile/me` 아래지만 바텀 내브가 없는 단독 화면이라 올리지 않는다.
+  (path) =>
+    path.startsWith(ROUTES.PROFILE.ME) &&
+    path !== ROUTES.PROFILE.TICKETS &&
+    path !== ROUTES.PROFILE.RECOMMEND,
 
   // 하단 CTA 푸터가 있는 화면
   (path) => path === ROUTES.GROUPS.NEW,
