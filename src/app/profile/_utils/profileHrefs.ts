@@ -1,11 +1,11 @@
-import { ROUTES } from "@/shared/constants/routes";
+import { placeDetailPath, ROUTES } from "@/shared/constants/routes";
 
 export function toGroupHref(groupId: string): string {
   return ROUTES.GROUPS.DETAIL(groupId);
 }
 
 export function toPlaceHref(placeId: string): string {
-  return ROUTES.STORES.DETAIL.replace("[storeId]", placeId);
+  return placeDetailPath(placeId);
 }
 
 export function toSaveHref(saveId: string): string {
