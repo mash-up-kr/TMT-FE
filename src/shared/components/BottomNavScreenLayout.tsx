@@ -24,7 +24,7 @@ export function BottomNavScreenLayout({
         <BottomNav
           value={activeTab}
           onValueChange={(value) => router.push(BOTTOM_NAV_ROUTES[value])}
-          onCreate={() => router.push(ROUTES.GROUPS.NEW)}
+          onCreate={() => router.push(ROUTES.REVIEWS.NEW)}
         />
       </div>
     </div>

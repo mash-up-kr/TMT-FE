@@ -29,7 +29,7 @@ export function BottomNav({ value, onValueChange, onCreate, className, ...props 
         type="button"
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex min-w-0 flex-1 flex-col items-center gap-ds-4 overflow-hidden rounded-ds-full py-[calc(var(--spacing-ds-4)+var(--spacing-ds-2))]",
+          "flex min-w-0 flex-1 cursor-pointer flex-col items-center gap-ds-4 overflow-hidden rounded-ds-full py-[calc(var(--spacing-ds-4)+var(--spacing-ds-2))]",
           active && "bg-surface-navigation-selected",
         )}
         onClick={() => onValueChange(item.value)}
@@ -68,7 +68,7 @@ export function BottomNav({ value, onValueChange, onCreate, className, ...props 
         <button
           type="button"
           aria-label="만들기"
-          className="inline-flex size-ds-48 shrink-0 items-center justify-center rounded-ds-full bg-surface-interactive-secondary-pressed text-content-interactive-inverse active:bg-surface-interactive-secondary-pressed"
+          className="inline-flex size-ds-48 shrink-0 cursor-pointer items-center justify-center rounded-ds-full bg-surface-interactive-secondary-pressed text-content-interactive-inverse active:bg-surface-interactive-secondary-pressed"
           onClick={onCreate}
         >
           <PlusIcon aria-hidden="true" className="size-ds-24 shrink-0" />
