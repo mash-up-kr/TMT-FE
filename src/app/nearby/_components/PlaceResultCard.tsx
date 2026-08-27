@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { placeDetailPath } from "@/shared/constants/routes";
 import { HeartIcon, ReviewsIcon, StarIcon } from "@/shared/ui/Icons";
 import { formatDistance } from "@/shared/utils/formatDistance";
 import type { PlaceCard } from "../_utils/nearbyMapper";
@@ -21,7 +22,7 @@ type PlaceResultCardProps = {
 export function PlaceResultCard({ place }: PlaceResultCardProps) {
   return (
     <Link
-      href={`/places/${place.id}`}
+      href={placeDetailPath(place.id)}
       className="flex items-center gap-ds-12 bg-surface-primary px-ds-20 py-ds-12"
     >
       <div

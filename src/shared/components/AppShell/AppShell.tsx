@@ -2,14 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { ROUTES } from "@/shared/constants/routes";
 import { BottomNav, type BottomNavValue } from "@/shared/ui/BottomNav";
 import { GNB } from "@/shared/ui/GNB";
 import { BlankIcon } from "@/shared/ui/Icons";
 
 /** 아직 없는 탭은 라우트가 생길 때 채운다. 매핑에 없으면 이동하지 않는다. */
 const TAB_ROUTES: Partial<Record<BottomNavValue, string>> = {
-  home: "/",
-  feed: "/nearby",
+  home: ROUTES.ROOT,
+  feed: ROUTES.FEED,
 };
 
 type AppShellProps = {

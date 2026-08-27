@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { AppShell } from "@/shared/components/AppShell/AppShell";
+import { ROUTES } from "@/shared/constants/routes";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { Chip } from "@/shared/ui/Chip";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
@@ -48,7 +49,7 @@ export function NearbyScreen() {
                 params.delete("curation");
               }
 
-              router.replace(params.size > 0 ? `/nearby?${params}` : "/nearby");
+              router.replace(params.size > 0 ? `${ROUTES.FEED}?${params}` : ROUTES.FEED);
             }}
           />
         </div>
@@ -81,7 +82,7 @@ function NearbyBody({ view, position, query, curationTagId }: NearbyBodyProps) {
 function SearchEntry({ keyword }: { keyword: string | null }) {
   return (
     <Link
-      href="/nearby/search"
+      href={ROUTES.SEARCH}
       className={cn(
         "block w-full truncate rounded-ds-md border-sm border-stroke-field bg-surface-primary px-ds-16 py-ds-12 text-left text-body-lg-medium",
         keyword ? "text-content-primary" : "text-content-tertiary",

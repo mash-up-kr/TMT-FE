@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent, useRef, useState } from "react";
+import { feedPathWithQuery } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
 import { BlankIcon } from "@/shared/ui/Icons";
 import { SearchField } from "@/shared/ui/TextField";
@@ -26,7 +27,7 @@ export function NearbySearchScreen() {
       return;
     }
 
-    router.replace(`/nearby?q=${encodeURIComponent(trimmed)}`);
+    router.replace(feedPathWithQuery(trimmed));
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
