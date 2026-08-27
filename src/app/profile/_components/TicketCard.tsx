@@ -2,7 +2,8 @@ import Link from "next/link";
 import { cn } from "@/shared/utils/cn";
 
 type TicketCardProps = {
-  count: number;
+  /** 없으면 개수 자리만 잡는다. 0을 먼저 보여주면 숫자가 튄다. */
+  count?: number;
   /** 없으면 이동하지 않는 요약으로 그린다. */
   href?: string;
 };
@@ -31,12 +32,19 @@ export function TicketCard({ count, href }: TicketCardProps) {
   );
 }
 
-function TicketCardBody({ count }: { count: number }) {
+function TicketCardBody({ count }: { count?: number }) {
   return (
     <>
       <span className="text-body-lg-medium">내 티켓</span>
       <span className="flex items-center gap-ds-12">
-        <span className="text-heading-xl">{count}</span>
+        <span className="text-heading-xl">
+          {count ?? (
+            <span
+              aria-hidden="true"
+              className="inline-block h-[1em] w-[1ch] animate-pulse rounded-ds-xs bg-current align-middle opacity-30"
+            />
+          )}
+        </span>
         <span className="text-body-md-medium">장</span>
       </span>
       {NOTCH_OFFSETS.map((offset) => (

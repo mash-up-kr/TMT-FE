@@ -30,8 +30,11 @@ export type TicketHistory = {
   items: readonly ProfileTicketHistoryItem[];
 };
 
-/** fixture가 즉시 반환되면 skeleton을 볼 수 없어 한 박자 늦춘다. */
-const FIXTURE_DELAY_MS = 250;
+/**
+ * 연동 전까지 fixture를 비동기 응답처럼 흘려보내기 위한 값이다.
+ * 0이 아니면 그 시간만큼 화면이 로딩 상태로 남는다. skeleton을 눈으로 확인할 때만 잠시 올린다.
+ */
+const FIXTURE_DELAY_MS = 0;
 
 export function resolveFixture<T>(value: T): Promise<T> {
   return new Promise((resolve) => {

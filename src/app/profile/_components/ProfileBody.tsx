@@ -4,10 +4,11 @@ import { ProfileIdentity } from "./ProfileIdentity";
 import { ProfileTabs } from "./ProfileTabs";
 
 type ProfileBodyProps = {
-  profile: ProfileIdentityModel;
+  /** 요약이 아직 없어도 골격은 그린다. 화면 전체가 갈리면 이동이 깜박임으로 보인다. */
+  profile?: ProfileIdentityModel;
   activeTab: ProfileTab;
   basePath: string;
-  counts: ProfileTabCounts;
+  counts?: ProfileTabCounts;
   /** 내 프로필의 매장 추천·티켓 카드가 놓이는 유일한 자리다. */
   beforeTabs?: ReactNode;
   children: ReactNode;
