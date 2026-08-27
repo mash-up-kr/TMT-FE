@@ -5,11 +5,8 @@ import type { CSSProperties } from "react";
 import { ToastItem } from "./ToastItem";
 import { hasToastData, type ToastData, toastManager } from "./toast";
 
-/**
- * TIMEOUT_MS: 토스트가 보이는 시간.
- * 시안에 값이 없어 조직 관례를 따른다.
- */
-const TIMEOUT_MS = 3000;
+/** TIMEOUT_MS: 토스트가 보이는 시간. 시안에 값이 없어 합의로 정한다. */
+const TIMEOUT_MS = 1500;
 
 /**
  * LIMIT: 토스트가 동시에 보이는 최대 개수.
