@@ -11,7 +11,8 @@ import {
   type GroupFilterId,
   type GroupSort,
 } from "../_constants/filters";
-import { type GroupTagOption, toGroupTagOptions } from "../_utils/groupMappers";
+import type { GroupTagOption } from "../_model/groupTag";
+import { toGroupTagOptions } from "../_utils/groupMappers";
 import { FilterOption } from "./FilterOption";
 import { GroupFilterBar } from "./GroupFilterBar";
 

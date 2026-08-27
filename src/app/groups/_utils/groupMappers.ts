@@ -3,16 +3,7 @@ import type { GroupTagsResponse } from "@/api/gen/_model/groupTagsResponse.gen";
 import type { ListGroupsParams } from "@/api/gen/_model/listGroupsParams.gen";
 import type { GroupFilters } from "../_hooks/useGroupFilters";
 import type { GroupListItem } from "../_model/group";
-
-export type GroupTagOption = Readonly<{
-  id: string;
-  label: string;
-}>;
-
-export type GroupTagOptions = Readonly<{
-  categories: GroupTagOption[];
-  regions: GroupTagOption[];
-}>;
+import type { GroupTagOptions } from "../_model/groupTag";
 
 export function toGroupListItem(response: GroupCardResponse): GroupListItem | null {
   // id가 없으면 상세로 갈 수도, 목록에서 구분할 수도 없어 그리지 않는다.
