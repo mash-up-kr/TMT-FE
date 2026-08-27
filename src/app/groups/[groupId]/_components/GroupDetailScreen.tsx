@@ -8,13 +8,9 @@ import { GroupDetailView } from "./GroupDetailView";
 
 type GroupDetailScreenProps = {
   groupId: string;
-  initialFirstReviewSheetOpen?: boolean;
 };
 
-export function GroupDetailScreen({
-  groupId,
-  initialFirstReviewSheetOpen,
-}: GroupDetailScreenProps) {
+export function GroupDetailScreen({ groupId }: GroupDetailScreenProps) {
   const queryState = useGroupDetailQueryState(groupId);
   const join = useJoinGroup(groupId);
   const leave = useLeaveGroup(groupId);
@@ -32,7 +28,6 @@ export function GroupDetailScreen({
       group={queryState.group}
       reviewList={queryState.reviewList}
       joinAction={{ onJoin: join.joinGroup, isPending: join.isPending }}
-      initialFirstReviewSheetOpen={initialFirstReviewSheetOpen}
       leaveAction={{ onLeaveAction: leave.leaveGroup, isPending: leave.isPending }}
     />
   );

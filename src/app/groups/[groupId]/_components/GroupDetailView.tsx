@@ -28,7 +28,6 @@ type GroupDetailViewProps = {
   reviewList: GroupReviewListState;
   joinAction: GroupJoinAction;
   leaveAction: GroupLeaveAction;
-  initialFirstReviewSheetOpen?: boolean;
 };
 
 export function GroupDetailView({
@@ -36,15 +35,14 @@ export function GroupDetailView({
   reviewList,
   joinAction,
   leaveAction,
-  initialFirstReviewSheetOpen = false,
 }: GroupDetailViewProps) {
   const router = useRouter();
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
-  const [isFirstReviewSheetOpen, setIsFirstReviewSheetOpen] = useState(
-    initialFirstReviewSheetOpen && group.isOwner && reviewList.reviews.length === 0,
-  );
+  const [isFirstReviewSheetDismissed, setIsFirstReviewSheetDismissed] = useState(false);
   const isNonMember = !group.isMember;
+  const shouldPromptFirstReview = group.isMember && reviewList.reviews.length === 0;
+  const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
 
   const sheetJoinAction: GroupJoinAction = {
     ...joinAction,
@@ -89,17 +87,7 @@ export function GroupDetailView({
     }
   };
   const handleFirstReviewSheetOpenChange = (open: boolean) => {
-    setIsFirstReviewSheetOpen(open);
-
-    if (!open && initialFirstReviewSheetOpen) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("created");
-      window.history.replaceState(
-        window.history.state,
-        "",
-        `${url.pathname}${url.search}${url.hash}`,
-      );
-    }
+    setIsFirstReviewSheetDismissed(!open);
   };
 
   return (
@@ -157,7 +145,7 @@ export function GroupDetailView({
         />
       ) : null}
 
-      {group.isOwner ? (
+      {shouldPromptFirstReview ? (
         <GroupFirstReviewSheet
           open={isFirstReviewSheetOpen}
           onOpenChangeAction={handleFirstReviewSheetOpenChange}

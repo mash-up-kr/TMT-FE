@@ -147,8 +147,8 @@ const SCENARIOS = [
   },
   {
     section: "공통 상태",
-    key: "first-review-prompt",
-    label: "생성 · 첫 리뷰 유도",
+    key: "member-empty-reviews",
+    label: "멤버 · 리뷰 0",
     isMember: true,
     isJoinable: true,
     availableTicketCount: 1,
@@ -273,10 +273,7 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
     ...MOCK_GROUP,
     isMember: scenario.isMember,
     isJoinable: scenario.isJoinable,
-    isOwner:
-      scenario.key === "leave-owner-error" ||
-      scenario.key === "empty-reviews" ||
-      scenario.key === "first-review-prompt",
+    isOwner: scenario.key === "leave-owner-error" || scenario.key === "empty-reviews",
     availableTicketCount: scenario.availableTicketCount,
   };
   const joinAction = scenario.joinSheetState
@@ -295,14 +292,13 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
         group={group}
         reviewList={{
           reviews:
-            scenario.key === "empty-reviews" || scenario.key === "first-review-prompt"
+            scenario.key === "empty-reviews" || scenario.key === "member-empty-reviews"
               ? []
               : reviews,
           hasNextPage: false,
         }}
         joinAction={joinAction}
         leaveAction={leaveAction}
-        initialFirstReviewSheetOpen={scenario.key === "first-review-prompt"}
       />
       {scenario.joinSheetState ? (
         <JoinGroupTicketSheet
