@@ -1,5 +1,5 @@
 import type { ComponentProps, ComponentType } from "react";
-import fallbackImage from "@/shared/assets/dummy.png";
+import fallbackImage from "@/shared/assets/dummy-small.png";
 import { type IconProps, MembersIcon, ReviewsIcon, StoreIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";

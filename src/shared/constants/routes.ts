@@ -24,8 +24,8 @@ export const ROUTES = {
   GROUPS: {
     ROOT: "/groups",
     NEW: "/groups/new",
-    DETAIL: "/groups/[groupId]",
-    JOIN: "/groups/[groupId]/join",
+    DETAIL: (groupId: string) => `/groups/${groupId}`,
+    JOIN: (groupId: string) => `/groups/${groupId}/join`,
   },
   PROFILE: {
     ME: "/profile/me",
