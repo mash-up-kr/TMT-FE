@@ -74,6 +74,7 @@ const REVIEW: FeedReview = {
   pros: "분위기가 좋아요",
   cons: "가격이 좀 나가고 웨이팅이 많아요",
   content: "맛도 있고 분위기도 좋아요. 원두도 종류가 많았어요",
+  contentLength: 28,
   tags: [
     { id: "tag_alone", label: "혼자" },
     { id: "tag_tasty", label: "음식이 맛있어요" },

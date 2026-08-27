@@ -285,6 +285,9 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
   const leaveAction = scenario.leaveModalState
     ? PREVIEW_LEAVE_ACTIONS[scenario.leaveModalState]
     : PREVIEW_LEAVE_ACTION;
+  const reviews = GROUP_DETAIL_PAGE_REVIEWS.map((review) =>
+    scenario.isMember ? review : { ...review, content: null, cons: null },
+  );
 
   return (
     <>
@@ -294,7 +297,7 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
           reviews:
             scenario.key === "empty-reviews" || scenario.key === "first-review-prompt"
               ? []
-              : GROUP_DETAIL_PAGE_REVIEWS,
+              : reviews,
           hasNextPage: false,
         }}
         joinAction={joinAction}

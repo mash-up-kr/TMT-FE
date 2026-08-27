@@ -11,6 +11,7 @@ import { cn } from "@/shared/utils/cn";
 import { formatDistance } from "@/shared/utils/formatDistance";
 
 const RESTRICTED_CONTENT_CLASS = "pointer-events-none select-none blur-[4px]";
+const MASKED_CONTENT_CHARACTER = "가";
 
 type ReviewCardProps = {
   review: ReviewCardData;
@@ -25,6 +26,10 @@ export function ReviewCard({
   maxVisibleTags,
   hidePlace = false,
 }: ReviewCardProps) {
+  const displayContent =
+    review.content ??
+    (isContentRestricted ? MASKED_CONTENT_CHARACTER.repeat(review.contentLength) : null);
+
   return (
     <article className="flex flex-col bg-surface-primary">
       <ReviewCardHeader
@@ -40,7 +45,7 @@ export function ReviewCard({
           cons={review.cons}
           isContentRestricted={isContentRestricted}
         />
-        {review.content ? (
+        {displayContent ? (
           <p
             aria-hidden={isContentRestricted || undefined}
             className={cn(
@@ -48,7 +53,7 @@ export function ReviewCard({
               isContentRestricted && RESTRICTED_CONTENT_CLASS,
             )}
           >
-            {review.content}
+            {displayContent}
           </p>
         ) : null}
         <TagList tags={review.tags} maxVisible={maxVisibleTags} />

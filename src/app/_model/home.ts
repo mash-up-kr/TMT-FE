@@ -40,7 +40,8 @@ export interface FeedReview {
   photoUrls: string[];
   pros: string | null;
   cons: string | null;
-  content: string;
+  content: string | null;
+  contentLength: number;
   tags: FeedReviewTag[];
   place: FeedReviewPlace;
 }

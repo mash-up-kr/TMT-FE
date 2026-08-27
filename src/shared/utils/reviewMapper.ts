@@ -14,7 +14,8 @@ export function toReviewCardData(review: ReviewCardResponse): ReviewCardData {
       .map((photo) => photo.url),
     pros: review.aiSummary?.pros ?? null,
     cons: review.aiSummary?.cons ?? null,
-    content: review.content,
+    content: review.content ?? null,
+    contentLength: review.contentLength,
     tags: review.tags.map((tag) => ({ id: tag.tagId, label: tag.label })),
     place: {
       id: review.place.placeId,

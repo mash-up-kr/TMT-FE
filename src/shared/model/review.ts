@@ -7,7 +7,8 @@ export type ReviewCardData = {
   photoUrls: string[];
   pros: string | null;
   cons: string | null;
-  content: string;
+  content: string | null;
+  contentLength: number;
   tags: { id: string; label: string }[];
   place: { id: string; name: string; regionName: string; isFavorite?: boolean };
 };

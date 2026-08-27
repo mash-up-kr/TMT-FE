@@ -51,6 +51,7 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
     cons: "가격이 좀 나가고 웨이팅이 많아요",
     content:
       "맛도 있고 분위기도 좋아요. 대신 가격은 좀 나가는 것 같고 웨이팅이 많을 수도 있어요. 그래도 한 번쯤은 가볼 만해요.",
+    contentLength: 67,
     tags: [
       { id: "atmosphere", label: "분위기" },
       { id: "price", label: "가격" },
@@ -69,6 +70,7 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
     cons: "가격이 좀 나가고 웨이팅이 많아요",
     content:
       "맛도 있고 분위기도 좋아요. 대신 가격은 좀 나가는 것 같고 웨이팅이 많을 수도 있어요. 그래도 한 번쯤은 가볼 만해요.",
+    contentLength: 67,
     tags: [
       { id: "atmosphere", label: "분위기가 좋아요" },
       { id: "waiting", label: "웨이팅이 많아요" },
@@ -86,6 +88,7 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
     cons: "가격이 좀 나가고 웨이팅이 많아요",
     content:
       "맛도 있고 분위기도 좋아요. 대신 가격은 좀 나가는 것 같고 웨이팅이 많을 수도 있어요. 그래도 한 번쯤은 가볼 만해요.",
+    contentLength: 67,
     tags: [
       { id: "atmosphere", label: "분위기가 좋아요" },
       { id: "waiting", label: "웨이팅이 많아요" },
