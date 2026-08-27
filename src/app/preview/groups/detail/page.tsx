@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  GroupDetailContainer,
   GroupDetailError,
   GroupDetailLoading,
-} from "@/app/groups/[groupId]/_components/GroupDetailContainer";
+} from "@/app/groups/[groupId]/_components/GroupDetailFeedback";
+import { GroupDetailScreen } from "@/app/groups/[groupId]/_components/GroupDetailScreen";
 import { GroupDetailView } from "@/app/groups/[groupId]/_components/GroupDetailView";
 import { GroupLeaveModal } from "@/app/groups/[groupId]/_components/GroupLeaveModal";
 import { JoinGroupTicketSheet } from "@/app/groups/[groupId]/_components/JoinGroupTicketSheet";
@@ -229,7 +229,7 @@ export default function GroupDetailPreviewPage() {
   return (
     <>
       {scenario.key === "api" ? (
-        <GroupDetailContainer groupId={API_GROUP_ID} />
+        <GroupDetailScreen groupId={API_GROUP_ID} />
       ) : scenario.key === "loading" ? (
         <GroupDetailLoading />
       ) : scenario.key === "error" ? (

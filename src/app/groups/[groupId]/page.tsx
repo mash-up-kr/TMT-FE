@@ -1,4 +1,4 @@
-import { GroupDetailContainer } from "./_components/GroupDetailContainer";
+import { GroupDetailScreen } from "./_components/GroupDetailScreen";
 
 export default async function GroupDetailPage({
   params,
@@ -9,7 +9,5 @@ export default async function GroupDetailPage({
 }>) {
   const [{ groupId }, { created }] = await Promise.all([params, searchParams]);
 
-  return (
-    <GroupDetailContainer groupId={groupId} initialFirstReviewSheetOpen={created === "true"} />
-  );
+  return <GroupDetailScreen groupId={groupId} initialFirstReviewSheetOpen={created === "true"} />;
 }
