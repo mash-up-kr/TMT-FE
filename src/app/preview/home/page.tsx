@@ -97,7 +97,6 @@ const JOINED: HomeSummary = {
 type Scenario = {
   key: string;
   label: string;
-  hideNav: boolean;
   props: Parameters<typeof HomeView>[0];
 };
 
@@ -105,7 +104,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "not-joined",
     label: "미가입 · 추천 3",
-    hideNav: false,
     props: {
       summary: NOT_JOINED,
       position: GRANTED,
@@ -117,7 +115,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "not-joined-empty",
     label: "미가입 · 추천 0",
-    hideNav: false,
     props: {
       summary: { ...NOT_JOINED, recommendedGroups: [] },
       position: GRANTED,
@@ -144,7 +141,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "feed",
     label: "가입 · 피드 3",
-    hideNav: true,
     props: {
       summary: JOINED,
       position: GRANTED,
@@ -181,7 +177,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "feed-empty",
     label: "가입 · 게시물 0",
-    hideNav: false,
     props: {
       summary: JOINED,
       position: GRANTED,
@@ -193,7 +188,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "feed-pending",
     label: "가입 · 로딩",
-    hideNav: false,
     props: {
       summary: JOINED,
       position: GRANTED,
@@ -205,7 +199,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "feed-error",
     label: "가입 · 에러",
-    hideNav: false,
     props: {
       summary: JOINED,
       position: GRANTED,
@@ -217,7 +210,6 @@ const SCENARIOS: Scenario[] = [
   {
     key: "no-location",
     label: "가입 · 위치 거부",
-    hideNav: false,
     props: {
       summary: JOINED,
       position: { status: "unavailable" },
@@ -234,7 +226,7 @@ export default function HomePreview() {
 
   return (
     <>
-      <AppShell tab="home" hideNav={scenario.hideNav}>
+      <AppShell tab="home">
         <HomeView {...scenario.props} />
       </AppShell>
 

@@ -42,10 +42,8 @@ export function HomeScreen() {
     );
   }
 
-  const isFeedListVisible = hasGroups && (feed.data?.length ?? 0) > 0;
-
   return (
-    <AppShell tab="home" hideNav={isFeedListVisible}>
+    <AppShell tab="home">
       <HomeView
         summary={data}
         position={position}

@@ -15,12 +15,11 @@ const TAB_ROUTES: Partial<Record<BottomNavValue, string>> = {
 type AppShellProps = {
   tab: BottomNavValue;
   children: ReactNode;
-  hideNav?: boolean;
   /** 스크롤과 무관하게 콘텐츠 영역 위에 떠 있는 요소(FAB 등). */
   floating?: ReactNode;
 };
 
-export function AppShell({ tab, children, hideNav = false, floating }: AppShellProps) {
+export function AppShell({ tab, children, floating }: AppShellProps) {
   const router = useRouter();
 
   return (
@@ -30,21 +29,19 @@ export function AppShell({ tab, children, hideNav = false, floating }: AppShellP
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</div>
         {floating}
       </div>
-      {!hideNav && (
-        <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
-          <BottomNav
-            value={tab}
-            onValueChange={(next) => {
-              const href = TAB_ROUTES[next];
+      <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
+        <BottomNav
+          value={tab}
+          onValueChange={(next) => {
+            const href = TAB_ROUTES[next];
 
-              if (href) {
-                router.push(href);
-              }
-            }}
-            onCreate={() => {}}
-          />
-        </div>
-      )}
+            if (href) {
+              router.push(href);
+            }
+          }}
+          onCreate={() => {}}
+        />
+      </div>
     </>
   );
 }
