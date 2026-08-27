@@ -36,14 +36,15 @@ export function BottomNav({ value, onValueChange, onCreate, className, ...props 
       >
         <item.Icon
           aria-hidden="true"
+          filled={active}
           className={cn(
             "size-ds-24 shrink-0",
-            active ? "text-icon-interactive-primary" : "text-icon-disabled",
+            active ? "text-icon-interactive-primary" : "text-content-tertiary",
           )}
         />
         <span
           className={cn(
-            "whitespace-nowrap text-content-interactive-secondary text-label-navigation",
+            "whitespace-nowrap text-content-tertiary text-label-navigation",
             active && "text-content-interactive-primary text-label-navigation-selected",
           )}
         >
@@ -67,7 +68,7 @@ export function BottomNav({ value, onValueChange, onCreate, className, ...props 
         <button
           type="button"
           aria-label="만들기"
-          className="inline-flex size-ds-48 shrink-0 items-center justify-center rounded-ds-full bg-surface-interactive-primary text-content-interactive-inverse active:bg-surface-interactive-primary-pressed"
+          className="inline-flex size-ds-48 shrink-0 items-center justify-center rounded-ds-full bg-surface-interactive-secondary-pressed text-content-interactive-inverse active:bg-surface-interactive-secondary-pressed"
           onClick={onCreate}
         >
           <PlusIcon aria-hidden="true" className="size-ds-24 shrink-0" />

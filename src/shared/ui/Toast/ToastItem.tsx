@@ -37,6 +37,12 @@ export function ToastItem({ toast }: ToastProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const exitY = useRef<string>("0px");
   const isEnding = toast.transitionStatus === "ending";
+  const style = {
+    ...(isEnding ? { "--stack-y": exitY.current } : {}),
+    ...(toast.data.bottomInset === undefined
+      ? {}
+      : { "--toast-bottom-inset": `${toast.data.bottomInset}px` }),
+  } as CSSProperties;
 
   /**
    * 퇴장이 시작되면 Base UI가 `--toast-offset-y`를 0으로 되돌린다. 쌓여 있던 카드는
@@ -55,9 +61,9 @@ export function ToastItem({ toast }: ToastProps) {
       ref={rootRef}
       toast={toast}
       swipeDirection={[]}
-      style={isEnding ? ({ "--stack-y": exitY.current } as CSSProperties) : undefined}
+      style={style}
       className={cn(
-        "absolute inset-x-(--layout-floating-inset-inline) bottom-[calc(var(--layout-floating-inset-block)+env(safe-area-inset-bottom))]",
+        "absolute inset-x-(--layout-floating-inset-inline) bottom-[calc(var(--toast-bottom-inset,var(--layout-floating-inset-block))+env(safe-area-inset-bottom))]",
         "pointer-events-auto flex items-center gap-ds-8",
         // 쌓인 위치와 등장·퇴장 이동을 분리해 서로 덮지 않게 한다.
         "[--stack-y:calc((var(--toast-offset-y)+var(--toast-index)*var(--spacing-ds-8))*-1)] [--slide-y:0px]",

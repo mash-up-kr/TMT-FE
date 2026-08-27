@@ -169,7 +169,7 @@ function SummaryLine({ label, children, negative, isContentRestricted }: Summary
   const Icon = negative ? ThumbDownIcon : ThumbUpIcon;
 
   return (
-    <p className="flex w-fit max-w-full items-start gap-ds-4 rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
+    <p className="relative flex w-fit max-w-full items-start gap-ds-4 rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
       <span className="sr-only">{label}</span>
       <Icon className="size-ds-20 shrink-0" />
       <span

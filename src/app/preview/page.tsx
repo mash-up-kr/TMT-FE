@@ -12,6 +12,16 @@ const PREVIEWS = [
     title: "프로필",
     description: "그룹, 좋아요, 티켓의 기본·빈 상태",
   },
+  {
+    href: "/preview/groups",
+    title: "그룹 탐색",
+    description: "목록, 검색 결과 없음, 로딩·오류 상태",
+  },
+  {
+    href: "/preview/groups/detail",
+    title: "그룹 상세",
+    description: "가입·탈퇴와 상세 화면 상태",
+  },
 ] as const;
 
 export default function PreviewIndexPage() {

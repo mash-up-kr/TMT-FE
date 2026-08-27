@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
+import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { BlankIcon, PlusIcon } from "@/shared/ui/Icons";
+import { PlusIcon } from "@/shared/ui/Icons";
 import { toast } from "@/shared/ui/Toast";
 import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { useMyProfileTabPage } from "../_hooks/useMyProfileTabPage";
@@ -42,7 +43,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
       align="left"
       className="shrink-0"
       title={null}
-      left={<BlankIcon size={28} />}
+      left={<TMTLogoHomeLink />}
       right={
         <IconButton aria-label="리뷰 작성하기" onClick={() => router.push(ROUTES.REVIEWS.NEW)}>
           <PlusIcon size={28} />

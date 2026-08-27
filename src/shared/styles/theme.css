@@ -34,7 +34,11 @@
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-groupcard-badge: var(--primitive-red-50);
   --color-surface-backdrop: var(--primitive-transparent-64);
-  --color-surface-navigation-selected: var(--primitive-transparent-8);
+  --color-surface-navigation-selected: color-mix(
+    in srgb,
+    var(--primitive-primary-600) 5%,
+    transparent
+  );
   --color-surface-inverse: var(--primitive-transparent-84);
 
   /* ===================== content (글자) ===================== */
