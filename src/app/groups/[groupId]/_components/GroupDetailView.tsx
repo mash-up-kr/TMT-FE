@@ -21,7 +21,7 @@ import { GroupProfile } from "./GroupProfile";
 import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
 import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
 
-export const GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET = 112;
+export const GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET = 90;
 
 type GroupDetailViewProps = {
   group: GroupDetailViewData;
