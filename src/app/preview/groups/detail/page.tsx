@@ -70,7 +70,7 @@ const SCENARIOS = [
     isMember: false,
     isJoinable: true,
     availableTicketCount: 1,
-    joinSheetState: "error",
+    joinSheetState: undefined,
     leaveModalState: undefined,
   },
   {
@@ -135,14 +135,12 @@ const MOCK_GROUP = requireGroupDetailPageFixture("group_1");
 const PREVIEW_JOIN_ACTION: GroupJoinAction = {
   onJoin: async () => true,
   isPending: false,
-  isError: false,
 };
 
 const PREVIEW_JOIN_ACTIONS = {
   idle: PREVIEW_JOIN_ACTION,
   pending: { ...PREVIEW_JOIN_ACTION, isPending: true },
-  error: { ...PREVIEW_JOIN_ACTION, isError: true },
-} as const satisfies Record<"idle" | "pending" | "error", GroupJoinAction>;
+} as const satisfies Record<"idle" | "pending", GroupJoinAction>;
 
 const PREVIEW_LEAVE_ACTION: GroupLeaveAction = {
   onLeaveAction: async () => false,
@@ -189,6 +187,10 @@ export default function GroupDetailPreviewPage() {
 
                   if (item.key === "leave-error") {
                     toast.error("그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");
+                  }
+
+                  if (item.key === "join-error") {
+                    toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");
                   }
                 }}
                 className={cn(

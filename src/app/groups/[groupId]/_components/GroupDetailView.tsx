@@ -46,6 +46,8 @@ export function GroupDetailView({
 
       if (didJoin) {
         setIsJoinSheetOpen(false);
+      } else {
+        toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");
       }
 
       return didJoin;

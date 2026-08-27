@@ -51,11 +51,6 @@ export function JoinGroupTicketSheet({
           <span className="text-content-tertiary">보유 티켓</span>
           <span className="text-content-primary">{group.availableTicketCount}</span>
         </div>
-        {joinAction.isError ? (
-          <p role="alert" className="text-body-sm-medium text-content-error">
-            그룹 가입에 실패했어요. 다시 시도해 주세요.
-          </p>
-        ) : null}
       </div>
     </BottomSheet>
   );

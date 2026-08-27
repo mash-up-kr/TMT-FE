@@ -76,7 +76,7 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
     <GroupDetailView
       group={toGroupDetailViewData(detail.data, joinPreview.data)}
       reviewList={reviewList}
-      joinAction={{ onJoin: handleJoin, isPending: join.isPending, isError: join.isError }}
+      joinAction={{ onJoin: handleJoin, isPending: join.isPending }}
       leaveAction={{
         onLeaveAction: handleLeave,
         isPending: leave.isPending,

@@ -28,7 +28,6 @@ export type GroupJoinInfo = Readonly<{
 export type GroupJoinAction = Readonly<{
   onJoin: () => Promise<boolean>;
   isPending: boolean;
-  isError: boolean;
 }>;
 
 export type GroupLeaveAction = Readonly<{
