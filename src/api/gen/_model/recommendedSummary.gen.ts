@@ -6,8 +6,10 @@
  * OpenAPI spec version: v1
  */
 
-export interface Gate {
-  gated: boolean;
+export interface RecommendedSummary {
+  reviewId: string;
   /** @nullable */
-  reason?: string | null;
+  pros?: string | null;
+  /** @nullable */
+  cons?: string | null;
 }

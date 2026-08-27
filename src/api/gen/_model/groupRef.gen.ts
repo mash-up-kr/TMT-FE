@@ -6,8 +6,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface Gate {
-  gated: boolean;
-  /** @nullable */
-  reason?: string | null;
+export interface GroupRef {
+  groupId: string;
+  name: string;
 }

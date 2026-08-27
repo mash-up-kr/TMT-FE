@@ -6,8 +6,9 @@
  * OpenAPI spec version: v1
  */
 
-export interface Gate {
-  gated: boolean;
+export interface ReviewGridPlace {
+  placeId: string;
+  name: string;
   /** @nullable */
-  reason?: string | null;
+  categoryName?: string | null;
 }

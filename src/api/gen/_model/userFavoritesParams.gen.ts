@@ -6,8 +6,9 @@
  * OpenAPI spec version: v1
  */
 
-export interface Gate {
-  gated: boolean;
-  /** @nullable */
-  reason?: string | null;
-}
+export type UserFavoritesParams = {
+  latitude?: number;
+  longitude?: number;
+  cursor?: string;
+  limit?: number;
+};

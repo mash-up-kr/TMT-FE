@@ -19,7 +19,9 @@ export interface ReviewCardResponse {
   distanceMeters?: number | null;
   photos: Photo[];
   aiSummary?: AiSummary | null;
-  content: string;
+  /** @nullable */
+  content?: string | null;
+  contentLength: number;
   tags: Tag[];
   place: PlaceRegionSummary;
   createdAt: string;

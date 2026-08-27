@@ -17,6 +17,10 @@
       "description": "명세 v2 — D_01. 그룹 탐색 · D_02. 그룹 생성·상세·편집"
     },
     {
+      "name": "매장 추천 (mock)",
+      "description": "명세 v2 — J §5-2"
+    },
+    {
       "name": "주소 검색 (mock)",
       "description": "명세 v2 — F §2-2"
     },
@@ -51,6 +55,10 @@
     {
       "name": "미디어 (mock)",
       "description": "명세 v2 — F §3-2"
+    },
+    {
+      "name": "마이페이지·타인 프로필 (mock)",
+      "description": "명세 v2 — J · J-01"
     },
     {
       "name": "큐레이션 (mock)",
@@ -1025,6 +1033,91 @@
         }
       }
     },
+    "/v1/recommendations/places": {
+      "post": {
+        "tags": [
+          "매장 추천 (mock)"
+        ],
+        "summary": "매장 추천받기",
+        "description": "내 리뷰를 근거로 아직 리뷰하지 않은 매장 1곳을 고른다 (A3).",
+        "operationId": "recommendPlace",
+        "parameters": [
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "- `RECOMMENDATION_UNAVAILABLE` — 추천의 근거가 될 리뷰가 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "- `RECOMMENDATION_FAILED` — 매장 추천에 실패했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/media/upload-intents": {
       "post": {
         "tags": [
@@ -1445,6 +1538,756 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{userId}": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "타인 프로필 상단",
+        "description": "email·availableTicketCount는 본인에게만 내린다 (U7). 인증은 선택이다.",
+        "operationId": "userProfile",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "- `USER_NOT_FOUND` — 사용자를 찾을 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{userId}/reviews": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "타인 리뷰 탭",
+        "description": "saveId는 소유자만 쓰는 핸들이라 빠진다 (S8). 개인 프로필에는 게이트가 없다 (G2).",
+        "operationId": "userReviews",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageUserReviewGridItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "- `USER_NOT_FOUND` — 사용자를 찾을 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{userId}/groups": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "타인 그룹 탭",
+        "description": "matchedSavedPlaceCount는 조회자 기준이라 비로그인이면 0이다 (§6-1).",
+        "operationId": "userGroups",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageGroupCardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "- `USER_NOT_FOUND` — 사용자를 찾을 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{userId}/favorites": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "타인 좋아요 탭",
+        "description": "isFavorite은 조회자 기준이라 여기서는 true가 아닐 수 있다 (F3).",
+        "operationId": "userFavorites",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPagePlaceCardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "- `USER_NOT_FOUND` — 사용자를 찾을 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/me": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "마이페이지 상단",
+        "description": "프로필·티켓 배너·칩 카운트 3종. 칩 숫자는 탭을 열기 전에 보이므로 여기 함께 싣는다 (J §2).",
+        "operationId": "me",
+        "parameters": [
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/me/tickets": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "내 티켓",
+        "description": "발급·소비·회수와 미완성 저장이 한 목록이다. amount가 null이면 화면이 `작성 중` 배지를 그린다 (T10).",
+        "operationId": "myTickets",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/me/reviews": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "내 리뷰 탭",
+        "description": "2열 사진 그리드라 카드가 아니라 썸네일만 내린다. 미완성 저장은 나오지 않는다 (R8).",
+        "operationId": "myReviews",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageMyReviewGridItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/me/groups": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "내 그룹 탭",
+        "description": "가입 오래된 순 — 홈의 myGroups와 같은 기준이라 두 화면에서 순서가 어긋나지 않는다 (G20).",
+        "operationId": "myGroups",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageGroupCardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/me/favorites": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필 (mock)"
+        ],
+        "summary": "내 좋아요 탭",
+        "description": "찜한 매장 목록 (F1). 이 목록에서 isFavorite은 항상 true다.",
+        "operationId": "myFavorites",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPagePlaceCardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "500": {
             "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
@@ -2329,7 +3172,7 @@
           "그룹 (mock)"
         ],
         "summary": "그룹 상세 리뷰 목록",
-        "description": "게이트가 걸리는 곳 — 미가입·비회원은 최신 3건, 가입자는 전체 (G1). 판정은 가입 여부 하나다.",
+        "description": "미가입·비회원도 전체를 커서 페이징으로 본다. 대신 본문과 단점 요약을 서버가 마스킹한다 (G1).",
         "operationId": "groupReviews",
         "parameters": [
           {
@@ -3247,6 +4090,81 @@
           "sharedReviewIds"
         ]
       },
+      "RecommendationResponse": {
+        "type": "object",
+        "properties": {
+          "place": {
+            "$ref": "#/components/schemas/RecommendedPlace"
+          },
+          "summary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecommendedSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "place"
+        ]
+      },
+      "RecommendedPlace": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "placeId",
+          "roadAddress"
+        ]
+      },
+      "RecommendedSummary": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "pros": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cons": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "reviewId"
+        ]
+      },
       "UploadIntentRequest": {
         "type": "object",
         "properties": {
@@ -3334,6 +4252,501 @@
         "required": [
           "availableCount",
           "consumedCount"
+        ]
+      },
+      "UserProfileResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "joinedGroupCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "favoritePlaceCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "favoritePlaceCount",
+          "joinedGroupCount",
+          "nickname",
+          "reviewCount",
+          "userId"
+        ]
+      },
+      "CursorPageUserReviewGridItem": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/UserReviewGridItem"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
+      },
+      "ReviewGridPlace": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "placeId"
+        ]
+      },
+      "UserReviewGridItem": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "place": {
+            "$ref": "#/components/schemas/ReviewGridPlace"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "place",
+          "reviewId",
+          "thumbnailUrl"
+        ]
+      },
+      "CursorPageGroupCardResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/GroupCardResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
+      },
+      "GroupCardResponse": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "oneLineDescription": {
+            "type": "string"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "memberCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "placeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchedSavedPlaceCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "groupId",
+          "matchedSavedPlaceCount",
+          "memberCount",
+          "name",
+          "oneLineDescription",
+          "placeCount",
+          "reviewCount"
+        ]
+      },
+      "CursorPagePlaceCardResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/PlaceCardResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
+      },
+      "PlaceCardResponse": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          },
+          "regionName": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "averageRating": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "distanceMeters": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isFavorite",
+          "name",
+          "placeId",
+          "regionName",
+          "reviewCount",
+          "roadAddress"
+        ]
+      },
+      "MyProfileResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "profileImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "availableTicketCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "joinedGroupCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "favoritePlaceCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "availableTicketCount",
+          "favoritePlaceCount",
+          "joinedGroupCount",
+          "nickname",
+          "reviewCount",
+          "userId"
+        ]
+      },
+      "GroupRef": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "groupId",
+          "name"
+        ]
+      },
+      "PlaceRef": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roadAddress": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "placeId",
+          "roadAddress"
+        ]
+      },
+      "TicketHistoryItem": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SAVE_IN_PROGRESS",
+              "SIGNUP_REWARD",
+              "REVIEW_REWARD",
+              "REVIEW_DELETE_REVOKE",
+              "GROUP_JOIN"
+            ]
+          },
+          "amount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "saveId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "place": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlaceRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "group": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GroupRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurredAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "entryId",
+          "occurredAt",
+          "type"
+        ]
+      },
+      "TicketHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "availableCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TicketHistoryItem"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasNext": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "availableCount",
+          "hasNext",
+          "items"
+        ]
+      },
+      "CursorPageMyReviewGridItem": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/MyReviewGridItem"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
+      },
+      "MyReviewGridItem": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "saveId": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "place": {
+            "$ref": "#/components/schemas/ReviewGridPlace"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "place",
+          "reviewId",
+          "saveId",
+          "thumbnailUrl"
         ]
       },
       "CursorPageSaveListItemResponse": {
@@ -3935,7 +5348,14 @@
             ]
           },
           "content": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "contentLength": {
+            "type": "integer",
+            "format": "int32"
           },
           "tags": {
             "type": "array",
@@ -3952,100 +5372,13 @@
         },
         "required": [
           "author",
-          "content",
+          "contentLength",
           "createdAt",
           "photos",
           "place",
           "rating",
           "reviewId",
           "tags"
-        ]
-      },
-      "CursorPagePlaceCardResponse": {
-        "type": "object",
-        "description": "커서 기반 페이지 응답",
-        "properties": {
-          "items": {
-            "type": "array",
-            "description": "결과 목록. 없으면 빈 배열",
-            "items": {
-              "$ref": "#/components/schemas/PlaceCardResponse"
-            }
-          },
-          "nextCursor": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
-          },
-          "hasNext": {
-            "type": "boolean",
-            "description": "다음 페이지 존재 여부",
-            "example": true
-          }
-        },
-        "required": [
-          "hasNext",
-          "items"
-        ]
-      },
-      "PlaceCardResponse": {
-        "type": "object",
-        "properties": {
-          "placeId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "roadAddress": {
-            "type": "string"
-          },
-          "regionName": {
-            "type": "string"
-          },
-          "categoryName": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "averageRating": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "format": "double"
-          },
-          "reviewCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "thumbnailUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "distanceMeters": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "int32"
-          },
-          "isFavorite": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "isFavorite",
-          "name",
-          "placeId",
-          "regionName",
-          "reviewCount",
-          "roadAddress"
         ]
       },
       "NearbyPlacesResponse": {
@@ -4096,51 +5429,6 @@
           "reviewCount"
         ]
       },
-      "GroupCardResponse": {
-        "type": "object",
-        "properties": {
-          "groupId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "oneLineDescription": {
-            "type": "string"
-          },
-          "coverImageUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "memberCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "reviewCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "placeCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "matchedSavedPlaceCount": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "required": [
-          "groupId",
-          "matchedSavedPlaceCount",
-          "memberCount",
-          "name",
-          "oneLineDescription",
-          "placeCount",
-          "reviewCount"
-        ]
-      },
       "HomeResponse": {
         "type": "object",
         "properties": {
@@ -4187,35 +5475,6 @@
           "name"
         ]
       },
-      "CursorPageGroupCardResponse": {
-        "type": "object",
-        "description": "커서 기반 페이지 응답",
-        "properties": {
-          "items": {
-            "type": "array",
-            "description": "결과 목록. 없으면 빈 배열",
-            "items": {
-              "$ref": "#/components/schemas/GroupCardResponse"
-            }
-          },
-          "nextCursor": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
-          },
-          "hasNext": {
-            "type": "boolean",
-            "description": "다음 페이지 존재 여부",
-            "example": true
-          }
-        },
-        "required": [
-          "hasNext",
-          "items"
-        ]
-      },
       "Gate": {
         "type": "object",
         "properties": {
@@ -4227,13 +5486,6 @@
               "string",
               "null"
             ]
-          },
-          "visibleCount": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "int32"
           }
         },
         "required": [

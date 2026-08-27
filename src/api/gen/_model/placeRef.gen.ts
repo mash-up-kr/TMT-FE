@@ -6,8 +6,8 @@
  * OpenAPI spec version: v1
  */
 
-export interface Gate {
-  gated: boolean;
-  /** @nullable */
-  reason?: string | null;
+export interface PlaceRef {
+  placeId: string;
+  name: string;
+  roadAddress: string;
 }
