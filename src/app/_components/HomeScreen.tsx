@@ -5,6 +5,7 @@ import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { GNB } from "@/shared/ui/GNB";
 import { LoadingIcon } from "@/shared/ui/Icons";
+import { useHomeFavorite } from "../_hooks/useHomeFavorite";
 import { useHomeFeed } from "../_hooks/useHomeFeed";
 import { useHomeSummary } from "../_hooks/useHomeSummary";
 import { HomeView } from "./HomeView";
@@ -14,6 +15,7 @@ export function HomeScreen() {
   const hasGroups = (data?.myGroups.length ?? 0) > 0;
   const position = useCurrentPosition({ enabled: hasGroups });
   const feed = useHomeFeed(position);
+  const favorite = useHomeFavorite(feed.data);
 
   const header = <GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />;
 
@@ -53,7 +55,8 @@ export function HomeScreen() {
         position={position}
         feedIsPending={feed.isPending}
         feedIsError={feed.isError}
-        reviews={feed.data}
+        reviews={favorite.reviews}
+        favoriteAction={favorite.favoriteAction}
       />
     </BottomNavScreenLayout>
   );

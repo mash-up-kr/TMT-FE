@@ -1,4 +1,5 @@
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
+import type { ReviewCardFavoriteAction } from "@/shared/components/ReviewCard/ReviewCard";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import type { FeedReview, HomeSummary } from "../_model/home";
 import { HomeFeed } from "./HomeFeed";
@@ -11,6 +12,7 @@ type HomeViewProps = {
   feedIsPending: boolean;
   feedIsError: boolean;
   reviews: FeedReview[] | undefined;
+  favoriteAction?: ReviewCardFavoriteAction;
 };
 
 export function HomeView({
@@ -19,6 +21,7 @@ export function HomeView({
   feedIsPending,
   feedIsError,
   reviews,
+  favoriteAction,
 }: HomeViewProps) {
   const hasGroups = summary.myGroups.length > 0;
 
@@ -36,6 +39,7 @@ export function HomeView({
           isPending={feedIsPending}
           isError={feedIsError}
           reviews={reviews}
+          favoriteAction={favoriteAction}
         />
       ) : (
         <>
