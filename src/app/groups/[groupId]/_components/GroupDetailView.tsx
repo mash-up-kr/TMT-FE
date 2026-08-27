@@ -121,7 +121,7 @@ export function GroupDetailView({
         }
       />
 
-      <main className="min-h-0 flex-1 overflow-y-auto">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <GroupProfile group={group} />
         <GroupReviewList
           isContentRestricted={isNonMember}
@@ -180,7 +180,7 @@ type GroupReviewListProps = {
 function GroupReviewList({ isContentRestricted, isOwner, reviewList }: GroupReviewListProps) {
   if (reviewList.reviews.length === 0) {
     return isOwner ? (
-      <section className="mt-ds-4 bg-surface-primary" aria-label="그룹 리뷰">
+      <section className="mt-ds-4 flex-1 bg-surface-primary" aria-label="그룹 리뷰">
         <h2 className="sr-only">그룹 리뷰</h2>
         <div className="flex items-center justify-center px-ds-20 py-[60px]">
           <EmptyNotice title="아직 등록된 리뷰가 없어요.">
