@@ -1,5 +1,5 @@
 import type { ReviewCardResponse } from "@/api/gen/_model/reviewCardResponse.gen";
-import type { ReviewCardData } from "@/shared/components/ReviewCard/ReviewCard";
+import type { ReviewCardData } from "@/shared/model/review";
 
 export function toReviewCardData(review: ReviewCardResponse): ReviewCardData {
   return {

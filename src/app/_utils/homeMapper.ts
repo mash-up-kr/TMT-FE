@@ -2,8 +2,8 @@ import type { CursorPageReviewCardResponse } from "@/api/gen/_model/cursorPageRe
 import type { GroupCardResponse } from "@/api/gen/_model/groupCardResponse.gen";
 import type { HomeResponse } from "@/api/gen/_model/homeResponse.gen";
 import type { MyGroup } from "@/api/gen/_model/myGroup.gen";
+import { toReviewCardData } from "@/shared/utils/reviewMapper";
 import type { FeedReview, HomeGroup, HomeRecommendedGroup, HomeSummary } from "../_model/home";
-import { toReviewCardData } from "./reviewMapper";
 
 function toMyGroup(group: MyGroup): HomeGroup {
   return {

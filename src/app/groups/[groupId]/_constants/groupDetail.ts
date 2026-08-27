@@ -1,4 +1,4 @@
-import type { ReviewCardData } from "@/shared/components/ReviewCard/ReviewCard";
+import type { ReviewCardData } from "@/shared/model/review";
 import type { GroupDetailViewData } from "../_components/GroupDetailView";
 import groupCover from "./assets/group-cover.png";
 import reviewCoffee from "./assets/review-coffee.png";

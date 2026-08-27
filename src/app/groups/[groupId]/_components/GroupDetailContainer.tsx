@@ -2,8 +2,8 @@
 
 import { useGroupDetail } from "@/api/gen/group/group.gen";
 import { useJoin, useJoinPreview } from "@/api/gen/group-membership/group-membership.gen";
-import { toReviewCardData } from "@/app/_utils/reviewMapper";
 import { LoadingIcon } from "@/shared/ui/Icons";
+import { toReviewCardData } from "@/shared/utils/reviewMapper";
 import { useGroupReviewPages } from "../_hooks/useGroupReviewPages";
 import type { GroupReviewListState } from "../_model/groupDetail";
 import { toGroupDetailViewData } from "../_utils/toGroupDetailViewData";

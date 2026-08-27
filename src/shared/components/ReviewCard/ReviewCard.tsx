@@ -2,26 +2,13 @@ import AvatarTomato from "@/shared/assets/avatar-tomato.svg?react";
 import imageFallback from "@/shared/assets/dummy-image.png";
 import profileFallback from "@/shared/assets/dummy-profile.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
+import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 
 const RESTRICTED_CONTENT_CLASS = "pointer-events-none select-none blur-[4px]";
-
-export type ReviewCardData = {
-  id: string;
-  authorNickname: string;
-  authorProfileImageUrl: string | null;
-  rating: number;
-  distanceMeters: number | null;
-  photoUrls: string[];
-  pros: string | null;
-  cons: string | null;
-  content: string;
-  tags: { id: string; label: string }[];
-  place: { id: string; name: string; regionName: string };
-};
 
 type ReviewCardProps = {
   review: ReviewCardData;
