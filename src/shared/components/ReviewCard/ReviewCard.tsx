@@ -1,17 +1,21 @@
+import AvatarTomato from "@/shared/assets/avatar-tomato.svg?react";
 import imageFallback from "@/shared/assets/dummy-image.png";
 import profileFallback from "@/shared/assets/dummy-profile.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
+import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
-import type { FeedReview } from "../_model/home";
-import AvatarTomato from "./assets/avatar-tomato.svg?react";
+import { cn } from "@/shared/utils/cn";
+
+const RESTRICTED_CONTENT_CLASS = "pointer-events-none select-none blur-[4px]";
 
 type ReviewCardProps = {
-  review: FeedReview;
+  review: ReviewCardData;
+  isContentRestricted?: boolean;
 };
 
-export function ReviewCard({ review }: ReviewCardProps) {
+export function ReviewCard({ review, isContentRestricted = false }: ReviewCardProps) {
   return (
     <article className="flex flex-col bg-surface-primary">
       <ReviewCardHeader
@@ -22,9 +26,19 @@ export function ReviewCard({ review }: ReviewCardProps) {
       />
       <ReviewCardPhoto url={review.photoUrls.at(0) ?? null} />
       <div className="flex flex-col gap-ds-12 rounded-b-ds-md bg-surface-primary p-ds-16">
-        <AiSummary pros={review.pros} cons={review.cons} />
+        <AiSummary
+          pros={review.pros}
+          cons={review.cons}
+          isContentRestricted={isContentRestricted}
+        />
         {review.content ? (
-          <p className="whitespace-pre-line text-body-md-medium text-content-primary">
+          <p
+            aria-hidden={isContentRestricted || undefined}
+            className={cn(
+              "whitespace-pre-line text-body-md-medium text-content-primary",
+              isContentRestricted && RESTRICTED_CONTENT_CLASS,
+            )}
+          >
             {review.content}
           </p>
         ) : null}
@@ -77,14 +91,10 @@ function formatDistance(meters: number): string {
   return meters < 1000 ? `${Math.round(meters)}m` : `${(meters / 1000).toFixed(1)}km`;
 }
 
-type AuthorAvatarProps = {
-  imageUrl: string | null;
-};
-
-function AuthorAvatar({ imageUrl }: AuthorAvatarProps) {
+function AuthorAvatar({ imageUrl }: { imageUrl: string | null }) {
   if (!imageUrl) {
     return (
-      <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-[#ffe0e0]">
+      <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-surface-groupcard-badge">
         <AvatarTomato aria-hidden="true" className="h-[24.215px] w-[26.667px]" />
       </div>
     );
@@ -102,11 +112,7 @@ function AuthorAvatar({ imageUrl }: AuthorAvatarProps) {
   );
 }
 
-type ReviewCardPhotoProps = {
-  url: string | null;
-};
-
-function ReviewCardPhoto({ url }: ReviewCardPhotoProps) {
+function ReviewCardPhoto({ url }: { url: string | null }) {
   if (!url) {
     return null;
   }
@@ -126,9 +132,10 @@ function ReviewCardPhoto({ url }: ReviewCardPhotoProps) {
 type AiSummaryProps = {
   pros: string | null;
   cons: string | null;
+  isContentRestricted: boolean;
 };
 
-function AiSummary({ pros, cons }: AiSummaryProps) {
+function AiSummary({ pros, cons, isContentRestricted }: AiSummaryProps) {
   if (!pros && !cons) {
     return null;
   }
@@ -137,7 +144,7 @@ function AiSummary({ pros, cons }: AiSummaryProps) {
     <div className="flex flex-col gap-ds-8">
       {pros ? <SummaryLine label="장점">{pros}</SummaryLine> : null}
       {cons ? (
-        <SummaryLine label="단점" negative>
+        <SummaryLine label="단점" negative isContentRestricted={isContentRestricted}>
           {cons}
         </SummaryLine>
       ) : null}
@@ -149,25 +156,27 @@ type SummaryLineProps = {
   label: string;
   children: string;
   negative?: boolean;
+  isContentRestricted?: boolean;
 };
 
-function SummaryLine({ label, children, negative }: SummaryLineProps) {
+function SummaryLine({ label, children, negative, isContentRestricted }: SummaryLineProps) {
   const Icon = negative ? ThumbDownIcon : ThumbUpIcon;
 
   return (
     <p className="flex w-fit max-w-full items-start gap-ds-4 rounded-ds-xs bg-surface-secondary px-ds-8 py-ds-4 text-body-sm-regular text-content-secondary">
       <span className="sr-only">{label}</span>
       <Icon className="size-ds-20 shrink-0" />
-      <span className="min-w-0 flex-1">{children}</span>
+      <span
+        aria-hidden={isContentRestricted || undefined}
+        className={cn("min-w-0 flex-1", isContentRestricted && RESTRICTED_CONTENT_CLASS)}
+      >
+        {children}
+      </span>
     </p>
   );
 }
 
-type TagListProps = {
-  tags: FeedReview["tags"];
-};
-
-function TagList({ tags }: TagListProps) {
+function TagList({ tags }: { tags: ReviewCardData["tags"] }) {
   if (tags.length === 0) {
     return null;
   }
@@ -187,11 +196,7 @@ function TagList({ tags }: TagListProps) {
   );
 }
 
-type PlaceRowProps = {
-  place: FeedReview["place"];
-};
-
-function PlaceRow({ place }: PlaceRowProps) {
+function PlaceRow({ place }: { place: ReviewCardData["place"] }) {
   return (
     <div className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8">
       <div className="flex min-w-0 flex-1 flex-col">
