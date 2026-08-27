@@ -7,13 +7,16 @@ import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { ChevronLeftIcon } from "@/shared/ui/Icons";
+import { ChevronLeftIcon, LeaveGroupIcon } from "@/shared/ui/Icons";
+import { toast } from "@/shared/ui/Toast";
 import type {
   GroupDetailViewData,
   GroupJoinAction,
   GroupJoinInfo,
+  GroupLeaveAction,
   GroupReviewListState,
 } from "../_model/groupDetail";
+import { GroupLeaveModal } from "./GroupLeaveModal";
 import { GroupProfile } from "./GroupProfile";
 import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
 import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
@@ -22,11 +25,18 @@ type GroupDetailViewProps = {
   group: GroupDetailViewData;
   reviewList: GroupReviewListState;
   joinAction: GroupJoinAction;
+  leaveAction: GroupLeaveAction;
 };
 
-export function GroupDetailView({ group, reviewList, joinAction }: GroupDetailViewProps) {
+export function GroupDetailView({
+  group,
+  reviewList,
+  joinAction,
+  leaveAction,
+}: GroupDetailViewProps) {
   const router = useRouter();
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const isNonMember = !group.isMember;
 
   const sheetJoinAction: GroupJoinAction = {
@@ -47,6 +57,27 @@ export function GroupDetailView({ group, reviewList, joinAction }: GroupDetailVi
     imageUrl: group.imageUrl,
     availableTicketCount: group.availableTicketCount,
   };
+  const leaveModalAction: GroupLeaveAction = {
+    ...leaveAction,
+    onLeaveAction: async () => {
+      const didLeave = await leaveAction.onLeaveAction();
+
+      if (didLeave) {
+        setIsLeaveModalOpen(false);
+        toast.success("그룹 탈퇴가 완료되었어요");
+        router.replace(ROUTES.GROUPS.ROOT);
+      } else {
+        toast.error("그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");
+      }
+
+      return didLeave;
+    },
+  };
+  const handleLeaveModalOpenChange = (open: boolean) => {
+    if (!leaveAction.isPending) {
+      setIsLeaveModalOpen(open);
+    }
+  };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
@@ -57,6 +88,13 @@ export function GroupDetailView({ group, reviewList, joinAction }: GroupDetailVi
           <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
             <ChevronLeftIcon size={28} />
           </IconButton>
+        }
+        right={
+          group.isMember ? (
+            <IconButton aria-label="그룹 나가기" onClick={() => setIsLeaveModalOpen(true)}>
+              <LeaveGroupIcon size={24} />
+            </IconButton>
+          ) : undefined
         }
       />
 
@@ -83,6 +121,14 @@ export function GroupDetailView({ group, reviewList, joinAction }: GroupDetailVi
             group={groupJoinInfo}
           />
         ))}
+
+      {group.isMember ? (
+        <GroupLeaveModal
+          open={isLeaveModalOpen}
+          onOpenChangeAction={handleLeaveModalOpenChange}
+          leaveAction={leaveModalAction}
+        />
+      ) : null}
     </div>
   );
 }

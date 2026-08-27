@@ -1,7 +1,8 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useGroupDetail } from "@/api/gen/group/group.gen";
-import { useJoin, useJoinPreview } from "@/api/gen/group-membership/group-membership.gen";
+import { useJoin, useJoinPreview, useLeave } from "@/api/gen/group-membership/group-membership.gen";
 import { LoadingIcon } from "@/shared/ui/Icons";
 import { toReviewCardData } from "@/shared/utils/reviewMapper";
 import { useGroupReviewPages } from "../_hooks/useGroupReviewPages";
@@ -14,9 +15,11 @@ type GroupDetailContainerProps = {
 };
 
 export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
+  const queryClient = useQueryClient();
   const detail = useGroupDetail(groupId);
   const reviews = useGroupReviewPages(groupId, detail.data?.isMember);
   const join = useJoin();
+  const leave = useLeave();
   const joinPreview = useJoinPreview(groupId, {
     query: { enabled: detail.data?.isMember === false },
   });
@@ -49,6 +52,16 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
       return false;
     }
   };
+  const handleLeave = async () => {
+    try {
+      await leave.mutateAsync({ groupId });
+      await queryClient.invalidateQueries({ queryKey: ["/v1/groups"] });
+
+      return true;
+    } catch {
+      return false;
+    }
+  };
   const reviewItems = reviews.data.pages.flatMap((page) => page.items.map(toReviewCardData));
   const reviewList: GroupReviewListState = reviews.hasNextPage
     ? {
@@ -64,6 +77,10 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
       group={toGroupDetailViewData(detail.data, joinPreview.data)}
       reviewList={reviewList}
       joinAction={{ onJoin: handleJoin, isPending: join.isPending, isError: join.isError }}
+      leaveAction={{
+        onLeaveAction: handleLeave,
+        isPending: leave.isPending,
+      }}
     />
   );
 }

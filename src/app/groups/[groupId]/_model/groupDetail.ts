@@ -31,6 +31,11 @@ export type GroupJoinAction = Readonly<{
   isError: boolean;
 }>;
 
+export type GroupLeaveAction = Readonly<{
+  onLeaveAction: () => Promise<boolean>;
+  isPending: boolean;
+}>;
+
 export type GroupReviewListState = Readonly<{
   reviews: ReviewCardData[];
 }> &
