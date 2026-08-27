@@ -6,7 +6,10 @@ import {
   GroupDetailError,
   GroupDetailLoading,
 } from "@/app/groups/[groupId]/_components/GroupDetailContainer";
-import { GroupDetailView } from "@/app/groups/[groupId]/_components/GroupDetailView";
+import {
+  GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
+  GroupDetailView,
+} from "@/app/groups/[groupId]/_components/GroupDetailView";
 import { GroupLeaveModal } from "@/app/groups/[groupId]/_components/GroupLeaveModal";
 import { JoinGroupTicketSheet } from "@/app/groups/[groupId]/_components/JoinGroupTicketSheet";
 import {
@@ -190,7 +193,9 @@ export default function GroupDetailPreviewPage() {
                   }
 
                   if (item.key === "join-error") {
-                    toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");
+                    toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.", {
+                      bottomInset: GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
+                    });
                   }
                 }}
                 className={cn(
