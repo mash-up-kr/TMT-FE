@@ -28,7 +28,7 @@ export interface FeedReviewPlace {
   name: string;
   /** 구 + 동 (예: 마포구 도화동). */
   regionName: string;
-  isFavorite: boolean;
+  isFavorite?: boolean;
 }
 
 export interface FeedReview {

@@ -1,7 +1,7 @@
 import type { CursorPageReviewCardResponse } from "@/api/gen/_model/cursorPageReviewCardResponse.gen";
 import type { PlaceDetailResponse } from "@/api/gen/_model/placeDetailResponse.gen";
-import type { ReviewCardResponse } from "@/api/gen/_model/reviewCardResponse.gen";
-import type { ReviewCardReview } from "@/shared/components/ReviewCard/ReviewCard";
+import type { ReviewCardData } from "@/shared/model/review";
+import { toReviewCardData } from "@/shared/utils/reviewMapper";
 
 export interface PlaceDetail {
   id: string;
@@ -28,30 +28,6 @@ export function toPlaceDetail(response: PlaceDetailResponse): PlaceDetail {
   };
 }
 
-function toReview(review: ReviewCardResponse): ReviewCardReview {
-  return {
-    id: review.reviewId,
-    authorNickname: review.author.nickname,
-    authorProfileImageUrl: review.author.profileImageUrl ?? null,
-    rating: review.rating,
-    distanceMeters: review.distanceMeters ?? null,
-    photoUrls: review.photos
-      .slice()
-      .sort((a, b) => a.order - b.order)
-      .map((photo) => photo.url),
-    pros: review.aiSummary?.pros ?? null,
-    cons: review.aiSummary?.cons ?? null,
-    content: review.content,
-    tags: review.tags.map((tag) => ({ id: tag.tagId, label: tag.label })),
-    place: {
-      id: review.place.placeId,
-      name: review.place.name,
-      regionName: review.place.regionName,
-      isFavorite: review.place.isFavorite,
-    },
-  };
-}
-
-export function toPlaceReviews(page: CursorPageReviewCardResponse): ReviewCardReview[] {
-  return page.items.map(toReview);
+export function toPlaceReviews(page: CursorPageReviewCardResponse): ReviewCardData[] {
+  return page.items.map(toReviewCardData);
 }
