@@ -109,7 +109,7 @@ export function GroupDetailView({
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
       <GNB
-        title={group.name}
+        title="그룹"
         className="shrink-0"
         left={
           <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
