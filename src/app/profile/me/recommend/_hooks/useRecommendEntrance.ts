@@ -45,6 +45,7 @@ type RecommendEntrance = {
  */
 export function useRecommendEntrance(scope: RefObject<HTMLElement | null>): RecommendEntrance {
   const idle = useRef<gsap.core.Timeline>(null);
+  const hop = useRef<gsap.core.Timeline>(null);
   const tilt = useRef<Element>(null);
 
   useGSAP(
@@ -94,12 +95,15 @@ export function useRecommendEntrance(scope: RefObject<HTMLElement | null>): Reco
           .call(() => {
             if (tilt.current) {
               idle.current = potIdleLoop(tilt.current);
+              hop.current = potHopLoop(tilt.current);
             }
           });
 
         return () => {
           idle.current?.kill();
           idle.current = null;
+          hop.current?.kill();
+          hop.current = null;
           timeline.kill();
         };
       });
@@ -111,17 +115,19 @@ export function useRecommendEntrance(scope: RefObject<HTMLElement | null>): Reco
 
   const stopIdle = useCallback(() => {
     idle.current?.pause();
+    hop.current?.pause();
 
-    // 기울어진 채로 멈추면 냄비가 삐딱하게 서 있는다. 똑바로 세우고 나서 멈춘다.
+    // 기울거나 떠 있는 채로 멈추면 냄비가 삐딱하게 선다. 제자리로 돌려놓고 멈춘다.
     if (tilt.current) {
-      gsap.to(tilt.current, { rotate: 0, ...SETTLE });
+      gsap.to(tilt.current, { rotate: 0, y: 0, ...SETTLE });
     }
   }, []);
 
   const startIdle = useCallback(() => {
-    // 루프는 0도에서 출발한다. 멈출 때 똑바로 세워뒀으므로 이어 붙어도 튀지 않는다.
-    // invalidate로 트윈이 기억한 시작값을 지워야 지금 각도에서 다시 계산한다.
+    // 두 루프 모두 0에서 출발한다. 멈출 때 제자리로 돌려뒀으므로 이어 붙어도 튀지 않는다.
+    // invalidate로 트윈이 기억한 시작값을 지워야 지금 값에서 다시 계산한다.
     idle.current?.invalidate().restart();
+    hop.current?.invalidate().restart();
   }, []);
 
   return { stopIdle, startIdle };
@@ -145,4 +151,20 @@ function potIdleLoop(target: Element): gsap.core.Timeline {
       yoyo: true,
       repeat: -1,
     });
+}
+
+/**
+ * 흔들리는 도중에 이따금 한 번씩 위로 튄다.
+ *
+ * 시안(Figma 1821:43433)의 Wiggle 프레임에서만 냄비가 y 136 → 126으로 올라가 있다.
+ * 좌우 흔들림과 같은 요소에 걸지만 rotate가 아니라 y를 써서 서로 덮지 않는다.
+ * 올라갈 때는 짧고 단호하게, 내려올 때는 탄성으로 잦아든다.
+ */
+function potHopLoop(target: Element): gsap.core.Timeline {
+  const span = POT_IDLE.hopUp.duration + POT_IDLE.hopDown.duration;
+
+  return gsap
+    .timeline({ repeat: -1, repeatDelay: Math.max(0, POT_IDLE.hopEvery - span) })
+    .to(target, { y: -POT_IDLE.hop, ...POT_IDLE.hopUp })
+    .to(target, { y: 0, ...POT_IDLE.hopDown });
 }

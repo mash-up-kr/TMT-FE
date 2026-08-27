@@ -42,11 +42,22 @@ export const POT_TILT = {
   ease: "sine.inOut",
 } as const;
 
-/** 진입이 끝난 뒤 대기 상태에서 냄비가 계속 미세하게 흔들린다. */
+/**
+ * 진입이 끝난 뒤 대기 상태에서 냄비가 계속 미세하게 흔들린다.
+ *
+ * 좌우로 기우는 것과 별개로, 이따금 한 번씩 위로 튄다. 시안(Figma 1821:43433)의 Wiggle
+ * 프레임에서만 냄비가 y 136 → 126으로 올라가 있다 — 흔들리는 도중에 끼어드는 동작이다.
+ */
 export const POT_IDLE = {
   rotate: 2.4,
   duration: 1.7,
   ease: "sine.inOut",
+  /** 튀어오르는 높이. 시안 실측값(136 → 126)이다. */
+  hop: 10,
+  /** 튀는 주기. 오래 기다렸다 한 번씩 튀어야 흔들림에 묻히지 않고 눈에 걸린다. */
+  hopEvery: 10,
+  hopUp: { duration: 0.32, ease: "power2.out" },
+  hopDown: { duration: 0.9, ease: "elastic.out(1, 0.55)" },
 } as const;
 
 /** 그리드 한 칸: 튀어올랐다(1.15) 제자리(1)로, 동시에 기울임(-10 → +6 → 0). */
