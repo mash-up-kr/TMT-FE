@@ -23,8 +23,7 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { DeleteReviewParams } from "../_model/deleteReviewParams.gen";
-import type { ReviewDetailParams } from "../_model/reviewDetailParams.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { ReviewDetailResponse } from "../_model/reviewDetailResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -44,20 +43,8 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getReviewDetailUrl = (reviewId: string, params?: ReviewDetailParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/reviews/${reviewId}?${stringifiedParams}`
-    : `/v1/reviews/${reviewId}`;
+export const getReviewDetailUrl = (reviewId: string) => {
+  return `/v1/reviews/${reviewId}`;
 };
 
 /**
@@ -66,25 +53,23 @@ export const getReviewDetailUrl = (reviewId: string, params?: ReviewDetailParams
  */
 export const reviewDetail = async (
   reviewId: string,
-  params?: ReviewDetailParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<ReviewDetailResponse> => {
-  return tmtFetch<ReviewDetailResponse>(getReviewDetailUrl(reviewId, params), {
+  return tmtFetch<ReviewDetailResponse>(getReviewDetailUrl(reviewId), {
     ...options,
     method: "GET",
   });
 };
 
-export const getReviewDetailQueryKey = (reviewId: string, params?: ReviewDetailParams) => {
-  return [`/v1/reviews/${reviewId}`, ...(params ? [params] : [])] as const;
+export const getReviewDetailQueryKey = (reviewId: string) => {
+  return [`/v1/reviews/${reviewId}`] as const;
 };
 
 export const getReviewDetailQueryOptions = <
   TData = Awaited<ReturnType<typeof reviewDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   reviewId: string,
-  params?: ReviewDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -92,10 +77,10 @@ export const getReviewDetailQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getReviewDetailQueryKey(reviewId, params);
+  const queryKey = queryOptions?.queryKey ?? getReviewDetailQueryKey(reviewId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof reviewDetail>>> = ({ signal }) =>
-    reviewDetail(reviewId, params, { signal, ...requestOptions });
+    reviewDetail(reviewId, { signal, ...requestOptions });
 
   return {
     queryKey,
@@ -108,14 +93,13 @@ export const getReviewDetailQueryOptions = <
 };
 
 export type ReviewDetailQueryResult = NonNullable<Awaited<ReturnType<typeof reviewDetail>>>;
-export type ReviewDetailQueryError = ErrorType<unknown>;
+export type ReviewDetailQueryError = ErrorType<ErrorResponse>;
 
 export function useReviewDetail<
   TData = Awaited<ReturnType<typeof reviewDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   reviewId: string,
-  params: undefined | ReviewDetailParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewDetail>>, TError, TData>> &
       Pick<
@@ -132,10 +116,9 @@ export function useReviewDetail<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useReviewDetail<
   TData = Awaited<ReturnType<typeof reviewDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   reviewId: string,
-  params?: ReviewDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewDetail>>, TError, TData>> &
       Pick<
@@ -152,10 +135,9 @@ export function useReviewDetail<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useReviewDetail<
   TData = Awaited<ReturnType<typeof reviewDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   reviewId: string,
-  params?: ReviewDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -168,17 +150,16 @@ export function useReviewDetail<
 
 export function useReviewDetail<
   TData = Awaited<ReturnType<typeof reviewDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   reviewId: string,
-  params?: ReviewDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getReviewDetailQueryOptions(reviewId, params, options);
+  const queryOptions = getReviewDetailQueryOptions(reviewId, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -187,20 +168,8 @@ export function useReviewDetail<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getDeleteReviewUrl = (reviewId: string, params: DeleteReviewParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/reviews/${reviewId}?${stringifiedParams}`
-    : `/v1/reviews/${reviewId}`;
+export const getDeleteReviewUrl = (reviewId: string) => {
+  return `/v1/reviews/${reviewId}`;
 };
 
 /**
@@ -209,30 +178,29 @@ export const getDeleteReviewUrl = (reviewId: string, params: DeleteReviewParams)
  */
 export const deleteReview = async (
   reviewId: string,
-  params: DeleteReviewParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<void> => {
-  return tmtFetch<void>(getDeleteReviewUrl(reviewId, params), {
+  return tmtFetch<void>(getDeleteReviewUrl(reviewId), {
     ...options,
     method: "DELETE",
   });
 };
 
 export const getDeleteReviewMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteReview>>,
     TError,
-    { reviewId: string; params: DeleteReviewParams },
+    { reviewId: string },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteReview>>,
   TError,
-  { reviewId: string; params: DeleteReviewParams },
+  { reviewId: string },
   TContext
 > => {
   const mutationKey = ["deleteReview"];
@@ -244,11 +212,11 @@ export const getDeleteReviewMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteReview>>,
-    { reviewId: string; params: DeleteReviewParams }
+    { reviewId: string }
   > = (props) => {
-    const { reviewId, params } = props ?? {};
+    const { reviewId } = props ?? {};
 
-    return deleteReview(reviewId, params, requestOptions);
+    return deleteReview(reviewId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -256,17 +224,17 @@ export const getDeleteReviewMutationOptions = <
 
 export type DeleteReviewMutationResult = NonNullable<Awaited<ReturnType<typeof deleteReview>>>;
 
-export type DeleteReviewMutationError = ErrorType<unknown>;
+export type DeleteReviewMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 리뷰 삭제
  */
-export const useDeleteReview = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useDeleteReview = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteReview>>,
       TError,
-      { reviewId: string; params: DeleteReviewParams },
+      { reviewId: string },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -275,7 +243,7 @@ export const useDeleteReview = <TError = ErrorType<unknown>, TContext = unknown>
 ): UseMutationResult<
   Awaited<ReturnType<typeof deleteReview>>,
   TError,
-  { reviewId: string; params: DeleteReviewParams },
+  { reviewId: string },
   TContext
 > => {
   return useMutation(getDeleteReviewMutationOptions(options), queryClient);

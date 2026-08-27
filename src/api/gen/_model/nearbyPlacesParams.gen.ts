@@ -7,7 +7,6 @@
  */
 
 export type NearbyPlacesParams = {
-  userId?: number;
   north?: number;
   south?: number;
   east?: number;

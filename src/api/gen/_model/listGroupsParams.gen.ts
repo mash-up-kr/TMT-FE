@@ -7,7 +7,6 @@
  */
 
 export type ListGroupsParams = {
-  userId?: number;
   query?: string;
   foodCategoryId?: string;
   regionTagIds?: string[];

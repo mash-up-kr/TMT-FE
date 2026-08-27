@@ -29,6 +29,7 @@ export const ROUTES = {
   },
   PROFILE: {
     ME: "/profile/me",
+    TICKETS: "/profile/me/tickets",
     DETAIL: "/profile/[userId]",
   },
   LOGIN: "/login",

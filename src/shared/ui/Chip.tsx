@@ -19,6 +19,27 @@ const selectedStyles =
   "hover:inset-ring-stroke-interactive-primary-hovered hover:bg-surface-selected-hovered hover:text-content-interactive-primary-hovered " +
   "active:inset-ring-stroke-interactive-primary-pressed active:bg-surface-selected-pressed active:text-content-interactive-primary-pressed";
 
+type ChipStyleOptions = {
+  selected?: boolean;
+  size?: ChipSize;
+  className?: string;
+};
+
+/**
+ * 칩 외형만 떼어낸다. 칩 모양이지만 button이 아닌 요소(탭 링크 등)가 같은 시각 계약을 쓴다.
+ */
+export function chipStyles({ selected, size = "md", className }: ChipStyleOptions = {}) {
+  return cn(
+    "inline-flex shrink-0 items-center justify-center gap-ds-4 whitespace-nowrap rounded-ds-full inset-ring px-ds-12 outline-none",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-interactive-primary",
+    "disabled:pointer-events-none disabled:inset-ring-stroke-disabled disabled:bg-surface-disabled disabled:text-content-disabled",
+    "[&_svg]:shrink-0",
+    sizeStyles[size],
+    selected ? selectedStyles : unselectedStyles,
+    className,
+  );
+}
+
 type ChipProps = ComponentProps<"button"> & {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
@@ -39,15 +60,7 @@ export function Chip({
   return (
     <button
       data-slot="chip"
-      className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-ds-4 whitespace-nowrap rounded-ds-full inset-ring px-ds-12 outline-none",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-interactive-primary",
-        "disabled:pointer-events-none disabled:inset-ring-stroke-disabled disabled:bg-surface-disabled disabled:text-content-disabled",
-        "[&_svg]:shrink-0",
-        sizeStyles[size],
-        selected ? selectedStyles : unselectedStyles,
-        className,
-      )}
+      className={chipStyles({ selected, size, className })}
       type={type}
       {...props}
       aria-pressed={selected ?? props["aria-pressed"]}

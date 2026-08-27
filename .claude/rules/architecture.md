@@ -99,7 +99,9 @@ shared/providers/   →  api/mutator
 
 - 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
 - 허용: 상위 라우트의 private segment를 그 하위 세그먼트가 import (`reviews/_*` ← `reviews/new`, `reviews/drafts/[id]`). 하위 세그먼트들이 공통으로 쓰는 코드는 그들을 품는 라우트에 둔다.
+- 허용: `app/preview/` → 실제 라우트의 표시 컴포넌트·ViewModel. 프리뷰는 Screen, API hook, store를 import하거나 네트워크 요청을 실행하지 않는다.
 - 금지: shared → app, 형제 라우트 간 직접 import, 다른 라우트의 private segment import.
+- 예외: `app/preview/**`는 화면 확인용 임시 라우트라 다른 라우트의 private segment를 import할 수 있다. 제품 코드가 preview를 import하지 않는다.
 - `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
 - `shared/providers/`만 `api/mutator`를 import할 수 있다. 전역 react-query retry 정책이 API 에러 타입에 의존하기 때문이다.
 - `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.
@@ -133,10 +135,17 @@ shared/providers/   →  api/mutator
 
 ## Mock 정책
 
-- MSW를 포함한 mock layer를 도입하지 않는다. `src/api/mock/`을 만들지 않는다.
-- 페이지와 라우트 private segment에도 mock handler를 만들지 않는다.
-- 백엔드가 아직 제공하지 않는 endpoint는 mock으로 채우지 않고, 스펙에 올라온 뒤 연동한다.
-- mock 도입이 필요해지면 구현 전에 이 절을 먼저 합의해 수정한다.
+MSW를 포함한 **mock layer 라이브러리는 도입하지 않는다.** `src/api/mock/`도 만들지 않는다. 네트워크를 가로채는 계층은 실제 응답과 어긋나도 드러나지 않아, 연동 시점에 한 번에 터진다.
+
+예외는 하나다. **계약이 확정됐고 OpenAPI 반영만 남은 화면**은 라우트 private segment의 `_fixtures/`로 선구현할 수 있다. 조건은 아래를 모두 만족할 때다.
+
+- 계약 문서가 응답 형태를 확정했다. 프론트가 응답을 상상해 만들지 않는다.
+- fixture는 **화면 모델이 아니라 계약 응답 모양**으로 쓴다. mapper를 지금 작성해 연동 후 그대로 쓰기 위함이다.
+- 응답 타입은 손으로 쓰되 한 파일에 모으고, 생성 타입으로 교체할 자리임을 파일 상단에 남긴다.
+- 교체 지점은 `_hooks/` 한 곳이다. Screen·mapper·컴포넌트·라우트는 연동 시 건드리지 않는다.
+- `pnpm api:sync`로 생성 client가 나오면 **같은 PR에서 `_fixtures/`를 삭제한다.** 남겨두지 않는다.
+
+`_fixtures/` 안의 파일은 상단 주석에 정본 계약의 위치와 삭제 조건을 남긴다. 계약이 없는 endpoint는 여전히 fixture로 채우지 않는다.
 
 API 또는 mock 구조를 바꾸는 변경에서는 dependency, `pnpm api:sync`, orval 설정, 환경 변수, 생성 파일 정책을 실제 코드와 함께 갱신하고 이 문서의 현재 상태도 함께 고친다.
 

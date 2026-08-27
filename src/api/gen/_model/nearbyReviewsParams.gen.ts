@@ -7,7 +7,6 @@
  */
 
 export type NearbyReviewsParams = {
-  userId?: number;
   latitude?: number;
   longitude?: number;
   cursor?: string;

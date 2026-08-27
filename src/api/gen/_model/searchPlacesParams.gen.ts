@@ -7,7 +7,6 @@
  */
 
 export type SearchPlacesParams = {
-  userId?: number;
   query?: string;
   curationTagId?: string;
   latitude?: number;

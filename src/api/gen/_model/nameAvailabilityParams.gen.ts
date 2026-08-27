@@ -7,6 +7,5 @@
  */
 
 export type NameAvailabilityParams = {
-  userId: number;
   name?: string;
 };

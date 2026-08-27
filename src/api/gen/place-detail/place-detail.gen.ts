@@ -23,13 +23,11 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { AddFavoriteParams } from "../_model/addFavoriteParams.gen";
 import type { CursorPageReviewCardResponse } from "../_model/cursorPageReviewCardResponse.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { FavoriteResponse } from "../_model/favoriteResponse.gen";
-import type { PlaceDetailParams } from "../_model/placeDetailParams.gen";
 import type { PlaceDetailResponse } from "../_model/placeDetailResponse.gen";
 import type { PlaceReviewsParams } from "../_model/placeReviewsParams.gen";
-import type { RemoveFavoriteParams } from "../_model/removeFavoriteParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -48,20 +46,8 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getAddFavoriteUrl = (placeId: string, params: AddFavoriteParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/places/${placeId}/favorite?${stringifiedParams}`
-    : `/v1/places/${placeId}/favorite`;
+export const getAddFavoriteUrl = (placeId: string) => {
+  return `/v1/places/${placeId}/favorite`;
 };
 
 /**
@@ -70,30 +56,29 @@ export const getAddFavoriteUrl = (placeId: string, params: AddFavoriteParams) =>
  */
 export const addFavorite = async (
   placeId: string,
-  params: AddFavoriteParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<FavoriteResponse> => {
-  return tmtFetch<FavoriteResponse>(getAddFavoriteUrl(placeId, params), {
+  return tmtFetch<FavoriteResponse>(getAddFavoriteUrl(placeId), {
     ...options,
     method: "PUT",
   });
 };
 
 export const getAddFavoriteMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof addFavorite>>,
     TError,
-    { placeId: string; params: AddFavoriteParams },
+    { placeId: string },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof addFavorite>>,
   TError,
-  { placeId: string; params: AddFavoriteParams },
+  { placeId: string },
   TContext
 > => {
   const mutationKey = ["addFavorite"];
@@ -105,11 +90,11 @@ export const getAddFavoriteMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof addFavorite>>,
-    { placeId: string; params: AddFavoriteParams }
+    { placeId: string }
   > = (props) => {
-    const { placeId, params } = props ?? {};
+    const { placeId } = props ?? {};
 
-    return addFavorite(placeId, params, requestOptions);
+    return addFavorite(placeId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -117,17 +102,17 @@ export const getAddFavoriteMutationOptions = <
 
 export type AddFavoriteMutationResult = NonNullable<Awaited<ReturnType<typeof addFavorite>>>;
 
-export type AddFavoriteMutationError = ErrorType<unknown>;
+export type AddFavoriteMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 찜
  */
-export const useAddFavorite = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useAddFavorite = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof addFavorite>>,
       TError,
-      { placeId: string; params: AddFavoriteParams },
+      { placeId: string },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -136,25 +121,13 @@ export const useAddFavorite = <TError = ErrorType<unknown>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof addFavorite>>,
   TError,
-  { placeId: string; params: AddFavoriteParams },
+  { placeId: string },
   TContext
 > => {
   return useMutation(getAddFavoriteMutationOptions(options), queryClient);
 };
-export const getRemoveFavoriteUrl = (placeId: string, params: RemoveFavoriteParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/places/${placeId}/favorite?${stringifiedParams}`
-    : `/v1/places/${placeId}/favorite`;
+export const getRemoveFavoriteUrl = (placeId: string) => {
+  return `/v1/places/${placeId}/favorite`;
 };
 
 /**
@@ -163,30 +136,29 @@ export const getRemoveFavoriteUrl = (placeId: string, params: RemoveFavoritePara
  */
 export const removeFavorite = async (
   placeId: string,
-  params: RemoveFavoriteParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<FavoriteResponse> => {
-  return tmtFetch<FavoriteResponse>(getRemoveFavoriteUrl(placeId, params), {
+  return tmtFetch<FavoriteResponse>(getRemoveFavoriteUrl(placeId), {
     ...options,
     method: "DELETE",
   });
 };
 
 export const getRemoveFavoriteMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof removeFavorite>>,
     TError,
-    { placeId: string; params: RemoveFavoriteParams },
+    { placeId: string },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof removeFavorite>>,
   TError,
-  { placeId: string; params: RemoveFavoriteParams },
+  { placeId: string },
   TContext
 > => {
   const mutationKey = ["removeFavorite"];
@@ -198,11 +170,11 @@ export const getRemoveFavoriteMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof removeFavorite>>,
-    { placeId: string; params: RemoveFavoriteParams }
+    { placeId: string }
   > = (props) => {
-    const { placeId, params } = props ?? {};
+    const { placeId } = props ?? {};
 
-    return removeFavorite(placeId, params, requestOptions);
+    return removeFavorite(placeId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -210,17 +182,17 @@ export const getRemoveFavoriteMutationOptions = <
 
 export type RemoveFavoriteMutationResult = NonNullable<Awaited<ReturnType<typeof removeFavorite>>>;
 
-export type RemoveFavoriteMutationError = ErrorType<unknown>;
+export type RemoveFavoriteMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 찜 해제
  */
-export const useRemoveFavorite = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useRemoveFavorite = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof removeFavorite>>,
       TError,
-      { placeId: string; params: RemoveFavoriteParams },
+      { placeId: string },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -229,25 +201,13 @@ export const useRemoveFavorite = <TError = ErrorType<unknown>, TContext = unknow
 ): UseMutationResult<
   Awaited<ReturnType<typeof removeFavorite>>,
   TError,
-  { placeId: string; params: RemoveFavoriteParams },
+  { placeId: string },
   TContext
 > => {
   return useMutation(getRemoveFavoriteMutationOptions(options), queryClient);
 };
-export const getPlaceDetailUrl = (placeId: string, params?: PlaceDetailParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/places/${placeId}?${stringifiedParams}`
-    : `/v1/places/${placeId}`;
+export const getPlaceDetailUrl = (placeId: string) => {
+  return `/v1/places/${placeId}`;
 };
 
 /**
@@ -256,25 +216,23 @@ export const getPlaceDetailUrl = (placeId: string, params?: PlaceDetailParams) =
  */
 export const placeDetail = async (
   placeId: string,
-  params?: PlaceDetailParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<PlaceDetailResponse> => {
-  return tmtFetch<PlaceDetailResponse>(getPlaceDetailUrl(placeId, params), {
+  return tmtFetch<PlaceDetailResponse>(getPlaceDetailUrl(placeId), {
     ...options,
     method: "GET",
   });
 };
 
-export const getPlaceDetailQueryKey = (placeId: string, params?: PlaceDetailParams) => {
-  return [`/v1/places/${placeId}`, ...(params ? [params] : [])] as const;
+export const getPlaceDetailQueryKey = (placeId: string) => {
+  return [`/v1/places/${placeId}`] as const;
 };
 
 export const getPlaceDetailQueryOptions = <
   TData = Awaited<ReturnType<typeof placeDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
-  params?: PlaceDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -282,10 +240,10 @@ export const getPlaceDetailQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getPlaceDetailQueryKey(placeId, params);
+  const queryKey = queryOptions?.queryKey ?? getPlaceDetailQueryKey(placeId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof placeDetail>>> = ({ signal }) =>
-    placeDetail(placeId, params, { signal, ...requestOptions });
+    placeDetail(placeId, { signal, ...requestOptions });
 
   return {
     queryKey,
@@ -298,14 +256,13 @@ export const getPlaceDetailQueryOptions = <
 };
 
 export type PlaceDetailQueryResult = NonNullable<Awaited<ReturnType<typeof placeDetail>>>;
-export type PlaceDetailQueryError = ErrorType<unknown>;
+export type PlaceDetailQueryError = ErrorType<ErrorResponse>;
 
 export function usePlaceDetail<
   TData = Awaited<ReturnType<typeof placeDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
-  params: undefined | PlaceDetailParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>> &
       Pick<
@@ -322,10 +279,9 @@ export function usePlaceDetail<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function usePlaceDetail<
   TData = Awaited<ReturnType<typeof placeDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
-  params?: PlaceDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>> &
       Pick<
@@ -342,10 +298,9 @@ export function usePlaceDetail<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function usePlaceDetail<
   TData = Awaited<ReturnType<typeof placeDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
-  params?: PlaceDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -358,17 +313,16 @@ export function usePlaceDetail<
 
 export function usePlaceDetail<
   TData = Awaited<ReturnType<typeof placeDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
-  params?: PlaceDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPlaceDetailQueryOptions(placeId, params, options);
+  const queryOptions = getPlaceDetailQueryOptions(placeId, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -414,7 +368,7 @@ export const getPlaceReviewsQueryKey = (placeId: string, params?: PlaceReviewsPa
 
 export const getPlaceReviewsQueryOptions = <
   TData = Awaited<ReturnType<typeof placeReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
   params?: PlaceReviewsParams,
@@ -441,11 +395,11 @@ export const getPlaceReviewsQueryOptions = <
 };
 
 export type PlaceReviewsQueryResult = NonNullable<Awaited<ReturnType<typeof placeReviews>>>;
-export type PlaceReviewsQueryError = ErrorType<unknown>;
+export type PlaceReviewsQueryError = ErrorType<ErrorResponse>;
 
 export function usePlaceReviews<
   TData = Awaited<ReturnType<typeof placeReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
   params: undefined | PlaceReviewsParams,
@@ -465,7 +419,7 @@ export function usePlaceReviews<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function usePlaceReviews<
   TData = Awaited<ReturnType<typeof placeReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
   params?: PlaceReviewsParams,
@@ -485,7 +439,7 @@ export function usePlaceReviews<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function usePlaceReviews<
   TData = Awaited<ReturnType<typeof placeReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
   params?: PlaceReviewsParams,
@@ -501,7 +455,7 @@ export function usePlaceReviews<
 
 export function usePlaceReviews<
   TData = Awaited<ReturnType<typeof placeReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   placeId: string,
   params?: PlaceReviewsParams,

@@ -7,7 +7,6 @@
  */
 
 export type FeedParams = {
-  userId: number;
   latitude?: number;
   longitude?: number;
   cursor?: string;

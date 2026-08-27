@@ -34,6 +34,24 @@ const sizeStyles = {
   sm: "px-ds-16 py-ds-8 text-body-md-medium [&_svg]:size-ds-20",
 } satisfies Record<ButtonSize, string>;
 
+type ButtonStyleOptions = {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+};
+
+/**
+ * 버튼 외형만 떼어낸다. 버튼 모양이지만 button이 아닌 요소(이동 링크 등)가 같은 시각 계약을 쓴다.
+ * loading·disabled는 button 고유 상태라 여기서 다루지 않는다.
+ */
+export function buttonStyles({
+  variant = "primary",
+  size = "lg",
+  className,
+}: ButtonStyleOptions = {}) {
+  return cn(baseStyles, variantStyles[variant], sizeStyles[size], className);
+}
+
 export function Button({
   variant = "primary",
   size = "lg",
@@ -51,9 +69,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading}
       className={cn(
-        baseStyles,
-        variantStyles[variant],
-        sizeStyles[size],
+        buttonStyles({ variant, size }),
         loading ? "pointer-events-none" : disabledStyles,
         className,
       )}

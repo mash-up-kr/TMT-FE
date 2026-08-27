@@ -1,12 +1,14 @@
 import type { ComponentProps, ComponentType } from "react";
 import fallbackImage from "@/shared/assets/dummy-small.png";
-import { MatchedStoreBadge } from "@/shared/components/MatchedStoreBadge/MatchedStoreBadge";
+import { MatchedPlaceBadge } from "@/shared/components/MatchedPlaceBadge/MatchedPlaceBadge";
 import { type IconProps, MembersIcon, ReviewsIcon, StoreIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 
-/** 지표·뱃지에 쓰는 아이콘 크기. 시안이 12px 고정이라 ds 스케일 대신 값으로 둔다. */
+/** 지표에 쓰는 아이콘 크기. 시안이 12px 고정이라 ds 스케일 대신 값으로 둔다. */
 const ICON_SIZE = 12;
+
+const matchedLabel = (count: number) => `내가 저장한 가게와 ${count}개 일치해요`;
 
 type GroupCardProps = Omit<ComponentProps<"div">, "title"> & {
   /** 그룹에 공유된 리뷰 사진에서 파생된다. 공유가 없는 신규 그룹은 없는 게 정상이다. */
@@ -44,7 +46,9 @@ export function GroupCard({
       <div className="flex flex-col gap-ds-12 p-ds-16">
         <GroupCardHeading title={title} description={description} />
         <GroupCardStats members={memberCount} reviews={reviewCount} places={placeCount} />
-        <MatchedStoreBadge count={matchedCount} />
+        {matchedCount > 0 ? (
+          <MatchedPlaceBadge>{matchedLabel(matchedCount)}</MatchedPlaceBadge>
+        ) : null}
       </div>
     </div>
   );

@@ -7,7 +7,6 @@
  */
 
 export type PlaceReviewsParams = {
-  userId?: number;
   latitude?: number;
   longitude?: number;
   cursor?: string;

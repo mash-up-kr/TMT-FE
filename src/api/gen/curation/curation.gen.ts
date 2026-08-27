@@ -19,8 +19,8 @@ import type {
 } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
-
 import { tmtFetch } from "../../mutator";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { ItemsResponseCurationTagResponse } from "../_model/itemsResponseCurationTagResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -63,7 +63,7 @@ export const getCurationTagsQueryKey = () => {
 
 export const getCurationTagsQueryOptions = <
   TData = Awaited<ReturnType<typeof curationTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(options?: {
   query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof curationTags>>, TError, TData>>;
   request?: SecondParameter<typeof tmtFetch>;
@@ -83,11 +83,11 @@ export const getCurationTagsQueryOptions = <
 };
 
 export type CurationTagsQueryResult = NonNullable<Awaited<ReturnType<typeof curationTags>>>;
-export type CurationTagsQueryError = ErrorType<unknown>;
+export type CurationTagsQueryError = ErrorType<ErrorResponse>;
 
 export function useCurationTags<
   TData = Awaited<ReturnType<typeof curationTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof curationTags>>, TError, TData>> &
@@ -105,7 +105,7 @@ export function useCurationTags<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useCurationTags<
   TData = Awaited<ReturnType<typeof curationTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof curationTags>>, TError, TData>> &
@@ -123,7 +123,7 @@ export function useCurationTags<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useCurationTags<
   TData = Awaited<ReturnType<typeof curationTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof curationTags>>, TError, TData>>;
@@ -137,7 +137,7 @@ export function useCurationTags<
 
 export function useCurationTags<
   TData = Awaited<ReturnType<typeof curationTags>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof curationTags>>, TError, TData>>;

@@ -23,14 +23,12 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { CreateSaveParams } from "../_model/createSaveParams.gen";
 import type { CursorPageSaveListItemResponse } from "../_model/cursorPageSaveListItemResponse.gen";
-import type { GetSaveParams } from "../_model/getSaveParams.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { ListSavesParams } from "../_model/listSavesParams.gen";
 import type { SaveDetailResponse } from "../_model/saveDetailResponse.gen";
 import type { SaveRequest } from "../_model/saveRequest.gen";
 import type { SaveResultResponse } from "../_model/saveResultResponse.gen";
-import type { UpdateSaveParams } from "../_model/updateSaveParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -49,20 +47,8 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getGetSaveUrl = (saveId: string, params: GetSaveParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/saves/${saveId}?${stringifiedParams}`
-    : `/v1/saves/${saveId}`;
+export const getGetSaveUrl = (saveId: string) => {
+  return `/v1/saves/${saveId}`;
 };
 
 /**
@@ -71,25 +57,23 @@ export const getGetSaveUrl = (saveId: string, params: GetSaveParams) => {
  */
 export const getSave = async (
   saveId: string,
-  params: GetSaveParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<SaveDetailResponse> => {
-  return tmtFetch<SaveDetailResponse>(getGetSaveUrl(saveId, params), {
+  return tmtFetch<SaveDetailResponse>(getGetSaveUrl(saveId), {
     ...options,
     method: "GET",
   });
 };
 
-export const getGetSaveQueryKey = (saveId: string, params?: GetSaveParams) => {
-  return [`/v1/saves/${saveId}`, ...(params ? [params] : [])] as const;
+export const getGetSaveQueryKey = (saveId: string) => {
+  return [`/v1/saves/${saveId}`] as const;
 };
 
 export const getGetSaveQueryOptions = <
   TData = Awaited<ReturnType<typeof getSave>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   saveId: string,
-  params: GetSaveParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSave>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -97,10 +81,10 @@ export const getGetSaveQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetSaveQueryKey(saveId, params);
+  const queryKey = queryOptions?.queryKey ?? getGetSaveQueryKey(saveId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getSave>>> = ({ signal }) =>
-    getSave(saveId, params, { signal, ...requestOptions });
+    getSave(saveId, { signal, ...requestOptions });
 
   return {
     queryKey,
@@ -113,14 +97,13 @@ export const getGetSaveQueryOptions = <
 };
 
 export type GetSaveQueryResult = NonNullable<Awaited<ReturnType<typeof getSave>>>;
-export type GetSaveQueryError = ErrorType<unknown>;
+export type GetSaveQueryError = ErrorType<ErrorResponse>;
 
 export function useGetSave<
   TData = Awaited<ReturnType<typeof getSave>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   saveId: string,
-  params: GetSaveParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSave>>, TError, TData>> &
       Pick<
@@ -137,10 +120,9 @@ export function useGetSave<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetSave<
   TData = Awaited<ReturnType<typeof getSave>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   saveId: string,
-  params: GetSaveParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSave>>, TError, TData>> &
       Pick<
@@ -157,10 +139,9 @@ export function useGetSave<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetSave<
   TData = Awaited<ReturnType<typeof getSave>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   saveId: string,
-  params: GetSaveParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSave>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -173,17 +154,16 @@ export function useGetSave<
 
 export function useGetSave<
   TData = Awaited<ReturnType<typeof getSave>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   saveId: string,
-  params: GetSaveParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSave>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetSaveQueryOptions(saveId, params, options);
+  const queryOptions = getGetSaveQueryOptions(saveId, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -192,20 +172,8 @@ export function useGetSave<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getUpdateSaveUrl = (saveId: string, params: UpdateSaveParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/saves/${saveId}?${stringifiedParams}`
-    : `/v1/saves/${saveId}`;
+export const getUpdateSaveUrl = (saveId: string) => {
+  return `/v1/saves/${saveId}`;
 };
 
 /**
@@ -215,10 +183,9 @@ export const getUpdateSaveUrl = (saveId: string, params: UpdateSaveParams) => {
 export const updateSave = async (
   saveId: string,
   saveRequest: SaveRequest,
-  params: UpdateSaveParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<SaveResultResponse> => {
-  return tmtFetch<SaveResultResponse>(getUpdateSaveUrl(saveId, params), {
+  return tmtFetch<SaveResultResponse>(getUpdateSaveUrl(saveId), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -227,20 +194,20 @@ export const updateSave = async (
 };
 
 export const getUpdateSaveMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateSave>>,
     TError,
-    { saveId: string; data: BodyType<SaveRequest>; params: UpdateSaveParams },
+    { saveId: string; data: BodyType<SaveRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateSave>>,
   TError,
-  { saveId: string; data: BodyType<SaveRequest>; params: UpdateSaveParams },
+  { saveId: string; data: BodyType<SaveRequest> },
   TContext
 > => {
   const mutationKey = ["updateSave"];
@@ -252,11 +219,11 @@ export const getUpdateSaveMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateSave>>,
-    { saveId: string; data: BodyType<SaveRequest>; params: UpdateSaveParams }
+    { saveId: string; data: BodyType<SaveRequest> }
   > = (props) => {
-    const { saveId, data, params } = props ?? {};
+    const { saveId, data } = props ?? {};
 
-    return updateSave(saveId, data, params, requestOptions);
+    return updateSave(saveId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -264,17 +231,17 @@ export const getUpdateSaveMutationOptions = <
 
 export type UpdateSaveMutationResult = NonNullable<Awaited<ReturnType<typeof updateSave>>>;
 export type UpdateSaveMutationBody = BodyType<SaveRequest>;
-export type UpdateSaveMutationError = ErrorType<unknown>;
+export type UpdateSaveMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 작성 완료 (이어쓰기)
  */
-export const useUpdateSave = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useUpdateSave = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateSave>>,
       TError,
-      { saveId: string; data: BodyType<SaveRequest>; params: UpdateSaveParams },
+      { saveId: string; data: BodyType<SaveRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -283,12 +250,12 @@ export const useUpdateSave = <TError = ErrorType<unknown>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateSave>>,
   TError,
-  { saveId: string; data: BodyType<SaveRequest>; params: UpdateSaveParams },
+  { saveId: string; data: BodyType<SaveRequest> },
   TContext
 > => {
   return useMutation(getUpdateSaveMutationOptions(options), queryClient);
 };
-export const getListSavesUrl = (params: ListSavesParams) => {
+export const getListSavesUrl = (params?: ListSavesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -307,7 +274,7 @@ export const getListSavesUrl = (params: ListSavesParams) => {
  * @summary 이어쓰기 목록
  */
 export const listSaves = async (
-  params: ListSavesParams,
+  params?: ListSavesParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<CursorPageSaveListItemResponse> => {
   return tmtFetch<CursorPageSaveListItemResponse>(getListSavesUrl(params), {
@@ -322,9 +289,9 @@ export const getListSavesQueryKey = (params?: ListSavesParams) => {
 
 export const getListSavesQueryOptions = <
   TData = Awaited<ReturnType<typeof listSaves>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: ListSavesParams,
+  params?: ListSavesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSaves>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -345,13 +312,13 @@ export const getListSavesQueryOptions = <
 };
 
 export type ListSavesQueryResult = NonNullable<Awaited<ReturnType<typeof listSaves>>>;
-export type ListSavesQueryError = ErrorType<unknown>;
+export type ListSavesQueryError = ErrorType<ErrorResponse>;
 
 export function useListSaves<
   TData = Awaited<ReturnType<typeof listSaves>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: ListSavesParams,
+  params: undefined | ListSavesParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSaves>>, TError, TData>> &
       Pick<
@@ -368,9 +335,9 @@ export function useListSaves<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useListSaves<
   TData = Awaited<ReturnType<typeof listSaves>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: ListSavesParams,
+  params?: ListSavesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSaves>>, TError, TData>> &
       Pick<
@@ -387,9 +354,9 @@ export function useListSaves<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useListSaves<
   TData = Awaited<ReturnType<typeof listSaves>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: ListSavesParams,
+  params?: ListSavesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSaves>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -402,9 +369,9 @@ export function useListSaves<
 
 export function useListSaves<
   TData = Awaited<ReturnType<typeof listSaves>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: ListSavesParams,
+  params?: ListSavesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSaves>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -420,18 +387,8 @@ export function useListSaves<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getCreateSaveUrl = (params: CreateSaveParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/v1/saves?${stringifiedParams}` : `/v1/saves`;
+export const getCreateSaveUrl = () => {
+  return `/v1/saves`;
 };
 
 /**
@@ -440,10 +397,9 @@ export const getCreateSaveUrl = (params: CreateSaveParams) => {
  */
 export const createSave = async (
   saveRequest: SaveRequest,
-  params: CreateSaveParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<SaveResultResponse> => {
-  return tmtFetch<SaveResultResponse>(getCreateSaveUrl(params), {
+  return tmtFetch<SaveResultResponse>(getCreateSaveUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -452,20 +408,20 @@ export const createSave = async (
 };
 
 export const getCreateSaveMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createSave>>,
     TError,
-    { data: BodyType<SaveRequest>; params: CreateSaveParams },
+    { data: BodyType<SaveRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createSave>>,
   TError,
-  { data: BodyType<SaveRequest>; params: CreateSaveParams },
+  { data: BodyType<SaveRequest> },
   TContext
 > => {
   const mutationKey = ["createSave"];
@@ -477,11 +433,11 @@ export const getCreateSaveMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createSave>>,
-    { data: BodyType<SaveRequest>; params: CreateSaveParams }
+    { data: BodyType<SaveRequest> }
   > = (props) => {
-    const { data, params } = props ?? {};
+    const { data } = props ?? {};
 
-    return createSave(data, params, requestOptions);
+    return createSave(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -489,17 +445,17 @@ export const getCreateSaveMutationOptions = <
 
 export type CreateSaveMutationResult = NonNullable<Awaited<ReturnType<typeof createSave>>>;
 export type CreateSaveMutationBody = BodyType<SaveRequest>;
-export type CreateSaveMutationError = ErrorType<unknown>;
+export type CreateSaveMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 작성 완료 (신규)
  */
-export const useCreateSave = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useCreateSave = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createSave>>,
       TError,
-      { data: BodyType<SaveRequest>; params: CreateSaveParams },
+      { data: BodyType<SaveRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -508,7 +464,7 @@ export const useCreateSave = <TError = ErrorType<unknown>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof createSave>>,
   TError,
-  { data: BodyType<SaveRequest>; params: CreateSaveParams },
+  { data: BodyType<SaveRequest> },
   TContext
 > => {
   return useMutation(getCreateSaveMutationOptions(options), queryClient);

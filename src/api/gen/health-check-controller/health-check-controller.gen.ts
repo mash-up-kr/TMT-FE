@@ -22,8 +22,8 @@ import type {
 } from "@tanstack/react-query";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
-
 import { tmtFetch } from "../../mutator";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { HealthResponse } from "../_model/healthResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -55,7 +55,7 @@ export const errorTestTmt = async (options?: Parameters<typeof tmtFetch>[1]): Pr
 };
 
 export const getErrorTestTmtMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<Awaited<ReturnType<typeof errorTestTmt>>, TError, void, TContext>;
@@ -77,9 +77,9 @@ export const getErrorTestTmtMutationOptions = <
 
 export type ErrorTestTmtMutationResult = NonNullable<Awaited<ReturnType<typeof errorTestTmt>>>;
 
-export type ErrorTestTmtMutationError = ErrorType<unknown>;
+export type ErrorTestTmtMutationError = ErrorType<ErrorResponse>;
 
-export const useErrorTestTmt = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useErrorTestTmt = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<Awaited<ReturnType<typeof errorTestTmt>>, TError, void, TContext>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -100,7 +100,7 @@ export const errorTestGlobal = async (options?: Parameters<typeof tmtFetch>[1]):
 };
 
 export const getErrorTestGlobalMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -129,9 +129,9 @@ export type ErrorTestGlobalMutationResult = NonNullable<
   Awaited<ReturnType<typeof errorTestGlobal>>
 >;
 
-export type ErrorTestGlobalMutationError = ErrorType<unknown>;
+export type ErrorTestGlobalMutationError = ErrorType<ErrorResponse>;
 
-export const useErrorTestGlobal = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useErrorTestGlobal = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof errorTestGlobal>>,
@@ -164,7 +164,7 @@ export const getDbHealthQueryKey = () => {
 
 export const getDbHealthQueryOptions = <
   TData = Awaited<ReturnType<typeof dbHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse | HealthResponse>,
 >(options?: {
   query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof dbHealth>>, TError, TData>>;
   request?: SecondParameter<typeof tmtFetch>;
@@ -184,11 +184,11 @@ export const getDbHealthQueryOptions = <
 };
 
 export type DbHealthQueryResult = NonNullable<Awaited<ReturnType<typeof dbHealth>>>;
-export type DbHealthQueryError = ErrorType<unknown>;
+export type DbHealthQueryError = ErrorType<ErrorResponse | HealthResponse>;
 
 export function useDbHealth<
   TData = Awaited<ReturnType<typeof dbHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse | HealthResponse>,
 >(
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof dbHealth>>, TError, TData>> &
@@ -206,7 +206,7 @@ export function useDbHealth<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useDbHealth<
   TData = Awaited<ReturnType<typeof dbHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse | HealthResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof dbHealth>>, TError, TData>> &
@@ -224,7 +224,7 @@ export function useDbHealth<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useDbHealth<
   TData = Awaited<ReturnType<typeof dbHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse | HealthResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof dbHealth>>, TError, TData>>;
@@ -235,7 +235,7 @@ export function useDbHealth<
 
 export function useDbHealth<
   TData = Awaited<ReturnType<typeof dbHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse | HealthResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof dbHealth>>, TError, TData>>;
@@ -271,7 +271,7 @@ export const getApiHealthQueryKey = () => {
 
 export const getApiHealthQueryOptions = <
   TData = Awaited<ReturnType<typeof apiHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(options?: {
   query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof apiHealth>>, TError, TData>>;
   request?: SecondParameter<typeof tmtFetch>;
@@ -291,11 +291,11 @@ export const getApiHealthQueryOptions = <
 };
 
 export type ApiHealthQueryResult = NonNullable<Awaited<ReturnType<typeof apiHealth>>>;
-export type ApiHealthQueryError = ErrorType<unknown>;
+export type ApiHealthQueryError = ErrorType<ErrorResponse>;
 
 export function useApiHealth<
   TData = Awaited<ReturnType<typeof apiHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof apiHealth>>, TError, TData>> &
@@ -313,7 +313,7 @@ export function useApiHealth<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useApiHealth<
   TData = Awaited<ReturnType<typeof apiHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof apiHealth>>, TError, TData>> &
@@ -331,7 +331,7 @@ export function useApiHealth<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useApiHealth<
   TData = Awaited<ReturnType<typeof apiHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof apiHealth>>, TError, TData>>;
@@ -342,7 +342,7 @@ export function useApiHealth<
 
 export function useApiHealth<
   TData = Awaited<ReturnType<typeof apiHealth>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof apiHealth>>, TError, TData>>;

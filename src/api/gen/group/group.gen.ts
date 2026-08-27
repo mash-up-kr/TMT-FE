@@ -23,17 +23,15 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
-import type { CreateGroupParams } from "../_model/createGroupParams.gen";
 import type { CursorPageGroupCardResponse } from "../_model/cursorPageGroupCardResponse.gen";
+import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { GatedReviewsResponse } from "../_model/gatedReviewsResponse.gen";
-import type { GroupDetailParams } from "../_model/groupDetailParams.gen";
 import type { GroupDetailResponse } from "../_model/groupDetailResponse.gen";
 import type { GroupRequest } from "../_model/groupRequest.gen";
 import type { GroupReviewsParams } from "../_model/groupReviewsParams.gen";
 import type { ListGroupsParams } from "../_model/listGroupsParams.gen";
 import type { NameAvailabilityParams } from "../_model/nameAvailabilityParams.gen";
 import type { NameAvailabilityResponse } from "../_model/nameAvailabilityResponse.gen";
-import type { UpdateGroupParams } from "../_model/updateGroupParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -52,20 +50,8 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getGroupDetailUrl = (groupId: string, params?: GroupDetailParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/groups/${groupId}?${stringifiedParams}`
-    : `/v1/groups/${groupId}`;
+export const getGroupDetailUrl = (groupId: string) => {
+  return `/v1/groups/${groupId}`;
 };
 
 /**
@@ -73,25 +59,23 @@ export const getGroupDetailUrl = (groupId: string, params?: GroupDetailParams) =
  */
 export const groupDetail = async (
   groupId: string,
-  params?: GroupDetailParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<GroupDetailResponse> => {
-  return tmtFetch<GroupDetailResponse>(getGroupDetailUrl(groupId, params), {
+  return tmtFetch<GroupDetailResponse>(getGroupDetailUrl(groupId), {
     ...options,
     method: "GET",
   });
 };
 
-export const getGroupDetailQueryKey = (groupId: string, params?: GroupDetailParams) => {
-  return [`/v1/groups/${groupId}`, ...(params ? [params] : [])] as const;
+export const getGroupDetailQueryKey = (groupId: string) => {
+  return [`/v1/groups/${groupId}`] as const;
 };
 
 export const getGroupDetailQueryOptions = <
   TData = Awaited<ReturnType<typeof groupDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params?: GroupDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -99,10 +83,10 @@ export const getGroupDetailQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGroupDetailQueryKey(groupId, params);
+  const queryKey = queryOptions?.queryKey ?? getGroupDetailQueryKey(groupId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof groupDetail>>> = ({ signal }) =>
-    groupDetail(groupId, params, { signal, ...requestOptions });
+    groupDetail(groupId, { signal, ...requestOptions });
 
   return {
     queryKey,
@@ -115,14 +99,13 @@ export const getGroupDetailQueryOptions = <
 };
 
 export type GroupDetailQueryResult = NonNullable<Awaited<ReturnType<typeof groupDetail>>>;
-export type GroupDetailQueryError = ErrorType<unknown>;
+export type GroupDetailQueryError = ErrorType<ErrorResponse>;
 
 export function useGroupDetail<
   TData = Awaited<ReturnType<typeof groupDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params: undefined | GroupDetailParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>> &
       Pick<
@@ -139,10 +122,9 @@ export function useGroupDetail<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGroupDetail<
   TData = Awaited<ReturnType<typeof groupDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params?: GroupDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>> &
       Pick<
@@ -159,10 +141,9 @@ export function useGroupDetail<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGroupDetail<
   TData = Awaited<ReturnType<typeof groupDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params?: GroupDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -175,17 +156,16 @@ export function useGroupDetail<
 
 export function useGroupDetail<
   TData = Awaited<ReturnType<typeof groupDetail>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
-  params?: GroupDetailParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGroupDetailQueryOptions(groupId, params, options);
+  const queryOptions = getGroupDetailQueryOptions(groupId, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -194,20 +174,8 @@ export function useGroupDetail<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getUpdateGroupUrl = (groupId: string, params: UpdateGroupParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/v1/groups/${groupId}?${stringifiedParams}`
-    : `/v1/groups/${groupId}`;
+export const getUpdateGroupUrl = (groupId: string) => {
+  return `/v1/groups/${groupId}`;
 };
 
 /**
@@ -217,10 +185,9 @@ export const getUpdateGroupUrl = (groupId: string, params: UpdateGroupParams) =>
 export const updateGroup = async (
   groupId: string,
   groupRequest: GroupRequest,
-  params: UpdateGroupParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<GroupDetailResponse> => {
-  return tmtFetch<GroupDetailResponse>(getUpdateGroupUrl(groupId, params), {
+  return tmtFetch<GroupDetailResponse>(getUpdateGroupUrl(groupId), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -229,20 +196,20 @@ export const updateGroup = async (
 };
 
 export const getUpdateGroupMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateGroup>>,
     TError,
-    { groupId: string; data: BodyType<GroupRequest>; params: UpdateGroupParams },
+    { groupId: string; data: BodyType<GroupRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateGroup>>,
   TError,
-  { groupId: string; data: BodyType<GroupRequest>; params: UpdateGroupParams },
+  { groupId: string; data: BodyType<GroupRequest> },
   TContext
 > => {
   const mutationKey = ["updateGroup"];
@@ -254,11 +221,11 @@ export const getUpdateGroupMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateGroup>>,
-    { groupId: string; data: BodyType<GroupRequest>; params: UpdateGroupParams }
+    { groupId: string; data: BodyType<GroupRequest> }
   > = (props) => {
-    const { groupId, data, params } = props ?? {};
+    const { groupId, data } = props ?? {};
 
-    return updateGroup(groupId, data, params, requestOptions);
+    return updateGroup(groupId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -266,17 +233,17 @@ export const getUpdateGroupMutationOptions = <
 
 export type UpdateGroupMutationResult = NonNullable<Awaited<ReturnType<typeof updateGroup>>>;
 export type UpdateGroupMutationBody = BodyType<GroupRequest>;
-export type UpdateGroupMutationError = ErrorType<unknown>;
+export type UpdateGroupMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 그룹 편집
  */
-export const useUpdateGroup = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useUpdateGroup = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateGroup>>,
       TError,
-      { groupId: string; data: BodyType<GroupRequest>; params: UpdateGroupParams },
+      { groupId: string; data: BodyType<GroupRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -285,7 +252,7 @@ export const useUpdateGroup = <TError = ErrorType<unknown>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateGroup>>,
   TError,
-  { groupId: string; data: BodyType<GroupRequest>; params: UpdateGroupParams },
+  { groupId: string; data: BodyType<GroupRequest> },
   TContext
 > => {
   return useMutation(getUpdateGroupMutationOptions(options), queryClient);
@@ -333,7 +300,7 @@ export const getListGroupsQueryKey = (params?: ListGroupsParams) => {
 
 export const getListGroupsQueryOptions = <
   TData = Awaited<ReturnType<typeof listGroups>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: ListGroupsParams,
   options?: {
@@ -356,11 +323,11 @@ export const getListGroupsQueryOptions = <
 };
 
 export type ListGroupsQueryResult = NonNullable<Awaited<ReturnType<typeof listGroups>>>;
-export type ListGroupsQueryError = ErrorType<unknown>;
+export type ListGroupsQueryError = ErrorType<ErrorResponse>;
 
 export function useListGroups<
   TData = Awaited<ReturnType<typeof listGroups>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params: undefined | ListGroupsParams,
   options: {
@@ -379,7 +346,7 @@ export function useListGroups<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useListGroups<
   TData = Awaited<ReturnType<typeof listGroups>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: ListGroupsParams,
   options?: {
@@ -398,7 +365,7 @@ export function useListGroups<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useListGroups<
   TData = Awaited<ReturnType<typeof listGroups>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: ListGroupsParams,
   options?: {
@@ -413,7 +380,7 @@ export function useListGroups<
 
 export function useListGroups<
   TData = Awaited<ReturnType<typeof listGroups>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   params?: ListGroupsParams,
   options?: {
@@ -431,18 +398,8 @@ export function useListGroups<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getCreateGroupUrl = (params: CreateGroupParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/v1/groups?${stringifiedParams}` : `/v1/groups`;
+export const getCreateGroupUrl = () => {
+  return `/v1/groups`;
 };
 
 /**
@@ -451,10 +408,9 @@ export const getCreateGroupUrl = (params: CreateGroupParams) => {
  */
 export const createGroup = async (
   groupRequest: GroupRequest,
-  params: CreateGroupParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<GroupDetailResponse> => {
-  return tmtFetch<GroupDetailResponse>(getCreateGroupUrl(params), {
+  return tmtFetch<GroupDetailResponse>(getCreateGroupUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
@@ -463,20 +419,20 @@ export const createGroup = async (
 };
 
 export const getCreateGroupMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createGroup>>,
     TError,
-    { data: BodyType<GroupRequest>; params: CreateGroupParams },
+    { data: BodyType<GroupRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createGroup>>,
   TError,
-  { data: BodyType<GroupRequest>; params: CreateGroupParams },
+  { data: BodyType<GroupRequest> },
   TContext
 > => {
   const mutationKey = ["createGroup"];
@@ -488,11 +444,11 @@ export const getCreateGroupMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createGroup>>,
-    { data: BodyType<GroupRequest>; params: CreateGroupParams }
+    { data: BodyType<GroupRequest> }
   > = (props) => {
-    const { data, params } = props ?? {};
+    const { data } = props ?? {};
 
-    return createGroup(data, params, requestOptions);
+    return createGroup(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -500,17 +456,17 @@ export const getCreateGroupMutationOptions = <
 
 export type CreateGroupMutationResult = NonNullable<Awaited<ReturnType<typeof createGroup>>>;
 export type CreateGroupMutationBody = BodyType<GroupRequest>;
-export type CreateGroupMutationError = ErrorType<unknown>;
+export type CreateGroupMutationError = ErrorType<ErrorResponse>;
 
 /**
  * @summary 그룹 만들기
  */
-export const useCreateGroup = <TError = ErrorType<unknown>, TContext = unknown>(
+export const useCreateGroup = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createGroup>>,
       TError,
-      { data: BodyType<GroupRequest>; params: CreateGroupParams },
+      { data: BodyType<GroupRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -519,7 +475,7 @@ export const useCreateGroup = <TError = ErrorType<unknown>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof createGroup>>,
   TError,
-  { data: BodyType<GroupRequest>; params: CreateGroupParams },
+  { data: BodyType<GroupRequest> },
   TContext
 > => {
   return useMutation(getCreateGroupMutationOptions(options), queryClient);
@@ -561,7 +517,7 @@ export const getGroupReviewsQueryKey = (groupId: string, params?: GroupReviewsPa
 
 export const getGroupReviewsQueryOptions = <
   TData = Awaited<ReturnType<typeof groupReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
   params?: GroupReviewsParams,
@@ -588,11 +544,11 @@ export const getGroupReviewsQueryOptions = <
 };
 
 export type GroupReviewsQueryResult = NonNullable<Awaited<ReturnType<typeof groupReviews>>>;
-export type GroupReviewsQueryError = ErrorType<unknown>;
+export type GroupReviewsQueryError = ErrorType<ErrorResponse>;
 
 export function useGroupReviews<
   TData = Awaited<ReturnType<typeof groupReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
   params: undefined | GroupReviewsParams,
@@ -612,7 +568,7 @@ export function useGroupReviews<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGroupReviews<
   TData = Awaited<ReturnType<typeof groupReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
   params?: GroupReviewsParams,
@@ -632,7 +588,7 @@ export function useGroupReviews<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGroupReviews<
   TData = Awaited<ReturnType<typeof groupReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
   params?: GroupReviewsParams,
@@ -648,7 +604,7 @@ export function useGroupReviews<
 
 export function useGroupReviews<
   TData = Awaited<ReturnType<typeof groupReviews>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
   groupId: string,
   params?: GroupReviewsParams,
@@ -667,7 +623,7 @@ export function useGroupReviews<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getNameAvailabilityUrl = (params: NameAvailabilityParams) => {
+export const getNameAvailabilityUrl = (params?: NameAvailabilityParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -688,7 +644,7 @@ export const getNameAvailabilityUrl = (params: NameAvailabilityParams) => {
  * @summary 그룹 이름 중복 확인
  */
 export const nameAvailability = async (
-  params: NameAvailabilityParams,
+  params?: NameAvailabilityParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<NameAvailabilityResponse> => {
   return tmtFetch<NameAvailabilityResponse>(getNameAvailabilityUrl(params), {
@@ -703,9 +659,9 @@ export const getNameAvailabilityQueryKey = (params?: NameAvailabilityParams) => 
 
 export const getNameAvailabilityQueryOptions = <
   TData = Awaited<ReturnType<typeof nameAvailability>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: NameAvailabilityParams,
+  params?: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -726,13 +682,13 @@ export const getNameAvailabilityQueryOptions = <
 };
 
 export type NameAvailabilityQueryResult = NonNullable<Awaited<ReturnType<typeof nameAvailability>>>;
-export type NameAvailabilityQueryError = ErrorType<unknown>;
+export type NameAvailabilityQueryError = ErrorType<ErrorResponse>;
 
 export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: NameAvailabilityParams,
+  params: undefined | NameAvailabilityParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>> &
       Pick<
@@ -749,9 +705,9 @@ export function useNameAvailability<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: NameAvailabilityParams,
+  params?: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>> &
       Pick<
@@ -768,9 +724,9 @@ export function useNameAvailability<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: NameAvailabilityParams,
+  params?: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -783,9 +739,9 @@ export function useNameAvailability<
 
 export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponse>,
 >(
-  params: NameAvailabilityParams,
+  params?: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;

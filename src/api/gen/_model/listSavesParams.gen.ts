@@ -7,7 +7,6 @@
  */
 
 export type ListSavesParams = {
-  userId: number;
   cursor?: string;
   limit?: number;
 };
