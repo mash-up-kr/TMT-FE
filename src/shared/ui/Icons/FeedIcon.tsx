@@ -1,4 +1,5 @@
 import FeedSvg from "./assets/feed.svg?react";
-import { createIcon } from "./createIcon";
+import FeedFillSvg from "./assets/grid-fill.svg?react";
+import { createFilledIcon } from "./createIcon";
 
-export const FeedIcon = createIcon(FeedSvg, FeedSvg);
+export const FeedIcon = createFilledIcon(FeedSvg, FeedFillSvg);

@@ -1,4 +1,5 @@
 import GroupSvg from "./assets/group.svg?react";
-import { createIcon } from "./createIcon";
+import GroupFillSvg from "./assets/group-fill.svg?react";
+import { createFilledIcon } from "./createIcon";
 
-export const GroupIcon = createIcon(GroupSvg, GroupSvg);
+export const GroupIcon = createFilledIcon(GroupSvg, GroupFillSvg);

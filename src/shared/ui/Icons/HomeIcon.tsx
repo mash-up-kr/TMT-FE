@@ -1,4 +1,5 @@
 import HomeSvg from "./assets/home.svg?react";
-import { createIcon } from "./createIcon";
+import HomeFillSvg from "./assets/home-fill.svg?react";
+import { createFilledIcon } from "./createIcon";
 
-export const HomeIcon = createIcon(HomeSvg, HomeSvg);
+export const HomeIcon = createFilledIcon(HomeSvg, HomeFillSvg);

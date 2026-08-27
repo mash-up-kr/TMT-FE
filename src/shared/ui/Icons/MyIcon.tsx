@@ -1,4 +1,5 @@
 import MySvg from "./assets/my.svg?react";
-import { createIcon } from "./createIcon";
+import MyFillSvg from "./assets/my-fill.svg?react";
+import { createFilledIcon } from "./createIcon";
 
-export const MyIcon = createIcon(MySvg, MySvg);
+export const MyIcon = createFilledIcon(MySvg, MyFillSvg);
