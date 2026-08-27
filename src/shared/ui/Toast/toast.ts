@@ -4,6 +4,7 @@ export type ToastType = "success" | "warning" | "error";
 
 export type ToastData = {
   type: ToastType;
+  bottomInset?: number;
 };
 
 /**
@@ -19,13 +20,22 @@ export function hasToastData(toast: Toast.Root.ToastObject<ToastData>): toast is
 /** 컴포넌트 밖에서도 토스트를 띄우기 위한 매니저. */
 export const toastManager = Toast.createToastManager<ToastData>();
 
-function show(type: ToastType, title: string, description?: string) {
-  return toastManager.add({ title, description, data: { type } });
+type ToastOptions = Readonly<{
+  description?: string;
+  bottomInset?: number;
+}>;
+
+type ToastContent = string | ToastOptions;
+
+function show(type: ToastType, title: string, content?: ToastContent) {
+  const options = typeof content === "string" ? { description: content } : content;
+
+  return toastManager.add({ title, description: options?.description, data: { type, ...options } });
 }
 
 /** 토스트를 띄운다. 반환값은 `toastManager.close(id)`로 직접 닫을 때 쓴다. */
 export const toast = {
-  success: (title: string, description?: string) => show("success", title, description),
-  warning: (title: string, description?: string) => show("warning", title, description),
-  error: (title: string, description?: string) => show("error", title, description),
+  success: (title: string, content?: ToastContent) => show("success", title, content),
+  warning: (title: string, content?: ToastContent) => show("warning", title, content),
+  error: (title: string, content?: ToastContent) => show("error", title, content),
 };
