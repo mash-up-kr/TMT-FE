@@ -1,7 +1,11 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useGroupDetail } from "@/api/gen/group/group.gen";
+import {
+  getGroupDetailQueryKey,
+  getListGroupsQueryKey,
+  useGroupDetail,
+} from "@/api/gen/group/group.gen";
 import { useJoin, useJoinPreview, useLeave } from "@/api/gen/group-membership/group-membership.gen";
 import { LoadingIcon } from "@/shared/ui/Icons";
 import { toReviewCardData } from "@/shared/utils/reviewMapper";
@@ -55,7 +59,10 @@ export function GroupDetailContainer({ groupId }: GroupDetailContainerProps) {
   const handleLeave = async () => {
     try {
       await leave.mutateAsync({ groupId });
-      await queryClient.invalidateQueries({ queryKey: ["/v1/groups"] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getGroupDetailQueryKey(groupId) }),
+        queryClient.invalidateQueries({ queryKey: getListGroupsQueryKey() }),
+      ]);
 
       return true;
     } catch {
