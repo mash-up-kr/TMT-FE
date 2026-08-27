@@ -43,17 +43,17 @@ export function LoadingCaption() {
         );
 
         /*
-         * 한 번에 한 글자씩 올랐다 내려오며 왼쪽에서 오른쪽으로 지나간다.
+         * 한 글자씩 올랐다 내려오며 왼쪽에서 오른쪽으로 지나간다. 데이터가 올 때까지 반복한다.
          *
-         * 파도를 tween의 repeat로 돌리면 앞 파도가 끝나기 전에 다음 파도가 겹쳐 출발한다.
-         * 반복을 timeline이 쥐고 있어야 한 줄을 다 지난 뒤 `gap`만큼 쉬었다 다시 시작한다.
+         * 오르내림을 글자마다 keyframes로 쥔다. tween 레벨에 yoyo/repeat를 걸면 스태거 전체가
+         * 역재생되어 파도가 끝까지 갔다가 되돌아온다 — 늘 왼쪽에서 다시 출발해야 한다.
+         * 반복은 timeline이 쥐고 있어야 한 줄을 다 지난 뒤 `gap`만큼 쉬었다 처음부터 간다.
          */
         const wave = gsap.timeline({ repeat: -1, repeatDelay: CAPTION_WAVE.gap }).to(CHAR, {
-          y: -CAPTION_WAVE.lift,
-          duration: CAPTION_WAVE.duration / 2,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: 1,
+          keyframes: [
+            { y: -CAPTION_WAVE.lift, duration: CAPTION_WAVE.duration / 2, ease: "sine.out" },
+            { y: 0, duration: CAPTION_WAVE.duration / 2, ease: "sine.in" },
+          ],
           stagger: CAPTION_WAVE.step,
         });
 
