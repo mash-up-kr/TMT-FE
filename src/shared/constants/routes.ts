@@ -29,6 +29,8 @@ export const ROUTES = {
   },
   PROFILE: {
     ME: "/profile/me",
+    /** `/profile/me`는 redirect만 하는 라우트라, 이동은 기본 탭으로 직접 보낸다. */
+    ME_REVIEWS: "/profile/me/reviews",
     TICKETS: "/profile/me/tickets",
     DETAIL: "/profile/[userId]",
   },

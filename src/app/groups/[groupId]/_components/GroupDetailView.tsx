@@ -23,8 +23,6 @@ import { GroupProfile } from "./GroupProfile";
 import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
 import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
 
-export const GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET = 90;
-
 type GroupDetailViewProps = {
   group: GroupDetailViewData;
   reviewList: GroupReviewListState;
@@ -57,9 +55,7 @@ export function GroupDetailView({
         setIsJoinSheetOpen(false);
         toast.success("그룹 가입이 완료되었어요.");
       } else {
-        toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.", {
-          bottomInset: GROUP_DETAIL_JOIN_GATE_TOAST_BOTTOM_INSET,
-        });
+        toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");
       }
 
       return didJoin;
@@ -109,7 +105,7 @@ export function GroupDetailView({
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
       <GNB
-        title={group.name}
+        title="그룹"
         className="shrink-0"
         left={
           <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>

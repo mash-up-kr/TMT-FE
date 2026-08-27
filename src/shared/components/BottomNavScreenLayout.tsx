@@ -5,16 +5,10 @@ import type { ScreenLayoutProps } from "@/shared/components/ScreenLayout";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { ROUTES } from "@/shared/constants/routes";
 import { BottomNav, type BottomNavValue } from "@/shared/ui/BottomNav";
+import { BOTTOM_NAV_ROUTES } from "./bottomNavRoutes";
 
 type BottomNavScreenLayoutProps = ScreenLayoutProps & {
   activeTab: BottomNavValue;
-};
-
-const TAB_ROUTES: Record<BottomNavValue, string> = {
-  home: ROUTES.ROOT,
-  feed: ROUTES.FEED,
-  group: ROUTES.GROUPS.ROOT,
-  my: ROUTES.PROFILE.ME,
 };
 
 export function BottomNavScreenLayout({
@@ -29,8 +23,8 @@ export function BottomNavScreenLayout({
       <div className="flex shrink-0 justify-center px-ds-20 py-ds-12">
         <BottomNav
           value={activeTab}
-          onValueChange={(value) => router.push(TAB_ROUTES[value])}
-          onCreate={() => router.push(ROUTES.GROUPS.NEW)}
+          onValueChange={(value) => router.push(BOTTOM_NAV_ROUTES[value])}
+          onCreate={() => router.push(ROUTES.REVIEWS.NEW)}
         />
       </div>
     </div>

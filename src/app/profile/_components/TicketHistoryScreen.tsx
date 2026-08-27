@@ -26,7 +26,7 @@ export function TicketHistoryScreen() {
         </IconButton>
       }
       right={
-        <IconButton aria-label="닫기" onClick={() => router.push(ROUTES.PROFILE.ME)}>
+        <IconButton aria-label="닫기" onClick={() => router.push(ROUTES.PROFILE.ME_REVIEWS)}>
           <CancelIcon size={28} />
         </IconButton>
       }

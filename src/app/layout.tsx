@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { AppToaster } from "@/shared/components/AppToaster";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
-import { Toaster } from "@/shared/ui/Toast";
 
 export const metadata: Metadata = {
   title: "딸깍",
@@ -25,7 +25,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <div className="app-frame">{children}</div>
-          <Toaster />
+          <AppToaster />
         </QueryProvider>
       </body>
     </html>

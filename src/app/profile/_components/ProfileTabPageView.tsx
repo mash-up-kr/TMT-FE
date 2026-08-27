@@ -25,23 +25,24 @@ export function ProfileTabPageView({
   beforeTabs,
   tabBody,
 }: ProfileTabPageViewProps) {
-  if (!summary.data) {
-    return <ProfileQueryFallback query={summary} errorMessage="프로필을 불러오지 못했어요" />;
-  }
+  // 요약이 실패하면 목록도 의미가 없으므로 프로필 쪽 실패를 먼저 알린다.
+  const tabArea = summary.isError ? (
+    <ProfileQueryFallback query={summary} errorMessage="프로필을 불러오지 못했어요" />
+  ) : tabPage.data ? (
+    <ProfileTabBody page={tabPage.data} {...tabBody} />
+  ) : (
+    <ProfileQueryFallback query={tabPage} errorMessage="목록을 불러오지 못했어요" />
+  );
 
   return (
     <ProfileBody
-      profile={summary.data.profile}
-      counts={summary.data.counts}
+      profile={summary.data?.profile}
+      counts={summary.data?.counts}
       activeTab={activeTab}
       basePath={basePath}
       beforeTabs={beforeTabs}
     >
-      {tabPage.data ? (
-        <ProfileTabBody page={tabPage.data} {...tabBody} />
-      ) : (
-        <ProfileQueryFallback query={tabPage} errorMessage="목록을 불러오지 못했어요" />
-      )}
+      {tabArea}
     </ProfileBody>
   );
 }

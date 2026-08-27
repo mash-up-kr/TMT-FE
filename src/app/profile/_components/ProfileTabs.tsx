@@ -11,7 +11,8 @@ const TAB_LABELS: Record<ProfileTab, string> = {
 type ProfileTabsProps = {
   activeTab: ProfileTab;
   basePath: string;
-  counts: ProfileTabCounts;
+  /** 없으면 라벨만 그린다. 개수를 몰라도 탭 이동은 동작해야 한다. */
+  counts?: ProfileTabCounts;
 };
 
 export function ProfileTabs({ activeTab, basePath, counts }: ProfileTabsProps) {
@@ -28,7 +29,7 @@ export function ProfileTabs({ activeTab, basePath, counts }: ProfileTabsProps) {
                 aria-current={isActive ? "page" : undefined}
                 className={chipStyles({ selected: isActive })}
               >
-                {`${TAB_LABELS[tab]} ${counts[tab]}`}
+                {counts ? `${TAB_LABELS[tab]} ${counts[tab]}` : TAB_LABELS[tab]}
               </Link>
             </li>
           );

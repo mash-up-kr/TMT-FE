@@ -1,7 +1,6 @@
 import Link from "next/link";
 import AvatarTomato from "@/shared/assets/avatar-tomato.svg?react";
 import imageFallback from "@/shared/assets/dummy-image.png";
-import profileFallback from "@/shared/assets/dummy-profile.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { placeDetailPath } from "@/shared/constants/routes";
 import type { ReviewCardData } from "@/shared/model/review";
@@ -98,18 +97,15 @@ function ReviewCardHeader({
 }
 
 function AuthorAvatar({ imageUrl }: { imageUrl: string | null }) {
-  if (!imageUrl) {
-    return (
-      <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-surface-groupcard-badge">
-        <AvatarTomato aria-hidden="true" className="h-[24.215px] w-[26.667px]" />
-      </div>
-    );
-  }
-
   return (
     <ImageWithFallback
       src={imageUrl}
-      fallbackSrc={profileFallback}
+      // 프로필이 없을 때와 이미지가 깨졌을 때가 같아야 한다. 예전엔 앞쪽만 뱃지였다.
+      fallback={
+        <div className="flex size-ds-40 shrink-0 items-center justify-center rounded-ds-full bg-surface-groupcard-badge">
+          <AvatarTomato aria-hidden="true" className="h-ds-24 w-auto" />
+        </div>
+      }
       alt=""
       width={40}
       height={40}

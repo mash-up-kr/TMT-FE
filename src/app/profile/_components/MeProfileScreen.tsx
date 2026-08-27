@@ -64,7 +64,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
             <>
               <PlaceRecommendationCard />
               <TicketCard
-                count={summary.data?.availableTicketCount ?? 0}
+                count={summary.data?.availableTicketCount}
                 href={ROUTES.PROFILE.TICKETS}
               />
             </>

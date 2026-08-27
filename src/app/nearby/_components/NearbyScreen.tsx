@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { AppShell } from "@/shared/components/AppShell/AppShell";
+import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
+import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { Chip } from "@/shared/ui/Chip";
+import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { useCurationChips } from "../_hooks/useCurationChips";
@@ -26,8 +28,9 @@ export function NearbyScreen() {
   const curationTagId = searchParams.get("curation");
 
   return (
-    <AppShell
-      tab="feed"
+    <BottomNavScreenLayout
+      activeTab="feed"
+      header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       floating={
         <ViewSwitchButton
           view={view}
@@ -55,7 +58,7 @@ export function NearbyScreen() {
         </div>
         <NearbyBody view={view} position={position} query={query} curationTagId={curationTagId} />
       </div>
-    </AppShell>
+    </BottomNavScreenLayout>
   );
 }
 
