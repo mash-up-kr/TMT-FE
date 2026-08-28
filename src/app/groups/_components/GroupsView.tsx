@@ -1,8 +1,11 @@
 "use client";
 
 import { useListGroups } from "@/api/gen/group/group.gen";
+import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
+import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { LoadingIcon } from "@/shared/ui/Icons";
+import { DEFAULT_SORT } from "../_constants/filters";
 import { useGroupFilters } from "../_hooks/useGroupFilters";
 import type { GroupListItem } from "../_model/group";
 import { toGroupListItem, toGroupListParams } from "../_utils/groupMappers";
@@ -26,6 +29,16 @@ export function GroupsView({ previewState }: GroupsViewProps) {
   );
 
   const groups = (data?.items ?? []).map(toGroupListItem).filter((item) => item !== null);
+
+  // ⚠️ UT2 임시 계측. 진입은 1-4, 검색어나 필터를 처음 건드리면 1-5로 넘어간다.
+  const hasFiltered =
+    filters.keyword.trim().length > 0 ||
+    filters.sort !== DEFAULT_SORT ||
+    filters.categoryId !== null ||
+    filters.regionTagIds.length > 0;
+
+  useUt2Step(UT2_STEPS.GROUP_TAB_ENTRY);
+  useUt2Step(UT2_STEPS.GROUP_TAB_FILTER, hasFiltered);
 
   return (
     <>

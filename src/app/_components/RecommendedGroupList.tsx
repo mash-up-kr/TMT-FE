@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { GroupCard } from "@/shared/components/GroupCard/GroupCard";
 import { ROUTES } from "@/shared/constants/routes";
+import { UT2_STEPS } from "@/shared/constants/ut2";
+import { setUt2Step, useUt2Step } from "@/shared/hooks/useUt2Step";
 import type { HomeRecommendedGroup } from "../_model/home";
 
 /** 시안이 300px 고정 카드를 가로로 넘기는 구조라 ds 스케일 대신 값으로 둔다. */
@@ -10,18 +14,33 @@ type RecommendedGroupListProps = {
   groups: HomeRecommendedGroup[];
 };
 
+/**
+ * ⚠️ UT2 계측 때문에 client 컴포넌트가 됐다. 계측을 걷어낼 때 `"use client"`와
+ * 스크롤·클릭 핸들러를 함께 지우면 원래대로 server 컴포넌트로 돌아간다.
+ */
 export function RecommendedGroupList({ groups }: RecommendedGroupListProps) {
-  if (groups.length === 0) {
+  const hasGroups = groups.length > 0;
+
+  useUt2Step(UT2_STEPS.HOME_CAROUSEL_VIEW, hasGroups);
+
+  if (!hasGroups) {
     return null;
   }
 
   return (
     <section className="flex flex-col gap-ds-12 bg-surface-primary p-ds-20">
       <h2 className="px-ds-4 text-heading-sm text-content-primary">혹시, 이런 그룹은 어떠세요?</h2>
-      <ul className="-mx-ds-20 flex gap-ds-12 overflow-x-auto px-ds-20">
+      <ul
+        className="-mx-ds-20 flex gap-ds-12 overflow-x-auto px-ds-20"
+        onScroll={() => setUt2Step(UT2_STEPS.HOME_CAROUSEL_COMPARE)}
+      >
         {groups.map((group) => (
           <li key={group.id} className={`${CARD_WIDTH} shrink-0`}>
-            <Link href={ROUTES.GROUPS.DETAIL(group.id)} className="block">
+            <Link
+              href={ROUTES.GROUPS.DETAIL(group.id)}
+              className="block"
+              onClick={() => setUt2Step(UT2_STEPS.GROUP_SELECT_FINAL)}
+            >
               <GroupCard
                 thumbnail={group.imageUrl}
                 title={group.name}
