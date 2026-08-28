@@ -5,6 +5,7 @@ import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { PlaceRating, PlaceSummary } from "@/shared/components/PlaceSummary/PlaceSummary";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
+import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon, HeartIcon, LoadingIcon } from "@/shared/ui/Icons";
@@ -20,19 +21,28 @@ type PlaceDetailScreenProps = {
 
 export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
   const detail = usePlaceDetail(placeId);
+  const favorite = usePlaceFavorite();
   const position = useCurrentPosition();
   const reviews = usePlaceReviews(placeId, position);
+  const isFavorite = detail.data?.isFavorite ?? false;
 
   return (
     <>
-      <PlaceDetailHeader />
+      <PlaceDetailHeader
+        favorite={{
+          isFavorite,
+          isPending: favorite.isPending,
+          isDisabled: detail.data === undefined || favorite.isPending,
+          onToggleAction: () => favorite.onToggleAction({ id: placeId, isFavorite }),
+        }}
+      />
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {detail.isPending ? (
           <output className="flex flex-1 items-center justify-center">
             <LoadingIcon className="animate-spin text-icon-secondary" />
           </output>
         ) : detail.isError ? (
-          <EmptyNotice title="가게 정보를 불러오지 못했어요." />
+          <PlaceDetailNotice title="가게 정보를 불러오지 못했어요." />
         ) : (
           <>
             <section className="flex shrink-0 flex-col">
@@ -58,7 +68,14 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
   );
 }
 
-function PlaceDetailHeader() {
+type PlaceDetailFavoriteAction = Readonly<{
+  isFavorite: boolean;
+  isPending: boolean;
+  isDisabled: boolean;
+  onToggleAction: () => void;
+}>;
+
+function PlaceDetailHeader({ favorite }: { favorite: PlaceDetailFavoriteAction }) {
   const router = useRouter();
 
   return (
@@ -73,8 +90,19 @@ function PlaceDetailHeader() {
       }
       right={
         <>
-          <IconButton aria-label="찜하기">
-            <HeartIcon size={28} />
+          <IconButton
+            aria-label={favorite.isFavorite ? "좋아요 해제" : "좋아요"}
+            aria-busy={favorite.isPending || undefined}
+            aria-pressed={favorite.isFavorite}
+            disabled={favorite.isDisabled}
+            className="disabled:opacity-50"
+            onClick={favorite.onToggleAction}
+          >
+            <HeartIcon
+              filled={favorite.isFavorite}
+              size={28}
+              className={favorite.isFavorite ? "text-icon-interactive-primary" : undefined}
+            />
           </IconButton>
           <IconButton aria-label="닫기" onClick={() => router.back()}>
             <CancelIcon size={28} />
@@ -98,13 +126,13 @@ function PlaceReviews({ count, isPending, isError, reviews }: PlaceReviewsProps)
       <h2 className="px-ds-20 text-heading-sm text-content-primary">리뷰 {count}</h2>
 
       {isPending ? (
-        <EmptyNotice title="리뷰를 불러오는 중이에요." />
+        <PlaceDetailNotice title="리뷰를 불러오는 중이에요." />
       ) : isError ? (
-        <EmptyNotice title="리뷰를 불러오지 못했어요." />
+        <PlaceDetailNotice title="리뷰를 불러오지 못했어요." />
       ) : !reviews || reviews.length === 0 ? (
-        <EmptyNotice title="아직 올라온 리뷰가 없어요.">
+        <PlaceDetailNotice title="아직 올라온 리뷰가 없어요.">
           이 가게의 첫 번째 리뷰를 남겨보세요!
-        </EmptyNotice>
+        </PlaceDetailNotice>
       ) : (
         <ul className="flex flex-col">
           {reviews.map((review) => (
@@ -115,5 +143,13 @@ function PlaceReviews({ count, isPending, isError, reviews }: PlaceReviewsProps)
         </ul>
       )}
     </section>
+  );
+}
+
+function PlaceDetailNotice({ title, children }: { title: string; children?: string }) {
+  return (
+    <div className="flex min-h-0 flex-1 items-center justify-center px-ds-20 py-ds-32">
+      <EmptyNotice title={title}>{children}</EmptyNotice>
+    </div>
   );
 }

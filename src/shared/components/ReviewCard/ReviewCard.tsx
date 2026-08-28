@@ -5,26 +5,39 @@ import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { placeDetailPath } from "@/shared/constants/routes";
 import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
+import { IconButton } from "@/shared/ui/IconButton";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 import { formatDistance } from "@/shared/utils/formatDistance";
 
 const RESTRICTED_CONTENT_CLASS = "pointer-events-none select-none blur-[4px]";
+const MASKED_CONTENT_CHARACTER = "가";
 
 type ReviewCardProps = {
   review: ReviewCardData;
   isContentRestricted?: boolean;
   maxVisibleTags?: number;
   hidePlace?: boolean;
+  favoriteAction?: ReviewCardFavoriteAction;
 };
+
+export type ReviewCardFavoriteAction = Readonly<{
+  isPending: boolean;
+  onToggleAction: (place: ReviewCardData["place"]) => void;
+}>;
 
 export function ReviewCard({
   review,
   isContentRestricted = false,
   maxVisibleTags,
   hidePlace = false,
+  favoriteAction,
 }: ReviewCardProps) {
+  const displayContent =
+    review.content ??
+    (isContentRestricted ? MASKED_CONTENT_CHARACTER.repeat(review.contentLength) : null);
+
   return (
     <article className="flex flex-col bg-surface-primary">
       <ReviewCardHeader
@@ -40,7 +53,7 @@ export function ReviewCard({
           cons={review.cons}
           isContentRestricted={isContentRestricted}
         />
-        {review.content ? (
+        {displayContent ? (
           <p
             aria-hidden={isContentRestricted || undefined}
             className={cn(
@@ -48,11 +61,11 @@ export function ReviewCard({
               isContentRestricted && RESTRICTED_CONTENT_CLASS,
             )}
           >
-            {review.content}
+            {displayContent}
           </p>
         ) : null}
         <TagList tags={review.tags} maxVisible={maxVisibleTags} />
-        {hidePlace ? null : <PlaceRow place={review.place} />}
+        {hidePlace ? null : <PlaceRow place={review.place} favoriteAction={favoriteAction} />}
       </div>
     </article>
   );
@@ -211,16 +224,45 @@ function TagList({ tags, maxVisible }: TagListProps) {
   );
 }
 
-function PlaceRow({ place }: { place: ReviewCardData["place"] }) {
+type PlaceRowProps = {
+  place: ReviewCardData["place"];
+  favoriteAction?: ReviewCardFavoriteAction;
+};
+
+function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
+  if (favoriteAction) {
+    const isFavorite = place.isFavorite ?? false;
+
+    return (
+      <div className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8">
+        <Link href={placeDetailPath(place.id)} className="flex min-w-0 flex-1 flex-col">
+          <PlaceInfo place={place} />
+        </Link>
+        <IconButton
+          aria-label={`${place.name} ${isFavorite ? "좋아요 해제" : "좋아요"}`}
+          aria-busy={favoriteAction.isPending || undefined}
+          aria-pressed={isFavorite}
+          disabled={favoriteAction.isPending}
+          className="shrink-0 disabled:opacity-50"
+          onClick={() => favoriteAction.onToggleAction(place)}
+        >
+          <HeartIcon
+            filled={isFavorite}
+            aria-hidden="true"
+            size={24}
+            className="text-icon-interactive-primary"
+          />
+        </IconButton>
+      </div>
+    );
+  }
+
   return (
     <Link
       href={placeDetailPath(place.id)}
       className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8"
     >
-      <div className="flex min-w-0 flex-1 flex-col">
-        <p className="truncate text-body-md-bold text-content-primary">{place.name}</p>
-        <p className="truncate text-body-sm-medium text-content-secondary">{place.regionName}</p>
-      </div>
+      <PlaceInfo place={place} />
       <HeartIcon
         filled={place.isFavorite}
         aria-hidden="true"
@@ -228,5 +270,14 @@ function PlaceRow({ place }: { place: ReviewCardData["place"] }) {
         className="shrink-0 text-icon-interactive-primary"
       />
     </Link>
+  );
+}
+
+function PlaceInfo({ place }: { place: ReviewCardData["place"] }) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col">
+      <p className="truncate text-body-md-bold text-content-primary">{place.name}</p>
+      <p className="truncate text-body-sm-medium text-content-secondary">{place.regionName}</p>
+    </div>
   );
 }

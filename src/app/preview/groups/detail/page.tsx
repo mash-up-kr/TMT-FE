@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  GroupDetailContainer,
   GroupDetailError,
   GroupDetailLoading,
-} from "@/app/groups/[groupId]/_components/GroupDetailContainer";
+} from "@/app/groups/[groupId]/_components/GroupDetailFeedback";
+import { GroupDetailScreen } from "@/app/groups/[groupId]/_components/GroupDetailScreen";
 import { GroupDetailView } from "@/app/groups/[groupId]/_components/GroupDetailView";
 import { GroupLeaveModal } from "@/app/groups/[groupId]/_components/GroupLeaveModal";
 import { JoinGroupTicketSheet } from "@/app/groups/[groupId]/_components/JoinGroupTicketSheet";
@@ -147,8 +147,8 @@ const SCENARIOS = [
   },
   {
     section: "공통 상태",
-    key: "first-review-prompt",
-    label: "생성 · 첫 리뷰 유도",
+    key: "member-empty-reviews",
+    label: "멤버 · 리뷰 0",
     isMember: true,
     isJoinable: true,
     availableTicketCount: 1,
@@ -229,7 +229,7 @@ export default function GroupDetailPreviewPage() {
   return (
     <>
       {scenario.key === "api" ? (
-        <GroupDetailContainer groupId={API_GROUP_ID} />
+        <GroupDetailScreen groupId={API_GROUP_ID} />
       ) : scenario.key === "loading" ? (
         <GroupDetailLoading />
       ) : scenario.key === "error" ? (
@@ -273,10 +273,7 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
     ...MOCK_GROUP,
     isMember: scenario.isMember,
     isJoinable: scenario.isJoinable,
-    isOwner:
-      scenario.key === "leave-owner-error" ||
-      scenario.key === "empty-reviews" ||
-      scenario.key === "first-review-prompt",
+    isOwner: scenario.key === "leave-owner-error" || scenario.key === "empty-reviews",
     availableTicketCount: scenario.availableTicketCount,
   };
   const joinAction = scenario.joinSheetState
@@ -285,6 +282,9 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
   const leaveAction = scenario.leaveModalState
     ? PREVIEW_LEAVE_ACTIONS[scenario.leaveModalState]
     : PREVIEW_LEAVE_ACTION;
+  const reviews = GROUP_DETAIL_PAGE_REVIEWS.map((review) =>
+    scenario.isMember ? review : { ...review, content: null, cons: null },
+  );
 
   return (
     <>
@@ -292,14 +292,13 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
         group={group}
         reviewList={{
           reviews:
-            scenario.key === "empty-reviews" || scenario.key === "first-review-prompt"
+            scenario.key === "empty-reviews" || scenario.key === "member-empty-reviews"
               ? []
-              : GROUP_DETAIL_PAGE_REVIEWS,
+              : reviews,
           hasNextPage: false,
         }}
         joinAction={joinAction}
         leaveAction={leaveAction}
-        initialFirstReviewSheetOpen={scenario.key === "first-review-prompt"}
       />
       {scenario.joinSheetState ? (
         <JoinGroupTicketSheet

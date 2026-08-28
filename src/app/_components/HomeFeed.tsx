@@ -1,5 +1,8 @@
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
-import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
+import {
+  ReviewCard,
+  type ReviewCardFavoriteAction,
+} from "@/shared/components/ReviewCard/ReviewCard";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import type { FeedReview } from "../_model/home";
 
@@ -8,6 +11,7 @@ type HomeFeedProps = {
   isPending: boolean;
   isError: boolean;
   reviews: FeedReview[] | undefined;
+  favoriteAction?: ReviewCardFavoriteAction;
 };
 
 type FeedNotice = {
@@ -55,9 +59,11 @@ export function HomeFeed(props: HomeFeedProps) {
         <h2 className="bg-surface-primary px-ds-20 pt-ds-20 pb-ds-12 text-heading-md text-content-primary">
           최근 게시물
         </h2>
-        <EmptyNotice className="bg-surface-primary px-ds-20" title={notice.title}>
-          {notice.description}
-        </EmptyNotice>
+        <div className="flex min-h-0 flex-1 items-center justify-center bg-surface-primary px-ds-20 py-ds-32">
+          <div className="translate-y-[calc(0px_-_clamp(0px,calc(50dvh_-_320px),var(--spacing-ds-64)))]">
+            <EmptyNotice title={notice.title}>{notice.description}</EmptyNotice>
+          </div>
+        </div>
       </section>
     );
   }
@@ -67,7 +73,7 @@ export function HomeFeed(props: HomeFeedProps) {
       <ul className="flex flex-1 flex-col gap-ds-4">
         {props.reviews?.map((review) => (
           <li key={review.id}>
-            <ReviewCard review={review} />
+            <ReviewCard review={review} favoriteAction={props.favoriteAction} />
           </li>
         ))}
       </ul>

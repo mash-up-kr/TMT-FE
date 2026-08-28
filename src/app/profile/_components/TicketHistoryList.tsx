@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { buttonStyles } from "@/shared/ui/Button";
 import type { ProfileTicketHistoryItem } from "../_model/profile";
+import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
 import { TicketHistoryItem } from "./TicketHistoryItem";
 
 type TicketHistoryListProps = {
@@ -13,9 +13,8 @@ type TicketHistoryListProps = {
 export function TicketHistoryList({ items, getSaveHref, writeReviewHref }: TicketHistoryListProps) {
   if (items.length === 0) {
     return (
-      <EmptyNotice
+      <ProfileEmptyNotice
         title="아직 작성한 리뷰가 없어요"
-        className="py-ds-48"
         action={
           <Link
             href={writeReviewHref}
@@ -26,7 +25,7 @@ export function TicketHistoryList({ items, getSaveHref, writeReviewHref }: Ticke
         }
       >
         리뷰를 작성하면 티켓을 받을 수 있어요.
-      </EmptyNotice>
+      </ProfileEmptyNotice>
     );
   }
 

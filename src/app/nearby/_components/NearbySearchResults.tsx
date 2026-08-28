@@ -1,8 +1,8 @@
 "use client";
 
-import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { usePlaceSearch } from "../_hooks/usePlaceSearch";
+import { NearbyNotice } from "./NearbyNotice";
 import { PlaceResultCard } from "./PlaceResultCard";
 
 type NearbySearchResultsProps = {
@@ -16,22 +16,22 @@ export function NearbySearchResults({ position, query, curationTagId }: NearbySe
   const { data, isPending, isError } = usePlaceSearch({ query, curationTagId, position });
 
   if (position === null || isPending) {
-    return <EmptyNotice className="bg-surface-primary px-ds-20" title="검색 중이에요." />;
+    return <NearbyNotice title="검색 중이에요." />;
   }
 
   if (isError) {
-    return <EmptyNotice className="bg-surface-primary px-ds-20" title="검색에 실패했어요." />;
+    return <NearbyNotice title="검색에 실패했어요." />;
   }
 
   if (!data || data.length === 0) {
     return (
-      <EmptyNotice className="bg-surface-primary px-ds-20" title="검색 결과가 없어요.">
+      <NearbyNotice title="검색 결과가 없어요.">
         {query
           ? "다른 이름이나 태그로 찾아보세요!"
           : position.isFallback
             ? "위치 권한이 없어 강남역 주변 1km에서만 찾았어요."
             : "내 위치에서 1km 안에서만 찾았어요."}
-      </EmptyNotice>
+      </NearbyNotice>
     );
   }
 

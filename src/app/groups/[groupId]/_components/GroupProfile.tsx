@@ -10,7 +10,7 @@ type GroupProfileProps = {
 
 export function GroupProfile({ group }: GroupProfileProps) {
   return (
-    <section className="bg-surface-primary">
+    <section className="shrink-0 bg-surface-primary">
       <div className="h-[140px] overflow-hidden bg-surface-secondary">
         <ImageWithFallback
           src={group.coverImageUrl}

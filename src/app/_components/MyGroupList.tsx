@@ -1,5 +1,5 @@
 import Link from "next/link";
-import fallbackImage from "@/shared/assets/dummy-small.png";
+import fallbackImage from "@/shared/assets/dummy.png";
 import { ROUTES } from "@/shared/constants/routes";
 import { PlusIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";

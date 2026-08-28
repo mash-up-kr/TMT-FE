@@ -10,6 +10,4 @@ export interface Gate {
   gated: boolean;
   /** @nullable */
   reason?: string | null;
-  /** @nullable */
-  visibleCount?: number | null;
 }

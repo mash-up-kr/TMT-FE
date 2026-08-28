@@ -12,6 +12,7 @@ export interface PlaceDetail {
   photoUrls: string[];
   roadAddress: string;
   phoneNumber: string | null;
+  isFavorite: boolean;
 }
 
 export function toPlaceDetail(response: PlaceDetailResponse): PlaceDetail {
@@ -25,6 +26,7 @@ export function toPlaceDetail(response: PlaceDetailResponse): PlaceDetail {
     photoUrls: response.photos.map((photo) => photo.url),
     roadAddress: response.roadAddress,
     phoneNumber: response.phoneNumber ?? null,
+    isFavorite: response.isFavorite,
   };
 }
 

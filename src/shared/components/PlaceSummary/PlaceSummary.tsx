@@ -1,7 +1,9 @@
 "use client";
 
+import fallbackImage from "@/shared/assets/dummy-image.png";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { MapPinIcon, PhoneIcon, StarIcon } from "@/shared/ui/Icons";
+import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 
 /** 시안 실측 120px 정사각 스트립. ds 스케일에 없어 값으로 둔다. */
 const PHOTO_SIZE = "size-[120px]";
@@ -36,7 +38,7 @@ export function PlaceSummary({ place, onMapClick, hidePhone = false }: PlaceSumm
 
       <div className="flex flex-col gap-ds-12 px-ds-20 py-ds-20 text-body-md-medium text-content-tertiary">
         <p className="flex items-center gap-ds-4">
-          <MapPinIcon size={20} className="shrink-0" />
+          <MapPinIcon size={20} className="shrink-0 text-icon-interactive-primary" />
           <span className="min-w-0 truncate">{place.roadAddress}</span>
           <span aria-hidden="true" className="h-ds-12 w-px shrink-0 bg-stroke-primary" />
           <button
@@ -78,13 +80,12 @@ function PhotoStrip({ urls }: { urls: string[] }) {
           key={url}
           className={`${PHOTO_SIZE} shrink-0 overflow-hidden rounded-ds-lg bg-surface-secondary`}
         >
-          {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-          <img
+          <ImageWithFallback
             src={url}
+            fallbackSrc={fallbackImage}
             alt=""
             draggable={false}
             className="size-full object-cover"
-            loading="lazy"
           />
         </li>
       ))}

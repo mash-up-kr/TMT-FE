@@ -1,8 +1,8 @@
 "use client";
 
-import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import type { ProfileFavoriteItem } from "../_model/profile";
 import { FavoriteListItem } from "./FavoriteListItem";
+import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
 
 type FavoriteListProps = {
   places: readonly ProfileFavoriteItem[];
@@ -18,7 +18,7 @@ export function FavoriteList({
   pendingPlaceId,
 }: FavoriteListProps) {
   if (places.length === 0) {
-    return <EmptyNotice title="아직 좋아요한 매장이 없어요" className="py-ds-48" />;
+    return <ProfileEmptyNotice title="아직 좋아요한 매장이 없어요" />;
   }
 
   return (

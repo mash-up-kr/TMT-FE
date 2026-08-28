@@ -40,7 +40,7 @@ export function GroupsView({ previewState }: GroupsViewProps) {
           onRegionsChange={setRegions}
         />
       </div>
-      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-ds-20 pb-ds-20">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-ds-20">
         <GroupsResult
           groups={groups}
           isPending={previewState === "pending" || (!previewState && isPending)}

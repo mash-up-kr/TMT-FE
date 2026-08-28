@@ -1,6 +1,6 @@
-import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import type { ProfileGroupItem, ProfileViewer } from "../_model/profile";
 import { GroupListItem } from "./GroupListItem";
+import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
 
 type GroupListProps = {
   groups: readonly ProfileGroupItem[];
@@ -10,7 +10,7 @@ type GroupListProps = {
 
 export function GroupList({ groups, getGroupHref, viewer }: GroupListProps) {
   if (groups.length === 0) {
-    return <EmptyNotice title="아직 가입한 그룹이 없어요" className="py-ds-48" />;
+    return <ProfileEmptyNotice title="아직 가입한 그룹이 없어요" />;
   }
 
   return (

@@ -22,6 +22,8 @@ const TAG_RENAMES: Record<string, string> = {
   "리뷰 작성": "review-write",
   "리뷰 상세": "review-detail",
   "저장·리뷰 작성": "save",
+  "마이페이지·타인 프로필": "profile",
+  "매장 추천": "recommendation",
   미디어: "media",
   큐레이션: "curation",
   홈: "home",

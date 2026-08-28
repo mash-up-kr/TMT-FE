@@ -497,7 +497,7 @@ export const getGroupReviewsUrl = (groupId: string, params?: GroupReviewsParams)
 };
 
 /**
- * 게이트가 걸리는 곳 — 미가입·비회원은 최신 3건, 가입자는 전체 (G1). 판정은 가입 여부 하나다.
+ * 미가입·비회원도 전체를 커서 페이징으로 본다. 대신 본문과 단점 요약을 서버가 마스킹한다 (G1).
  * @summary 그룹 상세 리뷰 목록
  */
 export const groupReviews = async (
