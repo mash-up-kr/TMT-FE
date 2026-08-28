@@ -7,6 +7,7 @@ export function toGroupDetailViewData(
   joinPreview?: JoinPreviewResponse,
 ): GroupDetailViewData {
   return {
+    id: detail.groupId,
     name: detail.name,
     oneLineDescription: detail.oneLineDescription,
     description: detail.description ?? null,

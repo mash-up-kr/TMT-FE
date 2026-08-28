@@ -14,6 +14,7 @@ export type GroupProfileData = {
 };
 
 export type GroupDetailViewData = GroupProfileData & {
+  id: string;
   availableTicketCount: number;
   isJoinable: boolean;
   isOwner: boolean;

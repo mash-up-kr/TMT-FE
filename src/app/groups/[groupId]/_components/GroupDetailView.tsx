@@ -8,7 +8,7 @@ import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { ChevronLeftIcon, LeaveGroupIcon } from "@/shared/ui/Icons";
+import { ChevronLeftIcon, LeaveGroupIcon, SettingsIcon } from "@/shared/ui/Icons";
 import { toast } from "@/shared/ui/Toast";
 import type {
   GroupDetailViewData,
@@ -101,7 +101,14 @@ export function GroupDetailView({
           </IconButton>
         }
         right={
-          group.isMember ? (
+          group.isOwner ? (
+            <IconButton
+              aria-label="그룹 설정"
+              onClick={() => router.push(ROUTES.GROUPS.EDIT(group.id))}
+            >
+              <SettingsIcon size={28} />
+            </IconButton>
+          ) : group.isMember ? (
             <IconButton aria-label="그룹 나가기" onClick={() => setIsLeaveModalOpen(true)}>
               <LeaveGroupIcon size={24} />
             </IconButton>

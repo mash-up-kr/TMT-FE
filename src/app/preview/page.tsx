@@ -32,6 +32,11 @@ const PREVIEWS = [
     title: "그룹 상세",
     description: "가입·탈퇴와 상세 화면 상태",
   },
+  {
+    href: "/preview/groups/edit",
+    title: "그룹 편집",
+    description: "편집 폼, 삭제 확인, 저장·삭제 상태",
+  },
 ] as const;
 
 export default function PreviewIndexPage() {

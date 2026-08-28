@@ -6,6 +6,7 @@ import reviewSushi from "./assets/review-sushi.png";
 
 const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailViewData> = {
   group_1: {
+    id: "group_1",
     name: "성수 커피 탐험대",
     oneLineDescription: "조용히 커피 맛에 집중하는 사람들",
     description: "아직 뚫리지 않은 느좋 카페들을 다 모아보고 싶어요. 좋은 데 있으면 공유합시더.",
@@ -22,6 +23,7 @@ const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailViewData> = {
     isMember: false,
   },
   group_2: {
+    id: "group_2",
     name: "나는야 초밥왕",
     oneLineDescription: "회전 초밥부터 오마카세까지",
     description: "맛있는 초밥을 찾아다니는 사람들과 새로운 가게를 함께 발견해요.",
