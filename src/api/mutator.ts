@@ -17,6 +17,27 @@ export class TmtApiError<TBody = unknown> extends Error {
 export type ErrorType<Error> = TmtApiError<Error>;
 export type BodyType<BodyData> = BodyData;
 
+export function getTmtApiErrorTitle(error: unknown): string | undefined {
+  if (!(error instanceof TmtApiError)) {
+    return undefined;
+  }
+
+  const { body } = error;
+
+  if (typeof body !== "object" || body === null || !("title" in body)) {
+    return undefined;
+  }
+
+  const { title } = body;
+
+  if (typeof title !== "string") {
+    return undefined;
+  }
+
+  const trimmedTitle = title.trim();
+  return trimmedTitle.length > 0 ? trimmedTitle : undefined;
+}
+
 function resolveUrl(url: string): string {
   return /^https?:\/\//.test(url) ? url : `${BASE_URL}${url}`;
 }

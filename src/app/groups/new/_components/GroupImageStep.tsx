@@ -1,6 +1,7 @@
 "use client";
 
 import { type ChangeEvent, useId } from "react";
+import { GROUP_IMAGE_ACCEPT } from "@/app/groups/_utils/groupImage";
 import { PlusIcon, XCircleIcon } from "@/shared/ui/Icons";
 import { GroupCreateStepHeader } from "./GroupCreateStepHeader";
 
@@ -53,7 +54,7 @@ export function GroupImageStep({
             <input
               id={inputId}
               type="file"
-              accept="image/*"
+              accept={GROUP_IMAGE_ACCEPT}
               className="sr-only"
               onChange={handleChange}
             />

@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { getTmtApiErrorTitle } from "@/api/mutator";
+import { getGroupImageUploadErrorTitle } from "@/app/groups/_utils/groupImage";
 import { ROUTES } from "@/shared/constants/routes";
 import { toast } from "@/shared/ui/Toast";
 import { GroupCreateScreen } from "./_components/GroupCreateScreen";
@@ -16,8 +18,12 @@ export default function GroupCreatePage() {
       const createdGroup = await groupCreate.create(submission);
       toast.success("그룹 생성이 완료되었어요.");
       router.replace(ROUTES.GROUPS.DETAIL(createdGroup.id));
-    } catch {
-      toast.error("그룹 생성에 실패했어요. 다시 시도해 주세요.");
+    } catch (error) {
+      toast.error(
+        getGroupImageUploadErrorTitle(error) ??
+          getTmtApiErrorTitle(error) ??
+          "그룹 생성에 실패했어요. 다시 시도해 주세요.",
+      );
     }
   };
 
