@@ -5,6 +5,7 @@ import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { PlaceRating, PlaceSummary } from "@/shared/components/PlaceSummary/PlaceSummary";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
+import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon, HeartIcon, LoadingIcon } from "@/shared/ui/Icons";
@@ -20,12 +21,21 @@ type PlaceDetailScreenProps = {
 
 export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
   const detail = usePlaceDetail(placeId);
+  const favorite = usePlaceFavorite();
   const position = useCurrentPosition();
   const reviews = usePlaceReviews(placeId, position);
+  const isFavorite = detail.data?.isFavorite ?? false;
 
   return (
     <>
-      <PlaceDetailHeader />
+      <PlaceDetailHeader
+        favorite={{
+          isFavorite,
+          isPending: favorite.isPending,
+          isDisabled: detail.data === undefined || favorite.isPending,
+          onToggleAction: () => favorite.onToggleAction({ id: placeId, isFavorite }),
+        }}
+      />
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {detail.isPending ? (
           <output className="flex flex-1 items-center justify-center">
@@ -58,7 +68,14 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
   );
 }
 
-function PlaceDetailHeader() {
+type PlaceDetailFavoriteAction = Readonly<{
+  isFavorite: boolean;
+  isPending: boolean;
+  isDisabled: boolean;
+  onToggleAction: () => void;
+}>;
+
+function PlaceDetailHeader({ favorite }: { favorite: PlaceDetailFavoriteAction }) {
   const router = useRouter();
 
   return (
@@ -73,8 +90,19 @@ function PlaceDetailHeader() {
       }
       right={
         <>
-          <IconButton aria-label="찜하기">
-            <HeartIcon size={28} />
+          <IconButton
+            aria-label={favorite.isFavorite ? "좋아요 해제" : "좋아요"}
+            aria-busy={favorite.isPending || undefined}
+            aria-pressed={favorite.isFavorite}
+            disabled={favorite.isDisabled}
+            className="disabled:opacity-50"
+            onClick={favorite.onToggleAction}
+          >
+            <HeartIcon
+              filled={favorite.isFavorite}
+              size={28}
+              className={favorite.isFavorite ? "text-icon-interactive-primary" : undefined}
+            />
           </IconButton>
           <IconButton aria-label="닫기" onClick={() => router.back()}>
             <CancelIcon size={28} />
