@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { usePlaceSearch } from "../_hooks/usePlaceSearch";
 import { NearbyNotice } from "./NearbyNotice";
@@ -14,6 +16,21 @@ type NearbySearchResultsProps = {
 /** 검색어·칩이 있을 때의 가게 카드 목록 (명세 §2-2). */
 export function NearbySearchResults({ position, query, curationTagId }: NearbySearchResultsProps) {
   const { data, isPending, isError } = usePlaceSearch({ query, curationTagId, position });
+  const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({});
+  const favorite = usePlaceFavorite({
+    onSuccessAction: (result) => {
+      setFavoriteOverrides((current) => ({ ...current, [result.placeId]: result.isFavorite }));
+    },
+  });
+  const places = useMemo(
+    () =>
+      data?.map((place) => {
+        const isFavorite = favoriteOverrides[place.id];
+
+        return isFavorite === undefined ? place : { ...place, isFavorite };
+      }),
+    [data, favoriteOverrides],
+  );
 
   if (position === null || isPending) {
     return <NearbyNotice title="검색 중이에요." />;
@@ -23,7 +40,7 @@ export function NearbySearchResults({ position, query, curationTagId }: NearbySe
     return <NearbyNotice title="검색에 실패했어요." />;
   }
 
-  if (!data || data.length === 0) {
+  if (!places || places.length === 0) {
     return (
       <NearbyNotice title="검색 결과가 없어요.">
         {query
@@ -37,9 +54,15 @@ export function NearbySearchResults({ position, query, curationTagId }: NearbySe
 
   return (
     <ul className="flex flex-1 flex-col gap-ds-4">
-      {data.map((place) => (
+      {places.map((place) => (
         <li key={place.id}>
-          <PlaceResultCard place={place} />
+          <PlaceResultCard
+            place={place}
+            favoriteAction={{
+              isPending: favorite.isPending,
+              onToggleAction: favorite.onToggleAction,
+            }}
+          />
         </li>
       ))}
     </ul>

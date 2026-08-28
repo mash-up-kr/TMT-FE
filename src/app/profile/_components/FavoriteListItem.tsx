@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import dummyImage from "@/shared/assets/dummy-image.png";
-import { IconButton } from "@/shared/ui/IconButton";
-import { HeartIcon } from "@/shared/ui/Icons";
+import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { ProfileFavoriteItem } from "../_model/profile";
 
@@ -38,15 +37,12 @@ export function FavoriteListItem({ place, href, onUnfavorite, pending }: Favorit
         </span>
       </Link>
       {onUnfavorite && (
-        <IconButton
-          aria-label={`${place.name} 좋아요 해제`}
-          aria-busy={pending}
-          disabled={pending}
-          className="shrink-0 disabled:opacity-50"
-          onClick={() => onUnfavorite(place.placeId)}
-        >
-          <HeartIcon filled size={28} className="text-icon-interactive-primary" />
-        </IconButton>
+        <PlaceFavoriteButton
+          placeName={place.name}
+          isFavorite
+          isPending={pending}
+          onToggleAction={() => onUnfavorite(place.placeId)}
+        />
       )}
     </li>
   );

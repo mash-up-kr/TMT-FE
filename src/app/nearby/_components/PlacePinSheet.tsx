@@ -1,11 +1,13 @@
 "use client";
 
+import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { PlaceRating, PlaceSummary } from "@/shared/components/PlaceSummary/PlaceSummary";
+import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, HeartIcon, LoadingIcon } from "@/shared/ui/Icons";
+import { CancelIcon, LoadingIcon } from "@/shared/ui/Icons";
 import { usePinPlace } from "../_hooks/usePinPlace";
 import type { PinPlace } from "../_utils/nearbyMapper";
 
@@ -20,6 +22,7 @@ type PlacePinSheetProps = {
  */
 export function PlacePinSheet({ placeId, onClose }: PlacePinSheetProps) {
   const { data, isPending, isError } = usePinPlace(placeId);
+  const favorite = usePlaceFavorite();
 
   return (
     <BottomSheet
@@ -32,7 +35,14 @@ export function PlacePinSheet({ placeId, onClose }: PlacePinSheetProps) {
       }}
       footer={data ? <PinSheetActions place={data} /> : undefined}
     >
-      <PinSheetBody place={data} isPending={isPending} isError={isError} onClose={onClose} />
+      <PinSheetBody
+        place={data}
+        isPending={isPending}
+        isError={isError}
+        onClose={onClose}
+        onToggleFavoriteAction={favorite.onToggleAction}
+        isFavoritePending={favorite.isPending}
+      />
     </BottomSheet>
   );
 }
@@ -42,9 +52,18 @@ type PinSheetBodyProps = {
   isPending: boolean;
   isError: boolean;
   onClose: () => void;
+  isFavoritePending: boolean;
+  onToggleFavoriteAction: (place: { id: string; isFavorite: boolean }) => void;
 };
 
-function PinSheetBody({ place, isPending, isError, onClose }: PinSheetBodyProps) {
+function PinSheetBody({
+  place,
+  isPending,
+  isError,
+  onClose,
+  isFavoritePending,
+  onToggleFavoriteAction,
+}: PinSheetBodyProps) {
   if (isPending) {
     return (
       <output className="flex items-center justify-center py-ds-32">
@@ -64,7 +83,12 @@ function PinSheetBody({ place, isPending, isError, onClose }: PinSheetBodyProps)
   return (
     // PlaceSummary가 자체 좌우 여백을 가져 시트 본문 여백과 겹친다.
     <div className="-mx-ds-20">
-      <PinSheetHeader place={place} onClose={onClose} />
+      <PinSheetHeader
+        place={place}
+        onClose={onClose}
+        isFavoritePending={isFavoritePending}
+        onToggleFavoriteAction={onToggleFavoriteAction}
+      />
       <PlaceSummary place={place} hidePhone />
     </div>
   );
@@ -73,17 +97,29 @@ function PinSheetBody({ place, isPending, isError, onClose }: PinSheetBodyProps)
 type PinSheetHeaderProps = {
   place: PinPlace;
   onClose: () => void;
+  isFavoritePending: boolean;
+  onToggleFavoriteAction: (place: { id: string; isFavorite: boolean }) => void;
 };
 
-function PinSheetHeader({ place, onClose }: PinSheetHeaderProps) {
+function PinSheetHeader({
+  place,
+  onClose,
+  isFavoritePending,
+  onToggleFavoriteAction,
+}: PinSheetHeaderProps) {
   return (
     <div className="flex items-center gap-ds-4 px-ds-20 pb-ds-12">
       <h2 className="truncate text-heading-sm text-content-primary">{place.name}</h2>
       <PlaceRating value={place.averageRating} />
       <div className="ml-auto flex shrink-0 items-center gap-ds-16">
-        <IconButton aria-label="찜하기">
-          <HeartIcon size={28} />
-        </IconButton>
+        <PlaceFavoriteButton
+          placeName={place.name}
+          isFavorite={place.isFavorite}
+          isPending={isFavoritePending}
+          onToggleAction={() =>
+            onToggleFavoriteAction({ id: place.id, isFavorite: place.isFavorite })
+          }
+        />
         <IconButton aria-label="닫기" onClick={onClose}>
           <CancelIcon size={28} />
         </IconButton>

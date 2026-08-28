@@ -1,10 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
-import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
+import {
+  ReviewCard,
+  type ReviewCardFavoriteAction,
+} from "@/shared/components/ReviewCard/ReviewCard";
 import { ROUTES } from "@/shared/constants/routes";
+import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -40,7 +44,28 @@ export function GroupDetailView({
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isFirstReviewSheetDismissed, setIsFirstReviewSheetDismissed] = useState(false);
+  const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({});
+  const favorite = usePlaceFavorite({
+    onSuccessAction: (result) => {
+      setFavoriteOverrides((current) => ({ ...current, [result.placeId]: result.isFavorite }));
+    },
+  });
   const isNonMember = !group.isMember;
+  const reviews = useMemo(
+    () =>
+      reviewList.reviews.map((review) => {
+        const isFavorite = favoriteOverrides[review.place.id];
+
+        return isFavorite === undefined
+          ? review
+          : { ...review, place: { ...review.place, isFavorite } };
+      }),
+    [favoriteOverrides, reviewList.reviews],
+  );
+  const favoriteAction: ReviewCardFavoriteAction = {
+    isPending: favorite.isPending,
+    onToggleAction: favorite.onToggleAction,
+  };
   const shouldPromptFirstReview = group.isMember && reviewList.reviews.length === 0;
   const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
 
@@ -121,7 +146,8 @@ export function GroupDetailView({
         <GroupReviewList
           isContentRestricted={isNonMember}
           isOwner={group.isOwner}
-          reviewList={reviewList}
+          reviewList={{ ...reviewList, reviews }}
+          favoriteAction={group.isMember ? favoriteAction : undefined}
         />
       </main>
 
@@ -170,9 +196,15 @@ type GroupReviewListProps = {
   isContentRestricted: boolean;
   isOwner: boolean;
   reviewList: GroupReviewListState;
+  favoriteAction?: ReviewCardFavoriteAction;
 };
 
-function GroupReviewList({ isContentRestricted, isOwner, reviewList }: GroupReviewListProps) {
+function GroupReviewList({
+  isContentRestricted,
+  isOwner,
+  reviewList,
+  favoriteAction,
+}: GroupReviewListProps) {
   if (reviewList.reviews.length === 0) {
     return isOwner ? (
       <section className="mt-ds-4 flex-1 bg-surface-primary" aria-label="그룹 리뷰">
@@ -192,7 +224,11 @@ function GroupReviewList({ isContentRestricted, isOwner, reviewList }: GroupRevi
       <ul className="flex flex-col gap-ds-4">
         {reviewList.reviews.map((review) => (
           <li key={review.id}>
-            <ReviewCard review={review} isContentRestricted={isContentRestricted} />
+            <ReviewCard
+              review={review}
+              isContentRestricted={isContentRestricted}
+              favoriteAction={favoriteAction}
+            />
           </li>
         ))}
         {reviewList.hasNextPage ? (
