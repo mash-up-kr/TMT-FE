@@ -137,6 +137,16 @@ const SCENARIOS = [
   { section: "공통 상태", key: "error", label: "불러오기 실패" },
   {
     section: "공통 상태",
+    key: "owner-default",
+    label: "그룹장 · 기본",
+    isMember: true,
+    isJoinable: true,
+    availableTicketCount: 1,
+    joinSheetState: undefined,
+    leaveModalState: undefined,
+  },
+  {
+    section: "공통 상태",
     key: "empty-reviews",
     label: "그룹장 · 리뷰 0",
     isMember: true,
@@ -273,7 +283,10 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
     ...MOCK_GROUP,
     isMember: scenario.isMember,
     isJoinable: scenario.isJoinable,
-    isOwner: scenario.key === "leave-owner-error" || scenario.key === "empty-reviews",
+    isOwner:
+      scenario.key === "owner-default" ||
+      scenario.key === "leave-owner-error" ||
+      scenario.key === "empty-reviews",
     availableTicketCount: scenario.availableTicketCount,
   };
   const joinAction = scenario.joinSheetState

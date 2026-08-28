@@ -1,4 +1,9 @@
-import type { GroupTagOptions } from "@/app/groups/_model/groupTag";
+import type {
+  GroupTagOptionsState,
+  GroupTagOptionsStatus,
+  GroupTagSelection,
+  GroupTagSheet,
+} from "@/app/groups/_model/groupTag";
 
 export type GroupCreateDraft = {
   groupName: string;
@@ -20,16 +25,9 @@ export type CreatedGroupData = {
 
 export type GroupCreateStep = "basicInfo" | "tags" | "image" | "description";
 
-export type GroupCreateTagSheet = "category" | "region";
+export type GroupCreateTagSheet = GroupTagSheet;
 
-export type GroupTagOptionsStatus = "pending" | "error" | "success";
-
-export type GroupTagOptionsState = {
-  options: GroupTagOptions;
-  status: GroupTagOptionsStatus;
-};
-
-export type GroupTagSelection = Pick<GroupCreateDraft, "foodCategoryId" | "regionIds">;
+export type { GroupTagOptionsState, GroupTagOptionsStatus, GroupTagSelection };
 
 export type GroupCreateInitialState = {
   step?: GroupCreateStep;

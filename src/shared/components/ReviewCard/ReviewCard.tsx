@@ -1,11 +1,11 @@
 import Link from "next/link";
 import AvatarTomato from "@/shared/assets/avatar-tomato.svg?react";
 import imageFallback from "@/shared/assets/dummy-image.png";
+import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { placeDetailPath } from "@/shared/constants/routes";
 import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
-import { IconButton } from "@/shared/ui/IconButton";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
@@ -238,21 +238,13 @@ function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
         <Link href={placeDetailPath(place.id)} className="flex min-w-0 flex-1 flex-col">
           <PlaceInfo place={place} />
         </Link>
-        <IconButton
-          aria-label={`${place.name} ${isFavorite ? "좋아요 해제" : "좋아요"}`}
-          aria-busy={favoriteAction.isPending || undefined}
-          aria-pressed={isFavorite}
-          disabled={favoriteAction.isPending}
-          className="shrink-0 disabled:opacity-50"
-          onClick={() => favoriteAction.onToggleAction(place)}
-        >
-          <HeartIcon
-            filled={isFavorite}
-            aria-hidden="true"
-            size={24}
-            className="text-icon-interactive-primary"
-          />
-        </IconButton>
+        <PlaceFavoriteButton
+          placeName={place.name}
+          isFavorite={isFavorite}
+          isPending={favoriteAction.isPending}
+          size={24}
+          onToggleAction={() => favoriteAction.onToggleAction(place)}
+        />
       </div>
     );
   }

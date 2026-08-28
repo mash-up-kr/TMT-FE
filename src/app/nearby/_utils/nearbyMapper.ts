@@ -55,6 +55,7 @@ export interface PinPlace {
   phoneNumber: string | null;
   latitude: number;
   longitude: number;
+  isFavorite: boolean;
 }
 
 export function toPinPlace(response: PlaceDetailResponse): PinPlace {
@@ -67,6 +68,7 @@ export function toPinPlace(response: PlaceDetailResponse): PinPlace {
     phoneNumber: response.phoneNumber ?? null,
     latitude: response.latitude,
     longitude: response.longitude,
+    isFavorite: response.isFavorite,
   };
 }
 

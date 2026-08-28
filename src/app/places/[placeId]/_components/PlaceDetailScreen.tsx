@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
+import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { PlaceRating, PlaceSummary } from "@/shared/components/PlaceSummary/PlaceSummary";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, ChevronLeftIcon, HeartIcon, LoadingIcon } from "@/shared/ui/Icons";
+import { CancelIcon, ChevronLeftIcon, LoadingIcon } from "@/shared/ui/Icons";
 import { usePlaceDetail } from "../_hooks/usePlaceDetail";
 import { usePlaceReviews } from "../_hooks/usePlaceReviews";
 
@@ -33,6 +34,7 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
           isFavorite,
           isPending: favorite.isPending,
           isDisabled: detail.data === undefined || favorite.isPending,
+          placeName: detail.data?.name ?? "가게",
           onToggleAction: () => favorite.onToggleAction({ id: placeId, isFavorite }),
         }}
       />
@@ -69,6 +71,7 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
 }
 
 type PlaceDetailFavoriteAction = Readonly<{
+  placeName: string;
   isFavorite: boolean;
   isPending: boolean;
   isDisabled: boolean;
@@ -90,20 +93,13 @@ function PlaceDetailHeader({ favorite }: { favorite: PlaceDetailFavoriteAction }
       }
       right={
         <>
-          <IconButton
-            aria-label={favorite.isFavorite ? "좋아요 해제" : "좋아요"}
-            aria-busy={favorite.isPending || undefined}
-            aria-pressed={favorite.isFavorite}
+          <PlaceFavoriteButton
+            placeName={favorite.placeName}
+            isFavorite={favorite.isFavorite}
+            isPending={favorite.isPending}
             disabled={favorite.isDisabled}
-            className="disabled:opacity-50"
-            onClick={favorite.onToggleAction}
-          >
-            <HeartIcon
-              filled={favorite.isFavorite}
-              size={28}
-              className={favorite.isFavorite ? "text-icon-interactive-primary" : undefined}
-            />
-          </IconButton>
+            onToggleAction={favorite.onToggleAction}
+          />
           <IconButton aria-label="닫기" onClick={() => router.back()}>
             <CancelIcon size={28} />
           </IconButton>

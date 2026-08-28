@@ -1,12 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getGroupImageValidationError } from "@/app/groups/_utils/groupImage";
 import { toast } from "@/shared/ui/Toast";
 import type { GroupCreateDraft } from "../_model/groupCreate";
-
-const MAX_GROUP_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
-const NON_IMAGE_MESSAGE = "이미지 파일만 업로드할 수 있어요.";
-const OVERSIZE_MESSAGE = "5MB 이하 사진만 업로드할 수 있어요.";
 
 const INITIAL_DRAFT: GroupCreateDraft = {
   groupName: "",
@@ -43,13 +40,10 @@ export function useGroupCreateDraft(initialDraft?: Partial<GroupCreateDraft>) {
   }, []);
 
   const selectGroupImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error(NON_IMAGE_MESSAGE);
-      return;
-    }
+    const validationError = getGroupImageValidationError(file);
 
-    if (file.size > MAX_GROUP_IMAGE_SIZE_BYTES) {
-      toast.error(OVERSIZE_MESSAGE);
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
