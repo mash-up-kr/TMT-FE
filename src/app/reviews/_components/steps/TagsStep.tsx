@@ -1,13 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useReviewFormConfig } from "@/api/gen/review-write/review-write.gen";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
-import { reviewStepPath } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewSave } from "../../_hooks/useReviewSave";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
-import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 import { mapReviewTagGroups } from "../../_utils/reviewApiMappers";
 import { StatusMessage } from "../StatusMessage";
 import { StepHeader } from "../StepHeader";
@@ -17,11 +15,10 @@ const LOADING_MESSAGE = "태그를 불러오는 중이에요";
 const ERROR_MESSAGE = "태그를 불러오지 못했어요. 잠시 후 다시 시도해 주세요";
 
 export function TagsStep() {
-  const router = useRouter();
-  const basePath = useReviewFlowBase();
   const { selectedTagIds, toggleTag } = useReviewDraft();
   const hasStore = useReviewDraftGuard() !== null;
   const formConfig = useReviewFormConfig();
+  const reviewSave = useReviewSave();
 
   const tagGroups = mapReviewTagGroups(formConfig.data);
 
@@ -51,13 +48,20 @@ export function TagsStep() {
               group={group}
               selectedTagIds={selectedTagIds}
               onToggle={toggleTag}
+              disabled={reviewSave.isPending}
             />
           ))}
       </div>
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.push(reviewStepPath(basePath, "rating"))}>다음</Button>
+          <Button
+            loading={reviewSave.isPending}
+            disabled={!formConfig.isSuccess}
+            onClick={() => void reviewSave.saveAndGo("rating")}
+          >
+            다음
+          </Button>
         </ButtonStack>
       </div>
     </>

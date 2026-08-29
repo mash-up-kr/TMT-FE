@@ -10,5 +10,7 @@ export interface PlaceRegionSummary {
   placeId: string;
   name: string;
   regionName: string;
+  /** @nullable */
+  categoryName?: string | null;
   isFavorite: boolean;
 }

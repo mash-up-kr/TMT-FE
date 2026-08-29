@@ -7,6 +7,15 @@
  */
 
 export interface JoinRequest {
-  /** @nullable */
+  /**
+   * 단수 공유 — sourceReviewIds로 대체됐다. 둘 다 오면 합집합 (TMT-241)
+   * @deprecated
+   * @nullable
+   */
   sourceReviewId?: string | null;
+  /**
+   * 가입과 함께 공유할 내 리뷰 목록 — 가입 화면의 체크박스 복수 선택 (TMT-241)
+   * @nullable
+   */
+  sourceReviewIds?: string[] | null;
 }

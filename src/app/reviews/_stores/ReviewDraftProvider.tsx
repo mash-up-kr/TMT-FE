@@ -11,19 +11,25 @@ import {
   useState,
 } from "react";
 import { toast } from "@/shared/ui/Toast";
-import { MAX_REVIEW_PHOTO_COUNT, MAX_REVIEW_PHOTO_SIZE_BYTES } from "../_constants/review";
+import {
+  MAX_REVIEW_PHOTO_COUNT,
+  MAX_REVIEW_PHOTO_SIZE_BYTES,
+  REVIEW_PHOTO_CONTENT_TYPES,
+} from "../_constants/review";
 import type { ReviewDraftSnapshot } from "../_model/draft";
 import type { ReviewPhoto } from "../_model/photo";
 import type { ReviewSaveResult } from "../_model/save";
 import type { ReviewStore } from "../_model/store";
 
 type ReviewDraftContextValue = {
-  saveId: string | null;
   store: ReviewStore | null;
   setStore: (store: ReviewStore | null) => void;
   photos: readonly ReviewPhoto[];
   addPhotos: (files: readonly File[]) => void;
   removePhoto: (id: string) => void;
+  setPhotoAssetId: (id: string, assetId: string) => void;
+  attachedPhotoCount: number;
+  setAttachedPhotoCount: (count: number) => void;
   selectedTagIds: ReadonlySet<string>;
   toggleTag: (id: string) => void;
   rating: number;
@@ -34,8 +40,9 @@ type ReviewDraftContextValue = {
   setSaveResult: (result: ReviewSaveResult | null) => void;
 };
 
-const NON_IMAGE_MESSAGE = "이미지 파일만 업로드할 수 있어요";
+const NON_IMAGE_MESSAGE = "JPG, PNG, WEBP 형식의 이미지만 업로드할 수 있어요";
 const OVERSIZE_MESSAGE = "5MB 이하 사진만 업로드할 수 있어요";
+const ALLOWED_PHOTO_TYPES = new Set<string>(REVIEW_PHOTO_CONTENT_TYPES);
 
 const ReviewDraftContext = createContext<ReviewDraftContextValue | null>(null);
 
@@ -44,12 +51,12 @@ const ReviewDraftContext = createContext<ReviewDraftContextValue | null>(null);
  * 위해서다. 다른 초안을 열면 라우트가 갈려 새로 마운트되므로 그때 다시 읽힌다.
  */
 export function ReviewDraftProvider({
-  saveId = null,
   initialDraft,
   children,
-}: Readonly<{ saveId?: string | null; initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
+}: Readonly<{ initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
   const [store, setStore] = useState<ReviewStore | null>(initialDraft?.store ?? null);
   const [photos, setPhotos] = useState<readonly ReviewPhoto[]>([]);
+  const [attachedPhotoCount, setAttachedPhotoCount] = useState(0);
   const [selectedTagIds, setSelectedTagIds] = useState<ReadonlySet<string>>(
     () => new Set(initialDraft?.selectedTagIds),
   );
@@ -71,7 +78,7 @@ export function ReviewDraftProvider({
   }, []);
 
   const addPhotos = useCallback((files: readonly File[]) => {
-    const images = files.filter((file) => file.type.startsWith("image/"));
+    const images = files.filter((file) => ALLOWED_PHOTO_TYPES.has(file.type));
     const withinSizeLimit = images.filter((file) => file.size <= MAX_REVIEW_PHOTO_SIZE_BYTES);
 
     if (images.length < files.length) {
@@ -94,6 +101,7 @@ export function ReviewDraftProvider({
       id: crypto.randomUUID(),
       file,
       previewUrl: URL.createObjectURL(file),
+      assetId: null,
     }));
 
     setPhotos((current) => [...current, ...added]);
@@ -111,6 +119,12 @@ export function ReviewDraftProvider({
     setPhotos((current) => current.filter((photo) => photo.id !== id));
   }, []);
 
+  const setPhotoAssetId = useCallback((id: string, assetId: string) => {
+    setPhotos((current) =>
+      current.map((photo) => (photo.id === id ? { ...photo, assetId } : photo)),
+    );
+  }, []);
+
   const toggleTag = useCallback((id: string) => {
     setSelectedTagIds((current) => {
       const next = new Set(current);
@@ -125,12 +139,14 @@ export function ReviewDraftProvider({
 
   const value = useMemo(
     () => ({
-      saveId,
       store,
       setStore,
       photos,
       addPhotos,
       removePhoto,
+      setPhotoAssetId,
+      attachedPhotoCount,
+      setAttachedPhotoCount,
       selectedTagIds,
       toggleTag,
       rating,
@@ -141,11 +157,12 @@ export function ReviewDraftProvider({
       setSaveResult,
     }),
     [
-      saveId,
       store,
       photos,
       addPhotos,
       removePhoto,
+      setPhotoAssetId,
+      attachedPhotoCount,
       selectedTagIds,
       toggleTag,
       rating,

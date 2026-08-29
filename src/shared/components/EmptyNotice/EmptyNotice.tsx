@@ -1,10 +1,21 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import tomatoEmpty from "@/shared/components/assets/tomato-mascot-empty.png";
+import tomatoWriting from "@/shared/components/assets/tomato-mascot-writing.png";
 import { cn } from "@/shared/utils/cn";
+
+/** 마스코트 원본은 크기와 여백을 맞춰 두어 프레임 크롭이 모두 같다. */
+const illustrations = {
+  empty: tomatoEmpty,
+  writing: tomatoWriting,
+};
+
+type EmptyNoticeIllustration = keyof typeof illustrations;
 
 type EmptyNoticeBaseProps = {
   title: string;
+  /** 문구 위 마스코트. */
+  illustration?: EmptyNoticeIllustration;
   /** 다음 행동으로 보내는 control. 있을 때만 문구 아래에 놓인다. */
   action?: ReactNode;
 };
@@ -27,6 +38,7 @@ type EmptyNoticeProps = EmptyNoticeBaseProps &
 export function EmptyNotice({
   title,
   variant = "default",
+  illustration = "empty",
   eyebrow,
   children,
   action,
@@ -39,7 +51,7 @@ export function EmptyNotice({
           위로 밀어 다리를 잘라내고, 잘린 경계는 gradient로 배경에 녹인다. */}
       <div aria-hidden="true" className="relative h-[130px] w-[172px] shrink-0">
         <Image
-          src={tomatoEmpty}
+          src={illustrations[illustration]}
           alt=""
           width={172}
           height={130}

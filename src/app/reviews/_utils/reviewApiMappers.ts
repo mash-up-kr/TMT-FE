@@ -2,19 +2,16 @@ import type { AddressItem } from "@/api/gen/_model/addressItem.gen";
 import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
 import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfigResponse.gen";
 import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen";
+import type { SaveListItemResponse } from "@/api/gen/_model/saveListItemResponse.gen";
 import type { SaveRequest } from "@/api/gen/_model/saveRequest.gen";
 import type { SaveResultResponse } from "@/api/gen/_model/saveResultResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
 import { MAX_REVIEW_RATING } from "../_constants/review";
 import { REVIEW_TAG_GROUPS } from "../_constants/tagGroups";
-import type { ReviewDraftSnapshot } from "../_model/draft";
+import type { ContinuableDraft, ReviewDraftSnapshot } from "../_model/draft";
 import type { ReviewSaveResult } from "../_model/save";
-import type { AddressSearchResult, CompleteReviewStore, StoreSearchResult } from "../_model/store";
+import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import type { ReviewTag, ReviewTagGroup } from "../_model/tag";
-
-const MISSING_ADDRESS_MESSAGE =
-  "매장 주소 정보가 없어 등록할 수 없어요. 매장을 다시 선택해 주세요.";
-const MISSING_PLACE_MESSAGE = "저장된 매장 정보를 찾을 수 없어요. 처음부터 다시 작성해 주세요.";
 
 // 스펙상 nullable인 필드가 있어 undefined와 null을 함께 받는다.
 function hasText(value: string | null | undefined): value is string {
@@ -23,6 +20,83 @@ function hasText(value: string | null | undefined): value is string {
 
 function hasFiniteNumber(value: number | null | undefined): value is number {
   return typeof value === "number" && Number.isFinite(value);
+}
+
+type ReviewTagConfig = Pick<ReviewFormConfigResponse, "companionTags" | "positivePointTags">;
+
+export class ReviewSaveMappingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ReviewSaveMappingError";
+  }
+}
+
+function mapReviewFields(
+  draft: ReviewDraftSnapshot,
+  config: ReviewTagConfig,
+  photoAssetIds?: readonly string[],
+): Omit<SaveRequest, "placeId" | "newPlace"> {
+  const companionTagIds = new Set(config.companionTags.map((tag) => tag.tagId));
+  const positivePointTagIds = new Set(config.positivePointTags.map((tag) => tag.tagId));
+  const unknownTagIds = draft.selectedTagIds.filter(
+    (id) => !companionTagIds.has(id) && !positivePointTagIds.has(id),
+  );
+
+  if (unknownTagIds.length > 0) {
+    throw new ReviewSaveMappingError("선택한 태그 정보를 확인하지 못했어요. 다시 시도해 주세요");
+  }
+
+  return {
+    ...(photoAssetIds === undefined ? {} : { photoAssetIds: [...photoAssetIds] }),
+    companionTagIds: draft.selectedTagIds.filter((id) => companionTagIds.has(id)),
+    positivePointTagIds: draft.selectedTagIds.filter((id) => positivePointTagIds.has(id)),
+    rating: draft.rating > 0 ? draft.rating : null,
+    content: hasText(draft.reviewText) ? draft.reviewText : null,
+  };
+}
+
+export function toCreateSaveRequest(
+  draft: ReviewDraftSnapshot,
+  config: ReviewTagConfig,
+  photoAssetIds?: readonly string[],
+): SaveRequest {
+  if (draft.store === null) {
+    throw new ReviewSaveMappingError("매장 정보를 확인해 주세요");
+  }
+
+  const fields = mapReviewFields(draft, config, photoAssetIds);
+
+  if (hasText(draft.store.id)) {
+    return { placeId: draft.store.id, ...fields };
+  }
+
+  if (draft.store.selectedAddress === null) {
+    throw new ReviewSaveMappingError("매장 주소를 다시 선택해 주세요");
+  }
+
+  return {
+    newPlace: {
+      name: draft.store.name,
+      addressId: draft.store.selectedAddress.addressId,
+    },
+    ...fields,
+  };
+}
+
+export function toUpdateSaveRequest(
+  draft: ReviewDraftSnapshot,
+  config: ReviewTagConfig,
+  photoAssetIds?: readonly string[],
+): SaveRequest {
+  if (draft.store === null || !hasText(draft.store.id)) {
+    throw new ReviewSaveMappingError("저장된 매장 정보를 확인하지 못했어요");
+  }
+
+  return { placeId: draft.store.id, ...mapReviewFields(draft, config, photoAssetIds) };
+}
+
+export function isResumableSaveDetail(save: Pick<SaveDetailResponse, "photos">): boolean {
+  return save.photos.length === 0;
 }
 
 export function mapStoreSearchResults(items: PlaceCardResponse[] | undefined): StoreSearchResult[] {
@@ -60,6 +134,29 @@ export function mapReviewTagGroups(config: ReviewFormConfigResponse | undefined)
   }));
 }
 
+export function mapContinuableDrafts(
+  items: SaveListItemResponse[] | undefined,
+): ContinuableDraft[] {
+  return (items ?? []).flatMap((item) => {
+    const placeName = item.place?.name;
+    const roadAddress = item.place?.roadAddress;
+
+    if (!hasText(item.saveId) || !hasText(placeName) || !hasText(roadAddress)) {
+      return [];
+    }
+
+    return [
+      {
+        saveId: item.saveId,
+        placeName,
+        roadAddress,
+        thumbnailUrl: hasText(item.thumbnailUrl) ? item.thumbnailUrl : null,
+        canContinue: !hasText(item.thumbnailUrl),
+      },
+    ];
+  });
+}
+
 export function mapSaveDetailToDraft(save: SaveDetailResponse | undefined): ReviewDraftSnapshot {
   const placeName = save?.place?.name;
   const roadAddress = save?.place?.roadAddress;
@@ -87,62 +184,6 @@ export function mapSaveDetailToDraft(save: SaveDetailResponse | undefined): Revi
         : 0,
     reviewText: hasText(content) ? content : "",
   };
-}
-
-type SaveRequestInput = Readonly<{
-  store: CompleteReviewStore;
-  photoAssetIds: readonly string[];
-  selectedTagIds: ReadonlySet<string>;
-  rating: number;
-  reviewText: string;
-  formConfig: ReviewFormConfigResponse;
-}>;
-
-function pickSelectedTagIds(tags: TagDefinition[], selectedTagIds: ReadonlySet<string>): string[] {
-  return tags.flatMap((tag) =>
-    hasText(tag.tagId) && selectedTagIds.has(tag.tagId) ? [tag.tagId] : [],
-  );
-}
-
-function toPlaceFields(
-  store: CompleteReviewStore,
-  mode: "create" | "update",
-): Pick<SaveRequest, "placeId" | "newPlace"> {
-  if (hasText(store.id)) {
-    return { placeId: store.id };
-  }
-
-  if (mode === "update") {
-    throw new Error(MISSING_PLACE_MESSAGE);
-  }
-
-  if (store.selectedAddress === null) {
-    throw new Error(MISSING_ADDRESS_MESSAGE);
-  }
-
-  return {
-    newPlace: {
-      name: store.name.trim(),
-      addressId: store.selectedAddress.addressId,
-      categoryId: null,
-    },
-  };
-}
-
-export function toSaveRequest(input: SaveRequestInput, mode: "create" | "update"): SaveRequest {
-  const content = input.reviewText.trim();
-  const fields: SaveRequest = {
-    photoAssetIds: [...input.photoAssetIds],
-    companionTagIds: pickSelectedTagIds(input.formConfig.companionTags, input.selectedTagIds),
-    positivePointTagIds: pickSelectedTagIds(
-      input.formConfig.positivePointTags,
-      input.selectedTagIds,
-    ),
-    rating: input.rating > 0 ? input.rating : null,
-    content: content.length > 0 ? content : null,
-  };
-
-  return { ...fields, ...toPlaceFields(input.store, mode) };
 }
 
 export function toReviewSaveResult(response: SaveResultResponse): ReviewSaveResult {

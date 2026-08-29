@@ -9,10 +9,18 @@ const TITLE = "리뷰 작성을 그만두시겠어요?";
 type ExitConfirmModalProps = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onExit: () => void;
+  onExit: () => Promise<void>;
+  isPending: boolean;
+  excludesPhotos: boolean;
 }>;
 
-export function ExitConfirmModal({ open, onOpenChange, onExit }: ExitConfirmModalProps) {
+export function ExitConfirmModal({
+  open,
+  onOpenChange,
+  onExit,
+  isPending,
+  excludesPhotos,
+}: ExitConfirmModalProps) {
   return (
     <Modal
       open={open}
@@ -21,10 +29,12 @@ export function ExitConfirmModal({ open, onOpenChange, onExit }: ExitConfirmModa
       showClose={false}
       footer={
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" onClick={onExit}>
-            나가기
+          <Button variant="tertiary" disabled={isPending} onClick={() => onOpenChange(false)}>
+            계속 작성하기
           </Button>
-          <Button onClick={() => onOpenChange(false)}>계속 작성하기</Button>
+          <Button loading={isPending} onClick={() => void onExit()}>
+            저장하고 나가기
+          </Button>
         </ButtonStack>
       }
     >
@@ -33,7 +43,9 @@ export function ExitConfirmModal({ open, onOpenChange, onExit }: ExitConfirmModa
           {TITLE}
         </p>
         <p className="text-body-lg-medium text-content-tertiary">
-          지금까지 입력한 내용이 모두 삭제돼요.
+          {excludesPhotos
+            ? "사진을 제외한 입력 내용을 저장하고 나갈게요."
+            : "지금까지 입력한 내용을 저장하고 나갈게요."}
         </p>
       </div>
     </Modal>

@@ -4,6 +4,10 @@ export const MAX_REVIEW_PHOTO_COUNT = 3;
 
 export const MAX_REVIEW_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
 
+export const REVIEW_PHOTO_CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+
+export const REVIEW_PHOTO_ACCEPT = REVIEW_PHOTO_CONTENT_TYPES.join(",");
+
 export const MAX_REVIEW_RATING = 5;
 
 export const MAX_REVIEW_TEXT_LENGTH = 500;

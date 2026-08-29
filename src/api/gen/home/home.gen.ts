@@ -47,7 +47,7 @@ export const getHomeUrl = () => {
 };
 
 /**
- * recommendedGroups는 myGroups가 비었을 때만 채운다 — 추천순(G17) 상위 5개.
+ * recommendedGroups는 가입 여부와 무관하게 채운다 — 이미 가입한 그룹을 뺀 추천순(G17) 상위 5개.
  * @summary 인사·내 그룹·추천 그룹
  */
 export const home = async (options?: Parameters<typeof tmtFetch>[1]): Promise<HomeResponse> => {

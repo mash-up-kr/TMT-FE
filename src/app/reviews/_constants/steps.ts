@@ -1,6 +1,10 @@
+import { ROUTES } from "@/shared/constants/routes";
+
 export const REVIEW_STEPS = ["store", "photos", "tags", "rating"] as const;
 
 export type ReviewStepSegment = (typeof REVIEW_STEPS)[number];
+
+export const DRAFT_REVIEW_FIRST_STEP: ReviewStepSegment = "photos";
 
 export const REVIEW_ROUTE_SEGMENTS = [...REVIEW_STEPS, "complete"] as const;
 
@@ -12,10 +16,10 @@ export function isReviewRouteSegment(value: string): value is ReviewRouteSegment
   return REVIEW_ROUTE_SEGMENTS.some((segment) => segment === value);
 }
 
-export const NEW_REVIEW_BASE_PATH = "/reviews/new";
+export const NEW_REVIEW_BASE_PATH = ROUTES.REVIEWS.NEW;
 
 export function draftReviewBasePath(draftId: string) {
-  return `/reviews/drafts/${draftId}`;
+  return ROUTES.REVIEWS.DRAFT(draftId);
 }
 
 export function reviewStepPath(basePath: string, segment: ReviewStepSegment) {

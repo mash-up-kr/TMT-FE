@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import type { KeyboardEvent } from "react";
 import { useSearchAddresses } from "@/api/gen/address/address.gen";
 import { useSearchPlaces } from "@/api/gen/place/place.gen";
@@ -8,11 +7,10 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { SearchIcon } from "@/shared/ui/Icons";
 import { SearchField, TextField } from "@/shared/ui/TextField";
-import { reviewStepPath } from "../../_constants/steps";
+import { useReviewSave } from "../../_hooks/useReviewSave";
 import { useSearchSheetState } from "../../_hooks/useSearchSheetState";
 import type { AddressSearchResult, StoreSearchResult } from "../../_model/store";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
-import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 import { mapAddressSearchResults, mapStoreSearchResults } from "../../_utils/reviewApiMappers";
 import { isReviewStoreComplete } from "../../_utils/reviewStore";
 import { toSearchStatus } from "../../_utils/searchStatus";
@@ -23,9 +21,8 @@ import { StoreSearchSheet } from "../sheets/StoreSearchSheet";
 const SEARCH_RESULT_LIMIT = 20;
 
 export function StoreStep() {
-  const router = useRouter();
-  const basePath = useReviewFlowBase();
   const { store, setStore } = useReviewDraft();
+  const reviewSave = useReviewSave();
 
   const storeSheet = useSearchSheetState();
   const storeSearch = useSearchPlaces(
@@ -116,7 +113,8 @@ export function StoreStep() {
         <ButtonStack>
           <Button
             disabled={!isReviewStoreComplete(store)}
-            onClick={() => router.push(reviewStepPath(basePath, "photos"))}
+            loading={reviewSave.isPending}
+            onClick={() => void reviewSave.saveAndGo("photos")}
           >
             다음
           </Button>

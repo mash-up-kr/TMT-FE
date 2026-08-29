@@ -2,23 +2,41 @@
 
 import { createContext, type ReactNode, useContext } from "react";
 
-const ReviewFlowBaseContext = createContext<string | null>(null);
+type ReviewFlowBaseContextValue = {
+  basePath: string;
+  saveId: string | null;
+};
+
+const ReviewFlowBaseContext = createContext<ReviewFlowBaseContextValue | null>(null);
 
 export function ReviewFlowBaseProvider({
   basePath,
+  saveId = null,
   children,
-}: Readonly<{ basePath: string; children: ReactNode }>) {
+}: Readonly<{ basePath: string; saveId?: string | null; children: ReactNode }>) {
   return (
-    <ReviewFlowBaseContext.Provider value={basePath}>{children}</ReviewFlowBaseContext.Provider>
+    <ReviewFlowBaseContext.Provider value={{ basePath, saveId }}>
+      {children}
+    </ReviewFlowBaseContext.Provider>
   );
 }
 
 export function useReviewFlowBase() {
-  const basePath = useContext(ReviewFlowBaseContext);
+  const value = useContext(ReviewFlowBaseContext);
 
-  if (basePath === null) {
+  if (value === null) {
     throw new Error("useReviewFlowBase는 ReviewFlowBaseProvider 안에서만 쓸 수 있다.");
   }
 
-  return basePath;
+  return value.basePath;
+}
+
+export function useReviewFlowSaveId() {
+  const value = useContext(ReviewFlowBaseContext);
+
+  if (value === null) {
+    throw new Error("useReviewFlowSaveId는 ReviewFlowBaseProvider 안에서만 쓸 수 있다.");
+  }
+
+  return value.saveId;
 }

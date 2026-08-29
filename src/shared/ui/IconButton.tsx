@@ -20,7 +20,7 @@ export function IconButton({ className, children, type = "button", ...props }: I
     <button
       type={type}
       className={cn(
-        "relative text-icon-primary",
+        "relative text-icon-primary disabled:pointer-events-none disabled:text-icon-disabled",
         "after:-translate-x-1/2 after:-translate-y-1/2 after:absolute after:top-1/2 after:left-1/2 after:content-['']",
         className,
         "after:size-ds-32",

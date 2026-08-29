@@ -1,20 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
-import { reviewStepPath } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewSave } from "../../_hooks/useReviewSave";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
-import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 import { PhotoPicker } from "../PhotoPicker";
 import { StepHeader } from "../StepHeader";
 
 export function PhotosStep() {
-  const router = useRouter();
-  const basePath = useReviewFlowBase();
   const { photos, addPhotos, removePhoto } = useReviewDraft();
   const hasStore = useReviewDraftGuard() !== null;
+  const reviewSave = useReviewSave();
 
   if (!hasStore) {
     return null;
@@ -24,6 +21,7 @@ export function PhotosStep() {
     <>
       <div className="content-container flex flex-1 flex-col gap-ds-24 pt-ds-24">
         <StepHeader
+          required
           title={
             <>
               그날의 순간,
@@ -33,12 +31,23 @@ export function PhotosStep() {
           }
         />
 
-        <PhotoPicker photos={photos} onAdd={addPhotos} onRemove={removePhoto} />
+        <PhotoPicker
+          photos={photos}
+          onAdd={addPhotos}
+          onRemove={removePhoto}
+          disabled={reviewSave.isPending}
+        />
       </div>
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button onClick={() => router.push(reviewStepPath(basePath, "tags"))}>다음</Button>
+          <Button
+            loading={reviewSave.isPending}
+            disabled={photos.length === 0}
+            onClick={() => void reviewSave.saveAndGo("tags")}
+          >
+            다음
+          </Button>
         </ButtonStack>
       </div>
     </>
