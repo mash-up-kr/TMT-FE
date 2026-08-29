@@ -255,6 +255,85 @@ export const useUpdateSave = <TError = ErrorType<ErrorResponse>, TContext = unkn
 > => {
   return useMutation(getUpdateSaveMutationOptions(options), queryClient);
 };
+export const getDeleteSaveUrl = (saveId: string) => {
+  return `/v1/saves/${saveId}`;
+};
+
+/**
+ * `새로 작성하기`가 이전 임시저장을 버린다. 리뷰가 된 저장은 DELETE /v1/reviews/{reviewId}로 지운다 (F·G·I §5-2).
+ * @summary 임시저장 버리기
+ */
+export const deleteSave = async (
+  saveId: string,
+  options?: Parameters<typeof tmtFetch>[1],
+): Promise<void> => {
+  return tmtFetch<void>(getDeleteSaveUrl(saveId), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteSaveMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteSave>>,
+    TError,
+    { saveId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof tmtFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteSave>>,
+  TError,
+  { saveId: string },
+  TContext
+> => {
+  const mutationKey = ["deleteSave"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteSave>>, { saveId: string }> = (
+    props,
+  ) => {
+    const { saveId } = props ?? {};
+
+    return deleteSave(saveId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteSaveMutationResult = NonNullable<Awaited<ReturnType<typeof deleteSave>>>;
+
+export type DeleteSaveMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary 임시저장 버리기
+ */
+export const useDeleteSave = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteSave>>,
+      TError,
+      { saveId: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteSave>>,
+  TError,
+  { saveId: string },
+  TContext
+> => {
+  return useMutation(getDeleteSaveMutationOptions(options), queryClient);
+};
 export const getListSavesUrl = (params?: ListSavesParams) => {
   const normalizedParams = new URLSearchParams();
 

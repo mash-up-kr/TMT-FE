@@ -21,6 +21,10 @@
       "description": "명세 v2 — J §5-2"
     },
     {
+      "name": "미디어",
+      "description": "명세 v2 — F §3-2"
+    },
+    {
       "name": "주소 검색 (mock)",
       "description": "명세 v2 — F §2-2"
     },
@@ -51,10 +55,6 @@
     {
       "name": "매장 (mock)",
       "description": "명세 v2 — B §2-2 · F §2"
-    },
-    {
-      "name": "미디어 (mock)",
-      "description": "명세 v2 — F §3-2"
     },
     {
       "name": "마이페이지·타인 프로필 (mock)",
@@ -268,6 +268,90 @@
           },
           "422": {
             "description": "- `SAVE_PLACE_IMMUTABLE` — 저장의 매장은 변경할 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "저장·리뷰 작성 (mock)"
+        ],
+        "summary": "임시저장 버리기",
+        "description": "`새로 작성하기`가 이전 임시저장을 버린다. 리뷰가 된 저장은 DELETE /v1/reviews/{reviewId}로 지운다 (F·G·I §5-2).",
+        "operationId": "deleteSave",
+        "parameters": [
+          {
+            "name": "saveId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "- `SAVE_NOT_FOUND` — 저장을 찾을 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "- `SAVE_ALREADY_REVIEWED` — 이미 리뷰가 완성된 저장은 수정할 수 없습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1121,7 +1205,7 @@
     "/v1/media/upload-intents": {
       "post": {
         "tags": [
-          "미디어 (mock)"
+          "미디어"
         ],
         "summary": "사진 업로드 presigned URL 발급",
         "description": "발급받은 assetId는 발급받은 사용자만 Save에 붙일 수 있다 (M2).",
@@ -3007,7 +3091,7 @@
           "홈 (mock)"
         ],
         "summary": "인사·내 그룹·추천 그룹",
-        "description": "recommendedGroups는 myGroups가 비었을 때만 채운다 — 추천순(G17) 상위 5개.",
+        "description": "recommendedGroups는 가입 여부와 무관하게 채운다 — 이미 가입한 그룹을 뺀 추천순(G17) 상위 5개.",
         "operationId": "home",
         "parameters": [
           {
@@ -4207,7 +4291,19 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "deprecated": true,
+            "description": "단수 공유 — sourceReviewIds로 대체됐다. 둘 다 오면 합집합 (TMT-241)"
+          },
+          "sourceReviewIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "description": "가입과 함께 공유할 내 리뷰 목록 — 가입 화면의 체크박스 복수 선택 (TMT-241)",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -5299,6 +5395,12 @@
           },
           "regionName": {
             "type": "string"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "isFavorite": {
             "type": "boolean"
