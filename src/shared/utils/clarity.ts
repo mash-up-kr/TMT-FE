@@ -27,11 +27,22 @@ export const CLARITY_SNIPPET = `(function(c,l,a,r,i,t,y){
   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");`;
 
-/** 현재 세션에 커스텀 태그를 붙인다. Clarity 대시보드의 필터 기준이 된다. */
+/**
+ * 현재 세션에 커스텀 태그를 붙인다. Clarity 대시보드의 필터 기준이 된다.
+ *
+ * `window.clarity`가 함수일 때만 부른다. 계측 스크립트가 어떤 이유로든 큐 함수를 만들지
+ * 못했을 때(예: 같은 id의 DOM 요소가 named access로 `window.clarity`를 가리는 경우)
+ * 여기서 던진 에러가 useEffect를 타고 올라가 앱 전체를 global-error로 떨어뜨린다.
+ * 계측은 실패해도 되지만 화면은 살아야 한다.
+ */
 export function setClarityTag(key: string, value: string): void {
   if (typeof window === "undefined" || value.length === 0) {
     return;
   }
 
-  window.clarity?.("set", key, value);
+  if (typeof window.clarity !== "function") {
+    return;
+  }
+
+  window.clarity("set", key, value);
 }
