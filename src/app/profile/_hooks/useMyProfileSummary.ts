@@ -1,20 +1,18 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { ME } from "../_fixtures/profileFixtures";
+import type { MyProfileResponse } from "@/api/gen/_model/myProfileResponse.gen";
+import { useMe } from "@/api/gen/profile/profile.gen";
+import type { ProfileSummary } from "../_model/profile";
 import { toProfileIdentity, toProfileTabCounts } from "../_utils/profileMappers";
-import { type ProfileSummary, resolveFixture } from "./profileQueries";
+
+function toMyProfileSummary(response: MyProfileResponse): ProfileSummary {
+  return {
+    profile: toProfileIdentity(response),
+    counts: toProfileTabCounts(response),
+    availableTicketCount: response.availableTicketCount,
+  };
+}
 
 export function useMyProfileSummary() {
-  return useQuery({
-    queryKey: ["profile", "me", "summary"],
-    queryFn: async (): Promise<ProfileSummary> => {
-      const response = await resolveFixture(ME);
-      return {
-        profile: toProfileIdentity(response),
-        counts: toProfileTabCounts(response),
-        availableTicketCount: response.availableTicketCount,
-      };
-    },
-  });
+  return useMe<ProfileSummary>({ query: { select: toMyProfileSummary } });
 }

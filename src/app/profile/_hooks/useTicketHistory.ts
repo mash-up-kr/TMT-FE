@@ -1,19 +1,17 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { MY_TICKETS } from "../_fixtures/profileFixtures";
+import type { TicketHistoryResponse } from "@/api/gen/_model/ticketHistoryResponse.gen";
+import { useMyTickets } from "@/api/gen/profile/profile.gen";
+import type { TicketHistory } from "../_model/profile";
 import { toTicketHistoryItems } from "../_utils/profileMappers";
-import { resolveFixture, type TicketHistory } from "./profileQueries";
+
+function toTicketHistory(response: TicketHistoryResponse): TicketHistory {
+  return {
+    availableCount: response.availableCount,
+    items: toTicketHistoryItems(response.items),
+  };
+}
 
 export function useTicketHistory() {
-  return useQuery({
-    queryKey: ["profile", "me", "tickets"],
-    queryFn: async (): Promise<TicketHistory> => {
-      const response = await resolveFixture(MY_TICKETS);
-      return {
-        availableCount: response.availableCount,
-        items: toTicketHistoryItems(response.items),
-      };
-    },
-  });
+  return useMyTickets<TicketHistory>(undefined, { query: { select: toTicketHistory } });
 }
