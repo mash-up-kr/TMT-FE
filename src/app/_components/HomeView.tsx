@@ -42,11 +42,13 @@ export function HomeView({
           favoriteAction={favoriteAction}
         />
       ) : (
-        <>
-          <EmptyFeed />
-          <RecommendedGroupList groups={summary.recommendedGroups} />
-        </>
+        <EmptyFeed />
       )}
+
+      <RecommendedGroupList
+        groups={summary.recommendedGroups}
+        className={hasGroups ? "mt-ds-4" : undefined}
+      />
     </main>
   );
 }
