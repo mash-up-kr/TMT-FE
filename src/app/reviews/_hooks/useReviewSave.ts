@@ -49,7 +49,6 @@ const JOIN_PREVIEW_PATH_SUFFIX = "/join-preview";
 
 const SAVE_FAILED_MESSAGE = "리뷰를 저장하지 못했어요. 다시 시도해 주세요";
 const INCOMPLETE_MESSAGE = "리뷰를 완료하려면 필수 항목을 확인해 주세요";
-const PHOTO_REQUIRED_MESSAGE = "리뷰를 완료하려면 사진을 한 장 이상 등록해 주세요";
 const PHOTO_DRAFT_MESSAGE = "사진이 있는 리뷰는 아직 이어 쓸 수 없어요";
 const STALE_SAVE_CODES = new Set(["SAVE_ALREADY_REVIEWED", "SAVE_NOT_FOUND"]);
 const REVIEW_SAVE_MUTATION_KEY = ["reviewSaveFlow"] as const;
@@ -261,13 +260,7 @@ export function useReviewSave() {
       run(async () => goToResult(await persist(), nextStep)),
     complete: () =>
       run(async () => {
-        if (photos.length === 0) {
-          toast.warning(PHOTO_REQUIRED_MESSAGE);
-          router.replace(reviewStepPath(basePath, "photos"));
-          return;
-        }
-
-        const result = await persist(true);
+        const result = await persist(photos.length > 0);
 
         if (result.reviewId === null || result.reviewId === undefined) {
           toast.warning(INCOMPLETE_MESSAGE);

@@ -57,7 +57,6 @@ export function TagsStep() {
         <ButtonStack>
           <Button
             loading={reviewSave.isPending}
-            disabled={!formConfig.isSuccess}
             onClick={() => void reviewSave.saveAndGo("rating")}
           >
             다음
