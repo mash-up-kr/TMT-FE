@@ -1,5 +1,6 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? "1";
+const IDEMPOTENCY_KEY_METHODS = new Set(["POST", "PUT"]);
 
 export class TmtApiError<TBody = unknown> extends Error {
   readonly httpStatus: number;
@@ -83,6 +84,11 @@ export const tmtFetch = async <T>(url: string, init?: RequestInit): Promise<T> =
 
   if (!headers.has("X-User-Id")) {
     headers.set("X-User-Id", MOCK_USER_ID);
+  }
+
+  const method = (init?.method ?? "GET").toUpperCase();
+  if (IDEMPOTENCY_KEY_METHODS.has(method) && !headers.has("Idempotency-Key")) {
+    headers.set("Idempotency-Key", crypto.randomUUID());
   }
 
   const response = await fetch(resolveUrl(url), { ...init, headers });
