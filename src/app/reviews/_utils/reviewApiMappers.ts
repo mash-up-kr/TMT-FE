@@ -2,10 +2,11 @@ import type { AddressItem } from "@/api/gen/_model/addressItem.gen";
 import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
 import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfigResponse.gen";
 import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen";
+import type { SaveListItemResponse } from "@/api/gen/_model/saveListItemResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
 import { MAX_REVIEW_RATING } from "../_constants/review";
 import { REVIEW_TAG_GROUPS } from "../_constants/tagGroups";
-import type { ReviewDraftSnapshot } from "../_model/draft";
+import type { ContinuableDraft, ReviewDraftSnapshot } from "../_model/draft";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import type { ReviewTag, ReviewTagGroup } from "../_model/tag";
 
@@ -51,6 +52,28 @@ export function mapReviewTagGroups(config: ReviewFormConfigResponse | undefined)
     ...meta,
     tags: mapReviewTags(config?.[source]),
   }));
+}
+
+export function mapContinuableDrafts(
+  items: SaveListItemResponse[] | undefined,
+): ContinuableDraft[] {
+  return (items ?? []).flatMap((item) => {
+    const placeName = item.place?.name;
+    const roadAddress = item.place?.roadAddress;
+
+    if (!hasText(item.saveId) || !hasText(placeName) || !hasText(roadAddress)) {
+      return [];
+    }
+
+    return [
+      {
+        saveId: item.saveId,
+        placeName,
+        roadAddress,
+        thumbnailUrl: hasText(item.thumbnailUrl) ? item.thumbnailUrl : null,
+      },
+    ];
+  });
 }
 
 export function mapSaveDetailToDraft(save: SaveDetailResponse | undefined): ReviewDraftSnapshot {

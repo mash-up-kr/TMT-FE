@@ -17,6 +17,8 @@ export const ROUTES = {
   REVIEWS: {
     NEW: "/reviews/new",
     CONTINUE: "/reviews/continue",
+    /** 작성 중인 초안의 흐름 진입점. 단계 세그먼트는 reviews 라우트가 붙인다. */
+    DRAFT: (draftId: string) => `/reviews/drafts/${draftId}`,
     DETAIL: "/reviews/[saveId]",
     EDIT: "/reviews/[saveId]/edit",
     SHARE: "/reviews/[saveId]/share",
