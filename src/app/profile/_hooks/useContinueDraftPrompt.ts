@@ -31,7 +31,9 @@ export function useContinueDraftPrompt({ ready }: ContinueDraftPromptOptions) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasPrompted, setHasPrompted] = useState(false);
 
-  const drafts = saves.data?.items ?? [];
+  const drafts = (saves.data?.items ?? []).filter(
+    (draft) => (draft.thumbnailUrl?.trim().length ?? 0) === 0,
+  );
   const firstDraft = drafts.at(0);
   const shouldPrompt = ready && !hasPrompted && firstDraft !== undefined;
 

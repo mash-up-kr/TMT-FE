@@ -3,7 +3,7 @@
 import { type ChangeEvent, useEffect, useId, useRef } from "react";
 import { PlusIcon, XCircleIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
-import { MAX_REVIEW_PHOTO_COUNT } from "../_constants/review";
+import { MAX_REVIEW_PHOTO_COUNT, REVIEW_PHOTO_ACCEPT } from "../_constants/review";
 import type { ReviewPhoto } from "../_model/photo";
 
 const cellHeight = "h-[120px]";
@@ -12,10 +12,11 @@ const cellWidth = "w-[120px]";
 type AddPhotoButtonProps = Readonly<{
   count: number;
   onAdd: (files: readonly File[]) => void;
+  disabled: boolean;
   className?: string;
 }>;
 
-function AddPhotoButton({ count, onAdd, className }: AddPhotoButtonProps) {
+function AddPhotoButton({ count, onAdd, disabled, className }: AddPhotoButtonProps) {
   const inputId = useId();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +38,7 @@ function AddPhotoButton({ count, onAdd, className }: AddPhotoButtonProps) {
         "flex cursor-pointer flex-col items-center justify-center gap-ds-4",
         "rounded-ds-md border border-stroke-primary border-dashed bg-surface-secondary text-content-tertiary",
         "outline-none focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-stroke-interactive-primary",
+        disabled && "pointer-events-none text-content-disabled",
         className,
       )}
     >
@@ -49,7 +51,9 @@ function AddPhotoButton({ count, onAdd, className }: AddPhotoButtonProps) {
       <input
         id={inputId}
         type="file"
-        accept="image/*"
+        accept={REVIEW_PHOTO_ACCEPT}
+        disabled={disabled}
+        aria-label="사진 추가"
         onChange={handleChange}
         className="sr-only"
       />
@@ -61,9 +65,10 @@ type PhotoPickerProps = Readonly<{
   photos: readonly ReviewPhoto[];
   onAdd: (files: readonly File[]) => void;
   onRemove: (id: string) => void;
+  disabled: boolean;
 }>;
 
-export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
+export function PhotoPicker({ photos, onAdd, onRemove, disabled }: PhotoPickerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const previousCount = useRef(photos.length);
 
@@ -79,7 +84,7 @@ export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
   }, [photos.length]);
 
   if (photos.length === 0) {
-    return <AddPhotoButton count={0} onAdd={onAdd} className="w-full" />;
+    return <AddPhotoButton count={0} onAdd={onAdd} disabled={disabled} className="w-full" />;
   }
 
   return (
@@ -98,11 +103,13 @@ export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
             />
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onRemove(photo.id)}
               aria-label={`첨부한 사진 ${index + 1} 삭제`}
               className={cn(
                 "absolute top-ds-4 right-ds-4 rounded-ds-full bg-surface-primary text-icon-primary",
                 "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-interactive-primary",
+                "disabled:pointer-events-none disabled:text-icon-disabled",
               )}
             >
               <XCircleIcon size={20} className="block" />
@@ -112,7 +119,12 @@ export function PhotoPicker({ photos, onAdd, onRemove }: PhotoPickerProps) {
 
         {photos.length < MAX_REVIEW_PHOTO_COUNT && (
           <li className="shrink-0">
-            <AddPhotoButton count={photos.length} onAdd={onAdd} className={cellWidth} />
+            <AddPhotoButton
+              count={photos.length}
+              onAdd={onAdd}
+              disabled={disabled}
+              className={cellWidth}
+            />
           </li>
         )}
       </ul>

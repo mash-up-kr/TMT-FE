@@ -28,8 +28,11 @@ export function ContinueDraftScreen() {
   const [selectedSaveId, setSelectedSaveId] = useState<string | null>(null);
 
   const drafts = mapContinuableDrafts(saves.data?.items);
+  const firstContinuable = drafts.find((draft) => draft.canContinue);
   // 목록이 한 번 그려진 뒤에는 선택을 유지한다. 첫 항목 기본 선택은 시안(1033:11306)을 따른다.
-  const selected = selectedSaveId ?? drafts.at(0)?.saveId ?? null;
+  const selected = drafts.some((draft) => draft.saveId === selectedSaveId && draft.canContinue)
+    ? selectedSaveId
+    : (firstContinuable?.saveId ?? null);
 
   const exitToProfile = () => router.push(ROUTES.PROFILE.ME_REVIEWS);
 
@@ -117,6 +120,8 @@ function DraftList({ drafts, selected, onSelect, isError, isPending }: DraftList
             <Radio
               value={draft.saveId}
               aria-label={draft.placeName}
+              aria-describedby={draft.canContinue ? undefined : `${draft.saveId}-unavailable`}
+              disabled={!draft.canContinue}
               className="after:-inset-ds-8 after:absolute after:content-['']"
             />
           </span>
@@ -133,6 +138,14 @@ function DraftList({ drafts, selected, onSelect, isError, isPending }: DraftList
             <span className="truncate text-body-md-regular text-content-primary">
               {draft.roadAddress}
             </span>
+            {!draft.canContinue && (
+              <span
+                id={`${draft.saveId}-unavailable`}
+                className="text-body-sm-regular text-content-tertiary"
+              >
+                사진이 있는 리뷰는 아직 이어 쓸 수 없어요
+              </span>
+            )}
           </span>
         </div>
       ))}

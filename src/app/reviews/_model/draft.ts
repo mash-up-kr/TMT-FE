@@ -6,6 +6,7 @@ export type ContinuableDraft = {
   placeName: string;
   roadAddress: string;
   thumbnailUrl: string | null;
+  canContinue: boolean;
 };
 
 export type ReviewDraftSnapshot = {

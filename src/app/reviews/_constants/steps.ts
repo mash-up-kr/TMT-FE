@@ -4,6 +4,8 @@ export const REVIEW_STEPS = ["store", "photos", "tags", "rating"] as const;
 
 export type ReviewStepSegment = (typeof REVIEW_STEPS)[number];
 
+export const DRAFT_REVIEW_FIRST_STEP: ReviewStepSegment = "photos";
+
 export const REVIEW_ROUTE_SEGMENTS = [...REVIEW_STEPS, "complete"] as const;
 
 export type ReviewRouteSegment = (typeof REVIEW_ROUTE_SEGMENTS)[number];
