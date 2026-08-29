@@ -12,6 +12,7 @@ import type {
   ProfileGroupItem,
   ProfileIdentityModel,
   ProfileReviewItem,
+  ProfileSummary,
   ProfileTabCounts,
   ProfileTicketHistoryItem,
   TicketEntrySource,
@@ -131,5 +132,18 @@ export function toReviewDetail(response: ReviewDetailResponse): ReviewDetail {
     pros: response.aiSummary?.pros ?? null,
     cons: response.aiSummary?.cons ?? null,
     content: response.content,
+  };
+}
+
+/** 티켓 수는 내 프로필 응답에만 있다. */
+export function toProfileSummary(
+  response: MyProfileResponse | UserProfileResponse,
+): ProfileSummary {
+  return {
+    profile: toProfileIdentity(response),
+    counts: toProfileTabCounts(response),
+    ...("availableTicketCount" in response
+      ? { availableTicketCount: response.availableTicketCount }
+      : {}),
   };
 }

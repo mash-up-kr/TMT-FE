@@ -57,10 +57,12 @@ export function RecommendScreen() {
   const { picked, falling, toggle, settleBall } = useStorePot();
 
   const [phase, setPhase] = useState<RecommendPhase>("picking");
-  const [result, setResult] = useState<RecommendResultModel | null>(null);
+  /** 로딩 화면에 최소 시간만큼 머물렀는지. 응답이 먼저 와도 이게 켜져야 결과로 간다. */
+  const [hasLingered, setHasLingered] = useState(false);
   const recommend = useRecommendPlace();
-  /** 요리 연출과 동시에 띄운 요청. 로딩 단계가 이 응답을 기다린다. */
-  const pendingRecommend = useRef<Promise<RecommendResultModel> | null>(null);
+  const result: RecommendResultModel | null = recommend.data
+    ? toRecommendResult(recommend.data)
+    : null;
   /** 0이면 국자가 없다. 값이 바뀔 때마다 새로 마운트돼 한 바퀴 젓는다. */
   const [stirId, setStirId] = useState(0);
   const wasFalling = useRef(0);
@@ -85,40 +87,31 @@ export function RecommendScreen() {
   const toLoading = useCallback(() => setPhase("loading"), []);
   const cook = useCookSequence(body, toLoading);
 
-  /**
-   * 응답과 최소 체류 시간이 둘 다 끝나야 결과로 넘어간다.
-   *
-   * 응답이 먼저 와도 연출이 끊기지 않고, 늦게 와도 빈 결과를 그리지 않는다.
-   * 실패하면 담기 화면으로 되돌릴 수 없다 — 요리 연출이 이미 그 화면을 지웠다. 이전 화면으로 나간다.
-   */
+  // 로딩에 들어오면 최소 체류 시간을 재기 시작한다.
   useEffect(() => {
     if (phase !== "loading") {
       return;
     }
 
-    let cancelled = false;
-    const settled = new Promise((resolve) => setTimeout(resolve, LOADING_MS));
+    const timer = setTimeout(() => setHasLingered(true), LOADING_MS);
 
-    Promise.all([pendingRecommend.current, settled])
-      .then(([response]) => {
-        if (cancelled || !response) {
-          return;
-        }
-        setResult(response);
-        setPhase("result");
-      })
-      .catch(() => {
-        if (cancelled) {
-          return;
-        }
-        toast.error("추천을 받지 못했어요. 다시 시도해 주세요.");
-        router.back();
-      });
+    return () => clearTimeout(timer);
+  }, [phase]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [phase, router]);
+  // 응답과 최소 체류가 둘 다 끝나야 결과로 넘어간다. 빨라도 연출이 안 끊기고 늦어도 빈 결과를 안 그린다.
+  useEffect(() => {
+    if (phase === "loading" && hasLingered && recommend.isSuccess) {
+      setPhase("result");
+    }
+  }, [phase, hasLingered, recommend.isSuccess]);
+
+  // 실패하면 담기 화면으로 되돌릴 수 없다 — 요리 연출이 이미 그 화면을 지웠다. 이전 화면으로 나간다.
+  useEffect(() => {
+    if (recommend.isError) {
+      toast.error("추천을 받지 못했어요. 다시 시도해 주세요.");
+      router.back();
+    }
+  }, [recommend.isError, router]);
 
   const handleToggle = useCallback(
     (store: RecommendStore) => {
@@ -174,7 +167,7 @@ export function RecommendScreen() {
     // 멈추는 것으로는 모자란다. 제목에 예약이 남아 있으면 요리하는 도중에 뒤늦게 되살아난다.
     // 담기 단계로 돌아올 일이 없으므로 여기서 아예 죽인다. 사라지는 연출은 cook이 맡는다.
     // 요청은 연출과 함께 출발한다. 연출이 끝날 때쯤이면 응답도 와 있다.
-    pendingRecommend.current = recommend.mutateAsync().then(toRecommendResult);
+    recommend.mutate();
 
     stopHeading();
     stopIdle();
