@@ -55,6 +55,17 @@ export default function EmptyNoticePreviewPage() {
             />
           </NoticeFrame>
         </PreviewSection>
+
+        <PreviewSection title="강조형 · 이어쓰기 마스코트">
+          <NoticeFrame previewCase="prominent-writing">
+            <EmptyNotice
+              variant="prominent"
+              illustration="writing"
+              eyebrow="작성 중인 리뷰가 있어요"
+              title={"리뷰를 이어서\n작성하시겠어요?"}
+            />
+          </NoticeFrame>
+        </PreviewSection>
       </div>
     </main>
   );
