@@ -5,8 +5,10 @@ import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { PlaceRating, PlaceSummary } from "@/shared/components/PlaceSummary/PlaceSummary";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
+import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon, LoadingIcon } from "@/shared/ui/Icons";
@@ -26,6 +28,9 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
   const position = useCurrentPosition();
   const reviews = usePlaceReviews(placeId, position);
   const isFavorite = detail.data?.isFavorite ?? false;
+
+  // ⚠️ UT2 임시 계측. UT 스크립트에서 가게 상세는 Task 2의 그룹 내 가게 탐색에서만 열린다.
+  useUt2Step(UT2_STEPS.GROUP_STORE_LIST);
 
   return (
     <>

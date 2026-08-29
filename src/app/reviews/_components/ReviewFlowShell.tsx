@@ -2,11 +2,14 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useState } from "react";
+import { UT2_STEPS } from "@/shared/constants/ut2";
+import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Progress } from "@/shared/ui/Progress";
 import {
+  NEW_REVIEW_BASE_PATH,
   REVIEW_FLOW_EXIT_PATH,
   REVIEW_STEP_COUNT,
   REVIEW_STEPS,
@@ -36,6 +39,13 @@ export function ReviewFlowShell({
   const completedSteps = findStepIndex(basePath, pathname);
   const canGoBack = completedSteps !== null && completedSteps > 0;
   const isComplete = pathname === reviewCompletePath(basePath);
+
+  // ⚠️ UT2 임시 계측. 새로 쓰기는 1-1, 이어쓰기는 2-5로 갈린다.
+  useUt2Step(
+    basePath === NEW_REVIEW_BASE_PATH
+      ? UT2_STEPS.REVIEW_WRITE_SKIP
+      : UT2_STEPS.REVIEW_CONTINUE_WRITING,
+  );
 
   // back()은 단계마다 쌓인 히스토리를 한 칸 되돌릴 뿐이라 플로우 밖으로 나가지 못한다.
   // 홈으로 replace해야 layout이 내려가면서 초안과 미리보기 URL도 함께 정리된다.

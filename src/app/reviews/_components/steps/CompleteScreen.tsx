@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
+import { UT2_STEPS } from "@/shared/constants/ut2";
+import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
@@ -12,6 +14,9 @@ import { ReviewCompleteVisual } from "../ReviewCompleteVisual";
 export function CompleteScreen() {
   const router = useRouter();
   const store = useReviewDraftGuard();
+
+  // ⚠️ UT2 임시 계측. Task 1의 건너뛰기 제출에서도 이 화면을 거쳐 한 번 더 찍힌다.
+  useUt2Step(UT2_STEPS.REVIEW_COMPLETE);
 
   if (store === null) {
     return null;

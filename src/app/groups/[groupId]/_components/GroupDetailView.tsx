@@ -8,7 +8,9 @@ import {
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
 import { ROUTES } from "@/shared/constants/routes";
+import { UT2_STEPS } from "@/shared/constants/ut2";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { setUt2Step, useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -69,6 +71,13 @@ export function GroupDetailView({
   const shouldPromptFirstReview = group.isMember && reviewList.reviews.length === 0;
   const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
 
+  // ⚠️ UT2 임시 계측. 상세 진입은 2-1, 티켓이 없는 채로 가입 시트가 열리면 2-3이다.
+  useUt2Step(UT2_STEPS.GROUP_DETAIL_ENTER);
+  useUt2Step(
+    UT2_STEPS.TICKET_INSUFFICIENT_SHEET,
+    isJoinSheetOpen && isNonMember && group.availableTicketCount === 0,
+  );
+
   const sheetJoinAction: GroupJoinAction = {
     ...joinAction,
     onJoin: async () => {
@@ -76,6 +85,8 @@ export function GroupDetailView({
 
       if (didJoin) {
         setIsJoinSheetOpen(false);
+        // ⚠️ UT2 임시 계측.
+        setUt2Step(UT2_STEPS.GROUP_JOIN_COMPLETE);
         toast.success("그룹 가입이 완료되었어요.");
       } else {
         toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");

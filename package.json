@@ -21,6 +21,7 @@
     "api:sync": "node --env-file-if-exists=.env _scripts/api/fetch-openapi.mjs && orval"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.45.7",
     "@base-ui/react": "^1.6.0",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/postcss": "^4.2.4",
