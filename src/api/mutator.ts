@@ -1,6 +1,38 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? "1";
+const MOCK_USER_ID_STORAGE_KEY = "tmt-mock-user-id";
 const IDEMPOTENCY_KEY_METHODS = new Set(["POST", "PUT"]);
+
+export type MockUserId = "1" | "2" | "3" | "4";
+
+function isMockUserId(value: string | null): value is MockUserId {
+  return value === "1" || value === "2" || value === "3" || value === "4";
+}
+
+function getMockUserId(): string {
+  if (typeof window === "undefined") {
+    return MOCK_USER_ID;
+  }
+
+  try {
+    const storedUserId = window.localStorage.getItem(MOCK_USER_ID_STORAGE_KEY);
+    return isMockUserId(storedUserId) ? storedUserId : MOCK_USER_ID;
+  } catch {
+    return MOCK_USER_ID;
+  }
+}
+
+export function setMockUserId(userId: MockUserId): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(MOCK_USER_ID_STORAGE_KEY, userId);
+  } catch {
+    // 브라우저 저장소가 막힌 환경에서는 환경 변수의 기본 사용자로 요청한다.
+  }
+}
 
 export class TmtApiError<TBody = unknown> extends Error {
   readonly httpStatus: number;
@@ -83,7 +115,7 @@ export const tmtFetch = async <T>(url: string, init?: RequestInit): Promise<T> =
   }
 
   if (!headers.has("X-User-Id")) {
-    headers.set("X-User-Id", MOCK_USER_ID);
+    headers.set("X-User-Id", getMockUserId());
   }
 
   const method = (init?.method ?? "GET").toUpperCase();

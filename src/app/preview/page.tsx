@@ -3,6 +3,11 @@ import { ChevronRightIcon } from "@/shared/ui/Icons";
 
 const PREVIEWS = [
   {
+    href: "/preview/ut2",
+    title: "UT2 사용자 선택",
+    description: "유저 1~4의 실제 홈 데이터를 확인",
+  },
+  {
     href: "/preview/empty-notice",
     title: "EmptyNotice",
     description: "기본·설명·액션·강조 변형과 배치 영역",
