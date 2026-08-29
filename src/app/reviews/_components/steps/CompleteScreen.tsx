@@ -25,18 +25,18 @@ export function CompleteScreen() {
   const save = useGetSave(saveId ?? "", {
     query: { enabled: saveId !== null },
   });
-  const isComplete = save.data?.reviewId !== null && save.data?.reviewId !== undefined;
+  const isReviewCompleted = save.data?.reviewId !== null && save.data?.reviewId !== undefined;
 
   useEffect(() => {
-    if (store !== null && (saveId === null || (save.isSuccess && !isComplete))) {
+    if (store !== null && saveId === null) {
       router.replace(reviewStepPath(basePath, "rating"));
     }
-  }, [basePath, isComplete, router, save.isSuccess, saveId, store]);
+  }, [basePath, router, saveId, store]);
 
   // ⚠️ UT2 임시 계측. Task 1의 건너뛰기 제출에서도 이 화면을 거쳐 한 번 더 찍힌다.
-  useUt2Step(UT2_STEPS.REVIEW_COMPLETE, isComplete);
+  useUt2Step(UT2_STEPS.REVIEW_COMPLETE, isReviewCompleted);
 
-  if (store === null || !isComplete) {
+  if (store === null || saveId === null || !save.isSuccess) {
     return null;
   }
 
@@ -45,9 +45,9 @@ export function CompleteScreen() {
       <div className="content-container flex flex-1 flex-col items-center gap-ds-16 py-ds-48">
         <header className="flex flex-col items-center gap-ds-12">
           <h1 className="text-center text-heading-lg text-content-primary">
-            리뷰 작성이
+            {isReviewCompleted ? "리뷰 작성이" : "리뷰를"}
             <br />
-            완료되었어요!
+            {isReviewCompleted ? "완료되었어요!" : "저장했어요!"}
           </h1>
           <p className="flex items-center gap-ds-4 text-body-lg-medium text-content-interactive-primary">
             <MapPinIcon size={20} />
