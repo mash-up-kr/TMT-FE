@@ -7,6 +7,7 @@ import { Textarea } from "@/shared/ui/TextField";
 import { MAX_REVIEW_TEXT_LENGTH } from "../../_constants/review";
 import { reviewCompletePath } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useSubmitReview } from "../../_hooks/useSubmitReview";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { useReviewFlowBase } from "../../_stores/ReviewFlowBaseProvider";
 import { StarRatingField } from "../StarRatingField";
@@ -17,10 +18,17 @@ export function RatingStep() {
   const basePath = useReviewFlowBase();
   const { rating, setRating, reviewText, setReviewText } = useReviewDraft();
   const hasStore = useReviewDraftGuard() !== null;
+  const { submit, isPending, isReady } = useSubmitReview();
 
   if (!hasStore) {
     return null;
   }
+
+  const handleSubmit = async () => {
+    if (await submit()) {
+      router.replace(reviewCompletePath(basePath));
+    }
+  };
 
   return (
     <>
@@ -50,8 +58,9 @@ export function RatingStep() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          {/* 저장 연동(createSave/updateSave)은 업로드 API 확정 후 붙인다. 지금은 완료 화면으로만 간다. */}
-          <Button onClick={() => router.replace(reviewCompletePath(basePath))}>다음</Button>
+          <Button loading={isPending} disabled={!isReady} onClick={handleSubmit}>
+            다음
+          </Button>
         </ButtonStack>
       </div>
     </>
