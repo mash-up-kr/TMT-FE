@@ -29,9 +29,15 @@ function findStepIndex(basePath: string, pathname: string) {
 
 export function ReviewFlowShell({
   basePath,
+  saveId,
   initialDraft,
   children,
-}: Readonly<{ basePath: string; initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
+}: Readonly<{
+  basePath: string;
+  saveId?: string;
+  initialDraft?: ReviewDraftSnapshot;
+  children: ReactNode;
+}>) {
   const pathname = usePathname();
   const router = useRouter();
   const [exitOpen, setExitOpen] = useState(false);
@@ -62,7 +68,7 @@ export function ReviewFlowShell({
 
   return (
     <ReviewFlowBaseProvider basePath={basePath}>
-      <ReviewDraftProvider initialDraft={initialDraft}>
+      <ReviewDraftProvider saveId={saveId} initialDraft={initialDraft}>
         <GNB
           title={isComplete ? "완료" : "리뷰 쓰기"}
           left={

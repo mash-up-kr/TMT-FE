@@ -9,11 +9,14 @@ import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
 import { REVIEW_FLOW_EXIT_PATH } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { ReviewCompleteVisual } from "../ReviewCompleteVisual";
 
 export function CompleteScreen() {
   const router = useRouter();
   const store = useReviewDraftGuard();
+  const { saveResult } = useReviewDraft();
+  const grantedTicketCount = saveResult?.grantedTicketCount ?? 0;
 
   // ⚠️ UT2 임시 계측. Task 1의 건너뛰기 제출에서도 이 화면을 거쳐 한 번 더 찍힌다.
   useUt2Step(UT2_STEPS.REVIEW_COMPLETE);
@@ -35,6 +38,11 @@ export function CompleteScreen() {
             <MapPinIcon size={20} />
             {store.name}
           </p>
+          {grantedTicketCount > 0 ? (
+            <p className="text-center text-body-md-medium text-content-secondary">
+              그룹 가입 티켓 {grantedTicketCount}장을 받았어요
+            </p>
+          ) : null}
         </header>
 
         <ReviewCompleteVisual />

@@ -14,9 +14,11 @@ import { toast } from "@/shared/ui/Toast";
 import { MAX_REVIEW_PHOTO_COUNT, MAX_REVIEW_PHOTO_SIZE_BYTES } from "../_constants/review";
 import type { ReviewDraftSnapshot } from "../_model/draft";
 import type { ReviewPhoto } from "../_model/photo";
+import type { ReviewSaveResult } from "../_model/save";
 import type { ReviewStore } from "../_model/store";
 
 type ReviewDraftContextValue = {
+  saveId: string | null;
   store: ReviewStore | null;
   setStore: (store: ReviewStore | null) => void;
   photos: readonly ReviewPhoto[];
@@ -28,6 +30,8 @@ type ReviewDraftContextValue = {
   setRating: (rating: number) => void;
   reviewText: string;
   setReviewText: (text: string) => void;
+  saveResult: ReviewSaveResult | null;
+  setSaveResult: (result: ReviewSaveResult | null) => void;
 };
 
 const NON_IMAGE_MESSAGE = "이미지 파일만 업로드할 수 있어요";
@@ -40,9 +44,10 @@ const ReviewDraftContext = createContext<ReviewDraftContextValue | null>(null);
  * 위해서다. 다른 초안을 열면 라우트가 갈려 새로 마운트되므로 그때 다시 읽힌다.
  */
 export function ReviewDraftProvider({
+  saveId = null,
   initialDraft,
   children,
-}: Readonly<{ initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
+}: Readonly<{ saveId?: string | null; initialDraft?: ReviewDraftSnapshot; children: ReactNode }>) {
   const [store, setStore] = useState<ReviewStore | null>(initialDraft?.store ?? null);
   const [photos, setPhotos] = useState<readonly ReviewPhoto[]>([]);
   const [selectedTagIds, setSelectedTagIds] = useState<ReadonlySet<string>>(
@@ -50,6 +55,7 @@ export function ReviewDraftProvider({
   );
   const [rating, setRating] = useState(initialDraft?.rating ?? 0);
   const [reviewText, setReviewText] = useState(initialDraft?.reviewText ?? "");
+  const [saveResult, setSaveResult] = useState<ReviewSaveResult | null>(null);
 
   // cleanup과 addPhotos/removePhoto가 updater 밖에서 최신 목록을 읽기 위한 ref.
   // updater 안에서 URL을 만들거나 해제하면 React가 updater를 다시 돌릴 때 중복 생성·해제된다.
@@ -119,6 +125,7 @@ export function ReviewDraftProvider({
 
   const value = useMemo(
     () => ({
+      saveId,
       store,
       setStore,
       photos,
@@ -130,8 +137,21 @@ export function ReviewDraftProvider({
       setRating,
       reviewText,
       setReviewText,
+      saveResult,
+      setSaveResult,
     }),
-    [store, photos, addPhotos, removePhoto, selectedTagIds, toggleTag, rating, reviewText],
+    [
+      saveId,
+      store,
+      photos,
+      addPhotos,
+      removePhoto,
+      selectedTagIds,
+      toggleTag,
+      rating,
+      reviewText,
+      saveResult,
+    ],
   );
 
   return <ReviewDraftContext.Provider value={value}>{children}</ReviewDraftContext.Provider>;

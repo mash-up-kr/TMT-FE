@@ -26,6 +26,7 @@ export function DraftReviewFlow({
       // Provider가 살아남아 뒤늦게 도착한 초안을 영영 반영하지 않는다.
       key={draft === undefined ? "pending" : "ready"}
       basePath={draftReviewBasePath(draftId)}
+      saveId={draftId}
       initialDraft={draft}
     >
       {draft === undefined ? (
