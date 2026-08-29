@@ -18,6 +18,7 @@ import {
 } from "../_constants/review";
 import type { ReviewDraftSnapshot } from "../_model/draft";
 import type { ReviewPhoto } from "../_model/photo";
+import type { ReviewSaveResult } from "../_model/save";
 import type { ReviewStore } from "../_model/store";
 
 type ReviewDraftContextValue = {
@@ -35,6 +36,8 @@ type ReviewDraftContextValue = {
   setRating: (rating: number) => void;
   reviewText: string;
   setReviewText: (text: string) => void;
+  saveResult: ReviewSaveResult | null;
+  setSaveResult: (result: ReviewSaveResult | null) => void;
 };
 
 const NON_IMAGE_MESSAGE = "JPG, PNG, WEBP 형식의 이미지만 업로드할 수 있어요";
@@ -59,6 +62,7 @@ export function ReviewDraftProvider({
   );
   const [rating, setRating] = useState(initialDraft?.rating ?? 0);
   const [reviewText, setReviewText] = useState(initialDraft?.reviewText ?? "");
+  const [saveResult, setSaveResult] = useState<ReviewSaveResult | null>(null);
 
   // cleanup과 addPhotos/removePhoto가 updater 밖에서 최신 목록을 읽기 위한 ref.
   // updater 안에서 URL을 만들거나 해제하면 React가 updater를 다시 돌릴 때 중복 생성·해제된다.
@@ -149,6 +153,8 @@ export function ReviewDraftProvider({
       setRating,
       reviewText,
       setReviewText,
+      saveResult,
+      setSaveResult,
     }),
     [
       store,
@@ -161,6 +167,7 @@ export function ReviewDraftProvider({
       toggleTag,
       rating,
       reviewText,
+      saveResult,
     ],
   );
 

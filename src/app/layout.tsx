@@ -36,7 +36,7 @@ export default function RootLayout({
         {/* ⚠️ UT2 대비 임시 계측. shared/utils/clarity.ts 계열과 함께 지운다. */}
         {isClarityEnabled ? (
           <>
-            <Script id="clarity" strategy="afterInteractive">
+            <Script id="microsoft-clarity" strategy="afterInteractive">
               {CLARITY_SNIPPET}
             </Script>
             <Ut2Tracker />

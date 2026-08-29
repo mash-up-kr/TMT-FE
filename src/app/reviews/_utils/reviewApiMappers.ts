@@ -4,10 +4,12 @@ import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfig
 import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen";
 import type { SaveListItemResponse } from "@/api/gen/_model/saveListItemResponse.gen";
 import type { SaveRequest } from "@/api/gen/_model/saveRequest.gen";
+import type { SaveResultResponse } from "@/api/gen/_model/saveResultResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
 import { MAX_REVIEW_RATING } from "../_constants/review";
 import { REVIEW_TAG_GROUPS } from "../_constants/tagGroups";
 import type { ContinuableDraft, ReviewDraftSnapshot } from "../_model/draft";
+import type { ReviewSaveResult } from "../_model/save";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import type { ReviewTag, ReviewTagGroup } from "../_model/tag";
 
@@ -181,5 +183,15 @@ export function mapSaveDetailToDraft(save: SaveDetailResponse | undefined): Revi
         ? Math.trunc(rating)
         : 0,
     reviewText: hasText(content) ? content : "",
+  };
+}
+
+export function toReviewSaveResult(response: SaveResultResponse): ReviewSaveResult {
+  return {
+    saveId: response.saveId,
+    reviewId: hasText(response.reviewId) ? response.reviewId : null,
+    placeId: response.placeId,
+    grantedTicketCount: response.ticket.grantedCount,
+    availableTicketCount: response.ticket.availableCount,
   };
 }

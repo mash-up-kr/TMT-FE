@@ -64,3 +64,20 @@ export type ProfileTicketHistoryItem = {
   source: TicketEntrySource;
   occurredAt: string;
 } & ({ status: "inProgress"; saveId: string } | { status: "settled"; amount: number });
+
+/** 화면이 받는 프로필 요약. `availableTicketCount`는 내 프로필에만 있다. */
+export type ProfileSummary = {
+  profile: ProfileIdentityModel;
+  counts: ProfileTabCounts;
+  availableTicketCount?: number;
+};
+
+export type ProfileTabPage =
+  | { tab: "reviews"; items: readonly ProfileReviewItem[] }
+  | { tab: "groups"; items: readonly ProfileGroupItem[] }
+  | { tab: "favorites"; items: readonly ProfileFavoriteItem[] };
+
+export type TicketHistory = {
+  availableCount: number;
+  items: readonly ProfileTicketHistoryItem[];
+};

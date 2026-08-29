@@ -16,13 +16,13 @@ export async function uploadReviewPhoto(file: File): Promise<string> {
       contentType: file.type,
       contentLength: file.size,
     });
-    const response = await fetch(intent.uploadUrl, {
+    const uploadResponse = await fetch(intent.uploadUrl, {
       method: "PUT",
       headers: { "Content-Type": file.type },
       body: file,
     });
 
-    if (!response.ok) {
+    if (!uploadResponse.ok) {
       throw new ReviewPhotoUploadError(UPLOAD_FAILED_MESSAGE);
     }
 

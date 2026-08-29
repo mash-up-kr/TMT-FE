@@ -1,7 +1,6 @@
 "use client";
 
-import type { ProfileTabPage } from "../_hooks/profileQueries";
-import type { ProfileReviewItem, ProfileViewer } from "../_model/profile";
+import type { ProfileReviewItem, ProfileTabPage, ProfileViewer } from "../_model/profile";
 import { FavoriteList } from "./FavoriteList";
 import { GroupList } from "./GroupList";
 import { ReviewGrid } from "./ReviewGrid";

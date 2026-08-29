@@ -13,6 +13,8 @@ import { formatDistance } from "@/shared/utils/formatDistance";
 
 const RESTRICTED_CONTENT_CLASS = "pointer-events-none select-none blur-[4px]";
 const MASKED_CONTENT_CHARACTER = "가";
+const MASKED_CONS_MIN_LENGTH = 14;
+const MASKED_CONS_LENGTH_RANGE = 17;
 
 type ReviewCardProps = {
   review: ReviewCardData;
@@ -37,6 +39,9 @@ export function ReviewCard({
   const displayContent =
     review.content ??
     (isContentRestricted ? MASKED_CONTENT_CHARACTER.repeat(review.contentLength) : null);
+  const restrictedConsFallback = isContentRestricted
+    ? MASKED_CONTENT_CHARACTER.repeat(getMaskedConsLength(review.id))
+    : null;
 
   return (
     <article className="flex flex-col bg-surface-primary">
@@ -51,6 +56,7 @@ export function ReviewCard({
         <AiSummary
           pros={review.pros}
           cons={review.cons}
+          restrictedConsFallback={restrictedConsFallback}
           isContentRestricted={isContentRestricted}
         />
         {displayContent ? (
@@ -147,24 +153,32 @@ function ReviewCardPhoto({ url }: { url: string | null }) {
 type AiSummaryProps = {
   pros: string | null;
   cons: string | null;
+  restrictedConsFallback: string | null;
   isContentRestricted: boolean;
 };
 
-function AiSummary({ pros, cons, isContentRestricted }: AiSummaryProps) {
-  if (!pros && !cons) {
+function AiSummary({ pros, cons, restrictedConsFallback, isContentRestricted }: AiSummaryProps) {
+  const displayCons = cons ?? restrictedConsFallback;
+
+  if (!pros && !displayCons) {
     return null;
   }
 
   return (
     <div className="flex flex-col gap-ds-8">
       {pros ? <SummaryLine label="장점">{pros}</SummaryLine> : null}
-      {cons ? (
+      {displayCons ? (
         <SummaryLine label="단점" negative isContentRestricted={isContentRestricted}>
-          {cons}
+          {displayCons}
         </SummaryLine>
       ) : null}
     </div>
   );
+}
+
+function getMaskedConsLength(reviewId: string): number {
+  const seed = [...reviewId].reduce((sum, character) => sum + character.charCodeAt(0), 0);
+  return MASKED_CONS_MIN_LENGTH + (seed % MASKED_CONS_LENGTH_RANGE);
 }
 
 type SummaryLineProps = {

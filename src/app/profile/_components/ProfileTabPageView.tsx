@@ -2,8 +2,7 @@
 
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { ProfileSummary, ProfileTabPage } from "../_hooks/profileQueries";
-import type { ProfileTab } from "../_model/profile";
+import type { ProfileSummary, ProfileTab, ProfileTabPage } from "../_model/profile";
 import { ProfileBody } from "./ProfileBody";
 import { ProfileQueryFallback } from "./ProfileQueryFallback";
 import { ProfileTabBody, type ProfileTabBodyProps } from "./ProfileTabBody";

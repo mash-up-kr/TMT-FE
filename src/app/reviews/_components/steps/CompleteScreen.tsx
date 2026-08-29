@@ -11,6 +11,7 @@ import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
 import { REVIEW_FLOW_EXIT_PATH, reviewStepPath } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { useReviewFlowBase, useReviewFlowSaveId } from "../../_stores/ReviewFlowBaseProvider";
 import { ReviewCompleteVisual } from "../ReviewCompleteVisual";
 
@@ -19,6 +20,8 @@ export function CompleteScreen() {
   const basePath = useReviewFlowBase();
   const saveId = useReviewFlowSaveId();
   const store = useReviewDraftGuard();
+  const { saveResult } = useReviewDraft();
+  const grantedTicketCount = saveResult?.grantedTicketCount ?? 0;
   const save = useGetSave(saveId ?? "", {
     query: { enabled: saveId !== null },
   });
@@ -50,6 +53,11 @@ export function CompleteScreen() {
             <MapPinIcon size={20} />
             {store.name}
           </p>
+          {grantedTicketCount > 0 ? (
+            <p className="text-center text-body-md-medium text-content-secondary">
+              그룹 가입 티켓 {grantedTicketCount}장을 받았어요
+            </p>
+          ) : null}
         </header>
 
         <ReviewCompleteVisual />

@@ -4,7 +4,7 @@ import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-quer
 import { useRouter } from "next/navigation";
 import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfigResponse.gen";
 import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen";
-import { getFeedQueryKey } from "@/api/gen/home/home.gen";
+import { getFeedQueryKey, getHomeQueryKey } from "@/api/gen/home/home.gen";
 import { getNearbyReviewsQueryKey } from "@/api/gen/nearby/nearby.gen";
 import { getPlaceReviewsQueryKey } from "@/api/gen/place-detail/place-detail.gen";
 import {
@@ -35,6 +35,7 @@ import { useReviewFlowBase, useReviewFlowSaveId } from "../_stores/ReviewFlowBas
 import {
   ReviewSaveMappingError,
   toCreateSaveRequest,
+  toReviewSaveResult,
   toUpdateSaveRequest,
 } from "../_utils/reviewApiMappers";
 import { ReviewPhotoUploadError, uploadReviewPhoto } from "../_utils/uploadReviewPhoto";
@@ -43,6 +44,8 @@ const EMPTY_TAG_CONFIG: Pick<ReviewFormConfigResponse, "companionTags" | "positi
   companionTags: [],
   positivePointTags: [],
 };
+
+const JOIN_PREVIEW_PATH_SUFFIX = "/join-preview";
 
 const SAVE_FAILED_MESSAGE = "리뷰를 저장하지 못했어요. 다시 시도해 주세요";
 const INCOMPLETE_MESSAGE = "리뷰를 완료하려면 필수 항목을 확인해 주세요";
@@ -78,6 +81,7 @@ export function useReviewSave() {
     selectedTagIds,
     rating,
     reviewText,
+    setSaveResult,
   } = useReviewDraft();
   const formConfig = useReviewFormConfig();
   const createSave = useCreateSave();
@@ -124,9 +128,15 @@ export function useReviewSave() {
     void queryClient.invalidateQueries({ queryKey: getMyReviewsQueryKey() });
     void queryClient.invalidateQueries({ queryKey: getMyTicketsQueryKey() });
     void queryClient.invalidateQueries({ queryKey: getMeQueryKey() });
+    void queryClient.invalidateQueries({ queryKey: getHomeQueryKey() });
     void queryClient.invalidateQueries({ queryKey: getFeedQueryKey() });
     void queryClient.invalidateQueries({ queryKey: getNearbyReviewsQueryKey() });
     void queryClient.invalidateQueries({ queryKey: getPlaceReviewsQueryKey(placeId) });
+    void queryClient.invalidateQueries({
+      predicate: (query) =>
+        typeof query.queryKey[0] === "string" &&
+        query.queryKey[0].endsWith(JOIN_PREVIEW_PATH_SUFFIX),
+    });
   };
 
   const resolvePhotoAssetIds = async () => {
@@ -191,6 +201,7 @@ export function useReviewSave() {
       queryClient.setQueryData<SaveDetailResponse>(getGetSaveQueryKey(result.saveId), (current) =>
         current === undefined ? current : { ...current, reviewId: result.reviewId },
       );
+      setSaveResult(toReviewSaveResult(result));
       invalidateCompletedReviewQueries(result.placeId);
     }
 

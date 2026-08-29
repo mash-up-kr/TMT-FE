@@ -1,21 +1,26 @@
-/** 화면 모델이 아니라 계약 응답 모양으로 둔다. 생성 client가 나오면 이 폴더를 지운다. */
+/**
+ * 프리뷰 전용 샘플 응답. 프리뷰는 네트워크를 타지 않으므로 자기 데이터를 직접 갖는다.
+ * 계약 응답 모양 그대로 두고 실제 mapper를 통과시킨다 — 화면 모델을 손으로 만들지 않는다.
+ */
 
+import type { CursorPageGroupCardResponse } from "@/api/gen/_model/cursorPageGroupCardResponse.gen";
+import type { CursorPageMyReviewGridItem } from "@/api/gen/_model/cursorPageMyReviewGridItem.gen";
+import type { CursorPagePlaceCardResponse } from "@/api/gen/_model/cursorPagePlaceCardResponse.gen";
+import type { CursorPageUserReviewGridItem } from "@/api/gen/_model/cursorPageUserReviewGridItem.gen";
+import type { GroupCardResponse } from "@/api/gen/_model/groupCardResponse.gen";
+import type { MyProfileResponse } from "@/api/gen/_model/myProfileResponse.gen";
+import type { MyReviewGridItem } from "@/api/gen/_model/myReviewGridItem.gen";
+import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
+import type { TicketHistoryResponse } from "@/api/gen/_model/ticketHistoryResponse.gen";
+import type { UserProfileResponse } from "@/api/gen/_model/userProfileResponse.gen";
+import type { UserReviewGridItem } from "@/api/gen/_model/userReviewGridItem.gen";
 import dummy from "@/shared/assets/dummy.png";
 import dummyImage from "@/shared/assets/dummy-image.png";
 import dummyProfile from "@/shared/assets/dummy-profile.png";
-import type {
-  CursorPage,
-  MeResponse,
-  ProfileFavoriteResponse,
-  ProfileGroupResponse,
-  ProfileReviewResponse,
-  TicketHistoryResponse,
-  UserResponse,
-} from "./contract";
 
-const page = <T>(items: T[]): CursorPage<T> => ({ items, nextCursor: null, hasNext: false });
+const page = <T>(items: T[]) => ({ items, nextCursor: null, hasNext: false });
 
-export const ME: MeResponse = {
+export const ME: MyProfileResponse = {
   userId: "user_1",
   nickname: "조용한 미식가",
   email: "ayanha@gmail.com",
@@ -26,7 +31,7 @@ export const ME: MeResponse = {
   favoritePlaceCount: 4,
 };
 
-export const OTHER_USER: UserResponse = {
+export const OTHER_USER: UserProfileResponse = {
   userId: "user_7",
   nickname: "매운맛 탐험가",
   profileImageUrl: null,
@@ -38,10 +43,9 @@ export const OTHER_USER: UserResponse = {
 const PLACE_NAMES = ["델리스피자", "한판승부", "성수당", "오즈 커피"] as const;
 const CATEGORIES = ["양식", "한식", "디저트", null] as const;
 
-function reviews(count: number, withSaveId: boolean): ProfileReviewResponse[] {
+function reviews(count: number): UserReviewGridItem[] {
   return Array.from({ length: count }, (_, index) => ({
     reviewId: `review_${index + 1}`,
-    ...(withSaveId ? { saveId: `save_${index + 1}` } : {}),
     thumbnailUrl: dummyImage.src,
     place: {
       placeId: `place_${(index % PLACE_NAMES.length) + 1}`,
@@ -52,8 +56,12 @@ function reviews(count: number, withSaveId: boolean): ProfileReviewResponse[] {
   }));
 }
 
-export const MY_REVIEWS = page(reviews(6, true));
-export const OTHER_REVIEWS = page(reviews(4, false));
+function myReviews(count: number): MyReviewGridItem[] {
+  return reviews(count).map((review, index) => ({ ...review, saveId: `save_${index + 1}` }));
+}
+
+export const MY_REVIEWS: CursorPageMyReviewGridItem = page(myReviews(6));
+export const OTHER_REVIEWS: CursorPageUserReviewGridItem = page(reviews(4));
 
 const GROUP_SEEDS = [
   { name: "성수 커피 탐험대", description: "조용히 커피 맛에 집중하는 사람들", matched: 7 },
@@ -62,7 +70,7 @@ const GROUP_SEEDS = [
   { name: "야식 연구회", description: "밤에만 열리는 맛집을 찾습니다", matched: 12 },
 ] as const;
 
-function groups(count: number): ProfileGroupResponse[] {
+function groups(count: number): GroupCardResponse[] {
   return GROUP_SEEDS.slice(0, count).map((seed, index) => ({
     groupId: `group_${index + 1}`,
     name: seed.name,
@@ -75,10 +83,10 @@ function groups(count: number): ProfileGroupResponse[] {
   }));
 }
 
-export const MY_GROUPS = page(groups(3));
-export const OTHER_GROUPS = page(groups(4));
+export const MY_GROUPS: CursorPageGroupCardResponse = page(groups(3));
+export const OTHER_GROUPS: CursorPageGroupCardResponse = page(groups(4));
 
-function favorites(count: number, viewerFavorited: boolean): ProfileFavoriteResponse[] {
+function favorites(count: number, viewerFavorited: boolean): PlaceCardResponse[] {
   return Array.from({ length: count }, (_, index) => ({
     placeId: `place_${index + 1}`,
     name: PLACE_NAMES[index % PLACE_NAMES.length],
@@ -93,8 +101,8 @@ function favorites(count: number, viewerFavorited: boolean): ProfileFavoriteResp
   }));
 }
 
-export const MY_FAVORITES = page(favorites(4, true));
-export const OTHER_FAVORITES = page(favorites(4, false));
+export const MY_FAVORITES: CursorPagePlaceCardResponse = page(favorites(4, true));
+export const OTHER_FAVORITES: CursorPagePlaceCardResponse = page(favorites(4, false));
 
 /** 출처 세 갈래(매장·그룹·없음)를 모두 담는다. */
 export const MY_TICKETS: TicketHistoryResponse = {
@@ -148,6 +156,8 @@ export const MY_TICKETS: TicketHistoryResponse = {
   ]),
 };
 
-export const EMPTY_PAGE = page([]);
+export const EMPTY_REVIEWS: CursorPageMyReviewGridItem = page([]);
+export const EMPTY_GROUPS: CursorPageGroupCardResponse = page([]);
+export const EMPTY_FAVORITES: CursorPagePlaceCardResponse = page([]);
 
 export const EMPTY_TICKETS: TicketHistoryResponse = { availableCount: 0, ...page([]) };
