@@ -6,6 +6,7 @@ import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
+import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { PlusIcon } from "@/shared/ui/Icons";
@@ -19,23 +20,22 @@ import { PlaceRecommendationCard } from "./PlaceRecommendationCard";
 import { ProfileTabPageView } from "./ProfileTabPageView";
 import { TicketCard } from "./TicketCard";
 
-/** 연동 시 useMutation의 isPending으로 바뀐다. */
-const UNFAVORITE_DELAY_MS = 400;
-
 export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
   const router = useRouter();
   const summary = useMyProfileSummary();
   const tabPage = useMyProfileTabPage(activeTab);
   const sheet = useReviewDetailSheet();
+  // 어느 카드가 대기 중인지 표시해야 해서 mutation의 isPending으로 대체하지 않는다.
   const [pendingPlaceId, setPendingPlaceId] = useState<string | null>(null);
+  const favorite = usePlaceFavorite({
+    onSuccessAction: () => toast.success("좋아요를 취소했어요"),
+  });
 
-  // 해제해도 항목은 목록에 남고 다음 조회에서 빠진다.
-  const unfavorite = (placeId: string) => {
+  // 목록 갱신은 usePlaceFavorite의 query 무효화가 맡는다.
+  const unfavorite = async (placeId: string) => {
     setPendingPlaceId(placeId);
-    setTimeout(() => {
-      setPendingPlaceId(null);
-      toast.success("좋아요를 취소했어요");
-    }, UNFAVORITE_DELAY_MS);
+    await favorite.onToggleAction({ id: placeId, isFavorite: true });
+    setPendingPlaceId(null);
   };
 
   const header = (
