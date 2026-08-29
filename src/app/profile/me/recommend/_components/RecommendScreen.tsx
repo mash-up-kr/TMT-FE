@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRecommendPlace } from "@/api/gen/recommendation/recommendation.gen";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { placeDetailPath, ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
@@ -10,7 +11,6 @@ import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { toast } from "@/shared/ui/Toast";
 import { LAYOUT, SCREEN_BACKGROUND } from "../_constants/appearance";
-import { DUMMY_RESULT } from "../_constants/dummyResult";
 import { DUMMY_STORES } from "../_constants/dummyStores";
 import { HEADINGS } from "../_constants/headings";
 import { BALL_DROP } from "../_constants/motion";
@@ -23,7 +23,8 @@ import {
 import { useHeadingRotation } from "../_hooks/useHeadingRotation";
 import { useRecommendEntrance } from "../_hooks/useRecommendEntrance";
 import { MIN_PICKED, useStorePot } from "../_hooks/useStorePot";
-import type { RecommendStore } from "../_model/recommend";
+import type { RecommendResult as RecommendResultModel, RecommendStore } from "../_model/recommend";
+import { toRecommendResult } from "../_utils/recommendMapper";
 import { DroppingBall } from "./DroppingBall";
 import { LoadingCaption } from "./LoadingCaption";
 import { PepperShaker } from "./PepperShaker";
@@ -36,7 +37,7 @@ import { StoreGrid } from "./StoreGrid";
 const ADDED_HEADING = 1;
 
 /**
- * 추천 endpoint가 없어 실제 대기가 없다. 연출이 읽힐 만큼만 머문다.
+ * 로딩 화면의 최소 체류 시간. 응답이 더 빨리 와도 이만큼은 머문다.
  * 글자 웨이브 한 바퀴가 쉬는 시간까지 3.0초라, 한 바퀴는 온전히 보이게 잡는다.
  */
 const LOADING_MS = 3400;
@@ -56,6 +57,10 @@ export function RecommendScreen() {
   const { picked, falling, toggle, settleBall } = useStorePot();
 
   const [phase, setPhase] = useState<RecommendPhase>("picking");
+  const [result, setResult] = useState<RecommendResultModel | null>(null);
+  const recommend = useRecommendPlace();
+  /** 요리 연출과 동시에 띄운 요청. 로딩 단계가 이 응답을 기다린다. */
+  const pendingRecommend = useRef<Promise<RecommendResultModel> | null>(null);
   /** 0이면 국자가 없다. 값이 바뀔 때마다 새로 마운트돼 한 바퀴 젓는다. */
   const [stirId, setStirId] = useState(0);
   const wasFalling = useRef(0);
@@ -80,16 +85,40 @@ export function RecommendScreen() {
   const toLoading = useCallback(() => setPhase("loading"), []);
   const cook = useCookSequence(body, toLoading);
 
-  // 로딩은 고정 시간만 머문 뒤 결과로 넘어간다.
+  /**
+   * 응답과 최소 체류 시간이 둘 다 끝나야 결과로 넘어간다.
+   *
+   * 응답이 먼저 와도 연출이 끊기지 않고, 늦게 와도 빈 결과를 그리지 않는다.
+   * 실패하면 담기 화면으로 되돌릴 수 없다 — 요리 연출이 이미 그 화면을 지웠다. 이전 화면으로 나간다.
+   */
   useEffect(() => {
     if (phase !== "loading") {
       return;
     }
 
-    const timer = setTimeout(() => setPhase("result"), LOADING_MS);
+    let cancelled = false;
+    const settled = new Promise((resolve) => setTimeout(resolve, LOADING_MS));
 
-    return () => clearTimeout(timer);
-  }, [phase]);
+    Promise.all([pendingRecommend.current, settled])
+      .then(([response]) => {
+        if (cancelled || !response) {
+          return;
+        }
+        setResult(response);
+        setPhase("result");
+      })
+      .catch(() => {
+        if (cancelled) {
+          return;
+        }
+        toast.error("추천을 받지 못했어요. 다시 시도해 주세요.");
+        router.back();
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [phase, router]);
 
   const handleToggle = useCallback(
     (store: RecommendStore) => {
@@ -144,11 +173,14 @@ export function RecommendScreen() {
     //
     // 멈추는 것으로는 모자란다. 제목에 예약이 남아 있으면 요리하는 도중에 뒤늦게 되살아난다.
     // 담기 단계로 돌아올 일이 없으므로 여기서 아예 죽인다. 사라지는 연출은 cook이 맡는다.
+    // 요청은 연출과 함께 출발한다. 연출이 끝날 때쯤이면 응답도 와 있다.
+    pendingRecommend.current = recommend.mutateAsync().then(toRecommendResult);
+
     stopHeading();
     stopIdle();
     setPhase("cooking");
     cook.run();
-  }, [picked.length, stopHeading, stopIdle, cook]);
+  }, [picked.length, stopHeading, stopIdle, cook, recommend]);
 
   const isPicking = phase === "picking";
   const showsGrid = isPicking || phase === "cooking";
@@ -246,10 +278,10 @@ export function RecommendScreen() {
 
         {phase === "loading" ? <LoadingCaption /> : null}
 
-        {phase === "result" ? (
+        {phase === "result" && result ? (
           <RecommendResult
-            result={DUMMY_RESULT}
-            onOpenDetail={() => router.push(placeDetailPath(DUMMY_RESULT.placeId))}
+            result={result}
+            onOpenDetail={() => router.push(placeDetailPath(result.placeId))}
           />
         ) : null}
 

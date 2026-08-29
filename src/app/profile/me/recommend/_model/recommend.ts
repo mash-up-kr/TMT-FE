@@ -37,17 +37,12 @@ export type RecommendSummary = {
   text: string;
 };
 
-/**
- * 추천 결과 한 곳.
- *
- * 추천 endpoint가 아직 OpenAPI에 없어 지금은 `_constants/`의 더미가 이 모양을 만든다.
- * 계약이 생기면 `_utils/`의 mapper가 같은 모양을 만들고 이 타입은 그대로 쓴다.
- */
+/** 추천 결과 한 곳. `_utils/recommendMapper.ts`가 추천 응답을 이 모양으로 바꾼다. */
 export type RecommendResult = {
   placeId: string;
   name: string;
   roadAddress: string;
-  categoryName: string;
+  categoryName: string | null;
   thumbnailUrl: string | null;
   summaries: readonly RecommendSummary[];
 };
