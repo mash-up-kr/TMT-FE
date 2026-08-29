@@ -21,7 +21,6 @@ export function PhotosStep() {
     <>
       <div className="content-container flex flex-1 flex-col gap-ds-24 pt-ds-24">
         <StepHeader
-          required
           title={
             <>
               그날의 순간,
@@ -41,11 +40,7 @@ export function PhotosStep() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
-          <Button
-            loading={reviewSave.isPending}
-            disabled={photos.length === 0}
-            onClick={() => void reviewSave.saveAndGo("tags")}
-          >
+          <Button loading={reviewSave.isPending} onClick={() => void reviewSave.saveAndGo("tags")}>
             다음
           </Button>
         </ButtonStack>
