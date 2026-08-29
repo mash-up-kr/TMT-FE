@@ -1,23 +1,30 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { MY_FAVORITES, MY_GROUPS, MY_REVIEWS } from "../_fixtures/profileFixtures";
-import type { ProfileTab } from "../_model/profile";
-import { type ProfileTabPage, resolveFixture } from "./profileQueries";
-import { type ProfileTabResponses, toProfileTabPage } from "./profileTabPage";
+import { useMyFavorites, useMyGroups, useMyReviews } from "@/api/gen/profile/profile.gen";
+import type { ProfileTab, ProfileTabPage } from "../_model/profile";
+import { toFavoritesTabPage, toGroupsTabPage, toReviewsTabPage } from "../_utils/profileTabPage";
 
-const MY_TAB_RESPONSES: ProfileTabResponses = {
-  reviews: MY_REVIEWS,
-  groups: MY_GROUPS,
-  favorites: MY_FAVORITES,
-};
-
+/** hook은 조건부로 부를 수 없어 셋을 모두 걸고 활성 탭만 요청한다. */
 export function useMyProfileTabPage(tab: ProfileTab) {
-  return useQuery({
-    queryKey: ["profile", "me", tab],
-    queryFn: async (): Promise<ProfileTabPage> => {
-      const responses = await resolveFixture(MY_TAB_RESPONSES);
-      return toProfileTabPage(tab, responses, "mine");
+  const reviews = useMyReviews<ProfileTabPage>(undefined, {
+    query: { enabled: tab === "reviews", select: toReviewsTabPage },
+  });
+  const groups = useMyGroups<ProfileTabPage>(undefined, {
+    query: {
+      enabled: tab === "groups",
+      select: (response) => toGroupsTabPage(response, "mine"),
     },
   });
+  const favorites = useMyFavorites<ProfileTabPage>(undefined, {
+    query: { enabled: tab === "favorites", select: toFavoritesTabPage },
+  });
+
+  switch (tab) {
+    case "reviews":
+      return reviews;
+    case "groups":
+      return groups;
+    case "favorites":
+      return favorites;
+  }
 }

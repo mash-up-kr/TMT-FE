@@ -13,19 +13,27 @@ import { ProfileBody } from "../../profile/_components/ProfileBody";
 import { ProfileTabBody } from "../../profile/_components/ProfileTabBody";
 import { TicketCard } from "../../profile/_components/TicketCard";
 import { TicketHistoryList } from "../../profile/_components/TicketHistoryList";
-import * as fixtures from "../../profile/_fixtures/profileFixtures";
-import type { ProfileTabResponses } from "../../profile/_hooks/profileTabPage";
-import { toProfileTabPage } from "../../profile/_hooks/profileTabPage";
-import { PROFILE_TABS, type ProfileTab, type ProfileViewer } from "../../profile/_model/profile";
+import {
+  PROFILE_TABS,
+  type ProfileTab,
+  type ProfileTabPage,
+  type ProfileViewer,
+} from "../../profile/_model/profile";
 import {
   toProfileIdentity,
   toProfileTabCounts,
   toTicketHistoryItems,
 } from "../../profile/_utils/profileMappers";
+import {
+  toFavoritesTabPage,
+  toGroupsTabPage,
+  toReviewsTabPage,
+} from "../../profile/_utils/profileTabPage";
+import * as fixtures from "./_fixtures/previewFixtures";
 
 const PREVIEW_HREF = "/preview/profile";
 
-const RESPONSES: Record<ProfileViewer, ProfileTabResponses> = {
+const RESPONSES = {
   mine: {
     reviews: fixtures.MY_REVIEWS,
     groups: fixtures.MY_GROUPS,
@@ -36,15 +44,28 @@ const RESPONSES: Record<ProfileViewer, ProfileTabResponses> = {
     groups: fixtures.OTHER_GROUPS,
     favorites: fixtures.OTHER_FAVORITES,
   },
-};
+} as const;
 
-const EMPTY_RESPONSES: ProfileTabResponses = {
-  reviews: fixtures.EMPTY_PAGE,
-  groups: fixtures.EMPTY_PAGE,
-  favorites: fixtures.EMPTY_PAGE,
-};
+const EMPTY_RESPONSES = {
+  reviews: fixtures.EMPTY_REVIEWS,
+  groups: fixtures.EMPTY_GROUPS,
+  favorites: fixtures.EMPTY_FAVORITES,
+} as const;
 
 const SUMMARY_RESPONSES = { mine: fixtures.ME, other: fixtures.OTHER_USER } as const;
+
+function toTabPage(tab: ProfileTab, isEmpty: boolean, viewer: ProfileViewer): ProfileTabPage {
+  const responses = isEmpty ? EMPTY_RESPONSES : RESPONSES[viewer];
+
+  switch (tab) {
+    case "reviews":
+      return toReviewsTabPage(responses.reviews);
+    case "groups":
+      return toGroupsTabPage(responses.groups, viewer);
+    case "favorites":
+      return toFavoritesTabPage(responses.favorites);
+  }
+}
 
 const VIEWERS = [
   { viewer: "mine", label: "내" },
@@ -136,7 +157,7 @@ function ProfilePreviewContent({ scenarioKey }: { scenarioKey: string }) {
 function ProfilePreview({ scenario }: { scenario: ProfileScenario }) {
   const { viewer, tab, isEmpty } = scenario;
   const summaryResponse = SUMMARY_RESPONSES[viewer];
-  const page = toProfileTabPage(tab, isEmpty ? EMPTY_RESPONSES : RESPONSES[viewer], viewer);
+  const page = toTabPage(tab, isEmpty, viewer);
 
   const body = (
     <ProfileBody

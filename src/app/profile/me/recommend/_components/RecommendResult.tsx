@@ -71,8 +71,12 @@ export function RecommendResult({ result, onOpenDetail }: RecommendResultProps) 
           <div className="flex items-center gap-ds-4 text-body-md-medium text-content-tertiary">
             <MapPinIcon size={20} aria-hidden="true" className="shrink-0" />
             <span className="truncate">{result.roadAddress}</span>
-            <span aria-hidden="true" className="h-[12px] w-px shrink-0 bg-stroke-primary" />
-            <span className="shrink-0">{result.categoryName}</span>
+            {result.categoryName ? (
+              <>
+                <span aria-hidden="true" className="h-[12px] w-px shrink-0 bg-stroke-primary" />
+                <span className="shrink-0">{result.categoryName}</span>
+              </>
+            ) : null}
           </div>
         </div>
 

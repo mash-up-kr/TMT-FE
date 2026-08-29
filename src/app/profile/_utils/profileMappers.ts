@@ -1,30 +1,36 @@
-import type {
-  MeResponse,
-  ProfileFavoriteResponse,
-  ProfileGroupResponse,
-  ProfileReviewResponse,
-  TicketEntryResponse,
-  UserResponse,
-} from "../_fixtures/contract";
+import type { GroupCardResponse } from "@/api/gen/_model/groupCardResponse.gen";
+import type { MyProfileResponse } from "@/api/gen/_model/myProfileResponse.gen";
+import type { MyReviewGridItem } from "@/api/gen/_model/myReviewGridItem.gen";
+import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
+import type { ReviewDetailResponse } from "@/api/gen/_model/reviewDetailResponse.gen";
+import type { TicketHistoryItem } from "@/api/gen/_model/ticketHistoryItem.gen";
+import type { UserProfileResponse } from "@/api/gen/_model/userProfileResponse.gen";
+import type { UserReviewGridItem } from "@/api/gen/_model/userReviewGridItem.gen";
+import type { ReviewDetail } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import type {
   ProfileFavoriteItem,
   ProfileGroupItem,
   ProfileIdentityModel,
   ProfileReviewItem,
+  ProfileSummary,
   ProfileTabCounts,
   ProfileTicketHistoryItem,
   TicketEntrySource,
 } from "../_model/profile";
 
-export function toProfileIdentity(response: MeResponse | UserResponse): ProfileIdentityModel {
+export function toProfileIdentity(
+  response: MyProfileResponse | UserProfileResponse,
+): ProfileIdentityModel {
   return {
     nickname: response.nickname,
-    profileImageUrl: response.profileImageUrl,
+    profileImageUrl: response.profileImageUrl ?? null,
     ...("email" in response && response.email ? { email: response.email } : {}),
   };
 }
 
-export function toProfileTabCounts(response: MeResponse | UserResponse): ProfileTabCounts {
+export function toProfileTabCounts(
+  response: MyProfileResponse | UserProfileResponse,
+): ProfileTabCounts {
   return {
     reviews: response.reviewCount,
     groups: response.joinedGroupCount,
@@ -32,16 +38,17 @@ export function toProfileTabCounts(response: MeResponse | UserResponse): Profile
   };
 }
 
+/** `saveId`는 내 리뷰 응답에만 있다. 타인 리뷰는 저장 상세를 열 수 없다. */
 export function toProfileReviewItems(
-  responses: readonly ProfileReviewResponse[],
+  responses: readonly (MyReviewGridItem | UserReviewGridItem)[],
 ): ProfileReviewItem[] {
   return responses.map((response) => ({
     reviewId: response.reviewId,
-    ...(response.saveId ? { saveId: response.saveId } : {}),
+    ...("saveId" in response && response.saveId ? { saveId: response.saveId } : {}),
     thumbnailUrl: response.thumbnailUrl,
     placeId: response.place.placeId,
     placeName: response.place.name,
-    categoryName: response.place.categoryName,
+    categoryName: response.place.categoryName ?? null,
   }));
 }
 
@@ -50,7 +57,7 @@ type GroupMappingOptions = {
 };
 
 export function toProfileGroupItems(
-  responses: readonly ProfileGroupResponse[],
+  responses: readonly GroupCardResponse[],
   { withMatchedCount }: GroupMappingOptions,
 ): ProfileGroupItem[] {
   return responses.map((response) => ({
@@ -63,7 +70,7 @@ export function toProfileGroupItems(
 }
 
 export function toProfileFavoriteItems(
-  responses: readonly ProfileFavoriteResponse[],
+  responses: readonly PlaceCardResponse[],
 ): ProfileFavoriteItem[] {
   return responses.map((response) => ({
     placeId: response.placeId,
@@ -74,7 +81,7 @@ export function toProfileFavoriteItems(
   }));
 }
 
-function toTicketEntrySource(response: TicketEntryResponse): TicketEntrySource {
+function toTicketEntrySource(response: TicketHistoryItem): TicketEntrySource {
   if (response.place) {
     return {
       kind: "place",
@@ -91,7 +98,7 @@ function toTicketEntrySource(response: TicketEntryResponse): TicketEntrySource {
 
 /** saveId 없는 작성 중 행은 재개할 수 없어 목록에서 제외한다. */
 export function toTicketHistoryItems(
-  responses: readonly TicketEntryResponse[],
+  responses: readonly TicketHistoryItem[],
 ): ProfileTicketHistoryItem[] {
   return responses.flatMap((response): ProfileTicketHistoryItem[] => {
     const base = {
@@ -101,7 +108,8 @@ export function toTicketHistoryItems(
       occurredAt: response.occurredAt,
     };
 
-    if (response.amount === null) {
+    // 티켓이 오간 적 없는 행은 amount가 null이거나 아예 내려오지 않는다.
+    if (response.amount == null) {
       return response.saveId
         ? [{ ...base, status: "inProgress" as const, saveId: response.saveId }]
         : [];
@@ -109,4 +117,33 @@ export function toTicketHistoryItems(
 
     return [{ ...base, status: "settled" as const, amount: response.amount }];
   });
+}
+
+export function toReviewDetail(response: ReviewDetailResponse): ReviewDetail {
+  return {
+    placeName: response.place.name,
+    address: response.place.roadAddress,
+    categoryName: response.place.categoryName ?? null,
+    rating: response.rating,
+    tags: response.tags.map(({ tagId, label }) => ({ id: tagId, label })),
+    photos: [...response.photos]
+      .sort((left, right) => left.order - right.order)
+      .map(({ photoId, url }) => ({ id: photoId, url })),
+    pros: response.aiSummary?.pros ?? null,
+    cons: response.aiSummary?.cons ?? null,
+    content: response.content,
+  };
+}
+
+/** 티켓 수는 내 프로필 응답에만 있다. */
+export function toProfileSummary(
+  response: MyProfileResponse | UserProfileResponse,
+): ProfileSummary {
+  return {
+    profile: toProfileIdentity(response),
+    counts: toProfileTabCounts(response),
+    ...("availableTicketCount" in response
+      ? { availableTicketCount: response.availableTicketCount }
+      : {}),
+  };
 }
