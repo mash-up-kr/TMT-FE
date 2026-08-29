@@ -10,11 +10,13 @@ import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { PlusIcon } from "@/shared/ui/Icons";
 import { toast } from "@/shared/ui/Toast";
+import { useContinueDraftPrompt } from "../_hooks/useContinueDraftPrompt";
 import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { useMyProfileTabPage } from "../_hooks/useMyProfileTabPage";
 import { useReviewDetailSheet } from "../_hooks/useReviewDetailSheet";
 import type { ProfileTab } from "../_model/profile";
 import { toGroupHref, toPlaceHref } from "../_utils/profileHrefs";
+import { ContinueDraftSheet } from "./ContinueDraftSheet";
 import { PlaceRecommendationCard } from "./PlaceRecommendationCard";
 import { ProfileTabPageView } from "./ProfileTabPageView";
 import { TicketCard } from "./TicketCard";
@@ -27,6 +29,8 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
   const summary = useMyProfileSummary();
   const tabPage = useMyProfileTabPage(activeTab);
   const sheet = useReviewDetailSheet();
+  // 프로필 상단이 그려진 뒤에 이어쓰기 시트를 올린다. 로딩 화면을 덮으면 어디에서 뜬 시트인지 읽히지 않는다.
+  const continueDraft = useContinueDraftPrompt({ ready: !summary.isPending });
   const [pendingPlaceId, setPendingPlaceId] = useState<string | null>(null);
 
   // 해제해도 항목은 목록에 남고 다음 조회에서 빠진다.
@@ -83,6 +87,11 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
         open={sheet.isOpen}
         onOpenChange={sheet.onOpenChange}
         detail={sheet.detail}
+      />
+      <ContinueDraftSheet
+        open={continueDraft.isOpen}
+        onOpenChangeAction={continueDraft.onOpenChange}
+        onContinueAction={continueDraft.continueWriting}
       />
     </>
   );
