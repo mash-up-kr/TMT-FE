@@ -38,9 +38,11 @@ export function RecommendedGroupList({ groups, className }: RecommendedGroupList
       >
         {groups.map((group) => (
           <li key={group.id} className={`${CARD_WIDTH} shrink-0`}>
+            {/* 카드가 나란히 서므로 뱃지 유무로 높이가 갈리면 끝단이 어긋난다.
+                li까지 늘어난 높이를 카드까지 잇는다. */}
             <Link
               href={ROUTES.GROUPS.DETAIL(group.id)}
-              className="block"
+              className="block h-full"
               onClick={() => setUt2Step(UT2_STEPS.GROUP_SELECT_FINAL)}
             >
               <GroupCard
@@ -51,6 +53,7 @@ export function RecommendedGroupList({ groups, className }: RecommendedGroupList
                 reviewCount={group.reviewCount}
                 placeCount={group.placeCount}
                 matchedCount={group.matchedCount}
+                className="h-full"
               />
             </Link>
           </li>
