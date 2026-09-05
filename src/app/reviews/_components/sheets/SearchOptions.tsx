@@ -104,7 +104,7 @@ export function AddressOptionRow({
   onSelect,
 }: Readonly<{
   roadAddress: string;
-  jibunAddress: string;
+  jibunAddress: string | null;
   onSelect: () => void;
 }>) {
   return (
@@ -114,10 +114,12 @@ export function AddressOptionRow({
           <Badge tone="neutral">도로명</Badge>
           <span className="text-body-lg-medium text-content-primary">{roadAddress}</span>
         </span>
-        <span className="flex items-center gap-ds-4">
-          <Badge tone="neutral">지번</Badge>
-          <span className="text-body-lg-medium text-content-primary">{jibunAddress}</span>
-        </span>
+        {jibunAddress !== null && (
+          <span className="flex items-center gap-ds-4">
+            <Badge tone="neutral">지번</Badge>
+            <span className="text-body-lg-medium text-content-primary">{jibunAddress}</span>
+          </span>
+        )}
       </button>
     </li>
   );
