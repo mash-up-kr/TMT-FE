@@ -1,14 +1,13 @@
 "use client";
 
 import type { ComponentPropsWithRef } from "react";
+import type { AppBottomNavValue } from "@/shared/model/appNavigation";
 import { cn } from "@/shared/utils/cn";
 import { FeedIcon, GroupIcon, HomeIcon, MyIcon, PlusIcon } from "./Icons";
 
-export type BottomNavValue = "home" | "feed" | "group" | "my";
-
 export type BottomNavProps = ComponentPropsWithRef<"nav"> & {
-  value: BottomNavValue;
-  onValueChange: (value: BottomNavValue) => void;
+  value: AppBottomNavValue;
+  onValueChange: (value: AppBottomNavValue) => void;
   onCreate: () => void;
 };
 

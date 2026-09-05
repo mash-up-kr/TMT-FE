@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
@@ -8,8 +8,7 @@ import { GroupsView } from "./_components/GroupsView";
 
 export default function GroupsPage() {
   return (
-    <BottomNavScreenLayout
-      activeTab="group"
+    <ScreenLayout
       // 목록이 자체 스크롤을 갖고 필터 바를 고정한다. 여기서 또 감싸면 필터가 같이 밀린다.
       bodyScrollable={false}
       header={
@@ -31,6 +30,6 @@ export default function GroupsPage() {
       }
     >
       <GroupsView />
-    </BottomNavScreenLayout>
+    </ScreenLayout>
   );
 }

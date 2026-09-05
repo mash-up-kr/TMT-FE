@@ -12,11 +12,11 @@ import { useState } from "react";
 import { HomeView } from "@/app/(home)/_components/HomeView";
 import type { FeedReview, HomeRecommendedGroup, HomeSummary } from "@/app/(home)/_model/home";
 import imageDummy from "@/shared/assets/dummy-image.png";
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { GNB } from "@/shared/ui/GNB";
 import { cn } from "@/shared/utils/cn";
+import { PreviewBottomNavScreenLayout } from "../_components/PreviewBottomNavScreenLayout";
 
 /**
  * 좁은 화면에서는 좌상단에 겹쳐 두고, 프레임보다 넓은 화면에서는 프레임 왼쪽 여백으로 보낸다.
@@ -227,12 +227,12 @@ export default function HomePreview() {
 
   return (
     <>
-      <BottomNavScreenLayout
+      <PreviewBottomNavScreenLayout
         activeTab="home"
         header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       >
         <HomeView {...scenario.props} />
-      </BottomNavScreenLayout>
+      </PreviewBottomNavScreenLayout>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>
         {SCENARIOS.map((item) => (
