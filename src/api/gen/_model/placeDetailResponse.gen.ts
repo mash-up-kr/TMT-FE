@@ -11,6 +11,8 @@ export interface PlaceDetailResponse {
   placeId: string;
   name: string;
   /** @nullable */
+  categoryId?: string | null;
+  /** @nullable */
   categoryName?: string | null;
   /** @nullable */
   averageRating?: number | null;

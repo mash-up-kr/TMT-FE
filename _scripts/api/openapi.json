@@ -13,8 +13,8 @@
   ],
   "tags": [
     {
-      "name": "그룹 (mock)",
-      "description": "명세 v2 — D_01. 그룹 탐색 · D_02. 그룹 생성·상세·편집"
+      "name": "저장·리뷰 작성",
+      "description": "명세 v2 — F. 리뷰 작성 · G. 이어쓰기 · I. 리뷰 상세"
     },
     {
       "name": "매장 추천 (mock)",
@@ -25,59 +25,63 @@
       "description": "명세 v2 — F §3-2"
     },
     {
+      "name": "그룹 태그",
+      "description": "명세 v2 — D_02 §2-1"
+    },
+    {
+      "name": "매장 검색",
+      "description": "명세 v2 — B §2-2 · F §2-1"
+    },
+    {
+      "name": "리뷰 작성",
+      "description": "명세 v2 — F. 리뷰 작성"
+    },
+    {
       "name": "주소 검색 (mock)",
       "description": "명세 v2 — F §2-2"
     },
     {
-      "name": "저장·리뷰 작성 (mock)",
-      "description": "명세 v2 — F. 리뷰 작성 · G. 이어쓰기 · I. 리뷰 상세"
+      "name": "큐레이션",
+      "description": "명세 v2 — B. 근처 탐색 §2-4"
     },
     {
-      "name": "리뷰 작성 (mock)",
-      "description": "명세 v2 — F. 리뷰 작성 · G. 이어쓰기 · I. 리뷰 상세"
+      "name": "그룹",
+      "description": "명세 v2 — D_01. 그룹 탐색 · D_02. 그룹 생성·상세·편집"
     },
     {
-      "name": "리뷰 상세 (mock)",
+      "name": "리뷰 상세",
       "description": "명세 v2 — I §6-3·§6-4"
     },
     {
-      "name": "가게 상세 (mock)",
-      "description": "명세 v2 — B §3·§4"
+      "name": "그룹 가입·리뷰 공유",
+      "description": "명세 v2 — H. 그룹 게시(공유)"
+    },
+    {
+      "name": "근처 탐색",
+      "description": "명세 v2 — B. 근처 탐색"
     },
     {
       "name": "그룹 가입·리뷰 공유 (mock)",
       "description": "명세 v2 — H. 그룹 게시(공유)"
     },
     {
-      "name": "근처 탐색 (mock)",
-      "description": "명세 v2 — B. 근처 탐색"
-    },
-    {
-      "name": "매장 (mock)",
-      "description": "명세 v2 — B §2-2 · F §2"
+      "name": "홈",
+      "description": "명세 v2 — A. 홈"
     },
     {
       "name": "마이페이지·타인 프로필 (mock)",
       "description": "명세 v2 — J · J-01"
     },
     {
-      "name": "큐레이션 (mock)",
-      "description": "명세 v2 — B. 근처 탐색 §2-4"
-    },
-    {
-      "name": "그룹 태그 (mock)",
-      "description": "명세 v2 — D_02 §2-1"
-    },
-    {
-      "name": "홈 (mock)",
-      "description": "명세 v2 — A. 홈"
+      "name": "가게 상세",
+      "description": "명세 v2 — B §3·§4"
     }
   ],
   "paths": {
     "/v1/saves/{saveId}": {
       "get": {
         "tags": [
-          "저장·리뷰 작성 (mock)"
+          "저장·리뷰 작성"
         ],
         "summary": "본인 상세",
         "description": "이어쓰기 재진입과 상세 시트를 모두 이걸로 그린다. 소유자에게만 응답한다 (S8).",
@@ -135,7 +139,7 @@
             }
           },
           "404": {
-            "description": "- `SAVE_NOT_FOUND` — 저장을 찾을 수 없습니다.\n- `PLACE_NOT_FOUND` — 매장을 찾을 수 없습니다.",
+            "description": "- `SAVE_NOT_FOUND` — 저장을 찾을 수 없습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -158,10 +162,10 @@
       },
       "put": {
         "tags": [
-          "저장·리뷰 작성 (mock)"
+          "저장·리뷰 작성"
         ],
         "summary": "작성 완료 (이어쓰기)",
-        "description": "전체 교체다. 매장은 바꿀 수 없어 newPlace를 받지 않는다(S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).",
+        "description": "전체 교체다. 매장은 바꿀 수 없다 (S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).",
         "operationId": "updateSave",
         "parameters": [
           {
@@ -199,7 +203,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SaveRequest"
+                "$ref": "#/components/schemas/SaveCreateRequest"
               }
             }
           },
@@ -257,7 +261,7 @@
             }
           },
           "409": {
-            "description": "- `SAVE_ALREADY_REVIEWED` — 이미 리뷰가 완성된 저장은 수정할 수 없습니다.\n- `MEDIA_ALREADY_ATTACHED` — 이미 다른 저장에 사용된 사진입니다.",
+            "description": "- `SAVE_ALREADY_REVIEWED` — 이미 리뷰가 완성된 저장은 수정할 수 없습니다.\n- `MEDIA_ALREADY_ATTACHED` — 이미 다른 저장에 사용된 사진입니다.\n- `IDEMPOTENCY_CONFLICT` — 같은 멱등성 키로 다른 요청이 이미 처리되었습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -290,10 +294,10 @@
       },
       "delete": {
         "tags": [
-          "저장·리뷰 작성 (mock)"
+          "저장·리뷰 작성"
         ],
         "summary": "임시저장 버리기",
-        "description": "`새로 작성하기`가 이전 임시저장을 버린다. 리뷰가 된 저장은 DELETE /v1/reviews/{reviewId}로 지운다 (F·G·I §5-2).",
+        "description": "`새로 작성하기`가 이전 임시저장을 버린다. 리뷰가 된 저장은 DELETE /v1/reviews/{reviewId} 소관이다 (F·G·I §5-2).",
         "operationId": "deleteSave",
         "parameters": [
           {
@@ -376,7 +380,7 @@
     "/v1/places/{placeId}/favorite": {
       "put": {
         "tags": [
-          "가게 상세 (mock)"
+          "가게 상세"
         ],
         "summary": "찜",
         "description": "멱등 토글 — 이미 찜한 매장에 다시 보내도 200이다 (F2).",
@@ -457,7 +461,7 @@
       },
       "delete": {
         "tags": [
-          "가게 상세 (mock)"
+          "가게 상세"
         ],
         "summary": "찜 해제",
         "description": "찜하지 않은 매장에 보내도 200이다 (F2).",
@@ -540,7 +544,7 @@
     "/v1/groups/{groupId}": {
       "get": {
         "tags": [
-          "그룹 (mock)"
+          "그룹"
         ],
         "summary": "그룹 상세",
         "operationId": "groupDetail",
@@ -610,7 +614,7 @@
       },
       "put": {
         "tags": [
-          "그룹 (mock)"
+          "그룹"
         ],
         "summary": "그룹 편집",
         "description": "생성자만 호출할 수 있다 (G13). 전체 교체라 바꾸지 않는 필드도 현재 값을 실어 보내야 한다.",
@@ -723,7 +727,7 @@
     "/v1/groups/{groupId}/review-shares": {
       "get": {
         "tags": [
-          "그룹 가입·리뷰 공유 (mock)"
+          "그룹 가입·리뷰 공유"
         ],
         "summary": "리뷰 공유 목록",
         "description": "내 리뷰 전체를 공유 여부와 함께 내린다 — PUT이 전체 교체라 현재 상태를 전부 알아야 한다.",
@@ -821,7 +825,7 @@
       },
       "put": {
         "tags": [
-          "그룹 가입·리뷰 공유 (mock)"
+          "그룹 가입·리뷰 공유"
         ],
         "summary": "리뷰 공유 (전체 교체)",
         "description": "보낸 reviewIds가 이 그룹에 공유된 내 리뷰의 최종 집합이 된다. 멱등이라 Idempotency-Key가 필요 없다.",
@@ -924,7 +928,7 @@
     "/v1/saves": {
       "get": {
         "tags": [
-          "저장·리뷰 작성 (mock)"
+          "저장·리뷰 작성"
         ],
         "summary": "이어쓰기 목록",
         "description": "미완성 저장만 내려간다 (C5·R8). 정렬은 updatedAt DESC, saveId DESC.",
@@ -1004,10 +1008,10 @@
       },
       "post": {
         "tags": [
-          "저장·리뷰 작성 (mock)"
+          "저장·리뷰 작성"
         ],
         "summary": "작성 완료 (신규)",
-        "description": "placeId와 newPlace 중 정확히 하나를 보낸다. 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.",
+        "description": "완성도 판정(C4)을 충족하면 리뷰·티켓·매장 집계까지 같은 트랜잭션에서 나간다 (TX-1).",
         "operationId": "createSave",
         "parameters": [
           {
@@ -1037,15 +1041,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SaveRequest"
+                "$ref": "#/components/schemas/SaveCreateRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
@@ -1095,7 +1099,7 @@
             }
           },
           "409": {
-            "description": "- `MEDIA_ALREADY_ATTACHED` — 이미 다른 저장에 사용된 사진입니다.",
+            "description": "- `MEDIA_ALREADY_ATTACHED` — 이미 다른 저장에 사용된 사진입니다.\n- `IDEMPOTENCY_CONFLICT` — 같은 멱등성 키로 다른 요청이 이미 처리되었습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1106,6 +1110,16 @@
           },
           "500": {
             "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "- `ADDRESS_PROVIDER_UNAVAILABLE` — 주소 서비스가 응답하지 않습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1280,7 +1294,7 @@
     "/v1/groups": {
       "get": {
         "tags": [
-          "그룹 (mock)"
+          "그룹"
         ],
         "summary": "그룹 탐색",
         "description": "검색·필터·정렬이 모두 한 목록에 걸린다. 파라미터 없이 부르면 추천순 전체 목록.",
@@ -1385,7 +1399,7 @@
       },
       "post": {
         "tags": [
-          "그룹 (mock)"
+          "그룹"
         ],
         "summary": "그룹 만들기",
         "description": "4단계 입력을 한 번에 보낸다. 요청자가 자동으로 그룹장이 되고 소유권은 이전되지 않는다 (G13).",
@@ -2389,7 +2403,7 @@
     "/v1/reviews/{reviewId}": {
       "get": {
         "tags": [
-          "리뷰 상세 (mock)"
+          "리뷰 상세"
         ],
         "summary": "공개 리뷰 상세",
         "description": "완성된 리뷰만 대상이고 미완성 저장은 조회되지 않는다 (R8). 개인 리뷰 열람에는 게이트가 없다 (G2).",
@@ -2460,7 +2474,7 @@
       },
       "delete": {
         "tags": [
-          "리뷰 상세 (mock)"
+          "리뷰 상세"
         ],
         "summary": "리뷰 삭제",
         "description": "사진까지 완전 삭제되고 저장으로 되돌아가지 않으며 티켓 1장을 회수한다 (R6·R7). 회수할 티켓이 없으면 409로 거부한다.",
@@ -2546,7 +2560,7 @@
     "/v1/review-form-config": {
       "get": {
         "tags": [
-          "리뷰 작성 (mock)"
+          "리뷰 작성"
         ],
         "summary": "리뷰 폼 제약·태그 목록",
         "description": "폼 제약과 태그 목록을 한 번에 내린다. 화면의 태그 칩은 이 응답으로 그린다.",
@@ -2578,7 +2592,7 @@
     "/v1/places/{placeId}": {
       "get": {
         "tags": [
-          "가게 상세 (mock)"
+          "가게 상세"
         ],
         "summary": "가게 상세",
         "description": "핀 클릭 시트와 가게 상세 상단이 같은 데이터를 쓴다. 사진은 이 매장 리뷰에서 최신순으로 파생한다 (P7).",
@@ -2651,7 +2665,7 @@
     "/v1/places/{placeId}/reviews": {
       "get": {
         "tags": [
-          "가게 상세 (mock)"
+          "가게 상세"
         ],
         "summary": "가게 상세 리뷰 목록",
         "description": "정렬은 최신순 createdAt DESC, reviewId DESC다.",
@@ -2759,10 +2773,10 @@
     "/v1/places/search": {
       "get": {
         "tags": [
-          "매장 (mock)"
+          "매장 검색"
         ],
         "summary": "매장 검색",
-        "description": "가게명·주소·음식 카테고리 태그로 찾는다. 결과 0건은 오류가 아니다 — items: []",
+        "description": "가게명·주소·음식 카테고리 태그로 찾는다 (E9). 좌표가 오면 거리순, 없으면 매장명 유사도순이다. 결과 0건은 오류가 아니다 — items: []",
         "operationId": "searchPlaces",
         "parameters": [
           {
@@ -2873,7 +2887,7 @@
     "/v1/nearby/reviews": {
       "get": {
         "tags": [
-          "근처 탐색 (mock)"
+          "근처 탐색"
         ],
         "summary": "피드형 기본 목록",
         "description": "내 위치 반경 1km 안의 리뷰를 거리순으로 내린다 (E1·E2·E4). 반경은 서버가 고정한다.",
@@ -2963,7 +2977,7 @@
     "/v1/nearby/places": {
       "get": {
         "tags": [
-          "근처 탐색 (mock)"
+          "근처 탐색"
         ],
         "summary": "지도형 핀",
         "description": "커서를 쓰지 않는다 — 지도를 움직이는 것이 페이지 이동이다. 리뷰가 1건 이상 있는 매장만, 최대 30개 (E6·E8).",
@@ -3088,7 +3102,7 @@
     "/v1/home": {
       "get": {
         "tags": [
-          "홈 (mock)"
+          "홈"
         ],
         "summary": "인사·내 그룹·추천 그룹",
         "description": "recommendedGroups는 가입 여부와 무관하게 채운다 — 이미 가입한 그룹을 뺀 추천순(G17) 상위 5개.",
@@ -3153,7 +3167,7 @@
     "/v1/home/feed": {
       "get": {
         "tags": [
-          "홈 (mock)"
+          "홈"
         ],
         "summary": "리뷰 피드",
         "description": "가입한 그룹들에 공유된 리뷰를 하나로 합쳐 내린다. 같은 리뷰가 여러 그룹에 공유돼 있어도 한 번만 내린다 (G19).",
@@ -3253,7 +3267,7 @@
     "/v1/groups/{groupId}/reviews": {
       "get": {
         "tags": [
-          "그룹 (mock)"
+          "그룹"
         ],
         "summary": "그룹 상세 리뷰 목록",
         "description": "미가입·비회원도 전체를 커서 페이징으로 본다. 대신 본문과 단점 요약을 서버가 마스킹한다 (G1).",
@@ -3444,7 +3458,7 @@
     "/v1/groups/name-availability": {
       "get": {
         "tags": [
-          "그룹 (mock)"
+          "그룹"
         ],
         "summary": "그룹 이름 중복 확인",
         "description": "참고값이다 — 생성이 유일성을 다시 검증하고 GROUP_NAME_DUPLICATED로 거절한다.",
@@ -3517,7 +3531,7 @@
     "/v1/group-tags": {
       "get": {
         "tags": [
-          "그룹 태그 (mock)"
+          "그룹 태그"
         ],
         "summary": "그룹 태그 풀",
         "description": "음식 카테고리는 단일 선택, 지역은 다중 선택이다 (G7). 서버 상수라 페이징하지 않는다.",
@@ -3549,7 +3563,7 @@
     "/v1/curation-tags": {
       "get": {
         "tags": [
-          "큐레이션 (mock)"
+          "큐레이션"
         ],
         "summary": "큐레이션 칩 목록",
         "description": "칩 값은 서버 상수다. 페이징하지 않으며 값이 바뀌면 서버 배포로 반영된다.",
@@ -3584,7 +3598,7 @@
           "주소 검색 (mock)"
         ],
         "summary": "주소 검색",
-        "description": "addressId는 불투명 토큰이다. 해석하지 말고 POST /v1/saves의 newPlace.addressId에 그대로 전달한다.\n\nmock 재현용 검색어 — `장애`: 502 ADDRESS_PROVIDER_UNAVAILABLE, `좌표없음`: 저장 시 404 ADDRESS_NOT_FOUND, `많음`: truncated=true",
+        "description": "addressId는 서명된 불투명 토큰이다. 해석하지 말고 POST /v1/saves의 newPlace.addressId에 그대로 전달한다.\n\n클라이언트는 400ms 디바운스하고, 2자 미만이면 호출하지 않으며, **502를 자동 재시도하지 않는다** (F §2-3).",
         "operationId": "searchAddresses",
         "parameters": [
           {
@@ -3868,7 +3882,7 @@
           "name"
         ]
       },
-      "SaveRequest": {
+      "SaveCreateRequest": {
         "type": "object",
         "properties": {
           "placeId": {
@@ -4576,6 +4590,12 @@
           },
           "regionName": {
             "type": "string"
+          },
+          "categoryId": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "categoryName": {
             "type": [
@@ -5285,6 +5305,12 @@
           "name": {
             "type": "string"
           },
+          "categoryId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "categoryName": {
             "type": [
               "string",
@@ -5395,6 +5421,12 @@
           },
           "regionName": {
             "type": "string"
+          },
+          "categoryId": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "categoryName": {
             "type": [
@@ -5517,6 +5549,12 @@
           "longitude": {
             "type": "number",
             "format": "double"
+          },
+          "categoryId": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "reviewCount": {
             "type": "integer",
@@ -5810,27 +5848,34 @@
         "type": "object",
         "properties": {
           "addressId": {
-            "type": "string"
+            "type": "string",
+            "description": "불투명 토큰. 해석하지 말고 그대로 전달한다"
           },
           "roadAddress": {
             "type": "string"
           },
           "jibunAddress": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "juso가 주지 않는 경우가 있다"
           },
           "regionName": {
-            "type": "string"
+            "type": "string",
+            "description": "시군구명 + 읍면동명",
+            "example": "양천구 신정동"
           }
         },
         "required": [
           "addressId",
-          "jibunAddress",
           "regionName",
           "roadAddress"
         ]
       },
       "AddressSearchResponse": {
         "type": "object",
+        "description": "주소 검색 결과. truncated 때문에 공용 CursorPage가 아닌 전용 타입이다",
         "properties": {
           "items": {
             "type": "array",
@@ -5848,7 +5893,8 @@
             "type": "boolean"
           },
           "truncated": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "페이지 상한에 걸려 더 내리지 않는다는 뜻. 화면은 검색어를 더 구체적으로 안내한다"
           }
         },
         "required": [
