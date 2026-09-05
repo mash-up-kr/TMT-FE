@@ -7,8 +7,14 @@
  */
 
 export interface AddressItem {
+  /** 불투명 토큰. 해석하지 말고 그대로 전달한다 */
   addressId: string;
   roadAddress: string;
-  jibunAddress: string;
+  /**
+   * juso가 주지 않는 경우가 있다
+   * @nullable
+   */
+  jibunAddress?: string | null;
+  /** 시군구명 + 읍면동명 */
   regionName: string;
 }

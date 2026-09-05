@@ -7,10 +7,14 @@
  */
 import type { AddressItem } from "./addressItem.gen";
 
+/**
+ * 주소 검색 결과. truncated 때문에 공용 CursorPage가 아닌 전용 타입이다
+ */
 export interface AddressSearchResponse {
   items: AddressItem[];
   /** @nullable */
   nextCursor?: string | null;
   hasNext: boolean;
+  /** 페이지 상한에 걸려 더 내리지 않는다는 뜻. 화면은 검색어를 더 구체적으로 안내한다 */
   truncated: boolean;
 }

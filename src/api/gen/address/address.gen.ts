@@ -58,9 +58,9 @@ export const getSearchAddressesUrl = (params?: SearchAddressesParams) => {
 };
 
 /**
- * addressId는 불투명 토큰이다. 해석하지 말고 POST /v1/saves의 newPlace.addressId에 그대로 전달한다.
+ * addressId는 서명된 불투명 토큰이다. 해석하지 말고 POST /v1/saves의 newPlace.addressId에 그대로 전달한다.
  *
- * mock 재현용 검색어 — `장애`: 502 ADDRESS_PROVIDER_UNAVAILABLE, `좌표없음`: 저장 시 404 ADDRESS_NOT_FOUND, `많음`: truncated=true
+ * 클라이언트는 400ms 디바운스하고, 2자 미만이면 호출하지 않으며, **502를 자동 재시도하지 않는다** (F §2-3).
  * @summary 주소 검색
  */
 export const searchAddresses = async (
