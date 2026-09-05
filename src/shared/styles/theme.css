@@ -33,6 +33,8 @@
   --color-surface-interactive-error-hovered: var(--primitive-error-700);
   --color-surface-interactive-error-pressed: var(--primitive-error-800);
   --color-surface-groupcard-badge: var(--primitive-red-50);
+  /* 축하 화면 상단을 물들이는 색. 아래로 갈수록 surface-primary로 풀린다. */
+  --color-surface-celebration: var(--primitive-pink-100);
   --color-surface-backdrop: var(--primitive-transparent-64);
   --color-surface-navigation-selected: color-mix(
     in srgb,
