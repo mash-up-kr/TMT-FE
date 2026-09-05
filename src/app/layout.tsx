@@ -3,6 +3,7 @@ import Script from "next/script";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { AmplitudeAnalytics } from "@/shared/components/AmplitudeAnalytics";
+import { AppChrome } from "@/shared/components/AppChrome";
 import { AppToaster } from "@/shared/components/AppToaster";
 import { Ut2Tracker } from "@/shared/components/Ut2Tracker";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
@@ -29,7 +30,10 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <QueryProvider>
-          <div className="app-frame">{children}</div>
+          <div className="app-frame">
+            {children}
+            <AppChrome />
+          </div>
           <AppToaster />
         </QueryProvider>
         {isAmplitudeEnabled ? <AmplitudeAnalytics /> : null}

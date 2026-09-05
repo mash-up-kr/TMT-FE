@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { GNB } from "@/shared/ui/GNB";
@@ -29,6 +28,7 @@ import {
   toGroupsTabPage,
   toReviewsTabPage,
 } from "../../profile/_utils/profileTabPage";
+import { PreviewBottomNavScreenLayout } from "../_components/PreviewBottomNavScreenLayout";
 import * as fixtures from "./_fixtures/previewFixtures";
 
 const PREVIEW_HREF = "/preview/profile";
@@ -207,12 +207,12 @@ function ProfilePreview({ scenario }: { scenario: ProfileScenario }) {
   }
 
   return (
-    <BottomNavScreenLayout
+    <PreviewBottomNavScreenLayout
       activeTab="my"
       header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
     >
       {body}
-    </BottomNavScreenLayout>
+    </PreviewBottomNavScreenLayout>
   );
 }
 

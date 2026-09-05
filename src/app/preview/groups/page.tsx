@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { PlusIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { type GroupsPreviewState, GroupsView } from "../../groups/_components/GroupsView";
+import { PreviewBottomNavScreenLayout } from "../_components/PreviewBottomNavScreenLayout";
 
 /** 상태 확인용 임시 화면. 머지 전 검토를 위해서만 유지한다. */
 type PreviewState = "default" | GroupsPreviewState;
@@ -29,7 +29,7 @@ export default function GroupsPreviewPage() {
 
   return (
     <>
-      <BottomNavScreenLayout
+      <PreviewBottomNavScreenLayout
         activeTab="group"
         bodyScrollable={false}
         header={
@@ -47,7 +47,7 @@ export default function GroupsPreviewPage() {
         }
       >
         <GroupsView previewState={state === "default" ? undefined : state} />
-      </BottomNavScreenLayout>
+      </PreviewBottomNavScreenLayout>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>
         {SCENARIOS.map((scenario) => (
