@@ -7,6 +7,7 @@ import {
   ReviewCard,
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
+import { newReviewForGroupJoinPath } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
@@ -196,7 +197,7 @@ export function GroupDetailView({
           <GroupTicketShortageSheet
             open={isJoinSheetOpen}
             onOpenChangeAction={setIsJoinSheetOpen}
-            onWriteReviewAction={() => router.push(ROUTES.REVIEWS.NEW)}
+            onWriteReviewAction={() => router.push(newReviewForGroupJoinPath(group.id))}
             group={groupJoinInfo}
           />
         ))}

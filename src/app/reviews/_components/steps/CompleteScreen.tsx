@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
+import { readJoinGroupForSave } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
@@ -11,9 +12,11 @@ import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
 import { REVIEW_FLOW_EXIT_PATH, reviewStepPath } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import type { CompleteReviewStore } from "../../_model/store";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { useReviewFlowBase, useReviewFlowSaveId } from "../../_stores/ReviewFlowBaseProvider";
 import { ReviewCompleteVisual } from "../ReviewCompleteVisual";
+import { GroupJoinCompleteScreen } from "./GroupJoinCompleteScreen";
 
 export function CompleteScreen() {
   const router = useRouter();
@@ -27,6 +30,13 @@ export function CompleteScreen() {
   });
   const isReviewCompleted = save.data?.reviewId !== null && save.data?.reviewId !== undefined;
 
+  // 저장소는 서버 렌더에 없다. 마운트 뒤에 읽어 두 화면이 엇갈리지 않게 한다.
+  const [joinGroupId, setJoinGroupId] = useState<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    setJoinGroupId(saveId === null ? null : readJoinGroupForSave(saveId));
+  }, [saveId]);
+
   useEffect(() => {
     if (store !== null && saveId === null) {
       router.replace(reviewStepPath(basePath, "rating"));
@@ -36,9 +46,34 @@ export function CompleteScreen() {
   // ⚠️ UT2 임시 계측. Task 1의 건너뛰기 제출에서도 이 화면을 거쳐 한 번 더 찍힌다.
   useUt2Step(UT2_STEPS.REVIEW_COMPLETE, isReviewCompleted);
 
-  if (store === null || saveId === null || !save.isSuccess) {
+  if (store === null || saveId === null || !save.isSuccess || joinGroupId === undefined) {
     return null;
   }
+
+  // 그룹 가입 때문에 쓴 리뷰는 완성 여부와 무관하게 그 그룹으로 이어준다.
+  if (joinGroupId !== null) {
+    return <GroupJoinCompleteScreen groupId={joinGroupId} />;
+  }
+
+  return (
+    <ReviewCompleteBody
+      store={store}
+      isReviewCompleted={isReviewCompleted}
+      grantedTicketCount={grantedTicketCount}
+    />
+  );
+}
+
+function ReviewCompleteBody({
+  store,
+  isReviewCompleted,
+  grantedTicketCount,
+}: Readonly<{
+  store: CompleteReviewStore;
+  isReviewCompleted: boolean;
+  grantedTicketCount: number;
+}>) {
+  const router = useRouter();
 
   return (
     <>

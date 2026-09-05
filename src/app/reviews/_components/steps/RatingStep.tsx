@@ -54,7 +54,7 @@ export function RatingStep() {
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack>
           <Button loading={reviewSave.isPending} onClick={() => void reviewSave.complete()}>
-            다음
+            작성 완료
           </Button>
         </ButtonStack>
       </div>

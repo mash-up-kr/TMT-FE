@@ -21,6 +21,7 @@ import {
   useUpdateSave,
 } from "@/api/gen/save/save.gen";
 import { getTmtApiErrorTitle, TmtApiError } from "@/api/mutator";
+import { bindJoinGroupToSave } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { toast } from "@/shared/ui/Toast";
 import {
@@ -188,6 +189,11 @@ export function useReviewSave() {
             saveId,
             data: toUpdateSaveRequest(snapshot, config, photoAssetIds),
           });
+
+    if (saveId === null) {
+      // 초안이 방금 생겼다. 그룹 때문에 시작한 리뷰라면 이 초안에 묶어 둔다.
+      bindJoinGroupToSave(result.saveId);
+    }
 
     if (saveId !== null && photoAssetIds !== undefined) {
       setAttachedPhotoCount(photoAssetIds.length);
