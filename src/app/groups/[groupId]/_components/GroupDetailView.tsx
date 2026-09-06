@@ -20,6 +20,7 @@ import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useGroupReviewEntry } from "../_hooks/useGroupReviewEntry";
+import { useGroupShareEntry } from "../_hooks/useGroupShareEntry";
 import type {
   GroupDetailViewData,
   GroupJoinAction,
@@ -61,6 +62,7 @@ export function GroupDetailView({
   });
   const isNonMember = !group.isMember;
   const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
+  const shareEntry = useGroupShareEntry(group.id, { enabled: isNonMember && group.isJoinable });
   const reviews = useMemo(() => {
     if (reviewList.status !== "ready") {
       return [];
@@ -92,7 +94,16 @@ export function GroupDetailView({
 
   const sheetJoinAction: GroupJoinAction = {
     ...joinAction,
+    isPending: joinAction.isPending || shareEntry.isChecking,
     onJoin: async () => {
+      // 공유할 리뷰가 있으면 가입 전에 고르게 한다. 공유는 가입 요청에 실려야 해서(TMT-241)
+      // 가입은 그 화면이 맡고, 여기서는 아직 가입하지 않은 것으로 돌려준다.
+      if (shareEntry.hasReviewsToShare) {
+        setIsJoinSheetOpen(false);
+        router.push(ROUTES.GROUPS.JOIN(group.id));
+        return false;
+      }
+
       // 성공·실패 안내는 useJoinGroup이 띄운다. 여기서는 시트만 정리한다.
       const didJoin = await joinAction.onJoin();
 
