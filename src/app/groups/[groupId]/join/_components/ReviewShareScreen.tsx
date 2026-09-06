@@ -5,9 +5,7 @@ import { useState } from "react";
 import { useGroupDetail } from "@/api/gen/group/group.gen";
 import dummyImage from "@/shared/assets/dummy-image.png";
 import { ROUTES } from "@/shared/constants/routes";
-import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useJoinGroup } from "@/shared/hooks/useJoinGroup";
-import { setUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Checkbox, CheckboxGroup } from "@/shared/ui/Checkbox";
@@ -46,8 +44,6 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
     if (!(await join.joinGroup({ sourceReviewIds }))) {
       return;
     }
-    // ⚠️ UT2 임시 계측. 그룹 상세의 가입 시트와 같은 단계다.
-    setUt2Step(UT2_STEPS.GROUP_JOIN_COMPLETE);
     router.replace(ROUTES.GROUPS.DETAIL(groupId));
   };
   const skipSharing = () => void joinThenLeave([]);

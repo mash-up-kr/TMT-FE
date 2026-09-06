@@ -3,6 +3,8 @@ import { getGroupDetailQueryKey, getListGroupsQueryKey } from "@/api/gen/group/g
 import { useJoin } from "@/api/gen/group-membership/group-membership.gen";
 import { getHomeQueryKey } from "@/api/gen/home/home.gen";
 import { getMeQueryKey, getMyTicketsQueryKey } from "@/api/gen/profile/profile.gen";
+import { UT2_STEPS } from "@/shared/constants/ut2";
+import { setUt2Step } from "@/shared/hooks/useUt2Step";
 import { toast } from "@/shared/ui/Toast";
 
 const JOIN_SUCCESS_MESSAGE = "그룹 가입이 완료되었어요.";
@@ -57,6 +59,8 @@ export function useJoinGroup(groupId: string) {
             query.queryKey[0].endsWith(JOIN_PREVIEW_PATH_SUFFIX),
         }),
       ]);
+      // ⚠️ UT2 임시 계측. 가입 경로가 셋이라 각 화면이 아니라 여기서 한 번만 남긴다.
+      setUt2Step(UT2_STEPS.GROUP_JOIN_COMPLETE);
       toast.success(JOIN_SUCCESS_MESSAGE);
       return true;
     } catch {

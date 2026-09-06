@@ -11,7 +11,7 @@ import {
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
-import { setUt2Step, useUt2Step } from "@/shared/hooks/useUt2Step";
+import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -109,8 +109,6 @@ export function GroupDetailView({
 
       if (didJoin) {
         setIsJoinSheetOpen(false);
-        // ⚠️ UT2 임시 계측.
-        setUt2Step(UT2_STEPS.GROUP_JOIN_COMPLETE);
       }
 
       return didJoin;
