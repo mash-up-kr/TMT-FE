@@ -11,6 +11,8 @@ type GroupTicketShortageSheetProps = {
   open: boolean;
   onOpenChangeAction: (open: boolean) => void;
   onWriteReviewAction: () => void;
+  /** 쓰다 만 리뷰가 있는지 아직 확인 중이라 어디로 보낼지 정할 수 없는 동안 참이다. */
+  isWriteReviewPending?: boolean;
   group: GroupJoinInfo;
 };
 
@@ -18,6 +20,7 @@ export function GroupTicketShortageSheet({
   open,
   onOpenChangeAction,
   onWriteReviewAction,
+  isWriteReviewPending,
   group,
 }: GroupTicketShortageSheetProps) {
   return (
@@ -30,7 +33,7 @@ export function GroupTicketShortageSheet({
           <Button variant="tertiary" onClick={() => onOpenChangeAction(false)}>
             닫기
           </Button>
-          <Button variant="secondary" onClick={onWriteReviewAction}>
+          <Button variant="secondary" loading={isWriteReviewPending} onClick={onWriteReviewAction}>
             리뷰 작성하기
           </Button>
         </ButtonStack>

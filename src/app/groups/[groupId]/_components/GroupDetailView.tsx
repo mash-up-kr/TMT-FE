@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { ContinueDraftSheet } from "@/shared/components/ContinueDraftSheet";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import {
   ReviewCard,
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
-import { newReviewForGroupJoinPath } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
@@ -19,6 +19,7 @@ import { ChevronLeftIcon, LeaveGroupIcon, SettingsIcon } from "@/shared/ui/Icons
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
+import { useGroupReviewEntry } from "../_hooks/useGroupReviewEntry";
 import type {
   GroupDetailViewData,
   GroupJoinAction,
@@ -59,6 +60,7 @@ export function GroupDetailView({
     },
   });
   const isNonMember = !group.isMember;
+  const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
   const reviews = useMemo(() => {
     if (reviewList.status !== "ready") {
       return [];
@@ -197,10 +199,23 @@ export function GroupDetailView({
           <GroupTicketShortageSheet
             open={isJoinSheetOpen}
             onOpenChangeAction={setIsJoinSheetOpen}
-            onWriteReviewAction={() => router.push(newReviewForGroupJoinPath(group.id))}
+            onWriteReviewAction={() => {
+              setIsJoinSheetOpen(false);
+              reviewEntry.startWriting();
+            }}
+            isWriteReviewPending={reviewEntry.isChecking}
             group={groupJoinInfo}
           />
         ))}
+
+      {isNonMember && (
+        <ContinueDraftSheet
+          open={reviewEntry.continueSheet.open}
+          onOpenChangeAction={reviewEntry.continueSheet.onOpenChange}
+          onContinueAction={reviewEntry.continueSheet.continueDraft}
+          secondaryAction={{ label: "새로 작성하기", onClick: reviewEntry.continueSheet.startNew }}
+        />
+      )}
 
       {group.isMember ? (
         <GroupLeaveModal

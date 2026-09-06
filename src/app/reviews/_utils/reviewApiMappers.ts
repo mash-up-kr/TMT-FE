@@ -6,6 +6,7 @@ import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen
 import type { SaveListItemResponse } from "@/api/gen/_model/saveListItemResponse.gen";
 import type { SaveResultResponse } from "@/api/gen/_model/saveResultResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
+import { isContinuableSave } from "@/shared/utils/continuableSave";
 import { MAX_REVIEW_RATING } from "../_constants/review";
 import { REVIEW_TAG_GROUPS } from "../_constants/tagGroups";
 import type { ContinuableDraft, ReviewDraftSnapshot } from "../_model/draft";
@@ -151,7 +152,7 @@ export function mapContinuableDrafts(
         placeName,
         roadAddress,
         thumbnailUrl: hasText(item.thumbnailUrl) ? item.thumbnailUrl : null,
-        canContinue: !hasText(item.thumbnailUrl),
+        canContinue: isContinuableSave(item),
       },
     ];
   });

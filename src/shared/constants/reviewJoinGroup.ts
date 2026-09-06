@@ -18,9 +18,14 @@ const STORAGE_KEY = "review:joinGroup";
 
 type JoinGroupIntent = Readonly<{ groupId: string; saveId: string | null }>;
 
-/** 그룹 상세에서 리뷰 작성으로 보낼 때 쓴다. */
+/** 그룹 상세에서 새 리뷰 작성으로 보낼 때 쓴다. */
 export function newReviewForGroupJoinPath(groupId: string) {
   return `${ROUTES.REVIEWS.NEW}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`;
+}
+
+/** 그룹 상세에서 쓰다 만 리뷰를 고르는 화면으로 보낼 때 쓴다. */
+export function continueDraftForGroupJoinPath(groupId: string) {
+  return `${ROUTES.REVIEWS.CONTINUE}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`;
 }
 
 function read(): JoinGroupIntent | null {
@@ -54,10 +59,12 @@ function write(intent: JoinGroupIntent | null): void {
 }
 
 /**
- * 새로 쓰기 흐름에 들어올 때 한 번 부른다.
+ * 그룹에서 들어올 수 있는 입구(새로 쓰기, 이어쓰기 선택)에 들어올 때 한 번 부른다.
  *
- * query에 그룹이 있으면 새 의도로 덮고, 없으면 지난 의도를 지운다. 지우지 않으면 홈에서
- * 그냥 리뷰를 쓰러 온 사람에게도 이전 그룹이 따라붙는다.
+ * query에 그룹이 있으면 새 의도로 덮고, 없으면 지난 의도를 지운다. 지우지 않으면 홈이나
+ * 마이페이지에서 그냥 리뷰를 쓰러 온 사람에게도 이전 그룹이 따라붙는다. 입구마다 저장소에
+ * 직접 쓰지 않고 URL을 정본으로 삼아야, 그룹에서 들어왔다가 초안을 만들기 전에 떠난 흔적이
+ * 다음 입구에서 정리된다.
  */
 export function syncJoinGroupIntent(search: string): void {
   const groupId = new URLSearchParams(search).get(JOIN_GROUP_PARAM)?.trim();
@@ -81,4 +88,21 @@ export function readJoinGroupForSave(saveId: string): string | null {
 /** 그룹으로 이어주는 일이 끝났을 때 부른다. */
 export function clearJoinGroupIntent(): void {
   write(null);
+}
+
+/**
+ * 이어쓰기 선택 화면을 접고 돌아갈 곳.
+ *
+ * 취소는 하던 일을 접고 온 곳으로 돌아가는 것이다. 그룹에서 와서 아직 초안을 고르지 않았으면
+ * (`saveId: null`) 그 그룹으로 돌려보내고 의도를 지운다. 지우지 않으면 나중에 마이페이지에서
+ * 고른 초안에 이 그룹이 따라붙는다. 그 외에는 마이페이지에서 온 것이므로 마이페이지로 보내고,
+ * 이미 초안에 묶인 의도는 건드리지 않는다.
+ */
+export function resolveContinueDraftExitPath(): string {
+  const intent = read();
+  if (intent !== null && intent.saveId === null) {
+    write(null);
+    return ROUTES.GROUPS.DETAIL(intent.groupId);
+  }
+  return ROUTES.PROFILE.ME_REVIEWS;
 }

@@ -1,10 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useListSaves } from "@/api/gen/save/save.gen";
 import dummyImage from "@/shared/assets/dummy-image.png";
-import { ROUTES } from "@/shared/constants/routes";
+import {
+  bindJoinGroupToSave,
+  resolveContinueDraftExitPath,
+  syncJoinGroupIntent,
+} from "@/shared/constants/reviewJoinGroup";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { GNB } from "@/shared/ui/GNB";
@@ -27,6 +31,12 @@ export function ContinueDraftScreen() {
   const saves = useListSaves();
   const [selectedSaveId, setSelectedSaveId] = useState<string | null>(null);
 
+  // 그룹에서 왔는지는 URL이 말해 준다. 새로 쓰기 입구와 같은 규칙이라 마이페이지에서 온 사람에게
+  // 지난 그룹이 따라붙지 않고, 뒤로 와서 다른 초안을 다시 골라도 그 그룹에 새로 묶인다.
+  useEffect(() => {
+    syncJoinGroupIntent(window.location.search);
+  }, []);
+
   const drafts = mapContinuableDrafts(saves.data?.items);
   const firstContinuable = drafts.find((draft) => draft.canContinue);
   // 목록이 한 번 그려진 뒤에는 선택을 유지한다. 첫 항목 기본 선택은 시안(1033:11306)을 따른다.
@@ -34,14 +44,19 @@ export function ContinueDraftScreen() {
     ? selectedSaveId
     : (firstContinuable?.saveId ?? null);
 
-  const exitToProfile = () => router.push(ROUTES.PROFILE.ME_REVIEWS);
+  const exitSelection = () => router.push(resolveContinueDraftExitPath());
+  // 초안이 확정되는 순간이다. 그룹 때문에 시작한 흐름이면 여기서 묶어야 완료 화면이 그룹으로 이어준다.
+  const continueWith = (saveId: string) => {
+    bindJoinGroupToSave(saveId);
+    router.push(draftReviewBasePath(saveId));
+  };
 
   return (
     <>
       <GNB
         title="리뷰 쓰기"
         right={
-          <IconButton aria-label="이어쓰기 선택 닫기" onClick={exitToProfile}>
+          <IconButton aria-label="이어쓰기 선택 닫기" onClick={exitSelection}>
             <CancelIcon thick />
           </IconButton>
         }
@@ -63,12 +78,12 @@ export function ContinueDraftScreen() {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" onClick={exitToProfile}>
+          <Button variant="tertiary" onClick={exitSelection}>
             취소
           </Button>
           <Button
             disabled={selected === null}
-            onClick={() => selected !== null && router.push(draftReviewBasePath(selected))}
+            onClick={() => selected !== null && continueWith(selected)}
           >
             이어서 작성하기
           </Button>

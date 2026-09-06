@@ -1,11 +1,11 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { ContinueDraftSheet } from "@/shared/components/ContinueDraftSheet";
 import { ROUTES } from "@/shared/constants/routes";
 import { useContinueDraftPrompt } from "../_hooks/useContinueDraftPrompt";
 import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { PROFILE_TABS } from "../_model/profile";
-import { ContinueDraftSheet } from "./ContinueDraftSheet";
 
 const TAB_PATHS: readonly string[] = PROFILE_TABS.map((tab) => ROUTES.PROFILE.ME_TAB(tab));
 
