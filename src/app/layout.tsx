@@ -31,7 +31,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <div className="app-frame">
-            {children}
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
             <AppChrome />
           </div>
           <AppToaster />
