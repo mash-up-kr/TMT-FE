@@ -39,6 +39,12 @@ export function useGroupJoinAfterReview({ groupId, reviewId }: GroupJoinAfterRev
   return {
     group: detail.data,
     isPending: detail.isPending,
+    /**
+     * 그룹을 못 받아 카드를 그릴 수 없는 상태. 이걸 내보내지 않으면 화면이 로딩과 실패를 구분하지
+     * 못해, 조회가 끝난 뒤에도 빈 화면에 머문다.
+     */
+    isError: detail.isError,
+    retry: () => void detail.refetch(),
     isJoinable: joinPreview.data?.joinable ?? false,
     joinGroup,
     isJoining: join.isPending,

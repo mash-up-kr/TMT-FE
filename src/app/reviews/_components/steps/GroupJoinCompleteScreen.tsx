@@ -11,6 +11,7 @@ import { AlertCircleIcon } from "@/shared/ui/Icons";
 import { useGroupJoinAfterReview } from "../../_hooks/useGroupJoinAfterReview";
 
 const SHARE_NOTICE = "그룹 가입 시 작성한 리뷰는 자동으로 그룹에 공유돼요";
+const ERROR_MESSAGE = "그룹 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요";
 
 /**
  * 티켓이 모자라 리뷰 작성으로 넘어온 사람에게, 원래 가입하려던 그룹을 다시 보여준다.
@@ -21,10 +22,30 @@ export function GroupJoinCompleteScreen({
   reviewId,
 }: Readonly<{ groupId: string; reviewId: string | null }>) {
   const router = useRouter();
-  const { group, isPending, isJoinable, joinGroup, isJoining } = useGroupJoinAfterReview({
-    groupId,
-    reviewId,
-  });
+  const { group, isPending, isError, retry, isJoinable, joinGroup, isJoining } =
+    useGroupJoinAfterReview({ groupId, reviewId });
+
+  const leaveToGroups = () => {
+    clearJoinGroupIntent();
+    router.replace(ROUTES.GROUPS.ROOT);
+  };
+
+  // 리뷰는 이미 저장됐다. 그룹을 못 받았다고 이 화면에 가둘 이유가 없어 다시 받거나 나갈 길을 준다.
+  if (isError || (!isPending && group === undefined)) {
+    return (
+      <div className="content-container flex flex-1 flex-col justify-center gap-ds-16">
+        <p role="alert" className="text-center text-body-md-regular text-content-secondary">
+          {ERROR_MESSAGE}
+        </p>
+        <ButtonStack type="horizontal">
+          <Button variant="tertiary" onClick={leaveToGroups}>
+            다른 그룹 보러가기
+          </Button>
+          <Button onClick={retry}>다시 시도</Button>
+        </ButtonStack>
+      </div>
+    );
+  }
 
   if (isPending || group === undefined) {
     return null;
@@ -63,13 +84,7 @@ export function GroupJoinCompleteScreen({
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
-          <Button
-            variant="tertiary"
-            onClick={() => {
-              clearJoinGroupIntent();
-              router.replace(ROUTES.GROUPS.ROOT);
-            }}
-          >
+          <Button variant="tertiary" onClick={leaveToGroups}>
             다른 그룹 보러가기
           </Button>
           <Button disabled={!isJoinable} loading={isJoining} onClick={joinGroup}>
