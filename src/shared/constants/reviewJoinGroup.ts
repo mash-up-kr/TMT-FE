@@ -61,14 +61,22 @@ function write(intent: JoinGroupIntent | null): void {
 /**
  * 그룹에서 들어올 수 있는 입구(새로 쓰기, 이어쓰기 선택)에 들어올 때 한 번 부른다.
  *
- * query에 그룹이 있으면 새 의도로 덮고, 없으면 지난 의도를 지운다. 지우지 않으면 홈이나
- * 마이페이지에서 그냥 리뷰를 쓰러 온 사람에게도 이전 그룹이 따라붙는다. 입구마다 저장소에
- * 직접 쓰지 않고 URL을 정본으로 삼아야, 그룹에서 들어왔다가 초안을 만들기 전에 떠난 흔적이
- * 다음 입구에서 정리된다.
+ * query에 그룹이 있으면 새 의도로 덮는다. 없으면 **아직 초안에 묶이지 않은** 의도만 지운다.
+ * 그룹에서 들어왔다가 초안을 만들기 전에 떠난 흔적은 다음 입구에서 정리되어야 하지만, 이미
+ * 초안에 묶인 의도는 그 초안에만 붙어 있어 다른 리뷰로 샐 수 없다(`readJoinGroupForSave`가
+ * id로 거른다). 함께 지우면 초안이 여럿이라 선택 화면을 거친 사람만 그룹으로 못 돌아간다.
  */
 export function syncJoinGroupIntent(search: string): void {
   const groupId = new URLSearchParams(search).get(JOIN_GROUP_PARAM)?.trim();
-  write(groupId ? { groupId, saveId: null } : null);
+
+  if (groupId) {
+    write({ groupId, saveId: null });
+    return;
+  }
+
+  if (read()?.saveId === null) {
+    write(null);
+  }
 }
 
 /** 초안이 확정되는 순간 부른다. 아직 초안에 묶이지 않은 의도만 묶는다. */

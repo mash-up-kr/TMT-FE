@@ -47,6 +47,8 @@ const EMPTY_TAG_CONFIG: Pick<ReviewFormConfigResponse, "companionTags" | "positi
 };
 
 const JOIN_PREVIEW_PATH_SUFFIX = "/join-preview";
+/** 그룹 가입 때 고르는 공유 후보 목록. 방금 쓴 리뷰가 여기 들어가야 한다. */
+const REVIEW_SHARES_PATH_SUFFIX = "/review-shares";
 
 const SAVE_FAILED_MESSAGE = "리뷰를 저장하지 못했어요. 다시 시도해 주세요";
 const PHOTO_DRAFT_MESSAGE = "사진이 있는 리뷰는 아직 이어 쓸 수 없어요";
@@ -134,7 +136,8 @@ export function useReviewSave() {
     void queryClient.invalidateQueries({
       predicate: (query) =>
         typeof query.queryKey[0] === "string" &&
-        query.queryKey[0].endsWith(JOIN_PREVIEW_PATH_SUFFIX),
+        (query.queryKey[0].endsWith(JOIN_PREVIEW_PATH_SUFFIX) ||
+          query.queryKey[0].endsWith(REVIEW_SHARES_PATH_SUFFIX)),
     });
   };
 
