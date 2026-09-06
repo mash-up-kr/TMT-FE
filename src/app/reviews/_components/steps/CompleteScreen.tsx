@@ -68,7 +68,9 @@ export function CompleteScreen() {
           <Button variant="tertiary" onClick={() => router.replace(REVIEW_FLOW_EXIT_PATH)}>
             홈으로 가기
           </Button>
-          <Button onClick={() => router.replace(ROUTES.FEED)}>다른 리뷰 보러가기</Button>
+          <Button className="whitespace-nowrap" onClick={() => router.replace(ROUTES.FEED)}>
+            다른 리뷰 보러가기
+          </Button>
         </ButtonStack>
       </div>
     </>
