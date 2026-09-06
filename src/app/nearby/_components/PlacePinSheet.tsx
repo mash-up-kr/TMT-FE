@@ -7,7 +7,8 @@ import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, LoadingIcon } from "@/shared/ui/Icons";
+import { CancelIcon } from "@/shared/ui/Icons";
+import { Spinner } from "@/shared/ui/Spinner";
 import { usePinPlace } from "../_hooks/usePinPlace";
 import type { PinPlace } from "../_utils/nearbyMapper";
 
@@ -67,7 +68,7 @@ function PinSheetBody({
   if (isPending) {
     return (
       <output className="flex items-center justify-center py-ds-32">
-        <LoadingIcon className="animate-spin text-icon-secondary" />
+        <Spinner />
       </output>
     );
   }

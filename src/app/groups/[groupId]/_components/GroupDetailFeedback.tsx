@@ -1,9 +1,9 @@
-import { LoadingIcon } from "@/shared/ui/Icons";
+import { Spinner } from "@/shared/ui/Spinner";
 
 export function GroupDetailLoading() {
   return (
     <div className="flex flex-1 items-center justify-center bg-surface-secondary">
-      <LoadingIcon className="animate-spin text-icon-tertiary" />
+      <Spinner size="lg" />
     </div>
   );
 }

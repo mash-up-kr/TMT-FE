@@ -1,10 +1,10 @@
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
-import { LoadingIcon } from "@/shared/ui/Icons";
+import { Spinner } from "@/shared/ui/Spinner";
 
 export function GroupEditLoading() {
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center bg-surface-primary">
-      <LoadingIcon className="animate-spin text-icon-tertiary" />
+      <Spinner size="lg" />
       <span className="sr-only">그룹 정보를 불러오는 중</span>
     </div>
   );

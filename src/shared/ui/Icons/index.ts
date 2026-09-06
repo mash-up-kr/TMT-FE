@@ -14,7 +14,6 @@ export { GroupIcon } from "./GroupIcon";
 export { HeartIcon } from "./HeartIcon";
 export { HomeIcon } from "./HomeIcon";
 export { LeaveGroupIcon } from "./LeaveGroupIcon";
-export { LoadingIcon } from "./LoadingIcon";
 export { MapIcon } from "./MapIcon";
 export { MapPinIcon } from "./MapPinIcon";
 export { MembersIcon } from "./MembersIcon";

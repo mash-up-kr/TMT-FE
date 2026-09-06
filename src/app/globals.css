@@ -22,6 +22,33 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@keyframes spinner-segment-active {
+  0%,
+  12.5% {
+    opacity: 1;
+  }
+
+  12.51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.spinner-segment-active {
+  opacity: 0;
+  animation: spinner-segment-active 800ms steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner-segment-active {
+    animation: none;
+  }
+
+  .spinner-segment-initial-active {
+    opacity: 1;
+  }
+}
+
 @layer base {
   *,
   *::before,

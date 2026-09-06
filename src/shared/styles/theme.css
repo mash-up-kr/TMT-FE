@@ -79,6 +79,10 @@
   --color-icon-interactive-tertiary: var(--primitive-neutral-300);
   --color-icon-interactive-inverse: var(--primitive-base-white);
 
+  /* ===================== spinner ===================== */
+  --color-spinner-active: var(--primitive-primary-600);
+  --color-spinner-inactive: var(--primitive-red-200);
+
   /* ===================== stroke (테두리) ===================== */
   --color-stroke-primary: var(--primitive-neutral-300);
   --color-stroke-primary-hovered: var(--primitive-neutral-400);
