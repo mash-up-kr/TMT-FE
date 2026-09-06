@@ -87,6 +87,7 @@ src/
 - UI는 한 라우트에서만 쓰는 동안 그 라우트에 둔다. 사용처가 둘 이상이 되면 승격하되, 도메인 무관하게 만들 수 있으면 `shared/ui/`, 도메인 성격이 남으면 `shared/components/`로 나눈다.
 - `shared/components/`도 API 응답을 그대로 받지 않는다. 응답을 props로 바꾸는 코드는 라우트 `_utils/`가 소유한다.
 - 서로 다른 공용 UI 컴포넌트 계열이 공유하는 기반 컴포넌트는 특정 계열의 하위 폴더에 두지 않고, 각 계열이 함께 의존할 수 있는 `shared/ui/`의 공통 상위 계층에 둔다.
+- BottomNav 관련 정책은 `bottomNavigationPolicy.ts`에서만 관리하고, 라우트나 컴포넌트에 중복 정의하지 않는다.
 
 ## Import 경계
 
