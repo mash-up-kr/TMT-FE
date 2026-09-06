@@ -7,6 +7,16 @@ import { toast } from "@/shared/ui/Toast";
 const JOIN_SUCCESS_MESSAGE = "그룹 가입이 완료되었어요.";
 const JOIN_FAILED_MESSAGE = "그룹 가입에 실패했어요. 다시 시도해 주세요.";
 
+type JoinGroupOptions = Readonly<{
+  /**
+   * 가입과 함께 이 그룹에 공유할 내 리뷰.
+   *
+   * 서버는 여기 실린 것만 같은 트랜잭션에서 공유하고, 비어 있으면 공유 없이 가입만 한다
+   * (API 명세 H §2-2). "자동 공유"는 서버가 알아서 하는 게 아니라 화면이 대신 실어 보내는 것이다.
+   */
+  sourceReviewIds?: readonly string[];
+}>;
+
 /**
  * 그룹 가입. 그룹 상세의 가입 시트와 리뷰 완료 화면의 가입 버튼이 함께 쓴다.
  *
@@ -21,9 +31,12 @@ export function useJoinGroup(groupId: string) {
   const queryClient = useQueryClient();
   const join = useJoin();
 
-  async function joinGroup(): Promise<boolean> {
+  async function joinGroup({ sourceReviewIds }: JoinGroupOptions = {}): Promise<boolean> {
     try {
-      await join.mutateAsync({ groupId });
+      await join.mutateAsync({
+        groupId,
+        data: sourceReviewIds?.length ? { sourceReviewIds: [...sourceReviewIds] } : {},
+      });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getGroupDetailQueryKey(groupId) }),
         queryClient.invalidateQueries({ queryKey: getHomeQueryKey() }),

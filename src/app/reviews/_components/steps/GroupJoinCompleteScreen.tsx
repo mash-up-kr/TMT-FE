@@ -16,9 +16,15 @@ const SHARE_NOTICE = "그룹 가입 시 작성한 리뷰는 자동으로 그룹�
  * 티켓이 모자라 리뷰 작성으로 넘어온 사람에게, 원래 가입하려던 그룹을 다시 보여준다.
  * 리뷰가 완성되지 않아 티켓을 받지 못했을 수도 있어 가입 가능 여부는 서버에 다시 묻는다.
  */
-export function GroupJoinCompleteScreen({ groupId }: Readonly<{ groupId: string }>) {
+export function GroupJoinCompleteScreen({
+  groupId,
+  reviewId,
+}: Readonly<{ groupId: string; reviewId: string | null }>) {
   const router = useRouter();
-  const { group, isPending, isJoinable, joinGroup, isJoining } = useGroupJoinAfterReview(groupId);
+  const { group, isPending, isJoinable, joinGroup, isJoining } = useGroupJoinAfterReview({
+    groupId,
+    reviewId,
+  });
 
   if (isPending || group === undefined) {
     return null;

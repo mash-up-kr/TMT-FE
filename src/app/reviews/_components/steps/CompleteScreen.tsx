@@ -52,7 +52,7 @@ export function CompleteScreen() {
 
   // 그룹 가입 때문에 쓴 리뷰는 완성 여부와 무관하게 그 그룹으로 이어준다.
   if (joinGroupId !== null) {
-    return <GroupJoinCompleteScreen groupId={joinGroupId} />;
+    return <GroupJoinCompleteScreen groupId={joinGroupId} reviewId={save.data?.reviewId ?? null} />;
   }
 
   return (
