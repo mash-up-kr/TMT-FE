@@ -63,6 +63,8 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
+  const loadingSpinnerSize = size === "lg" ? "md" : "sm";
+
   return (
     <button
       type="button"
@@ -75,7 +77,7 @@ export function Button({
       )}
       {...props}
     >
-      {loading ? <Spinner size={size === "lg" ? "md" : "sm"} tone="current" /> : leftIcon}
+      {loading ? <Spinner size={loadingSpinnerSize} tone="current" /> : leftIcon}
       {children}
       {!loading && rightIcon}
     </button>
