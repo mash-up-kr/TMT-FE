@@ -36,7 +36,7 @@ export function JoinGroupTicketSheet({
         </ButtonStack>
       }
     >
-      <div className="flex flex-col items-center gap-ds-12 text-center">
+      <div className="flex flex-col items-center gap-ds-12 pb-ds-12 text-center">
         <ImageWithFallback
           src={group.imageUrl}
           fallbackSrc={groupFallbackImage}
@@ -47,7 +47,7 @@ export function JoinGroupTicketSheet({
           <h2 className="text-heading-lg text-content-primary">{group.name}</h2>
           <p className="text-body-lg-regular text-content-primary">그룹에 가입하시겠어요?</p>
         </div>
-        <div className="flex w-full items-center justify-between rounded-ds-md bg-surface-secondary p-ds-16 text-body-lg-medium">
+        <div className="my-ds-24 flex w-full items-center justify-between rounded-ds-md bg-surface-secondary p-ds-16 text-body-lg-medium">
           <span className="text-content-tertiary">보유 티켓</span>
           <span className="text-content-primary">{group.availableTicketCount}</span>
         </div>

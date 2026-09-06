@@ -76,6 +76,7 @@
   --color-icon-interactive-secondary: var(--primitive-neutral-400);
   --color-icon-interactive-secondary-hovered: var(--primitive-neutral-500);
   --color-icon-interactive-secondary-pressed: var(--primitive-neutral-600);
+  --color-icon-interactive-tertiary: var(--primitive-neutral-300);
   --color-icon-interactive-inverse: var(--primitive-base-white);
 
   /* ===================== stroke (테두리) ===================== */

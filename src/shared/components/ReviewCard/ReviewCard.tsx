@@ -257,6 +257,7 @@ function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
           isFavorite={isFavorite}
           isPending={favoriteAction.isPending}
           size={24}
+          className="text-icon-interactive-tertiary"
           onToggleAction={() => favoriteAction.onToggleAction(place)}
         />
       </div>
@@ -273,7 +274,10 @@ function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
         filled={place.isFavorite}
         aria-hidden="true"
         size={24}
-        className="shrink-0 text-icon-interactive-primary"
+        className={cn(
+          "shrink-0",
+          place.isFavorite ? "text-icon-interactive-primary" : "text-icon-interactive-tertiary",
+        )}
       />
     </Link>
   );
