@@ -4,7 +4,12 @@ import groupCover from "./assets/group-cover.png";
 import reviewCoffee from "./assets/review-coffee.png";
 import reviewSushi from "./assets/review-sushi.png";
 
-const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailViewData> = {
+type GroupDetailPreviewFixture = GroupDetailViewData & {
+  availableTicketCount: number;
+  isJoinable: boolean;
+};
+
+const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailPreviewFixture> = {
   group_1: {
     id: "group_1",
     name: "성수 커피 탐험대",
@@ -99,11 +104,11 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
   },
 ];
 
-export function getGroupDetailPageFixture(groupId: string): GroupDetailViewData | undefined {
+export function getGroupDetailPageFixture(groupId: string): GroupDetailPreviewFixture | undefined {
   return GROUP_DETAIL_PAGE_FIXTURES[groupId];
 }
 
-export function requireGroupDetailPageFixture(groupId: string): GroupDetailViewData {
+export function requireGroupDetailPageFixture(groupId: string): GroupDetailPreviewFixture {
   const fixture = getGroupDetailPageFixture(groupId);
 
   if (!fixture) {

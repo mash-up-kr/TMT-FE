@@ -1,11 +1,7 @@
 import type { GroupDetailResponse } from "@/api/gen/_model/groupDetailResponse.gen";
-import type { JoinPreviewResponse } from "@/api/gen/_model/joinPreviewResponse.gen";
 import type { GroupDetailViewData } from "../_model/groupDetail";
 
-export function toGroupDetailViewData(
-  detail: GroupDetailResponse,
-  joinPreview?: JoinPreviewResponse,
-): GroupDetailViewData {
+export function toGroupDetailViewData(detail: GroupDetailResponse): GroupDetailViewData {
   return {
     id: detail.groupId,
     name: detail.name,
@@ -18,8 +14,6 @@ export function toGroupDetailViewData(
     placeCount: detail.placeCount,
     tags: [detail.foodCategory.label, ...detail.regionTags.map((tag) => tag.label)],
     matchedSavedPlaceCount: detail.matchedSavedPlaceCount,
-    availableTicketCount: joinPreview?.availableTicketCount ?? 0,
-    isJoinable: joinPreview?.joinable ?? false,
     isOwner: detail.isOwner,
     isMember: detail.isMember,
   };
