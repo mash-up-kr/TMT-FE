@@ -11,8 +11,9 @@ import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, ChevronLeftIcon, LoadingIcon } from "@/shared/ui/Icons";
-import { usePlaceDetail } from "../_hooks/usePlaceDetail";
+import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
+import { RetryNotice } from "@/shared/ui/RetryNotice";
+import { useSuspensePlaceDetail } from "../_hooks/usePlaceDetail";
 import { usePlaceReviews } from "../_hooks/usePlaceReviews";
 
 /** 명세 §5 — 태그는 2개 노출하고 나머지는 클라이언트가 `+N`으로 접는다. */
@@ -23,11 +24,11 @@ type PlaceDetailScreenProps = {
 };
 
 export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
-  const detail = usePlaceDetail(placeId);
+  const { data: detail } = useSuspensePlaceDetail(placeId);
   const favorite = usePlaceFavorite();
   const position = useCurrentPosition();
   const reviews = usePlaceReviews(placeId, position);
-  const isFavorite = detail.data?.isFavorite ?? false;
+  const isFavorite = detail.isFavorite;
 
   // ⚠️ UT2 임시 계측. UT 스크립트에서 가게 상세는 Task 2의 그룹 내 가게 탐색에서만 열린다.
   useUt2Step(UT2_STEPS.GROUP_STORE_LIST);
@@ -38,38 +39,27 @@ export function PlaceDetailScreen({ placeId }: PlaceDetailScreenProps) {
         favorite={{
           isFavorite,
           isPending: favorite.isPending,
-          isDisabled: detail.data === undefined || favorite.isPending,
-          placeName: detail.data?.name ?? "가게",
+          isDisabled: favorite.isPending,
+          placeName: detail.name,
           onToggleAction: () => favorite.onToggleAction({ id: placeId, isFavorite }),
         }}
       />
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        {detail.isPending ? (
-          <output className="flex flex-1 items-center justify-center">
-            <LoadingIcon className="animate-spin text-icon-secondary" />
-          </output>
-        ) : detail.isError ? (
-          <PlaceDetailNotice title="가게 정보를 불러오지 못했어요." />
-        ) : (
-          <>
-            <section className="flex shrink-0 flex-col">
-              <div className="flex items-center gap-ds-4 px-ds-20 py-ds-12">
-                <h1 className="truncate text-heading-sm text-content-primary">
-                  {detail.data.name}
-                </h1>
-                <PlaceRating value={detail.data.averageRating} />
-              </div>
-              <PlaceSummary place={detail.data} />
-            </section>
-            <div aria-hidden="true" className="h-ds-12 shrink-0 bg-surface-secondary" />
-            <PlaceReviews
-              count={detail.data.reviewCount}
-              isPending={reviews.isPending}
-              isError={reviews.isError}
-              reviews={reviews.data}
-            />
-          </>
-        )}
+        <section className="flex shrink-0 flex-col">
+          <div className="flex items-center gap-ds-4 px-ds-20 py-ds-12">
+            <h1 className="truncate text-heading-sm text-content-primary">{detail.name}</h1>
+            <PlaceRating value={detail.averageRating} />
+          </div>
+          <PlaceSummary place={detail} />
+        </section>
+        <div aria-hidden="true" className="h-ds-12 shrink-0 bg-surface-secondary" />
+        <PlaceReviews
+          count={detail.reviewCount}
+          isPending={reviews.isPending}
+          isError={reviews.isError}
+          onRetry={() => reviews.refetch()}
+          reviews={reviews.data}
+        />
       </div>
     </>
   );
@@ -118,10 +108,11 @@ type PlaceReviewsProps = {
   count: number;
   isPending: boolean;
   isError: boolean;
+  onRetry: () => void;
   reviews: ReturnType<typeof usePlaceReviews>["data"];
 };
 
-function PlaceReviews({ count, isPending, isError, reviews }: PlaceReviewsProps) {
+function PlaceReviews({ count, isPending, isError, onRetry, reviews }: PlaceReviewsProps) {
   return (
     <section className="flex flex-1 flex-col gap-ds-8 py-ds-20">
       <h2 className="px-ds-20 text-heading-sm text-content-primary">리뷰 {count}</h2>
@@ -129,7 +120,7 @@ function PlaceReviews({ count, isPending, isError, reviews }: PlaceReviewsProps)
       {isPending ? (
         <PlaceDetailNotice title="리뷰를 불러오는 중이에요." />
       ) : isError ? (
-        <PlaceDetailNotice title="리뷰를 불러오지 못했어요." />
+        <RetryNotice message="리뷰를 불러오지 못했어요." onRetry={onRetry} />
       ) : !reviews || reviews.length === 0 ? (
         <PlaceDetailNotice title="아직 올라온 리뷰가 없어요.">
           이 가게의 첫 번째 리뷰를 남겨보세요!
