@@ -7,11 +7,10 @@ import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
-import { Chip } from "@/shared/ui/Chip";
 import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
-import { useCurationChips } from "../_hooks/useCurationChips";
+import { NearbyCurationChips } from "./NearbyCurationChips";
 import { NearbyFeedView } from "./NearbyFeedView";
 import { NearbyMapView } from "./NearbyMapView";
 import { NearbySearchResults } from "./NearbySearchResults";
@@ -27,6 +26,18 @@ export function NearbyScreen() {
   const query = searchParams.get("q");
   const curationTagId = searchParams.get("curation");
 
+  const handleCurationSelect = (next: string | null) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (next) {
+      params.set("curation", next);
+    } else {
+      params.delete("curation");
+    }
+
+    router.replace(params.size > 0 ? `${ROUTES.FEED}?${params}` : ROUTES.FEED);
+  };
+
   return (
     <ScreenLayout
       header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
@@ -40,22 +51,17 @@ export function NearbyScreen() {
       <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
         <div className="flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
           <SearchEntry keyword={query} />
-          <CurationChips
-            selectedId={curationTagId}
-            onSelect={(next) => {
-              const params = new URLSearchParams(searchParams);
-
-              if (next) {
-                params.set("curation", next);
-              } else {
-                params.delete("curation");
-              }
-
-              router.replace(params.size > 0 ? `${ROUTES.FEED}?${params}` : ROUTES.FEED);
-            }}
-          />
+          {view === "feed" ? (
+            <NearbyCurationChips selectedId={curationTagId} onSelect={handleCurationSelect} />
+          ) : null}
         </div>
-        <NearbyBody view={view} position={position} query={query} curationTagId={curationTagId} />
+        <NearbyBody
+          view={view}
+          position={position}
+          query={query}
+          curationTagId={curationTagId}
+          onCurationSelect={handleCurationSelect}
+        />
       </div>
     </ScreenLayout>
   );
@@ -66,11 +72,18 @@ type NearbyBodyProps = {
   position: ResolvedPosition | null;
   query: string | null;
   curationTagId: string | null;
+  onCurationSelect: (id: string | null) => void;
 };
 
-function NearbyBody({ view, position, query, curationTagId }: NearbyBodyProps) {
+function NearbyBody({ view, position, query, curationTagId, onCurationSelect }: NearbyBodyProps) {
   if (view === "map") {
-    return <NearbyMapView position={position} />;
+    return (
+      <NearbyMapView
+        position={position}
+        curationTagId={curationTagId}
+        onCurationSelect={onCurationSelect}
+      />
+    );
   }
 
   // 명세 §0 — 검색어·칩이 있으면 목록이 리뷰 카드에서 가게 카드로 바뀐다.
@@ -92,34 +105,6 @@ function SearchEntry({ keyword }: { keyword: string | null }) {
     >
       {keyword ?? "장소나 태그로 검색해보세요"}
     </Link>
-  );
-}
-
-type CurationChipsProps = {
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
-};
-
-function CurationChips({ selectedId, onSelect }: CurationChipsProps) {
-  const { data: chips } = useCurationChips();
-
-  if (!chips || chips.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="flex flex-wrap gap-ds-8">
-      {chips.map((chip) => (
-        <Chip
-          key={chip.id}
-          size="lg"
-          selected={chip.id === selectedId}
-          onClick={() => onSelect(chip.id === selectedId ? null : chip.id)}
-        >
-          {chip.label}
-        </Chip>
-      ))}
-    </div>
   );
 }
 
