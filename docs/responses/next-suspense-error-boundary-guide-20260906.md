@@ -9,7 +9,7 @@
 - **재시도 순서:** `app/error.tsx`는 Query error reset 후 Next boundary `reset()`을 호출한다.
 - **부분 query 기준:** 조건부·무한 목록·피드·리뷰·가입 미리보기는 일반 query로 남기고 해당 영역만 재시도한다.
 - **생성 범위:** Orval Suspense hook은 `home`, `groupDetail`, `placeDetail` 세 operation에만 생성한다.
-- **하단 탭:** PR #85의 `AppChrome`은 route children의 sibling이므로 route loading/error fallback 중에도 남는다.
+- **하단 탭:** root layout의 콘텐츠 슬롯은 항상 `flex-1` 높이를 차지하고, 그 뒤의 `AppChrome`은 flow 안에서 하단 공간을 보존한다. AppBottomNav wrapper는 배경 없이 pill만 렌더링한다.
 
 > 대상: 로컬 작업 트리 `feat/#212-error-boundary`의 미커밋 구현  
 > 비교 기준: `feat/#215-bottomnav-app-shell` (PR #85)  
