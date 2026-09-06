@@ -36,7 +36,7 @@ export function GroupTicketShortageSheet({
         </ButtonStack>
       }
     >
-      <div className="flex flex-col items-center gap-ds-12 text-center">
+      <div className="flex flex-col items-center gap-ds-12 pb-ds-12 text-center">
         <ImageWithFallback
           src={group.imageUrl}
           fallbackSrc={groupFallbackImage}
@@ -49,7 +49,7 @@ export function GroupTicketShortageSheet({
             그룹 가입에 필요한 티켓이 부족해요!
           </p>
         </div>
-        <div className="flex w-full items-center justify-between rounded-ds-md bg-surface-secondary p-ds-16 text-body-lg-medium">
+        <div className="my-ds-24 flex w-full items-center justify-between rounded-ds-md bg-surface-secondary p-ds-16 text-body-lg-medium">
           <span className="text-content-tertiary">보유 티켓</span>
           <span className="text-content-error">{group.availableTicketCount}</span>
         </div>

@@ -7,7 +7,7 @@
  */
 import type { NewPlaceRequest } from "./newPlaceRequest.gen";
 
-export interface SaveRequest {
+export interface SaveCreateRequest {
   /** @nullable */
   placeId?: string | null;
   newPlace?: NewPlaceRequest | null;

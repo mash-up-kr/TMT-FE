@@ -18,6 +18,7 @@ const TAG_RENAMES: Record<string, string> = {
   "근처 탐색": "nearby",
   "가게 상세": "place-detail",
   매장: "place",
+  "매장 검색": "place",
   "주소 검색": "address",
   "리뷰 작성": "review-write",
   "리뷰 상세": "review-detail",

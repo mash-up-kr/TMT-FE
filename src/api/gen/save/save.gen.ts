@@ -26,8 +26,8 @@ import { tmtFetch } from "../../mutator";
 import type { CursorPageSaveListItemResponse } from "../_model/cursorPageSaveListItemResponse.gen";
 import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { ListSavesParams } from "../_model/listSavesParams.gen";
+import type { SaveCreateRequest } from "../_model/saveCreateRequest.gen";
 import type { SaveDetailResponse } from "../_model/saveDetailResponse.gen";
-import type { SaveRequest } from "../_model/saveRequest.gen";
 import type { SaveResultResponse } from "../_model/saveResultResponse.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -177,19 +177,19 @@ export const getUpdateSaveUrl = (saveId: string) => {
 };
 
 /**
- * 전체 교체다. 매장은 바꿀 수 없어 newPlace를 받지 않는다(S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).
+ * 전체 교체다. 매장은 바꿀 수 없다 (S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).
  * @summary 작성 완료 (이어쓰기)
  */
 export const updateSave = async (
   saveId: string,
-  saveRequest: SaveRequest,
+  saveCreateRequest: SaveCreateRequest,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<SaveResultResponse> => {
   return tmtFetch<SaveResultResponse>(getUpdateSaveUrl(saveId), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(saveRequest),
+    body: JSON.stringify(saveCreateRequest),
   });
 };
 
@@ -200,14 +200,14 @@ export const getUpdateSaveMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateSave>>,
     TError,
-    { saveId: string; data: BodyType<SaveRequest> },
+    { saveId: string; data: BodyType<SaveCreateRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateSave>>,
   TError,
-  { saveId: string; data: BodyType<SaveRequest> },
+  { saveId: string; data: BodyType<SaveCreateRequest> },
   TContext
 > => {
   const mutationKey = ["updateSave"];
@@ -219,7 +219,7 @@ export const getUpdateSaveMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateSave>>,
-    { saveId: string; data: BodyType<SaveRequest> }
+    { saveId: string; data: BodyType<SaveCreateRequest> }
   > = (props) => {
     const { saveId, data } = props ?? {};
 
@@ -230,7 +230,7 @@ export const getUpdateSaveMutationOptions = <
 };
 
 export type UpdateSaveMutationResult = NonNullable<Awaited<ReturnType<typeof updateSave>>>;
-export type UpdateSaveMutationBody = BodyType<SaveRequest>;
+export type UpdateSaveMutationBody = BodyType<SaveCreateRequest>;
 export type UpdateSaveMutationError = ErrorType<ErrorResponse>;
 
 /**
@@ -241,7 +241,7 @@ export const useUpdateSave = <TError = ErrorType<ErrorResponse>, TContext = unkn
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateSave>>,
       TError,
-      { saveId: string; data: BodyType<SaveRequest> },
+      { saveId: string; data: BodyType<SaveCreateRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -250,7 +250,7 @@ export const useUpdateSave = <TError = ErrorType<ErrorResponse>, TContext = unkn
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateSave>>,
   TError,
-  { saveId: string; data: BodyType<SaveRequest> },
+  { saveId: string; data: BodyType<SaveCreateRequest> },
   TContext
 > => {
   return useMutation(getUpdateSaveMutationOptions(options), queryClient);
@@ -260,7 +260,7 @@ export const getDeleteSaveUrl = (saveId: string) => {
 };
 
 /**
- * `새로 작성하기`가 이전 임시저장을 버린다. 리뷰가 된 저장은 DELETE /v1/reviews/{reviewId}로 지운다 (F·G·I §5-2).
+ * `새로 작성하기`가 이전 임시저장을 버린다. 리뷰가 된 저장은 DELETE /v1/reviews/{reviewId} 소관이다 (F·G·I §5-2).
  * @summary 임시저장 버리기
  */
 export const deleteSave = async (
@@ -471,18 +471,18 @@ export const getCreateSaveUrl = () => {
 };
 
 /**
- * placeId와 newPlace 중 정확히 하나를 보낸다. 완성도 판정(C4)을 충족하면 리뷰와 티켓까지 같은 트랜잭션에서 나간다.
+ * 완성도 판정(C4)을 충족하면 리뷰·티켓·매장 집계까지 같은 트랜잭션에서 나간다 (TX-1).
  * @summary 작성 완료 (신규)
  */
 export const createSave = async (
-  saveRequest: SaveRequest,
+  saveCreateRequest: SaveCreateRequest,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<SaveResultResponse> => {
   return tmtFetch<SaveResultResponse>(getCreateSaveUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(saveRequest),
+    body: JSON.stringify(saveCreateRequest),
   });
 };
 
@@ -493,14 +493,14 @@ export const getCreateSaveMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createSave>>,
     TError,
-    { data: BodyType<SaveRequest> },
+    { data: BodyType<SaveCreateRequest> },
     TContext
   >;
   request?: SecondParameter<typeof tmtFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createSave>>,
   TError,
-  { data: BodyType<SaveRequest> },
+  { data: BodyType<SaveCreateRequest> },
   TContext
 > => {
   const mutationKey = ["createSave"];
@@ -512,7 +512,7 @@ export const getCreateSaveMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createSave>>,
-    { data: BodyType<SaveRequest> }
+    { data: BodyType<SaveCreateRequest> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -523,7 +523,7 @@ export const getCreateSaveMutationOptions = <
 };
 
 export type CreateSaveMutationResult = NonNullable<Awaited<ReturnType<typeof createSave>>>;
-export type CreateSaveMutationBody = BodyType<SaveRequest>;
+export type CreateSaveMutationBody = BodyType<SaveCreateRequest>;
 export type CreateSaveMutationError = ErrorType<ErrorResponse>;
 
 /**
@@ -534,7 +534,7 @@ export const useCreateSave = <TError = ErrorType<ErrorResponse>, TContext = unkn
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createSave>>,
       TError,
-      { data: BodyType<SaveRequest> },
+      { data: BodyType<SaveCreateRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
@@ -543,7 +543,7 @@ export const useCreateSave = <TError = ErrorType<ErrorResponse>, TContext = unkn
 ): UseMutationResult<
   Awaited<ReturnType<typeof createSave>>,
   TError,
-  { data: BodyType<SaveRequest> },
+  { data: BodyType<SaveCreateRequest> },
   TContext
 > => {
   return useMutation(getCreateSaveMutationOptions(options), queryClient);
