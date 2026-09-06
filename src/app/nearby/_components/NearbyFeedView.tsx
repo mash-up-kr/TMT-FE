@@ -35,7 +35,7 @@ export function NearbyFeedView({ position }: NearbyFeedViewProps) {
   }
 
   return (
-    <ul className="flex flex-1 flex-col gap-ds-4">
+    <ul className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {reviews.map((review) => (
         <li key={review.id}>
           <ReviewCard review={review} maxVisibleTags={MAX_VISIBLE_TAGS} />

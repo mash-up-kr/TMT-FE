@@ -53,7 +53,7 @@ export function NearbySearchResults({ position, query, curationTagId }: NearbySe
   }
 
   return (
-    <ul className="flex flex-1 flex-col gap-ds-4">
+    <ul className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {places.map((place) => (
         <li key={place.id}>
           <PlaceResultCard

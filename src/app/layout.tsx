@@ -31,8 +31,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <div className="app-frame">
-            {children}
-            <AppChrome />
+            <AppChrome>{children}</AppChrome>
           </div>
           <AppToaster />
         </QueryProvider>
