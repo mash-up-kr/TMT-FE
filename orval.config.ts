@@ -21,6 +21,11 @@ export default defineConfig({
       formatter: "biome",
       indexFiles: false,
       override: {
+        operations: {
+          groupDetail: { query: { useSuspenseQuery: true } },
+          home: { query: { useSuspenseQuery: true } },
+          placeDetail: { query: { useSuspenseQuery: true } },
+        },
         mutator: {
           path: "./src/api/mutator.ts",
           name: "tmtFetch",

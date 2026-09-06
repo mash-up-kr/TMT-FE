@@ -19,8 +19,10 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPageReviewCardResponse } from "../_model/cursorPageReviewCardResponse.gen";
@@ -327,6 +329,99 @@ export function usePlaceDetail<
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPlaceDetailSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof placeDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  placeId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPlaceDetailQueryKey(placeId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof placeDetail>>> = ({ signal }) =>
+    placeDetail(placeId, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof placeDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PlaceDetailSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof placeDetail>>>;
+export type PlaceDetailSuspenseQueryError = ErrorType<ErrorResponse>;
+
+export function usePlaceDetailSuspense<
+  TData = Awaited<ReturnType<typeof placeDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  placeId: string,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePlaceDetailSuspense<
+  TData = Awaited<ReturnType<typeof placeDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  placeId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePlaceDetailSuspense<
+  TData = Awaited<ReturnType<typeof placeDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  placeId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary 가게 상세
+ */
+
+export function usePlaceDetailSuspense<
+  TData = Awaited<ReturnType<typeof placeDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  placeId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof placeDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPlaceDetailSuspenseQueryOptions(placeId, options);
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

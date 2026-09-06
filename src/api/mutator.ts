@@ -1,6 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
-const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? "1";
-const MOCK_USER_ID_STORAGE_KEY = "tmt-mock-user-id";
+export const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? "1";
+export const MOCK_USER_ID_COOKIE = "tmt-mock-user-id";
+export const USER_ID_HEADER = "X-User-Id";
 const IDEMPOTENCY_KEY_METHODS = new Set(["POST", "PUT"]);
 
 export type MockUserId = "1" | "2" | "3" | "4";
@@ -10,27 +11,32 @@ function isMockUserId(value: string | null): value is MockUserId {
 }
 
 function getMockUserId(): string {
-  if (typeof window === "undefined") {
+  if (typeof document === "undefined") {
     return MOCK_USER_ID;
   }
 
   try {
-    const storedUserId = window.localStorage.getItem(MOCK_USER_ID_STORAGE_KEY);
-    return isMockUserId(storedUserId) ? storedUserId : MOCK_USER_ID;
+    const cookie = document.cookie
+      .split("; ")
+      .find((value) => value.startsWith(`${MOCK_USER_ID_COOKIE}=`));
+    const userId = cookie?.slice(MOCK_USER_ID_COOKIE.length + 1) ?? null;
+
+    return isMockUserId(userId) ? userId : MOCK_USER_ID;
   } catch {
     return MOCK_USER_ID;
   }
 }
 
 export function setMockUserId(userId: MockUserId): void {
-  if (typeof window === "undefined") {
+  if (typeof document === "undefined") {
     return;
   }
 
   try {
-    window.localStorage.setItem(MOCK_USER_ID_STORAGE_KEY, userId);
+    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API는 지원 범위가 부족하다.
+    document.cookie = `${MOCK_USER_ID_COOKIE}=${userId}; Path=/; Max-Age=31536000; SameSite=Lax`;
   } catch {
-    // 브라우저 저장소가 막힌 환경에서는 환경 변수의 기본 사용자로 요청한다.
+    // 브라우저 cookie가 막힌 환경에서는 환경 변수의 기본 사용자로 요청한다.
   }
 }
 
@@ -114,8 +120,8 @@ export const tmtFetch = async <T>(url: string, init?: RequestInit): Promise<T> =
     headers.set("Content-Type", "application/json");
   }
 
-  if (!headers.has("X-User-Id")) {
-    headers.set("X-User-Id", getMockUserId());
+  if (!headers.has(USER_ID_HEADER)) {
+    headers.set(USER_ID_HEADER, getMockUserId());
   }
 
   const method = (init?.method ?? "GET").toUpperCase();
