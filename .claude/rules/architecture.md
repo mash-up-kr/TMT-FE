@@ -82,7 +82,7 @@ src/
 | `shared/constants/` | 라우트 경로, 외부 URL, 전역 상수 | 라우트 전용 값을 올리지 않는다. |
 | `shared/stores/` | 여러 라우트가 공유하는 상태 | 구체적인 공유 요구가 있을 때만 추가한다. |
 | `shared/styles/` | 토큰, reset, theme | 사용 방식은 design-system rule을 따른다. |
-| `shared/providers/` | 전역 Context provider | `app/`을 import하지 않는다. |
+| `shared/providers/` | 전역 Context provider와 서버 컴포넌트용 query 준비 | `app/`을 import하지 않는다. `serverQuery.ts`는 `next/headers`를 import하므로 서버 컴포넌트 `page.tsx`만 import한다. |
 
 - UI는 한 라우트에서만 쓰는 동안 그 라우트에 둔다. 사용처가 둘 이상이 되면 승격하되, 도메인 무관하게 만들 수 있으면 `shared/ui/`, 도메인 성격이 남으면 `shared/components/`로 나눈다.
 - `shared/components/`도 API 응답을 그대로 받지 않는다. 응답을 props로 바꾸는 코드는 라우트 `_utils/`가 소유한다.
@@ -104,6 +104,7 @@ shared/providers/   →  api/mutator
 - 예외: `app/preview/**`는 화면 확인용 임시 라우트라 다른 라우트의 private segment를 import할 수 있다. 제품 코드가 preview를 import하지 않는다.
 - `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
 - `shared/providers/`만 `api/mutator`를 import할 수 있다. 전역 react-query retry 정책이 API 에러 타입에 의존하기 때문이다.
+- `shared/providers/serverQuery.ts`만 `next/headers`를 import한다.
 - `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.
 - 라우트 group 전용 코드는 `app/(group)/_*/`에 둔다.
 
@@ -118,6 +119,7 @@ shared/providers/   →  api/mutator
 ## 현재 상태
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
+- 핵심 화면 데이터는 서버 컴포넌트 page가 prefetch하고 `HydrationBoundary`로 넘긴다. 화면은 Orval Suspense hook으로 읽고, 부분 데이터는 일반 hook을 쓴다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
 - API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 동기화 명령은 `pnpm api:sync`다.
 - mock layer(MSW 등)는 도입하지 않는다.
@@ -128,6 +130,7 @@ shared/providers/   →  api/mutator
 - 스펙 스냅샷은 `_scripts/api/openapi.json`이다. `pnpm api:sync`가 갱신하며 직접 편집하지 않는다.
 - endpoint 변경은 백엔드 OpenAPI가 바뀐 뒤 `pnpm api:sync`로 반영한다. 스펙에 없는 endpoint를 프론트에서 만들지 않는다.
 - `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 공통 header와 공통 에러 처리를 소유한다. 인증 방식은 로그인 계약이 정해진 뒤 이 경계에 추가한다.
+- Orval은 핵심 화면 operation에만 일반 query hook과 Suspense query hook을 함께 생성한다. 사용자 식별은 cookie에서 읽고, 브라우저는 `mutator.ts`, 서버는 `serverQuery.ts`가 API header로 변환한다.
 - API 응답을 UI model로 바꾸는 코드는 라우트 `_utils/`에 둔다.
 - 수동 API client와 라우트별 fetch wrapper를 만들지 않는다.
 - 생성 파일은 커밋한다. lint 대상에서 제외하고 format은 유지한다.

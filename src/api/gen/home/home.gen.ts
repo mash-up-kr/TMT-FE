@@ -16,8 +16,10 @@ import type {
   UndefinedInitialDataOptions,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPageReviewCardResponse } from "../_model/cursorPageReviewCardResponse.gen";
@@ -150,6 +152,84 @@ export function useHome<
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getHomeSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
+  request?: SecondParameter<typeof tmtFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getHomeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof home>>> = ({ signal }) =>
+    home({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof home>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HomeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof home>>>;
+export type HomeSuspenseQueryError = ErrorType<ErrorResponse>;
+
+export function useHomeSuspense<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHomeSuspense<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHomeSuspense<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary 인사·내 그룹·추천 그룹
+ */
+
+export function useHomeSuspense<
+  TData = Awaited<ReturnType<typeof home>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof home>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getHomeSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

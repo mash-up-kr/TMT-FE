@@ -1,7 +1,5 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { type MockUserId, setMockUserId } from "@/api/mutator";
 import dummyProfile from "@/shared/assets/dummy-profile.png";
 import { ROUTES } from "@/shared/constants/routes";
@@ -11,13 +9,9 @@ import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 const UT2_USERS = ["1", "2", "3", "4"] as const satisfies readonly MockUserId[];
 
 export default function Ut2PreviewPage() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
   function handleUserSelect(userId: MockUserId) {
     setMockUserId(userId);
-    queryClient.clear();
-    router.push(ROUTES.ROOT);
+    window.location.assign(ROUTES.ROOT);
   }
 
   return (
