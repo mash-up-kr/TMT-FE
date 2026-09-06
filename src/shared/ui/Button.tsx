@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
-import { LoadingIcon } from "./Icons";
+import { Spinner } from "./Spinner";
 
 type ButtonVariant = "primary" | "secondary" | "tertiary";
 type ButtonSize = "lg" | "md" | "sm";
@@ -75,7 +75,7 @@ export function Button({
       )}
       {...props}
     >
-      {loading ? <LoadingIcon className="animate-spin" /> : leftIcon}
+      {loading ? <Spinner size={size === "lg" ? "md" : "sm"} tone="current" /> : leftIcon}
       {children}
       {!loading && rightIcon}
     </button>
