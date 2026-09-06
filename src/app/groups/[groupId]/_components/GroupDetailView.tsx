@@ -93,15 +93,13 @@ export function GroupDetailView({
   const sheetJoinAction: GroupJoinAction = {
     ...joinAction,
     onJoin: async () => {
+      // 성공·실패 안내는 useJoinGroup이 띄운다. 여기서는 시트만 정리한다.
       const didJoin = await joinAction.onJoin();
 
       if (didJoin) {
         setIsJoinSheetOpen(false);
         // ⚠️ UT2 임시 계측.
         setUt2Step(UT2_STEPS.GROUP_JOIN_COMPLETE);
-        toast.success("그룹 가입이 완료되었어요.");
-      } else {
-        toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");
       }
 
       return didJoin;
