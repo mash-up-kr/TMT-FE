@@ -4,12 +4,14 @@ import {
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
+import { RetryNotice } from "@/shared/ui/RetryNotice";
 import type { FeedReview } from "../_model/home";
 
 type HomeFeedProps = {
   position: CurrentPosition;
   isPending: boolean;
   isError: boolean;
+  onRetry: () => void;
   reviews: FeedReview[] | undefined;
   favoriteAction?: ReviewCardFavoriteAction;
 };
@@ -37,7 +39,7 @@ function resolveNotice({
   }
 
   if (isError) {
-    return { title: "게시물을 불러오지 못했어요." };
+    return null;
   }
 
   if (!reviews || reviews.length === 0) {
@@ -52,6 +54,20 @@ function resolveNotice({
 
 export function HomeFeed(props: HomeFeedProps) {
   const notice = resolveNotice(props);
+
+  if (props.isError) {
+    return (
+      <section
+        className="mt-ds-4 flex min-h-0 flex-1 flex-col bg-surface-primary"
+        aria-label="최근 게시물"
+      >
+        <h2 className="bg-surface-primary px-ds-20 pt-ds-20 pb-ds-12 text-heading-md text-content-primary">
+          최근 게시물
+        </h2>
+        <RetryNotice message="게시물을 불러오지 못했어요." onRetry={props.onRetry} />
+      </section>
+    );
+  }
 
   if (notice) {
     return (

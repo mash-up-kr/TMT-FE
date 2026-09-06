@@ -100,7 +100,7 @@ const JOINED: HomeSummary = {
 type Scenario = {
   key: string;
   label: string;
-  props: Parameters<typeof HomeView>[0];
+  props: Omit<Parameters<typeof HomeView>[0], "onFeedRetry">;
 };
 
 const SCENARIOS: Scenario[] = [
@@ -231,7 +231,7 @@ export default function HomePreview() {
         activeTab="home"
         header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       >
-        <HomeView {...scenario.props} />
+        <HomeView {...scenario.props} onFeedRetry={() => {}} />
       </PreviewBottomNavScreenLayout>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>

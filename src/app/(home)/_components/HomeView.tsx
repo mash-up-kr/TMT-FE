@@ -11,6 +11,7 @@ type HomeViewProps = {
   position: CurrentPosition;
   feedIsPending: boolean;
   feedIsError: boolean;
+  onFeedRetry: () => void;
   reviews: FeedReview[] | undefined;
   favoriteAction?: ReviewCardFavoriteAction;
 };
@@ -20,6 +21,7 @@ export function HomeView({
   position,
   feedIsPending,
   feedIsError,
+  onFeedRetry,
   reviews,
   favoriteAction,
 }: HomeViewProps) {
@@ -38,6 +40,7 @@ export function HomeView({
           position={position}
           isPending={feedIsPending}
           isError={feedIsError}
+          onRetry={onFeedRetry}
           reviews={reviews}
           favoriteAction={favoriteAction}
         />
