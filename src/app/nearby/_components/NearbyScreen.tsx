@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
@@ -9,10 +8,10 @@ import { ROUTES } from "@/shared/constants/routes";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
-import { cn } from "@/shared/utils/cn";
 import { NearbyCurationChips } from "./NearbyCurationChips";
 import { NearbyFeedView } from "./NearbyFeedView";
 import { NearbyMapView } from "./NearbyMapView";
+import { NearbySearchEntry } from "./NearbySearchEntry";
 import { NearbySearchResults } from "./NearbySearchResults";
 
 type NearbyView = "feed" | "map";
@@ -49,12 +48,16 @@ export function NearbyScreen() {
       }
     >
       <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
-        <div className="flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
-          <SearchEntry keyword={query} />
-          {view === "feed" ? (
-            <NearbyCurationChips selectedId={curationTagId} onSelect={handleCurationSelect} />
-          ) : null}
-        </div>
+        {view === "feed" ? (
+          <div className="flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
+            <NearbySearchEntry keyword={query} />
+            <NearbyCurationChips
+              selectedId={curationTagId}
+              onSelect={handleCurationSelect}
+              className="flex-nowrap overflow-x-auto"
+            />
+          </div>
+        ) : null}
         <NearbyBody
           view={view}
           position={position}
@@ -80,6 +83,7 @@ function NearbyBody({ view, position, query, curationTagId, onCurationSelect }: 
     return (
       <NearbyMapView
         position={position}
+        query={query}
         curationTagId={curationTagId}
         onCurationSelect={onCurationSelect}
       />
@@ -92,20 +96,6 @@ function NearbyBody({ view, position, query, curationTagId, onCurationSelect }: 
   }
 
   return <NearbyFeedView position={position} />;
-}
-
-function SearchEntry({ keyword }: { keyword: string | null }) {
-  return (
-    <Link
-      href={ROUTES.SEARCH}
-      className={cn(
-        "block w-full truncate rounded-ds-md border-sm border-stroke-field bg-surface-primary px-ds-16 py-ds-12 text-left text-body-lg-medium",
-        keyword ? "text-content-primary" : "text-content-tertiary",
-      )}
-    >
-      {keyword ?? "장소나 태그로 검색해보세요"}
-    </Link>
-  );
 }
 
 type ViewSwitchButtonProps = {
