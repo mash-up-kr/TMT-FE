@@ -36,7 +36,7 @@ const existingPlaceDraft = {
   reviewText: "다시 갈게요",
 };
 
-test("기존 매장 초안을 SaveRequest로 변환하며 태그 그룹을 보존한다", () => {
+test("기존 매장 초안을 SaveCreateRequest로 변환하며 태그 그룹을 보존한다", () => {
   const request = mappers.toCreateSaveRequest?.(existingPlaceDraft, tagConfig);
 
   assert.deepEqual(request, {
