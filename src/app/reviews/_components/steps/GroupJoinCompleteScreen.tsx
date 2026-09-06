@@ -38,7 +38,7 @@ export function GroupJoinCompleteScreen({
           {ERROR_MESSAGE}
         </p>
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" onClick={leaveToGroups}>
+          <Button variant="tertiary" className="whitespace-nowrap" onClick={leaveToGroups}>
             다른 그룹 보러가기
           </Button>
           <Button onClick={retry}>다시 시도</Button>
@@ -84,7 +84,7 @@ export function GroupJoinCompleteScreen({
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" onClick={leaveToGroups}>
+          <Button variant="tertiary" className="whitespace-nowrap" onClick={leaveToGroups}>
             다른 그룹 보러가기
           </Button>
           <Button disabled={!isJoinable} loading={isJoining} onClick={joinGroup}>
