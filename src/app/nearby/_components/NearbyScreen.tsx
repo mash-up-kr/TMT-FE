@@ -39,6 +39,7 @@ export function NearbyScreen() {
 
   return (
     <ScreenLayout
+      bodyScrollable={view === "feed"}
       header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       floating={
         <ViewSwitchButton

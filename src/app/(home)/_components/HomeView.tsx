@@ -26,7 +26,7 @@ export function HomeView({
   const hasGroups = summary.myGroups.length > 0;
 
   return (
-    <main className="scroll-under-navigation flex flex-1 flex-col">
+    <main className="flex flex-1 flex-col">
       <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
         <h1 className="truncate bg-surface-primary px-ds-20 py-ds-12 text-heading-lg text-content-primary">
           {summary.nickname}님 안녕하세요

@@ -23,7 +23,7 @@ export function ProfileBody({
   children,
 }: ProfileBodyProps) {
   return (
-    <div className="scroll-under-navigation flex flex-col bg-surface-primary">
+    <div className="flex flex-col bg-surface-primary">
       <ProfileIdentity profile={profile} />
       {beforeTabs && (
         <>
