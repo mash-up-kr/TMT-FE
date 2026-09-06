@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { getGroupDetailQueryKey, getListGroupsQueryKey } from "@/api/gen/group/group.gen";
 import { useJoin } from "@/api/gen/group-membership/group-membership.gen";
 import { getHomeQueryKey } from "@/api/gen/home/home.gen";
@@ -36,12 +37,17 @@ type JoinGroupOptions = Readonly<{
  * 가입 결과가 보이는 곳을 모두 다시 받은 뒤에 돌려주므로, 돌려받은 시점에 어느 화면으로 가도
  * 가입 전 화면이 남지 않는다. 성공 여부만 돌려주고 그다음 할 일(시트 닫기, 그룹으로 이동)은
  * 호출부가 정한다.
+ *
+ * `isPending`은 뮤테이션이 아니라 **캐시 정리까지 포함한 전 구간**이다. 뮤테이션 상태를 그대로
+ * 쓰면 응답이 온 순간 버튼이 풀려, 화면이 아직 가입 전 숫자를 그리고 있는 동안 한 번 더 눌린다.
  */
 export function useJoinGroup(groupId: string) {
   const queryClient = useQueryClient();
   const join = useJoin();
+  const [isSettling, setIsSettling] = useState(false);
 
   async function joinGroup({ sourceReviewIds }: JoinGroupOptions = {}): Promise<boolean> {
+    setIsSettling(true);
     try {
       await join.mutateAsync({
         groupId,
@@ -64,10 +70,13 @@ export function useJoinGroup(groupId: string) {
       toast.success(JOIN_SUCCESS_MESSAGE);
       return true;
     } catch {
+      // 실패는 여기서만 푼다. 성공은 호출부가 화면을 옮기므로 푼 상태를 볼 일이 없고, 풀면
+      // 이동 직전에 버튼이 되살아난다.
+      setIsSettling(false);
       toast.error(JOIN_FAILED_MESSAGE);
       return false;
     }
   }
 
-  return { joinGroup, isPending: join.isPending };
+  return { joinGroup, isPending: join.isPending || isSettling };
 }
