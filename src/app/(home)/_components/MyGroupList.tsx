@@ -35,7 +35,6 @@ export function MyGroupList({ groups }: MyGroupListProps) {
             <PlusIcon size={32} />
           </Link>
           {groups.length === 0 ? (
-            // 76px 폭에 한 줄로 안 들어간다. 접히는 자리를 브라우저에 맡기지 않고 고정한다.
             <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-disabled">
               새그룹
               <br />
