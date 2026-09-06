@@ -39,7 +39,7 @@ export function ContinueDraftScreen() {
 
   const drafts = mapContinuableDrafts(saves.data?.items);
   const firstContinuable = drafts.find((draft) => draft.canContinue);
-  // 목록이 한 번 그려진 뒤에는 선택을 유지한다. 첫 항목 기본 선택은 시안(1033:11306)을 따른다.
+  // 목록이 한 번 그려진 뒤에는 선택을 유지한다. 처음에는 첫 항목을 골라 둔다.
   const selected = drafts.some((draft) => draft.saveId === selectedSaveId && draft.canContinue)
     ? selectedSaveId
     : (firstContinuable?.saveId ?? null);

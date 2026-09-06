@@ -27,7 +27,7 @@ export function useGroupJoinAfterReview({ groupId, reviewId }: GroupJoinAfterRev
 
   const joinGroup = async () => {
     // 완료 화면은 "작성한 리뷰가 자동으로 그룹에 공유돼요"라고 안내한다. 서버는 실어 보낸 것만
-    // 공유하므로(H 명세 §0 경로 2) 방금 완성된 리뷰를 여기서 싣는다. 이걸 빼면 안내가 거짓이 된다.
+    // 공유하므로 방금 완성된 리뷰를 여기서 싣는다. 빼면 안내가 거짓이 된다.
     if (!(await join.joinGroup({ sourceReviewIds: reviewId ? [reviewId] : undefined }))) {
       return;
     }

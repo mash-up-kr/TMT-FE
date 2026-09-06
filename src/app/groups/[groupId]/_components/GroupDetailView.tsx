@@ -96,7 +96,7 @@ export function GroupDetailView({
     ...joinAction,
     isPending: joinAction.isPending || shareEntry.isChecking,
     onJoin: async () => {
-      // 공유할 리뷰가 있으면 가입 전에 고르게 한다. 공유는 가입 요청에 실려야 해서(TMT-241)
+      // 공유할 리뷰가 있으면 가입 전에 고르게 한다. 공유는 가입 요청에 함께 실어야 하므로
       // 가입은 그 화면이 맡고, 여기서는 아직 가입하지 않은 것으로 돌려준다.
       if (shareEntry.hasReviewsToShare) {
         setIsJoinSheetOpen(false);

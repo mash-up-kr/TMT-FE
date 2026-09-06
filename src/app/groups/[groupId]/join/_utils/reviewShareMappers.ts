@@ -8,8 +8,8 @@ function hasText(value: string | null | undefined): value is string {
 }
 
 /**
- * 명세(H §3-1)는 `thumbnailUrl`을 non-null로 적었지만, 사진 없는 리뷰가 생긴 뒤(C4-1)로는 비어 올
- * 수 있다 (TMT-352). 빈 값을 `null`로 고쳐 화면이 대체 이미지를 그리게 한다.
+ * 사진 없이 작성된 리뷰는 `thumbnailUrl`이 비어 온다. 빈 값을 `null`로 고쳐 화면이 대체
+ * 이미지를 그리게 한다.
  */
 export function toReviewShareItems(
   items: readonly ReviewShareResponseItem[] | undefined,
