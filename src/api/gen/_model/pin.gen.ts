@@ -11,5 +11,7 @@ export interface Pin {
   name: string;
   latitude: number;
   longitude: number;
+  /** @nullable */
+  categoryId?: string | null;
   reviewCount: number;
 }

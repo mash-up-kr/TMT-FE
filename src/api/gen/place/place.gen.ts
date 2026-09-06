@@ -58,7 +58,7 @@ export const getSearchPlacesUrl = (params?: SearchPlacesParams) => {
 };
 
 /**
- * 가게명·주소·음식 카테고리 태그로 찾는다. 결과 0건은 오류가 아니다 — items: []
+ * 가게명·주소·음식 카테고리 태그로 찾는다 (E9). 좌표가 오면 거리순, 없으면 매장명 유사도순이다. 결과 0건은 오류가 아니다 — items: []
  * @summary 매장 검색
  */
 export const searchPlaces = async (

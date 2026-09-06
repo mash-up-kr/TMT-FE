@@ -1,9 +1,9 @@
 import type { AddressItem } from "@/api/gen/_model/addressItem.gen";
 import type { PlaceCardResponse } from "@/api/gen/_model/placeCardResponse.gen";
 import type { ReviewFormConfigResponse } from "@/api/gen/_model/reviewFormConfigResponse.gen";
+import type { SaveCreateRequest } from "@/api/gen/_model/saveCreateRequest.gen";
 import type { SaveDetailResponse } from "@/api/gen/_model/saveDetailResponse.gen";
 import type { SaveListItemResponse } from "@/api/gen/_model/saveListItemResponse.gen";
-import type { SaveRequest } from "@/api/gen/_model/saveRequest.gen";
 import type { SaveResultResponse } from "@/api/gen/_model/saveResultResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
 import { MAX_REVIEW_RATING } from "../_constants/review";
@@ -35,7 +35,7 @@ function mapReviewFields(
   draft: ReviewDraftSnapshot,
   config: ReviewTagConfig,
   photoAssetIds?: readonly string[],
-): Omit<SaveRequest, "placeId" | "newPlace"> {
+): Omit<SaveCreateRequest, "placeId" | "newPlace"> {
   const companionTagIds = new Set(config.companionTags.map((tag) => tag.tagId));
   const positivePointTagIds = new Set(config.positivePointTags.map((tag) => tag.tagId));
   const unknownTagIds = draft.selectedTagIds.filter(
@@ -59,7 +59,7 @@ export function toCreateSaveRequest(
   draft: ReviewDraftSnapshot,
   config: ReviewTagConfig,
   photoAssetIds?: readonly string[],
-): SaveRequest {
+): SaveCreateRequest {
   if (draft.store === null) {
     throw new ReviewSaveMappingError("매장 정보를 확인해 주세요");
   }
@@ -87,7 +87,7 @@ export function toUpdateSaveRequest(
   draft: ReviewDraftSnapshot,
   config: ReviewTagConfig,
   photoAssetIds?: readonly string[],
-): SaveRequest {
+): SaveCreateRequest {
   if (draft.store === null || !hasText(draft.store.id)) {
     throw new ReviewSaveMappingError("저장된 매장 정보를 확인하지 못했어요");
   }
@@ -109,12 +109,12 @@ export function mapStoreSearchResults(items: PlaceCardResponse[] | undefined): S
 
 export function mapAddressSearchResults(items: AddressItem[] | undefined): AddressSearchResult[] {
   return (items ?? []).flatMap((item) =>
-    hasText(item.addressId) && hasText(item.roadAddress) && hasText(item.jibunAddress)
+    hasText(item.addressId) && hasText(item.roadAddress)
       ? [
           {
             addressId: item.addressId,
             roadAddress: item.roadAddress,
-            jibunAddress: item.jibunAddress,
+            jibunAddress: hasText(item.jibunAddress) ? item.jibunAddress : null,
           },
         ]
       : [],
