@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRecommendPlace } from "@/api/gen/recommendation/recommendation.gen";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { placeDetailPath, ROUTES } from "@/shared/constants/routes";
+import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -44,6 +45,7 @@ const LOADING_MS = 3400;
 
 export function RecommendScreen() {
   const router = useRouter();
+  const reviewEntryPath = useReviewEntryPath();
   const body = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLParagraphElement>(null);
 
@@ -284,7 +286,7 @@ export function RecommendScreen() {
               stores={DUMMY_STORES}
               picked={picked}
               onToggle={handleToggle}
-              onCreateReview={() => router.push(ROUTES.REVIEWS.NEW)}
+              onCreateReview={() => router.push(reviewEntryPath)}
             />
           </div>
         ) : null}

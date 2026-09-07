@@ -8,6 +8,7 @@ import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -28,6 +29,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
   const summary = useMyProfileSummary();
   const tabPage = useMyProfileTabPage(activeTab);
   const sheet = useReviewDetailSheet();
+  const reviewEntryPath = useReviewEntryPath();
   // 어느 카드가 대기 중인지 표시해야 해서 mutation의 isPending으로 대체하지 않는다.
   const [pendingPlaceId, setPendingPlaceId] = useState<string | null>(null);
   const favorite = usePlaceFavorite({
@@ -48,7 +50,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
       title={null}
       left={<TMTLogoHomeLink />}
       right={
-        <IconButton aria-label="리뷰 작성하기" onClick={() => router.push(ROUTES.REVIEWS.NEW)}>
+        <IconButton aria-label="리뷰 작성하기" onClick={() => router.push(reviewEntryPath)}>
           <PlusIcon size={28} />
         </IconButton>
       }

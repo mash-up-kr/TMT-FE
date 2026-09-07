@@ -15,7 +15,6 @@ const TOAST_BOTTOM_INSET = 92;
 function hasStaticBottomOverlay(pathname: string): boolean {
   return (
     pathname === ROUTES.GROUPS.NEW ||
-    pathname.startsWith(ROUTES.REVIEWS.NEW) ||
     pathname.startsWith(ROUTES.REVIEWS.DRAFTS) ||
     /^\/groups\/[^/]+$/.test(pathname)
   );

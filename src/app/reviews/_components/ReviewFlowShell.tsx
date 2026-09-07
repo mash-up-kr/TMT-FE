@@ -1,7 +1,7 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { syncJoinGroupIntent } from "@/shared/constants/reviewJoinGroup";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
@@ -9,10 +9,10 @@ import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Progress } from "@/shared/ui/Progress";
+import { getReviewReturnTo } from "@/shared/utils/reviewNavigation";
 import {
   DRAFT_REVIEW_FIRST_STEP,
   NEW_REVIEW_BASE_PATH,
-  REVIEW_FLOW_EXIT_PATH,
   REVIEW_STEP_COUNT,
   REVIEW_STEPS,
   reviewCompletePath,
@@ -20,11 +20,34 @@ import {
 } from "../_constants/steps";
 import { useReviewSave } from "../_hooks/useReviewSave";
 import type { ReviewDraftSnapshot } from "../_model/draft";
-import { ReviewDraftProvider, useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { ReviewFlowBaseProvider } from "../_stores/ReviewFlowBaseProvider";
+import { ReviewDraftProvider } from "../_stores/ReviewDraftProvider";
+import {
+  ReviewFlowBaseProvider,
+  useReviewFlowReturnTo,
+  useReviewFlowSaveId,
+} from "../_stores/ReviewFlowBaseProvider";
 import { ExitConfirmModal } from "./ExitConfirmModal";
 
+// 이탈 확인 모달은 셸이 하나만 들고 있다. X 버튼과 "나중에 추가할게요"가 같은 흐름이라
+// 확인 UI가 하나여야 동작이 갈리지 않는다. 단계는 여는 것만 요청한다.
+const ReviewFlowExitContext = createContext<(() => void) | null>(null);
+
+export function useReviewFlowExit() {
+  const value = useContext(ReviewFlowExitContext);
+
+  if (value === null) {
+    throw new Error("useReviewFlowExit는 ReviewFlowShell 안에서만 쓸 수 있다.");
+  }
+
+  return value;
+}
+
 function findStepIndex(basePath: string, pathname: string) {
+  // 매장 검색은 초안이 없어 경로가 곧 첫 단계다. 뒤에 붙일 단계 세그먼트가 없다.
+  if (pathname === NEW_REVIEW_BASE_PATH) {
+    return 0;
+  }
+
   const index = REVIEW_STEPS.findIndex((segment) => pathname === reviewStepPath(basePath, segment));
 
   return index === -1 ? null : index;
@@ -41,6 +64,9 @@ export function ReviewFlowShell({
   initialDraft?: ReviewDraftSnapshot;
   children: ReactNode;
 }>) {
+  const searchParams = useSearchParams();
+  const returnTo = getReviewReturnTo(searchParams);
+
   // 새로 쓰기로 들어온 순간에만 판단한다. 이어쓰기는 초안에 이미 묶인 값을 그대로 쓴다.
   useEffect(() => {
     if (basePath === NEW_REVIEW_BASE_PATH) {
@@ -49,7 +75,7 @@ export function ReviewFlowShell({
   }, [basePath]);
 
   return (
-    <ReviewFlowBaseProvider basePath={basePath} saveId={saveId}>
+    <ReviewFlowBaseProvider basePath={basePath} saveId={saveId} returnTo={returnTo}>
       <ReviewDraftProvider initialDraft={initialDraft}>
         <ReviewFlowContent basePath={basePath}>{children}</ReviewFlowContent>
       </ReviewDraftProvider>
@@ -64,7 +90,8 @@ function ReviewFlowContent({
   const pathname = usePathname();
   const router = useRouter();
   const [exitOpen, setExitOpen] = useState(false);
-  const { photos, attachedPhotoCount } = useReviewDraft();
+  const returnTo = useReviewFlowReturnTo();
+  const saveId = useReviewFlowSaveId();
   const reviewSave = useReviewSave();
 
   const completedSteps = findStepIndex(basePath, pathname);
@@ -81,11 +108,13 @@ function ReviewFlowContent({
   );
 
   // back()은 단계마다 쌓인 히스토리를 한 칸 되돌릴 뿐이라 플로우 밖으로 나가지 못한다.
-  // 홈으로 replace해야 layout이 내려가면서 초안과 미리보기 URL도 함께 정리된다.
-  const exitFlow = () => router.replace(REVIEW_FLOW_EXIT_PATH);
+  // 진입 직전 화면으로 replace해야 리뷰 플로우의 단계 URL이 히스토리에 남지 않는다.
+  const exitFlow = () => router.replace(returnTo);
 
-  const handleClose = () => {
-    if (isComplete) {
+  // 첫 단계에서는 아직 초안이 없다(초안은 다음 단계로 넘어갈 때 처음 만들어진다).
+  // 저장할 것이 없는데 "저장하고 나가기"를 묻는 셈이라 확인 없이 바로 나간다.
+  const requestExit = () => {
+    if (saveId === null) {
       exitFlow();
       return;
     }
@@ -93,27 +122,28 @@ function ReviewFlowContent({
     setExitOpen(true);
   };
 
+  const handleClose = () => {
+    if (isComplete) {
+      exitFlow();
+      return;
+    }
+
+    requestExit();
+  };
+
   return (
-    <>
+    <ReviewFlowExitContext.Provider value={requestExit}>
       <GNB
         title={isComplete ? "완료" : "리뷰 쓰기"}
         left={
           canGoBack && (
-            <IconButton
-              aria-label="이전 단계로"
-              disabled={reviewSave.isPending}
-              onClick={() => router.back()}
-            >
+            <IconButton aria-label="이전 단계로" onClick={() => router.back()}>
               <ChevronLeftIcon />
             </IconButton>
           )
         }
         right={
-          <IconButton
-            aria-label={isComplete ? "닫기" : "리뷰 작성 닫기"}
-            disabled={reviewSave.isPending}
-            onClick={handleClose}
-          >
+          <IconButton aria-label={isComplete ? "닫기" : "리뷰 작성 닫기"} onClick={handleClose}>
             <CancelIcon thick />
           </IconButton>
         }
@@ -121,7 +151,7 @@ function ReviewFlowContent({
 
       <main className="flex min-h-0 flex-1 flex-col">
         {completedSteps !== null && (
-          <div className="content-container pt-ds-20">
+          <div className="content-container shrink-0 pt-ds-20">
             <Progress
               value={completedSteps}
               max={REVIEW_STEP_COUNT}
@@ -137,8 +167,7 @@ function ReviewFlowContent({
         onOpenChange={setExitOpen}
         onExit={reviewSave.saveAndExit}
         isPending={reviewSave.isPending}
-        excludesPhotos={photos.length > 0 && attachedPhotoCount === 0}
       />
-    </>
+    </ReviewFlowExitContext.Provider>
   );
 }

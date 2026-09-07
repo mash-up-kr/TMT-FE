@@ -11,19 +11,13 @@ type StarRatingFieldProps = Readonly<{
   label: string;
   value: number;
   onChange: (value: number) => void;
-  disabled?: boolean;
 }>;
 
-export function StarRatingField({
-  label,
-  value,
-  onChange,
-  disabled = false,
-}: StarRatingFieldProps) {
+export function StarRatingField({ label, value, onChange }: StarRatingFieldProps) {
   const name = useId();
 
   return (
-    <fieldset disabled={disabled}>
+    <fieldset>
       <legend className="mb-ds-12 text-body-lg-medium text-content-primary">{label}</legend>
 
       <div className="flex">

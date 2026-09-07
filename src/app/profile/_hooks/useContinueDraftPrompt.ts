@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useListSaves } from "@/api/gen/save/save.gen";
 import { ROUTES } from "@/shared/constants/routes";
+import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { isContinuableSave } from "@/shared/utils/continuableSave";
+import { withReviewReturnTo } from "@/shared/utils/reviewNavigation";
 
 /**
  * 본문이 자리를 잡은 뒤 시트를 올리기까지의 간격.
@@ -64,6 +66,7 @@ type ContinueDraftPromptOptions = Readonly<{
 export function useContinueDraftPrompt({ ready }: ContinueDraftPromptOptions) {
   const router = useRouter();
   const saves = useListSaves();
+  const returnTo = useReviewReturnTo();
   const [isOpen, setIsOpen] = useState(false);
   // 초기값을 저장소에서 읽지 않는다. 서버 렌더와 첫 클라이언트 렌더가 어긋나 hydration이 깨진다.
   const [hasPrompted, setHasPrompted] = useState(false);
@@ -98,9 +101,9 @@ export function useContinueDraftPrompt({ ready }: ContinueDraftPromptOptions) {
 
     setIsOpen(false);
     // 초안이 하나뿐이면 고를 것이 없으므로 선택 화면을 건너뛴다.
-    router.push(
-      drafts.length === 1 ? ROUTES.REVIEWS.DRAFT(firstDraft.saveId) : ROUTES.REVIEWS.CONTINUE,
-    );
+    const path =
+      drafts.length === 1 ? ROUTES.REVIEWS.DRAFT(firstDraft.saveId) : ROUTES.REVIEWS.DRAFTS;
+    router.push(withReviewReturnTo(path, returnTo));
   };
 
   return { isOpen, onOpenChange: setIsOpen, continueWriting };

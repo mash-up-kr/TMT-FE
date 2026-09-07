@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/shared/constants/routes";
+import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
 import { BottomNav } from "@/shared/ui/BottomNav";
 import { type AppBottomNavValue, getBottomNavHref } from "@/shared/utils/bottomNavigationPolicy";
 
@@ -12,6 +12,7 @@ import { type AppBottomNavValue, getBottomNavHref } from "@/shared/utils/bottomN
  */
 export function AppBottomNav({ activeTab }: { activeTab: AppBottomNavValue }) {
   const router = useRouter();
+  const reviewEntryPath = useReviewEntryPath();
 
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-navigation flex h-(--layout-bottom-navigation-height) items-center justify-center px-ds-20">
@@ -19,7 +20,7 @@ export function AppBottomNav({ activeTab }: { activeTab: AppBottomNavValue }) {
         className="pointer-events-auto"
         value={activeTab}
         onValueChange={(value) => router.push(getBottomNavHref(value))}
-        onCreate={() => router.push(ROUTES.REVIEWS.NEW)}
+        onCreate={() => router.push(reviewEntryPath)}
       />
     </div>
   );

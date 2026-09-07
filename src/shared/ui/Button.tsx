@@ -2,7 +2,7 @@ import type { ComponentPropsWithRef, ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
 import { Spinner } from "./Spinner";
 
-type ButtonVariant = "primary" | "secondary" | "tertiary";
+type ButtonVariant = "primary" | "secondary" | "tertiary" | "ghost";
 type ButtonSize = "lg" | "md" | "sm";
 
 export type ButtonProps = ComponentPropsWithRef<"button"> & {
@@ -16,8 +16,15 @@ export type ButtonProps = ComponentPropsWithRef<"button"> & {
 const baseStyles =
   "inline-flex items-center justify-center gap-ds-8 rounded-ds-md [&_svg]:shrink-0";
 
-const disabledStyles =
+const filledDisabledStyles =
   "disabled:pointer-events-none disabled:bg-surface-disabled disabled:text-content-disabled";
+
+const disabledStyles = {
+  primary: filledDisabledStyles,
+  secondary: filledDisabledStyles,
+  tertiary: filledDisabledStyles,
+  ghost: "disabled:pointer-events-none disabled:text-content-disabled",
+} satisfies Record<ButtonVariant, string>;
 
 const variantStyles = {
   primary:
@@ -26,6 +33,7 @@ const variantStyles = {
     "bg-surface-interactive-secondary text-content-interactive-inverse hover:bg-surface-interactive-secondary-hovered active:bg-surface-interactive-secondary-pressed",
   tertiary:
     "bg-surface-interactive-tertiary text-content-secondary hover:bg-surface-interactive-tertiary-hovered hover:text-content-tertiary active:bg-surface-interactive-tertiary-pressed active:text-content-tertiary",
+  ghost: "text-content-secondary hover:text-content-primary active:text-content-primary",
 } satisfies Record<ButtonVariant, string>;
 
 const sizeStyles = {
@@ -72,7 +80,7 @@ export function Button({
       aria-busy={loading}
       className={cn(
         buttonStyles({ variant, size }),
-        loading ? "pointer-events-none" : disabledStyles,
+        loading ? "pointer-events-none" : disabledStyles[variant],
         className,
       )}
       {...props}

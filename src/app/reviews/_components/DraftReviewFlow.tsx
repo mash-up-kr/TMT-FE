@@ -1,20 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
-import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon } from "@/shared/ui/Icons";
+import { getReviewReturnTo } from "@/shared/utils/reviewNavigation";
 import { draftReviewBasePath } from "../_constants/steps";
 import { isResumableSaveDetail, mapSaveDetailToDraft } from "../_utils/reviewApiMappers";
 import { ReviewFlowShell } from "./ReviewFlowShell";
 import { StatusMessage } from "./StatusMessage";
 
-const LOADING_MESSAGE = "저장한 리뷰를 불러오는 중이에요";
 const ERROR_MESSAGE = "저장한 리뷰를 불러오지 못했어요. 잠시 후 다시 시도해 주세요";
 const PHOTO_DRAFT_MESSAGE = "사진이 있는 리뷰는 아직 이어 쓸 수 없어요";
 
@@ -44,18 +43,16 @@ export function DraftReviewFlow({
       initialDraft={draft}
     >
       {draft === undefined ? (
-        <div className="content-container flex flex-1 items-center justify-center">
-          <div className="flex flex-col items-center gap-ds-16">
-            <StatusMessage tone={save.isError ? "error" : "default"}>
-              {save.isError ? ERROR_MESSAGE : LOADING_MESSAGE}
-            </StatusMessage>
-            {save.isError && (
+        save.isError ? (
+          <div className="content-container flex flex-1 items-center justify-center">
+            <div className="flex flex-col items-center gap-ds-16">
+              <StatusMessage tone="error">{ERROR_MESSAGE}</StatusMessage>
               <Button size="md" onClick={() => void save.refetch()}>
                 다시 시도
               </Button>
-            )}
+            </div>
           </div>
-        </div>
+        ) : null
       ) : (
         children
       )}
@@ -65,7 +62,8 @@ export function DraftReviewFlow({
 
 function UnavailableDraft({ message }: Readonly<{ message: string }>) {
   const router = useRouter();
-  const exit = () => router.replace(ROUTES.PROFILE.ME_REVIEWS);
+  const returnTo = getReviewReturnTo(useSearchParams());
+  const exit = () => router.replace(returnTo);
 
   return (
     <>

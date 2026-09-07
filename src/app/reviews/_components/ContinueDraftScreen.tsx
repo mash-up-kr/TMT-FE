@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useListSaves } from "@/api/gen/save/save.gen";
 import dummyImage from "@/shared/assets/dummy-image.png";
@@ -17,6 +17,7 @@ import { CancelIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { Radio, RadioGroup } from "@/shared/ui/Radio";
 import { cn } from "@/shared/utils/cn";
+import { getReviewReturnTo, withReviewReturnTo } from "@/shared/utils/reviewNavigation";
 import { draftReviewBasePath } from "../_constants/steps";
 import type { ContinuableDraft } from "../_model/draft";
 import { mapContinuableDrafts } from "../_utils/reviewApiMappers";
@@ -28,6 +29,7 @@ const EMPTY_MESSAGE = "작성 중인 리뷰가 없어요";
 
 export function ContinueDraftScreen() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const saves = useListSaves();
   const [selectedSaveId, setSelectedSaveId] = useState<string | null>(null);
 
@@ -38,6 +40,7 @@ export function ContinueDraftScreen() {
   }, []);
 
   const drafts = mapContinuableDrafts(saves.data?.items);
+  const returnTo = getReviewReturnTo(searchParams);
   const firstContinuable = drafts.find((draft) => draft.canContinue);
   // 목록이 한 번 그려진 뒤에는 선택을 유지한다. 처음에는 첫 항목을 골라 둔다.
   const selected = drafts.some((draft) => draft.saveId === selectedSaveId && draft.canContinue)
@@ -48,7 +51,7 @@ export function ContinueDraftScreen() {
   // 초안이 확정되는 순간이다. 그룹 때문에 시작한 흐름이면 여기서 묶어야 완료 화면이 그룹으로 이어준다.
   const continueWith = (saveId: string) => {
     bindJoinGroupToSave(saveId);
-    router.push(draftReviewBasePath(saveId));
+    router.push(withReviewReturnTo(draftReviewBasePath(saveId), returnTo));
   };
 
   return (
@@ -76,7 +79,7 @@ export function ContinueDraftScreen() {
         />
       </main>
 
-      <div className="content-container pt-ds-12 pb-ds-32">
+      <div className="content-container shrink-0 pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
           <Button variant="tertiary" onClick={exitSelection}>
             취소

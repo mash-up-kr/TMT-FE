@@ -9,6 +9,7 @@ import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { FireIcon } from "@/shared/ui/ColorIcons";
 import { AlertCircleIcon } from "@/shared/ui/Icons";
 import { useGroupJoinAfterReview } from "../../_hooks/useGroupJoinAfterReview";
+import { ReviewStepLayout } from "../ReviewStepLayout";
 
 const SHARE_NOTICE = "그룹 가입 시 작성한 리뷰는 자동으로 그룹에 공유돼요";
 const ERROR_MESSAGE = "그룹 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요";
@@ -53,7 +54,19 @@ export function GroupJoinCompleteScreen({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-gradient-to-b from-surface-celebration to-surface-primary to-39%">
-      <div className="content-container flex flex-1 flex-col gap-ds-20 pt-ds-20">
+      <ReviewStepLayout
+        className="gap-ds-20 pt-ds-20"
+        footer={
+          <ButtonStack type="horizontal">
+            <Button variant="tertiary" className="whitespace-nowrap" onClick={leaveToGroups}>
+              다른 그룹 보러가기
+            </Button>
+            <Button disabled={!isJoinable} loading={isJoining} onClick={joinGroup}>
+              그룹 가입하기
+            </Button>
+          </ButtonStack>
+        }
+      >
         <header className="flex flex-col gap-ds-8">
           <p className="flex items-center gap-ds-4 text-body-md-bold text-content-interactive-primary">
             <FireIcon className="size-ds-20 shrink-0" />
@@ -80,18 +93,7 @@ export function GroupJoinCompleteScreen({
           <AlertCircleIcon size={16} className="shrink-0" />
           {SHARE_NOTICE}
         </p>
-      </div>
-
-      <div className="content-container pt-ds-12 pb-ds-32">
-        <ButtonStack type="horizontal">
-          <Button variant="tertiary" className="whitespace-nowrap" onClick={leaveToGroups}>
-            다른 그룹 보러가기
-          </Button>
-          <Button disabled={!isJoinable} loading={isJoining} onClick={joinGroup}>
-            그룹 가입하기
-          </Button>
-        </ButtonStack>
-      </div>
+      </ReviewStepLayout>
     </div>
   );
 }
