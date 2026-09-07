@@ -48,12 +48,13 @@ export function SearchSheet({
       }
     >
       <div className="flex flex-col gap-ds-12">
+        {/* autoFocus를 되살리지 않는다. 마운트 시점 포커스는 Drawer.VirtualKeyboardProvider의
+            터치 경로를 건너뛰어, iOS가 화면을 밀어 올리며 시트 하단을 가린다. */}
         <SearchField
           value={value}
           onValueChange={onValueChange}
           placeholder={placeholder}
           aria-label={searchLabel}
-          autoFocus
         />
 
         <SearchResultArea status={status} idle={idle} persistent={persistent}>
