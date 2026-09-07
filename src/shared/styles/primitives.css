@@ -30,6 +30,9 @@
   --primitive-red-800: #b32114;
   --primitive-red-900: #881f16;
 
+  /* pink */
+  --primitive-pink-100: #ffdce2; /* gradient 전용 */
+
   /* error (red와 구분되는 Figma error 전용 램프) */
   --primitive-error-50: #feeef0;
   --primitive-error-500: #df3a45;

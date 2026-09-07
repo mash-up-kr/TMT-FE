@@ -1,7 +1,7 @@
 "use client";
 
+import { useJoinGroup } from "@/shared/hooks/useJoinGroup";
 import { useGroupDetailQueryState } from "../_hooks/useGroupDetailQueryState";
-import { useJoinGroup } from "../_hooks/useJoinGroup";
 import { useLeaveGroup } from "../_hooks/useLeaveGroup";
 import { GroupDetailView } from "./GroupDetailView";
 

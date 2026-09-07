@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { ContinueDraftSheet } from "@/shared/components/ContinueDraftSheet";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import {
   ReviewCard,
@@ -10,7 +11,7 @@ import {
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
-import { setUt2Step, useUt2Step } from "@/shared/hooks/useUt2Step";
+import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -18,6 +19,8 @@ import { ChevronLeftIcon, LeaveGroupIcon, SettingsIcon } from "@/shared/ui/Icons
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
+import { useGroupReviewEntry } from "../_hooks/useGroupReviewEntry";
+import { useGroupShareEntry } from "../_hooks/useGroupShareEntry";
 import type {
   GroupDetailViewData,
   GroupJoinAction,
@@ -58,6 +61,7 @@ export function GroupDetailView({
     },
   });
   const isNonMember = !group.isMember;
+  const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
   const reviews = useMemo(() => {
     if (reviewList.status !== "ready") {
       return [];
@@ -79,6 +83,9 @@ export function GroupDetailView({
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
   const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
   const joinPreviewData = joinPreview.status === "ready" ? joinPreview : null;
+  const shareEntry = useGroupShareEntry(group.id, {
+    enabled: isNonMember && joinPreviewData?.isJoinable === true,
+  });
 
   // ⚠️ UT2 임시 계측. 상세 진입은 2-1, 티켓이 없는 채로 가입 시트가 열리면 2-3이다.
   useUt2Step(UT2_STEPS.GROUP_DETAIL_ENTER);
@@ -89,16 +96,21 @@ export function GroupDetailView({
 
   const sheetJoinAction: GroupJoinAction = {
     ...joinAction,
+    isPending: joinAction.isPending || shareEntry.isChecking,
     onJoin: async () => {
+      // 공유할 리뷰가 있으면 가입 전에 고르게 한다. 공유는 가입 요청에 함께 실어야 하므로
+      // 가입은 그 화면이 맡고, 여기서는 아직 가입하지 않은 것으로 돌려준다.
+      if (shareEntry.hasReviewsToShare) {
+        setIsJoinSheetOpen(false);
+        router.push(ROUTES.GROUPS.JOIN(group.id));
+        return false;
+      }
+
+      // 성공·실패 안내는 useJoinGroup이 띄운다. 여기서는 시트만 정리한다.
       const didJoin = await joinAction.onJoin();
 
       if (didJoin) {
         setIsJoinSheetOpen(false);
-        // ⚠️ UT2 임시 계측.
-        setUt2Step(UT2_STEPS.GROUP_JOIN_COMPLETE);
-        toast.success("그룹 가입이 완료되었어요.");
-      } else {
-        toast.error("그룹 가입에 실패했어요. 다시 시도해 주세요.");
       }
 
       return didJoin;
@@ -196,10 +208,23 @@ export function GroupDetailView({
           <GroupTicketShortageSheet
             open={isJoinSheetOpen}
             onOpenChangeAction={setIsJoinSheetOpen}
-            onWriteReviewAction={() => router.push(ROUTES.REVIEWS.NEW)}
+            onWriteReviewAction={() => {
+              setIsJoinSheetOpen(false);
+              reviewEntry.startWriting();
+            }}
+            isWriteReviewPending={reviewEntry.isChecking}
             group={groupJoinInfo}
           />
         ))}
+
+      {isNonMember && (
+        <ContinueDraftSheet
+          open={reviewEntry.continueSheet.open}
+          onOpenChangeAction={reviewEntry.continueSheet.onOpenChange}
+          onContinueAction={reviewEntry.continueSheet.continueDraft}
+          secondaryAction={{ label: "새로 작성하기", onClick: reviewEntry.continueSheet.startNew }}
+        />
+      )}
 
       {group.isMember ? (
         <GroupLeaveModal

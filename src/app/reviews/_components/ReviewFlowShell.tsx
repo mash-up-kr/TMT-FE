@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
+import { syncJoinGroupIntent } from "@/shared/constants/reviewJoinGroup";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { GNB } from "@/shared/ui/GNB";
@@ -40,6 +41,13 @@ export function ReviewFlowShell({
   initialDraft?: ReviewDraftSnapshot;
   children: ReactNode;
 }>) {
+  // 새로 쓰기로 들어온 순간에만 판단한다. 이어쓰기는 초안에 이미 묶인 값을 그대로 쓴다.
+  useEffect(() => {
+    if (basePath === NEW_REVIEW_BASE_PATH) {
+      syncJoinGroupIntent(window.location.search);
+    }
+  }, [basePath]);
+
   return (
     <ReviewFlowBaseProvider basePath={basePath} saveId={saveId}>
       <ReviewDraftProvider initialDraft={initialDraft}>
