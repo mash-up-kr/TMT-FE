@@ -7,6 +7,8 @@ import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
 import { useReviewSave } from "../../_hooks/useReviewSave";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { mapReviewTagGroups } from "../../_utils/reviewApiMappers";
+import { useReviewFlowExit } from "../ReviewFlowShell";
+import { ReviewStepLayout } from "../ReviewStepLayout";
 import { StatusMessage } from "../StatusMessage";
 import { StepHeader } from "../StepHeader";
 import { TagGroupField } from "../TagGroupField";
@@ -19,6 +21,7 @@ export function TagsStep() {
   const hasStore = useReviewDraftGuard() !== null;
   const formConfig = useReviewFormConfig();
   const reviewSave = useReviewSave();
+  const requestExit = useReviewFlowExit();
 
   const tagGroups = mapReviewTagGroups(formConfig.data);
 
@@ -27,42 +30,41 @@ export function TagsStep() {
   }
 
   return (
-    <>
-      <div className="content-container flex flex-1 flex-col gap-ds-24 pt-ds-24">
-        <StepHeader
-          title={
-            <>
-              이번 방문,
-              <br />
-              어떤 자리였어요?
-            </>
-          }
-        />
-
-        {formConfig.isLoading && <StatusMessage>{LOADING_MESSAGE}</StatusMessage>}
-        {formConfig.isError && <StatusMessage tone="error">{ERROR_MESSAGE}</StatusMessage>}
-        {formConfig.isSuccess &&
-          tagGroups.map((group) => (
-            <TagGroupField
-              key={group.id}
-              group={group}
-              selectedTagIds={selectedTagIds}
-              onToggle={toggleTag}
-              disabled={reviewSave.isPending}
-            />
-          ))}
-      </div>
-
-      <div className="content-container pt-ds-12 pb-ds-32">
+    <ReviewStepLayout
+      className="gap-ds-24 pt-ds-24"
+      footerClassName="pb-ds-20"
+      footer={
         <ButtonStack>
-          <Button
-            loading={reviewSave.isPending}
-            onClick={() => void reviewSave.saveAndGo("rating")}
-          >
+          <Button inert={reviewSave.isPending} onClick={() => void reviewSave.saveAndGo("rating")}>
             다음
           </Button>
+          <Button variant="ghost" size="sm" onClick={requestExit}>
+            나중에 추가할게요
+          </Button>
         </ButtonStack>
-      </div>
-    </>
+      }
+    >
+      <StepHeader
+        title={
+          <>
+            이번 방문,
+            <br />
+            어떤 자리였어요?
+          </>
+        }
+      />
+
+      {formConfig.isLoading && <StatusMessage>{LOADING_MESSAGE}</StatusMessage>}
+      {formConfig.isError && <StatusMessage tone="error">{ERROR_MESSAGE}</StatusMessage>}
+      {formConfig.isSuccess &&
+        tagGroups.map((group) => (
+          <TagGroupField
+            key={group.id}
+            group={group}
+            selectedTagIds={selectedTagIds}
+            onToggle={toggleTag}
+          />
+        ))}
+    </ReviewStepLayout>
   );
 }

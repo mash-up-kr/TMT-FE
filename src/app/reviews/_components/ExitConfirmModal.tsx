@@ -29,10 +29,10 @@ export function ExitConfirmModal({
       showClose={false}
       footer={
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" disabled={isPending} onClick={() => onOpenChange(false)}>
+          <Button variant="tertiary" inert={isPending} onClick={() => onOpenChange(false)}>
             계속 작성하기
           </Button>
-          <Button loading={isPending} onClick={() => void onExit()}>
+          <Button inert={isPending} onClick={() => void onExit()}>
             저장하고 나가기
           </Button>
         </ButtonStack>

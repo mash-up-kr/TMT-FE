@@ -14,6 +14,7 @@ import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { mapAddressSearchResults, mapStoreSearchResults } from "../../_utils/reviewApiMappers";
 import { isReviewStoreComplete } from "../../_utils/reviewStore";
 import { toSearchStatus } from "../../_utils/searchStatus";
+import { ReviewStepLayout } from "../ReviewStepLayout";
 import { StepHeader } from "../StepHeader";
 import { AddressSearchSheet } from "../sheets/AddressSearchSheet";
 import { StoreSearchSheet } from "../sheets/StoreSearchSheet";
@@ -72,7 +73,20 @@ export function StoreStep() {
 
   return (
     <>
-      <div className="content-container flex flex-1 flex-col gap-ds-24 pt-ds-24">
+      <ReviewStepLayout
+        className="gap-ds-24 pt-ds-24"
+        footer={
+          <ButtonStack>
+            <Button
+              disabled={!isReviewStoreComplete(store)}
+              inert={reviewSave.isPending}
+              onClick={() => void reviewSave.saveAndGo("photos")}
+            >
+              다음
+            </Button>
+          </ButtonStack>
+        }
+      >
         <StepHeader
           required
           title={
@@ -107,19 +121,7 @@ export function StoreStep() {
             className="cursor-pointer"
           />
         )}
-      </div>
-
-      <div className="content-container pt-ds-12 pb-ds-32">
-        <ButtonStack>
-          <Button
-            disabled={!isReviewStoreComplete(store)}
-            loading={reviewSave.isPending}
-            onClick={() => void reviewSave.saveAndGo("photos")}
-          >
-            다음
-          </Button>
-        </ButtonStack>
-      </div>
+      </ReviewStepLayout>
 
       <StoreSearchSheet
         open={storeSheet.open}

@@ -76,7 +76,7 @@ export function ContinueDraftScreen() {
         />
       </main>
 
-      <div className="content-container pt-ds-12 pb-ds-32">
+      <div className="content-container shrink-0 pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
           <Button variant="tertiary" onClick={exitSelection}>
             취소

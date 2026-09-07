@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { syncJoinGroupIntent } from "@/shared/constants/reviewJoinGroup";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
@@ -21,8 +21,22 @@ import {
 import { useReviewSave } from "../_hooks/useReviewSave";
 import type { ReviewDraftSnapshot } from "../_model/draft";
 import { ReviewDraftProvider, useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { ReviewFlowBaseProvider } from "../_stores/ReviewFlowBaseProvider";
+import { ReviewFlowBaseProvider, useReviewFlowSaveId } from "../_stores/ReviewFlowBaseProvider";
 import { ExitConfirmModal } from "./ExitConfirmModal";
+
+// 이탈 확인 모달은 셸이 하나만 들고 있다. 사진 제외 문구 분기가 셸의 초안 상태에 붙어 있어,
+// 단계마다 모달을 따로 띄우면 그 판단이 흩어진다. 단계는 여는 것만 요청한다.
+const ReviewFlowExitContext = createContext<(() => void) | null>(null);
+
+export function useReviewFlowExit() {
+  const value = useContext(ReviewFlowExitContext);
+
+  if (value === null) {
+    throw new Error("useReviewFlowExit는 ReviewFlowShell 안에서만 쓸 수 있다.");
+  }
+
+  return value;
+}
 
 function findStepIndex(basePath: string, pathname: string) {
   const index = REVIEW_STEPS.findIndex((segment) => pathname === reviewStepPath(basePath, segment));
@@ -64,6 +78,7 @@ function ReviewFlowContent({
   const pathname = usePathname();
   const router = useRouter();
   const [exitOpen, setExitOpen] = useState(false);
+  const saveId = useReviewFlowSaveId();
   const { photos, attachedPhotoCount } = useReviewDraft();
   const reviewSave = useReviewSave();
 
@@ -84,8 +99,10 @@ function ReviewFlowContent({
   // 홈으로 replace해야 layout이 내려가면서 초안과 미리보기 URL도 함께 정리된다.
   const exitFlow = () => router.replace(REVIEW_FLOW_EXIT_PATH);
 
-  const handleClose = () => {
-    if (isComplete) {
+  // 첫 단계에서는 아직 초안이 없다(초안은 다음 단계로 넘어갈 때 처음 만들어진다).
+  // 저장할 것이 없는데 "저장하고 나가기"를 묻는 셈이라 확인 없이 바로 나간다.
+  const requestExit = () => {
+    if (saveId === null) {
       exitFlow();
       return;
     }
@@ -93,27 +110,28 @@ function ReviewFlowContent({
     setExitOpen(true);
   };
 
+  const handleClose = () => {
+    if (isComplete) {
+      exitFlow();
+      return;
+    }
+
+    requestExit();
+  };
+
   return (
-    <>
+    <ReviewFlowExitContext.Provider value={requestExit}>
       <GNB
         title={isComplete ? "완료" : "리뷰 쓰기"}
         left={
           canGoBack && (
-            <IconButton
-              aria-label="이전 단계로"
-              disabled={reviewSave.isPending}
-              onClick={() => router.back()}
-            >
+            <IconButton aria-label="이전 단계로" onClick={() => router.back()}>
               <ChevronLeftIcon />
             </IconButton>
           )
         }
         right={
-          <IconButton
-            aria-label={isComplete ? "닫기" : "리뷰 작성 닫기"}
-            disabled={reviewSave.isPending}
-            onClick={handleClose}
-          >
+          <IconButton aria-label={isComplete ? "닫기" : "리뷰 작성 닫기"} onClick={handleClose}>
             <CancelIcon thick />
           </IconButton>
         }
@@ -121,7 +139,7 @@ function ReviewFlowContent({
 
       <main className="flex min-h-0 flex-1 flex-col">
         {completedSteps !== null && (
-          <div className="content-container pt-ds-20">
+          <div className="content-container shrink-0 pt-ds-20">
             <Progress
               value={completedSteps}
               max={REVIEW_STEP_COUNT}
@@ -139,6 +157,6 @@ function ReviewFlowContent({
         isPending={reviewSave.isPending}
         excludesPhotos={photos.length > 0 && attachedPhotoCount === 0}
       />
-    </>
+    </ReviewFlowExitContext.Provider>
   );
 }
