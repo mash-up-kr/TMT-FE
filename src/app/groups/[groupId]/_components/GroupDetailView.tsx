@@ -62,7 +62,6 @@ export function GroupDetailView({
   });
   const isNonMember = !group.isMember;
   const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
-  const shareEntry = useGroupShareEntry(group.id, { enabled: isNonMember && group.isJoinable });
   const reviews = useMemo(() => {
     if (reviewList.status !== "ready") {
       return [];
@@ -84,6 +83,9 @@ export function GroupDetailView({
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
   const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
   const joinPreviewData = joinPreview.status === "ready" ? joinPreview : null;
+  const shareEntry = useGroupShareEntry(group.id, {
+    enabled: isNonMember && joinPreviewData?.isJoinable === true,
+  });
 
   // ⚠️ UT2 임시 계측. 상세 진입은 2-1, 티켓이 없는 채로 가입 시트가 열리면 2-3이다.
   useUt2Step(UT2_STEPS.GROUP_DETAIL_ENTER);

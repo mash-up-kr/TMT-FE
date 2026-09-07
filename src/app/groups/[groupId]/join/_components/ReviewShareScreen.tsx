@@ -11,8 +11,9 @@ import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Checkbox, CheckboxGroup } from "@/shared/ui/Checkbox";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, LoadingIcon } from "@/shared/ui/Icons";
+import { CancelIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
+import { Spinner } from "@/shared/ui/Spinner";
 import { cn } from "@/shared/utils/cn";
 import { useReviewSharePages } from "../_hooks/useReviewSharePages";
 import type { ReviewShareItem } from "../_model/reviewShare";
@@ -136,7 +137,7 @@ function ReviewShareList({
   if (isPending) {
     return (
       <div className="flex justify-center py-ds-48">
-        <LoadingIcon className="animate-spin text-icon-tertiary" />
+        <Spinner />
       </div>
     );
   }
