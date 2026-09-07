@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
@@ -28,8 +28,7 @@ export function NearbyScreen() {
   const curationTagId = searchParams.get("curation");
 
   return (
-    <BottomNavScreenLayout
-      activeTab="feed"
+    <ScreenLayout
       header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       floating={
         <ViewSwitchButton
@@ -58,7 +57,7 @@ export function NearbyScreen() {
         </div>
         <NearbyBody view={view} position={position} query={query} curationTagId={curationTagId} />
       </div>
-    </BottomNavScreenLayout>
+    </ScreenLayout>
   );
 }
 

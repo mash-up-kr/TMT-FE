@@ -1,4 +1,6 @@
-export const PROFILE_TABS = ["reviews", "groups", "favorites"] as const;
+import { ROUTES } from "@/shared/constants/routes";
+
+export const PROFILE_TABS = ROUTES.PROFILE.ME_TABS;
 
 export type ProfileTab = (typeof PROFILE_TABS)[number];
 

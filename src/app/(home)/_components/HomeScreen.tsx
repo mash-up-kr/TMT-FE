@@ -1,6 +1,6 @@
 "use client";
 
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { GNB } from "@/shared/ui/GNB";
@@ -21,17 +21,17 @@ export function HomeScreen() {
 
   if (isPending) {
     return (
-      <BottomNavScreenLayout activeTab="home" header={header}>
+      <ScreenLayout header={header}>
         <output className="flex flex-1 items-center justify-center">
           <LoadingIcon className="animate-spin text-icon-tertiary" />
         </output>
-      </BottomNavScreenLayout>
+      </ScreenLayout>
     );
   }
 
   if (isError) {
     return (
-      <BottomNavScreenLayout activeTab="home" header={header}>
+      <ScreenLayout header={header}>
         <div role="alert" className="flex flex-1 flex-col items-center justify-center gap-ds-12">
           <p className="text-body-md-regular text-content-secondary">
             홈 정보를 불러오지 못했어요.
@@ -44,12 +44,12 @@ export function HomeScreen() {
             다시 시도
           </button>
         </div>
-      </BottomNavScreenLayout>
+      </ScreenLayout>
     );
   }
 
   return (
-    <BottomNavScreenLayout activeTab="home" header={header}>
+    <ScreenLayout header={header}>
       <HomeView
         summary={data}
         position={position}
@@ -58,6 +58,6 @@ export function HomeScreen() {
         reviews={favorite.reviews}
         favoriteAction={favorite.favoriteAction}
       />
-    </BottomNavScreenLayout>
+    </ScreenLayout>
   );
 }

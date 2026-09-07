@@ -4,7 +4,6 @@ export type ToastType = "success" | "warning" | "error";
 
 export type ToastData = {
   type: ToastType;
-  bottomInset?: number;
 };
 
 /**
@@ -22,7 +21,6 @@ export const toastManager = Toast.createToastManager<ToastData>();
 
 type ToastOptions = Readonly<{
   description?: string;
-  bottomInset?: number;
 }>;
 
 type ToastContent = string | ToastOptions;
