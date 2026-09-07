@@ -20,8 +20,10 @@ type HeadingRotation = {
   /**
    * 지정한 문구를 한 번 보여준 뒤 다시 순환으로 돌아간다.
    * `holdOut`(초)만큼 비운 채로 더 머문 뒤에 올라온다.
+   *
+   * 지금 문구를 기준으로 고르려면 함수를 넘긴다 — `(current) => current + 1`.
    */
-  announce: (index: number, holdOut?: number) => void;
+  announce: (index: number | ((current: number) => number), holdOut?: number) => void;
 };
 
 /**
@@ -123,7 +125,7 @@ export function useHeadingRotation(
    * 비우고 `holdOut`만큼 기다린 뒤 새 문구를 올리고, 끝나면 순환으로 돌아간다.
    */
   const announce = useCallback(
-    (target: number, holdOut = 0) => {
+    (target: number | ((current: number) => number), holdOut = 0) => {
       const element = ref.current;
 
       if (!element) {

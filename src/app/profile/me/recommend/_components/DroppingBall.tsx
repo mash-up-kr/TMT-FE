@@ -5,10 +5,11 @@ import gsap from "gsap";
 import { useRef } from "react";
 import { BALL_DROP } from "../_constants/motion";
 import type { FoodCategory } from "../_model/recommend";
-import { FoodCategorySticker } from "./FoodCategorySticker";
+import { StoreSticker } from "./StoreSticker";
 
 type DroppingBallProps = Readonly<{
-  category: FoodCategory;
+  thumbnailUrl: string | null;
+  category: FoodCategory | null;
   /** 냄비 뒤로 사라진 뒤. 여기서 DOM에서 걷어낸다. */
   onSettle: () => void;
 }>;
@@ -22,7 +23,7 @@ type DroppingBallProps = Readonly<{
  * 마운트되면 스스로 떨어지고 끝나면 스스로 물러난다. 연타로 여러 개가 동시에 떨어져도
  * 서로 간섭하지 않게 하려는 것이다.
  */
-export function DroppingBall({ category, onSettle }: DroppingBallProps) {
+export function DroppingBall({ thumbnailUrl, category, onSettle }: DroppingBallProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useGSAP(
@@ -63,7 +64,7 @@ export function DroppingBall({ category, onSettle }: DroppingBallProps) {
       aria-hidden="true"
       // 가운데 정렬을 transform으로 하면 GSAP이 y를 쓸 때 통째로 덮어써 좌우가 틀어진다.
       // margin으로 잡아두면 transform은 낙하에만 쓰인다.
-      className="invisible absolute left-1/2 flex items-center justify-center rounded-ds-full bg-surface-primary"
+      className="invisible absolute left-1/2 flex items-center justify-center overflow-hidden rounded-ds-full bg-surface-primary"
       style={{
         top: BALL_DROP.landing,
         marginLeft: -BALL_DROP.size / 2,
@@ -71,7 +72,7 @@ export function DroppingBall({ category, onSettle }: DroppingBallProps) {
         height: BALL_DROP.size,
       }}
     >
-      <FoodCategorySticker category={category} size={BALL_DROP.size} />
+      <StoreSticker thumbnailUrl={thumbnailUrl} category={category} size={BALL_DROP.size} />
     </span>
   );
 }

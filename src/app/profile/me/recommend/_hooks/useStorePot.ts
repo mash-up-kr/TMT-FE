@@ -10,8 +10,17 @@ export const MAX_PICKED = 5;
 /** 추천을 받으려면 최소 이만큼 담아야 한다. 시안 토스트가 이 값을 말한다. */
 export const MIN_PICKED = 2;
 
-/** 지금 냄비로 떨어지고 있는 공. 연타하면 여러 개가 동시에 떨어진다. */
-export type FallingBall = { id: number; category: FoodCategory };
+/**
+ * 지금 냄비로 떨어지고 있는 공. 연타하면 여러 개가 동시에 떨어진다.
+ *
+ * 담긴 매장이 아니라 그림을 들고 간다. 공은 떨어지는 동안에만 살아 있어서, 목록이 갱신돼
+ * 그 매장이 사라져도 이미 출발한 공은 제 그림으로 끝까지 내려가야 한다.
+ */
+export type FallingBall = {
+  id: number;
+  thumbnailUrl: string | null;
+  category: FoodCategory | null;
+};
 
 /**
  * 냄비에 담긴 매장과, 담는 순간 떨어지는 공을 함께 소유한다.
@@ -43,7 +52,10 @@ export function useStorePot() {
       const id = nextBallId.current;
 
       setPicked([...picked, store.placeId]);
-      setFalling((current) => [...current, { id, category: store.category }]);
+      setFalling((current) => [
+        ...current,
+        { id, thumbnailUrl: store.thumbnailUrl, category: store.category },
+      ]);
 
       return true;
     },

@@ -10,9 +10,9 @@ import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
+import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { toast } from "@/shared/ui/Toast";
 import { LAYOUT, SCREEN_BACKGROUND } from "../_constants/appearance";
-import { DUMMY_STORES } from "../_constants/dummyStores";
 import { HEADINGS } from "../_constants/headings";
 import { BALL_DROP } from "../_constants/motion";
 import {
@@ -23,6 +23,7 @@ import {
 } from "../_hooks/useCookSequence";
 import { useHeadingRotation } from "../_hooks/useHeadingRotation";
 import { useRecommendEntrance } from "../_hooks/useRecommendEntrance";
+import { useReviewedStores } from "../_hooks/useReviewedStores";
 import { MIN_PICKED, useStorePot } from "../_hooks/useStorePot";
 import type { RecommendResult as RecommendResultModel, RecommendStore } from "../_model/recommend";
 import { toRecommendResult } from "../_utils/recommendMapper";
@@ -34,8 +35,8 @@ import { RecommendResult } from "./RecommendResult";
 import { StirringLadle } from "./StirringLadle";
 import { StoreGrid } from "./StoreGrid";
 
-/** 담은 직후 한 번 보여주는 문구. */
-const ADDED_HEADING = 1;
+/** 담은 직후에는 순환의 다음 문구로 넘어간다. 매번 같은 문구면 담을 때마다 같은 말을 반복한다. */
+const nextHeading = (current: number) => (current + 1) % HEADINGS.length;
 
 /**
  * 로딩 화면의 최소 체류 시간. 응답이 더 빨리 와도 이만큼은 머문다.
@@ -57,6 +58,7 @@ export function RecommendScreen() {
     announce,
   } = useHeadingRotation(heading, HEADINGS.length);
   const { picked, falling, toggle, settleBall } = useStorePot();
+  const reviewed = useReviewedStores();
 
   const [phase, setPhase] = useState<RecommendPhase>("picking");
   /** 로딩 화면에 최소 시간만큼 머물렀는지. 응답이 먼저 와도 이게 켜져야 결과로 간다. */
@@ -139,7 +141,7 @@ export function RecommendScreen() {
       return;
     }
 
-    announce(ADDED_HEADING, BALL_DROP.headingRest);
+    announce(nextHeading, BALL_DROP.headingRest);
     startIdle();
   }, [announce, startIdle]);
 
@@ -159,8 +161,8 @@ export function RecommendScreen() {
   }, [falling.length]);
 
   const handleRecommend = useCallback(() => {
+    // 버튼이 이미 막고 있다. 연출을 시작해 놓고 요청이 거절당하는 경우를 없애려는 잠금이다.
     if (picked.length < MIN_PICKED) {
-      toast.error(`${MIN_PICKED}곳 이상의 매장을 담아주세요`);
       return;
     }
 
@@ -169,16 +171,17 @@ export function RecommendScreen() {
     // 멈추는 것으로는 모자란다. 제목에 예약이 남아 있으면 요리하는 도중에 뒤늦게 되살아난다.
     // 담기 단계로 돌아올 일이 없으므로 여기서 아예 죽인다. 사라지는 연출은 cook이 맡는다.
     // 요청은 연출과 함께 출발한다. 연출이 끝날 때쯤이면 응답도 와 있다.
-    recommend.mutate();
+    recommend.mutate({ data: { placeIds: [...picked] } });
 
     stopHeading();
     stopIdle();
     setPhase("cooking");
     cook.run();
-  }, [picked.length, stopHeading, stopIdle, cook, recommend]);
+  }, [picked, stopHeading, stopIdle, cook, recommend]);
 
   const isPicking = phase === "picking";
   const showsGrid = isPicking || phase === "cooking";
+  const canRecommend = isPicking && picked.length >= MIN_PICKED;
   /**
    * 담기 화면의 제목·냄비·버튼은 요리까지만 자리를 지킨다.
    *
@@ -208,86 +211,103 @@ export function RecommendScreen() {
 
   return (
     <ScreenLayout header={header} style={{ backgroundImage: SCREEN_BACKGROUND }}>
-      <div
-        ref={body}
-        // flex-1(basis 0)을 주면 내용이 길어도 늘어나지 않아 잘린다. 바닥은 min-h-full로만 깐다.
-        // 어느 단계든 내용은 화면 세로 가운데에 선다. 간격은 시안 실측값을 그대로 쓴다.
-        className="content-container flex min-h-full flex-col items-center justify-center"
-        style={{ paddingTop: LAYOUT.edgeInset, paddingBottom: LAYOUT.edgeInset }}
-      >
-        {showsPot ? (
-          <>
-            {/*
+      {/* 연출의 스코프이자 바닥 버튼까지 품는 틀. 버튼도 요리할 때 함께 사라진다. */}
+      <div ref={body} className="flex min-h-full flex-col">
+        <div
+          // flex-1(basis 0)을 주면 내용이 길어도 늘어나지 않아 잘린다. 바닥은 min-h-full로만 깐다.
+          // 어느 단계든 내용은 남은 높이의 가운데에 선다. 간격은 시안 실측값을 그대로 쓴다.
+          className="content-container flex flex-1 flex-col items-center justify-center"
+          style={{ paddingTop: LAYOUT.edgeInset, paddingBottom: LAYOUT.edgeInset }}
+        >
+          {showsPot ? (
+            <>
+              {/*
           문구는 대기 중 번갈아 바뀐다. 세 문구 모두 시안 프레임 폭 안에서 한 줄이라
           nowrap으로 고정해 교체할 때 높이가 흔들리지 않게 한다.
         */}
-            <p
-              ref={heading}
-              data-entrance="title"
-              data-cook-fade
-              className="whitespace-nowrap text-center text-heading-md text-content-primary"
-            >
-              {HEADINGS[headingIndex]}
-            </p>
-
-            <div
-              className="flex flex-col items-center"
-              style={{ marginTop: LAYOUT.titleToPot, gap: LAYOUT.potToButton }}
-            >
-              <PotIllustration
-                size={LAYOUT.potSize}
-                behind={
-                  <>
-                    {falling.map((ball) => (
-                      <DroppingBall
-                        key={ball.id}
-                        category={ball.category}
-                        onSettle={() => settleBall(ball.id)}
-                      />
-                    ))}
-                    {stirId > 0 ? <StirringLadle key={stirId} onDone={handleStirDone} /> : null}
-                  </>
-                }
-                above={
-                  phase === "cooking" ? (
-                    <>
-                      <PepperShaker side="right" delay={PEPPER_RIGHT_DELAY} />
-                      <PepperShaker side="left" delay={PEPPER_LEFT_DELAY} />
-                    </>
-                  ) : null
-                }
-              />
-              <Button
-                data-entrance="button"
+              <p
+                ref={heading}
+                data-entrance="title"
                 data-cook-fade
-                variant="tertiary"
-                size="md"
-                disabled={!isPicking}
-                onClick={handleRecommend}
+                className="whitespace-nowrap text-center text-heading-md text-content-primary"
               >
-                매장 추천받기
-              </Button>
-            </div>
-          </>
-        ) : null}
+                {HEADINGS[headingIndex]}
+              </p>
 
-        {phase === "loading" ? <LoadingCaption /> : null}
+              <div className="flex flex-col items-center" style={{ marginTop: LAYOUT.titleToPot }}>
+                <PotIllustration
+                  size={LAYOUT.potSize}
+                  behind={
+                    <>
+                      {falling.map((ball) => (
+                        <DroppingBall
+                          key={ball.id}
+                          thumbnailUrl={ball.thumbnailUrl}
+                          category={ball.category}
+                          onSettle={() => settleBall(ball.id)}
+                        />
+                      ))}
+                      {stirId > 0 ? <StirringLadle key={stirId} onDone={handleStirDone} /> : null}
+                    </>
+                  }
+                  above={
+                    phase === "cooking" ? (
+                      <>
+                        <PepperShaker side="right" delay={PEPPER_RIGHT_DELAY} />
+                        <PepperShaker side="left" delay={PEPPER_LEFT_DELAY} />
+                      </>
+                    ) : null
+                  }
+                />
+              </div>
+            </>
+          ) : null}
 
-        {phase === "result" && result ? (
-          <RecommendResult
-            result={result}
-            onOpenDetail={() => router.push(placeDetailPath(result.placeId))}
-          />
-        ) : null}
+          {phase === "loading" ? <LoadingCaption /> : null}
 
-        {showsGrid ? (
-          <div data-cook-fade className="w-full" style={{ marginTop: LAYOUT.buttonToGrid }}>
-            <StoreGrid
-              stores={DUMMY_STORES}
-              picked={picked}
-              onToggle={handleToggle}
-              onCreateReview={() => router.push(reviewEntryPath)}
+          {phase === "result" && result ? (
+            <RecommendResult
+              result={result}
+              onOpenDetail={() => router.push(placeDetailPath(result.placeId))}
             />
+          ) : null}
+
+          {showsGrid ? (
+            <div data-cook-fade className="w-full" style={{ marginTop: LAYOUT.potToGrid }}>
+              {/*
+              불러오는 동안은 빈 판을 그대로 둔다. 판이 사라졌다 돌아오면 진입 연출이 끊긴다.
+              실패는 화면에 남아 다시 시도한다 — 추천 실패와 달리 아직 아무 연출도 시작하지 않았다.
+            */}
+              {reviewed.isError ? (
+                <RetryNotice
+                  message="리뷰한 매장을 불러오지 못했어요"
+                  onRetry={() => void reviewed.refetch()}
+                />
+              ) : (
+                <StoreGrid
+                  stores={reviewed.stores}
+                  picked={picked}
+                  onToggle={handleToggle}
+                  onCreateReview={() => router.push(reviewEntryPath)}
+                />
+              )}
+            </div>
+          ) : null}
+        </div>
+
+        {/* 버튼은 덩이에서 빠져 화면 바닥에 선다. 2곳을 담기 전에는 비활성이라 토스트가 없다. */}
+        {showsPot ? (
+          <div className="content-container shrink-0 pt-ds-12 pb-ds-32">
+            <Button
+              data-entrance="button"
+              data-cook-fade
+              variant="secondary"
+              className="w-full"
+              disabled={!canRecommend}
+              onClick={handleRecommend}
+            >
+              매장 추천받기
+            </Button>
           </div>
         ) : null}
       </div>
