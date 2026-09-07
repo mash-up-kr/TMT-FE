@@ -7,6 +7,7 @@ import {
   continueDraftForGroupJoinPath,
   newReviewForGroupJoinPath,
 } from "@/shared/constants/reviewJoinGroup";
+import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { isContinuableSave } from "@/shared/utils/continuableSave";
 
 type GroupReviewEntryOptions = Readonly<{
@@ -26,6 +27,7 @@ type GroupReviewEntryOptions = Readonly<{
  */
 export function useGroupReviewEntry(groupId: string, { enabled }: GroupReviewEntryOptions) {
   const router = useRouter();
+  const returnTo = useReviewReturnTo();
   const saves = useListSaves(undefined, { query: { enabled } });
   const [isContinueSheetOpen, setIsContinueSheetOpen] = useState(false);
 
@@ -33,7 +35,7 @@ export function useGroupReviewEntry(groupId: string, { enabled }: GroupReviewEnt
 
   const startNew = () => {
     setIsContinueSheetOpen(false);
-    router.push(newReviewForGroupJoinPath(groupId));
+    router.push(newReviewForGroupJoinPath(groupId, returnTo));
   };
 
   const startWriting = () => {
@@ -46,7 +48,7 @@ export function useGroupReviewEntry(groupId: string, { enabled }: GroupReviewEnt
 
   const continueDraft = () => {
     setIsContinueSheetOpen(false);
-    router.push(continueDraftForGroupJoinPath(groupId));
+    router.push(continueDraftForGroupJoinPath(groupId, returnTo));
   };
 
   return {

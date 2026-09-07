@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { syncJoinGroupIntent } from "@/shared/constants/reviewJoinGroup";
 import { UT2_STEPS } from "@/shared/constants/ut2";
@@ -9,10 +9,10 @@ import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Progress } from "@/shared/ui/Progress";
+import { getReviewReturnTo } from "@/shared/utils/reviewNavigation";
 import {
   DRAFT_REVIEW_FIRST_STEP,
   NEW_REVIEW_BASE_PATH,
-  REVIEW_FLOW_EXIT_PATH,
   REVIEW_STEP_COUNT,
   REVIEW_STEPS,
   reviewCompletePath,
@@ -20,12 +20,16 @@ import {
 } from "../_constants/steps";
 import { useReviewSave } from "../_hooks/useReviewSave";
 import type { ReviewDraftSnapshot } from "../_model/draft";
-import { ReviewDraftProvider, useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { ReviewFlowBaseProvider, useReviewFlowSaveId } from "../_stores/ReviewFlowBaseProvider";
+import { ReviewDraftProvider } from "../_stores/ReviewDraftProvider";
+import {
+  ReviewFlowBaseProvider,
+  useReviewFlowReturnTo,
+  useReviewFlowSaveId,
+} from "../_stores/ReviewFlowBaseProvider";
 import { ExitConfirmModal } from "./ExitConfirmModal";
 
-// 이탈 확인 모달은 셸이 하나만 들고 있다. 사진 제외 문구 분기가 셸의 초안 상태에 붙어 있어,
-// 단계마다 모달을 따로 띄우면 그 판단이 흩어진다. 단계는 여는 것만 요청한다.
+// 이탈 확인 모달은 셸이 하나만 들고 있다. X 버튼과 "나중에 추가할게요"가 같은 흐름이라
+// 확인 UI가 하나여야 동작이 갈리지 않는다. 단계는 여는 것만 요청한다.
 const ReviewFlowExitContext = createContext<(() => void) | null>(null);
 
 export function useReviewFlowExit() {
@@ -60,6 +64,9 @@ export function ReviewFlowShell({
   initialDraft?: ReviewDraftSnapshot;
   children: ReactNode;
 }>) {
+  const searchParams = useSearchParams();
+  const returnTo = getReviewReturnTo(searchParams);
+
   // 새로 쓰기로 들어온 순간에만 판단한다. 이어쓰기는 초안에 이미 묶인 값을 그대로 쓴다.
   useEffect(() => {
     if (basePath === NEW_REVIEW_BASE_PATH) {
@@ -68,7 +75,7 @@ export function ReviewFlowShell({
   }, [basePath]);
 
   return (
-    <ReviewFlowBaseProvider basePath={basePath} saveId={saveId}>
+    <ReviewFlowBaseProvider basePath={basePath} saveId={saveId} returnTo={returnTo}>
       <ReviewDraftProvider initialDraft={initialDraft}>
         <ReviewFlowContent basePath={basePath}>{children}</ReviewFlowContent>
       </ReviewDraftProvider>
@@ -83,8 +90,8 @@ function ReviewFlowContent({
   const pathname = usePathname();
   const router = useRouter();
   const [exitOpen, setExitOpen] = useState(false);
+  const returnTo = useReviewFlowReturnTo();
   const saveId = useReviewFlowSaveId();
-  const { photos, attachedPhotoCount } = useReviewDraft();
   const reviewSave = useReviewSave();
 
   const completedSteps = findStepIndex(basePath, pathname);
@@ -101,8 +108,8 @@ function ReviewFlowContent({
   );
 
   // back()은 단계마다 쌓인 히스토리를 한 칸 되돌릴 뿐이라 플로우 밖으로 나가지 못한다.
-  // 홈으로 replace해야 layout이 내려가면서 초안과 미리보기 URL도 함께 정리된다.
-  const exitFlow = () => router.replace(REVIEW_FLOW_EXIT_PATH);
+  // 진입 직전 화면으로 replace해야 리뷰 플로우의 단계 URL이 히스토리에 남지 않는다.
+  const exitFlow = () => router.replace(returnTo);
 
   // 첫 단계에서는 아직 초안이 없다(초안은 다음 단계로 넘어갈 때 처음 만들어진다).
   // 저장할 것이 없는데 "저장하고 나가기"를 묻는 셈이라 확인 없이 바로 나간다.
@@ -160,7 +167,6 @@ function ReviewFlowContent({
         onOpenChange={setExitOpen}
         onExit={reviewSave.saveAndExit}
         isPending={reviewSave.isPending}
-        excludesPhotos={photos.length > 0 && attachedPhotoCount === 0}
       />
     </ReviewFlowExitContext.Provider>
   );

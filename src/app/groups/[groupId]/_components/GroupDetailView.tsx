@@ -11,6 +11,7 @@ import {
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
@@ -62,6 +63,7 @@ export function GroupDetailView({
   });
   const isNonMember = !group.isMember;
   const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
+  const reviewEntryPath = useReviewEntryPath();
   const reviews = useMemo(() => {
     if (reviewList.status !== "ready") {
       return [];
@@ -240,7 +242,7 @@ export function GroupDetailView({
           onOpenChangeAction={handleFirstReviewSheetOpenChange}
           onWriteReviewAction={() => {
             handleFirstReviewSheetOpenChange(false);
-            router.push(ROUTES.REVIEWS.NEW);
+            router.push(reviewEntryPath);
           }}
         />
       ) : null}

@@ -1,14 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
-import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon } from "@/shared/ui/Icons";
+import { getReviewReturnTo } from "@/shared/utils/reviewNavigation";
 import { draftReviewBasePath } from "../_constants/steps";
 import { isResumableSaveDetail, mapSaveDetailToDraft } from "../_utils/reviewApiMappers";
 import { ReviewFlowShell } from "./ReviewFlowShell";
@@ -62,7 +62,8 @@ export function DraftReviewFlow({
 
 function UnavailableDraft({ message }: Readonly<{ message: string }>) {
   const router = useRouter();
-  const exit = () => router.replace(ROUTES.PROFILE.ME_REVIEWS);
+  const returnTo = getReviewReturnTo(useSearchParams());
+  const exit = () => router.replace(returnTo);
 
   return (
     <>

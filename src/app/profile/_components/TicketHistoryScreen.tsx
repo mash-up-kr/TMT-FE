@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { ROUTES } from "@/shared/constants/routes";
+import { useReviewEntryPath, useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
@@ -15,6 +16,8 @@ import { TicketHistoryList } from "./TicketHistoryList";
 export function TicketHistoryScreen() {
   const router = useRouter();
   const history = useTicketHistory();
+  const reviewEntryPath = useReviewEntryPath();
+  const returnTo = useReviewReturnTo();
 
   const header = (
     <GNB
@@ -41,8 +44,8 @@ export function TicketHistoryScreen() {
       {history.data ? (
         <TicketHistoryList
           items={history.data.items}
-          getSaveHref={toSaveHref}
-          writeReviewHref={ROUTES.REVIEWS.NEW}
+          getSaveHref={(saveId) => toSaveHref(saveId, returnTo)}
+          writeReviewHref={reviewEntryPath}
         />
       ) : (
         <ProfileQueryFallback query={history} errorMessage="티켓 이력을 불러오지 못했어요" />

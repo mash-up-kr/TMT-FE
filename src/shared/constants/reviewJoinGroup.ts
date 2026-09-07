@@ -1,3 +1,4 @@
+import { withReviewReturnTo } from "../utils/reviewNavigation";
 import { ROUTES } from "./routes";
 
 /**
@@ -19,13 +20,19 @@ const STORAGE_KEY = "review:joinGroup";
 type JoinGroupIntent = Readonly<{ groupId: string; saveId: string | null }>;
 
 /** 그룹 상세에서 새 리뷰 작성으로 보낼 때 쓴다. */
-export function newReviewForGroupJoinPath(groupId: string) {
-  return `${ROUTES.REVIEWS.NEW}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`;
+export function newReviewForGroupJoinPath(groupId: string, returnTo: string) {
+  return withReviewReturnTo(
+    `${ROUTES.REVIEWS.NEW}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`,
+    returnTo,
+  );
 }
 
 /** 그룹 상세에서 쓰다 만 리뷰를 고르는 화면으로 보낼 때 쓴다. */
-export function continueDraftForGroupJoinPath(groupId: string) {
-  return `${ROUTES.REVIEWS.DRAFTS}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`;
+export function continueDraftForGroupJoinPath(groupId: string, returnTo: string) {
+  return withReviewReturnTo(
+    `${ROUTES.REVIEWS.DRAFTS}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`,
+    returnTo,
+  );
 }
 
 function read(): JoinGroupIntent | null {

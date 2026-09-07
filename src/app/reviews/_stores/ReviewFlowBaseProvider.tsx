@@ -5,6 +5,7 @@ import { createContext, type ReactNode, useContext } from "react";
 type ReviewFlowBaseContextValue = {
   basePath: string;
   saveId: string | null;
+  returnTo: string;
 };
 
 const ReviewFlowBaseContext = createContext<ReviewFlowBaseContextValue | null>(null);
@@ -12,10 +13,16 @@ const ReviewFlowBaseContext = createContext<ReviewFlowBaseContextValue | null>(n
 export function ReviewFlowBaseProvider({
   basePath,
   saveId = null,
+  returnTo,
   children,
-}: Readonly<{ basePath: string; saveId?: string | null; children: ReactNode }>) {
+}: Readonly<{
+  basePath: string;
+  saveId?: string | null;
+  returnTo: string;
+  children: ReactNode;
+}>) {
   return (
-    <ReviewFlowBaseContext.Provider value={{ basePath, saveId }}>
+    <ReviewFlowBaseContext.Provider value={{ basePath, saveId, returnTo }}>
       {children}
     </ReviewFlowBaseContext.Provider>
   );
@@ -39,4 +46,14 @@ export function useReviewFlowSaveId() {
   }
 
   return value.saveId;
+}
+
+export function useReviewFlowReturnTo() {
+  const value = useContext(ReviewFlowBaseContext);
+
+  if (value === null) {
+    throw new Error("useReviewFlowReturnTo는 ReviewFlowBaseProvider 안에서만 쓸 수 있다.");
+  }
+
+  return value.returnTo;
 }

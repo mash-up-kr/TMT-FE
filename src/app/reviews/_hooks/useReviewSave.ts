@@ -24,15 +24,19 @@ import { getTmtApiErrorTitle, TmtApiError } from "@/api/mutator";
 import { bindJoinGroupToSave } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { toast } from "@/shared/ui/Toast";
+import { withReviewReturnTo } from "@/shared/utils/reviewNavigation";
 import {
   draftReviewBasePath,
-  REVIEW_FLOW_EXIT_PATH,
   type ReviewStepSegment,
   reviewCompletePath,
   reviewStepPath,
 } from "../_constants/steps";
 import { useReviewDraft } from "../_stores/ReviewDraftProvider";
-import { useReviewFlowBase, useReviewFlowSaveId } from "../_stores/ReviewFlowBaseProvider";
+import {
+  useReviewFlowBase,
+  useReviewFlowReturnTo,
+  useReviewFlowSaveId,
+} from "../_stores/ReviewFlowBaseProvider";
 import {
   ReviewSaveMappingError,
   toCreateSaveRequest,
@@ -73,6 +77,7 @@ export function useReviewSave() {
   const queryClient = useQueryClient();
   const basePath = useReviewFlowBase();
   const saveId = useReviewFlowSaveId();
+  const returnTo = useReviewFlowReturnTo();
   const {
     store,
     photos,
@@ -252,7 +257,7 @@ export function useReviewSave() {
       return;
     }
 
-    const nextPath = reviewStepPath(nextBasePath, nextStep);
+    const nextPath = withReviewReturnTo(reviewStepPath(nextBasePath, nextStep), returnTo);
     if (saveId === null || basePath !== nextBasePath) {
       router.replace(nextPath);
     } else {
@@ -281,7 +286,7 @@ export function useReviewSave() {
             return;
           }
         }
-        router.replace(REVIEW_FLOW_EXIT_PATH);
+        router.replace(returnTo);
       }),
   };
 }
