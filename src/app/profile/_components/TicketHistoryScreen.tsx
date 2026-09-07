@@ -6,9 +6,10 @@ import { ROUTES } from "@/shared/constants/routes";
 import { useReviewEntryPath, useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
+import { CancelIcon } from "@/shared/ui/Icons";
 import { useTicketHistory } from "../_hooks/useTicketHistory";
 import { toSaveHref } from "../_utils/profileHrefs";
+import { ContinueDraftBanner } from "./ContinueDraftBanner";
 import { ProfileQueryFallback } from "./ProfileQueryFallback";
 import { TicketCard } from "./TicketCard";
 import { TicketHistoryList } from "./TicketHistoryList";
@@ -23,11 +24,6 @@ export function TicketHistoryScreen() {
     <GNB
       className="shrink-0"
       title="내 티켓"
-      left={
-        <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
-          <ChevronLeftIcon size={28} />
-        </IconButton>
-      }
       right={
         <IconButton aria-label="닫기" onClick={() => router.push(ROUTES.PROFILE.ME_REVIEWS)}>
           <CancelIcon size={28} />
@@ -38,7 +34,8 @@ export function TicketHistoryScreen() {
 
   return (
     <ScreenLayout header={header}>
-      <div className="content-container py-ds-24">
+      <div className="content-container flex flex-col gap-ds-16 py-ds-24">
+        <ContinueDraftBanner />
         <TicketCard count={history.data?.availableCount ?? 0} />
       </div>
       {history.data ? (

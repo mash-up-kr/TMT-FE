@@ -7,6 +7,7 @@
  */
 
 export interface RecommendedSummary {
+  /** 요약의 출처 리뷰 */
   reviewId: string;
   /** @nullable */
   pros?: string | null;

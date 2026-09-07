@@ -45,6 +45,8 @@
     transparent
   );
   --color-surface-inverse: var(--primitive-transparent-84);
+  /* 이미지·일러스트 위에 얹는 알약. 아래 그림이 비쳐야 해서 surface-inverse보다 옅다. */
+  --color-surface-inverse-weak: var(--primitive-transparent-50);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);

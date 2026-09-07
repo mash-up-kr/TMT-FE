@@ -18,16 +18,14 @@ export const FOOD_CATEGORIES = [
 
 export type FoodCategory = (typeof FOOD_CATEGORIES)[number];
 
-/**
- * 냄비에 담을 수 있는 매장 한 곳.
- *
- * 매장 추천 endpoint가 아직 OpenAPI에 없어 지금은 `_constants/`의 더미가 이 모양을 만든다.
- * 계약이 생기면 `_utils/`의 mapper가 같은 모양을 만들고 이 타입은 그대로 쓴다.
- */
+/** 냄비에 담을 수 있는 매장 한 곳. `_utils/recommendMapper.ts`가 응답을 이 모양으로 바꾼다. */
 export type RecommendStore = {
   placeId: string;
   name: string;
-  category: FoodCategory;
+  /** 내가 그 매장에 쓴 최신 리뷰의 첫 사진. 없으면 카테고리 스티커가 대신 그려진다. */
+  thumbnailUrl: string | null;
+  /** 서버가 매핑에 실패하면 null. 우리가 가진 14종 밖의 값도 null로 본다. */
+  category: FoodCategory | null;
 };
 
 /** 리뷰 요약 한 줄. 좋았던 점과 아쉬웠던 점을 아이콘으로 가른다. */

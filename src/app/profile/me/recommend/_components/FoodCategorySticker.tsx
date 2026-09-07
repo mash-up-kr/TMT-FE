@@ -32,8 +32,11 @@ const STICKERS = {
   seafood,
 } satisfies Record<FoodCategory, unknown>;
 
+/** 서버가 카테고리를 주지 못한 매장이 그리는 그림. 특정 요리로 읽히지 않는 모둠 접시다. */
+const FALLBACK_CATEGORY: FoodCategory = "buffet";
+
 type FoodCategoryStickerProps = Readonly<{
-  category: FoodCategory;
+  category: FoodCategory | null;
   size: number;
   className?: string;
 }>;
@@ -43,7 +46,7 @@ export function FoodCategorySticker({ category, size, className }: FoodCategoryS
     <Image
       alt=""
       aria-hidden="true"
-      src={STICKERS[category]}
+      src={STICKERS[category ?? FALLBACK_CATEGORY]}
       width={size}
       height={size}
       className={className}
