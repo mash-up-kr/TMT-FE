@@ -9,7 +9,8 @@ import type { ReviewGridPlace } from "./reviewGridPlace.gen";
 
 export interface UserReviewGridItem {
   reviewId: string;
-  thumbnailUrl: string;
+  /** @nullable */
+  thumbnailUrl?: string | null;
   place: ReviewGridPlace;
   createdAt: string;
 }

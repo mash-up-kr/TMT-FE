@@ -12,8 +12,7 @@ import type { TicketHistoryItemType } from "./ticketHistoryItemType.gen";
 export interface TicketHistoryItem {
   entryId: string;
   type: TicketHistoryItemType;
-  /** @nullable */
-  amount?: number | null;
+  amount: number;
   /** @nullable */
   saveId?: string | null;
   place?: PlaceRef | null;

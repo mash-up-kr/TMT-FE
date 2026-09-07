@@ -107,16 +107,8 @@ export const OTHER_FAVORITES: CursorPagePlaceCardResponse = page(favorites(4, fa
 /** 출처 세 갈래(매장·그룹·없음)를 모두 담는다. */
 export const MY_TICKETS: TicketHistoryResponse = {
   availableCount: 4,
+  inProgressSaveCount: 1,
   ...page([
-    {
-      entryId: "tkh_1",
-      type: "SAVE_IN_PROGRESS" as const,
-      amount: null,
-      saveId: "save_7",
-      place: { placeId: "place_2", name: "한판승부", roadAddress: "서울 은평구 갈현동 403-38" },
-      group: null,
-      occurredAt: "2026-08-19T09:11:03.412Z",
-    },
     {
       entryId: "tkh_2",
       type: "REVIEW_REWARD" as const,
@@ -160,4 +152,8 @@ export const EMPTY_REVIEWS: CursorPageMyReviewGridItem = page([]);
 export const EMPTY_GROUPS: CursorPageGroupCardResponse = page([]);
 export const EMPTY_FAVORITES: CursorPagePlaceCardResponse = page([]);
 
-export const EMPTY_TICKETS: TicketHistoryResponse = { availableCount: 0, ...page([]) };
+export const EMPTY_TICKETS: TicketHistoryResponse = {
+  availableCount: 0,
+  inProgressSaveCount: 0,
+  ...page([]),
+};

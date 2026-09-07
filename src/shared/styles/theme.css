@@ -3,6 +3,9 @@
 
   /* ===================== surface (배경) ===================== */
   --color-surface-primary: var(--primitive-base-white);
+  /* Figma 카카오 로그인 브랜드 가이드 */
+  --color-surface-kakao: #fee500;
+  --color-content-kakao: rgb(0 0 0 / 85%);
   --color-surface-secondary: var(--primitive-neutral-100);
   --color-surface-tertiary: var(--primitive-neutral-200);
   --color-surface-brand: var(--primitive-primary-600);

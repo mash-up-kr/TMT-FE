@@ -12,6 +12,7 @@ import { defineTransformer } from "orval";
  * 값은 orval이 폴더·파일명에 그대로 쓰므로 kebab-case로 둔다.
  */
 const TAG_RENAMES: Record<string, string> = {
+  인증: "auth",
   그룹: "group",
   "그룹 태그": "group-tag",
   "그룹 가입·리뷰 공유": "group-membership",

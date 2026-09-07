@@ -45,7 +45,7 @@ export function toProfileReviewItems(
   return responses.map((response) => ({
     reviewId: response.reviewId,
     ...("saveId" in response && response.saveId ? { saveId: response.saveId } : {}),
-    thumbnailUrl: response.thumbnailUrl,
+    thumbnailUrl: response.thumbnailUrl ?? null,
     placeId: response.place.placeId,
     placeName: response.place.name,
     categoryName: response.place.categoryName ?? null,

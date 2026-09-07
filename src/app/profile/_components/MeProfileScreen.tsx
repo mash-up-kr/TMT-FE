@@ -6,7 +6,9 @@ import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
+import { useAuth } from "@/shared/hooks/useAuth";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { PlusIcon } from "@/shared/ui/Icons";
@@ -22,6 +24,7 @@ import { TicketCard } from "./TicketCard";
 
 export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
   const router = useRouter();
+  const { logout } = useAuth();
   const summary = useMyProfileSummary();
   const tabPage = useMyProfileTabPage(activeTab);
   const sheet = useReviewDetailSheet();
@@ -67,6 +70,14 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
                 count={summary.data?.availableTicketCount}
                 href={ROUTES.PROFILE.TICKETS}
               />
+              <Button
+                size="sm"
+                variant="tertiary"
+                className="self-end"
+                onClick={() => void logout().catch(() => undefined)}
+              >
+                로그아웃
+              </Button>
             </>
           }
           tabBody={{

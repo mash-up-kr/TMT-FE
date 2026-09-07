@@ -9,6 +9,7 @@ import type { TicketHistoryItem } from "./ticketHistoryItem.gen";
 
 export interface TicketHistoryResponse {
   availableCount: number;
+  inProgressSaveCount: number;
   items: TicketHistoryItem[];
   /** @nullable */
   nextCursor?: string | null;

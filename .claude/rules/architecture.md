@@ -94,7 +94,7 @@ src/
 app/{route}/        →  shared/{ui, components, hooks, utils, model, constants, stores, styles, providers}
 app/{route}/        →  api/gen
 shared/components/  →  shared/{ui, hooks, utils, model, constants, styles}
-shared/providers/   →  api/mutator
+shared/providers/   →  api/{mutator, auth-session}
 ```
 
 - 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
@@ -103,7 +103,7 @@ shared/providers/   →  api/mutator
 - 금지: shared → app, 형제 라우트 간 직접 import, 다른 라우트의 private segment import.
 - 예외: `app/preview/**`는 화면 확인용 임시 라우트라 다른 라우트의 private segment를 import할 수 있다. 제품 코드가 preview를 import하지 않는다.
 - `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
-- `shared/providers/`만 `api/mutator`를 import할 수 있다. 전역 react-query retry 정책이 API 에러 타입에 의존하기 때문이다.
+- shared 계층에서는 `shared/providers/`만 `api/mutator`, `api/auth-session`을 import한다. 전역 retry 정책과 인증 세션·캐시 수명 관리를 위한 경계다.
 - `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.
 - 라우트 group 전용 코드는 `app/(group)/_*/`에 둔다.
 
@@ -118,6 +118,7 @@ shared/providers/   →  api/mutator
 ## 현재 상태
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
+- 인증은 `AuthProvider`와 `api/auth-session.ts`가 관리한다. access는 브라우저 메모리, refresh는 동일 출처의 HttpOnly 쿠키에 보관한다. 일반 API는 브라우저에서 Bearer 헤더로 직접 호출한다. 선택 이유와 한계는 `docs/authentication.md`를 따른다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
 - API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 동기화 명령은 `pnpm api:sync`다.
 - mock layer(MSW 등)는 도입하지 않는다.
@@ -126,10 +127,11 @@ shared/providers/   →  api/mutator
 
 - OpenAPI와 orval로 client, hook, 타입을 `src/api/gen/`에 생성하고 직접 수정하지 않는다.
 - 스펙 스냅샷은 `_scripts/api/openapi.json`이다. `pnpm api:sync`가 갱신하며 직접 편집하지 않는다.
-- endpoint 변경은 백엔드 OpenAPI가 바뀐 뒤 `pnpm api:sync`로 반영한다. 스펙에 없는 endpoint를 프론트에서 만들지 않는다.
-- `src/api/mutator.ts`는 플랫폼 `fetch`를 사용하며 공통 header와 공통 에러 처리를 소유한다. 인증 방식은 로그인 계약이 정해진 뒤 이 경계에 추가한다.
+- 백엔드 endpoint 변경은 OpenAPI가 바뀐 뒤 `pnpm api:sync`로 반영한다. 스펙에 없는 백엔드 endpoint를 프론트에서 만들지 않는다.
+- 인증 쿠키 중계를 위한 Next.js 경로는 예외다: `POST /api/auth/kakao`, `POST /api/auth/refresh`, `POST /api/auth/logout`, `GET /auth/kakao/callback`. 상류 로그인·재발급은 생성 client로 호출한다. 임의 경로를 받는 범용 프록시로 확장하지 않는다.
+- `src/api/mutator.ts`는 공통 header·에러·만료 재시도를 소유한다. `api/error.ts`는 에러 계약, `api/auth-session.ts`는 브라우저 메모리와 재발급 중복 방지·로그아웃을 소유하며 서버의 전역 사용자 세션으로 사용하지 않는다.
 - API 응답을 UI model로 바꾸는 코드는 라우트 `_utils/`에 둔다.
-- 수동 API client와 라우트별 fetch wrapper를 만들지 않는다.
+- 백엔드용 수동 API client와 라우트별 fetch wrapper를 만들지 않는다. 브라우저의 동일 출처 인증 경로 호출은 백엔드 OpenAPI의 대상이 아니며 인증 경계에서만 수동 호출한다.
 - 생성 파일은 커밋한다. lint 대상에서 제외하고 format은 유지한다.
 - 런타임 스키마 검증 라이브러리는 도입하지 않았다. 필요하면 conventions rule의 dependency 절차를 따른다.
 

@@ -27,7 +27,7 @@ export type ProfileGroupItem = {
 export type ProfileReviewItem = {
   reviewId: string;
   saveId?: string;
-  thumbnailUrl: string;
+  thumbnailUrl: string | null;
   placeId: string;
   placeName: string;
   categoryName: string | null;

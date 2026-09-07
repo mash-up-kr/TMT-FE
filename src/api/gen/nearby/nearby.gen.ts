@@ -43,7 +43,7 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getNearbyReviewsUrl = (params?: NearbyReviewsParams) => {
+export const getNearbyReviewsUrl = (params: NearbyReviewsParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -64,7 +64,7 @@ export const getNearbyReviewsUrl = (params?: NearbyReviewsParams) => {
  * @summary 피드형 기본 목록
  */
 export const nearbyReviews = async (
-  params?: NearbyReviewsParams,
+  params: NearbyReviewsParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<CursorPageReviewCardResponse> => {
   return tmtFetch<CursorPageReviewCardResponse>(getNearbyReviewsUrl(params), {
@@ -81,7 +81,7 @@ export const getNearbyReviewsQueryOptions = <
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyReviewsParams,
+  params: NearbyReviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyReviews>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -108,7 +108,7 @@ export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params: undefined | NearbyReviewsParams,
+  params: NearbyReviewsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyReviews>>, TError, TData>> &
       Pick<
@@ -127,7 +127,7 @@ export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyReviewsParams,
+  params: NearbyReviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyReviews>>, TError, TData>> &
       Pick<
@@ -146,7 +146,7 @@ export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyReviewsParams,
+  params: NearbyReviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyReviews>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -161,7 +161,7 @@ export function useNearbyReviews<
   TData = Awaited<ReturnType<typeof nearbyReviews>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyReviewsParams,
+  params: NearbyReviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyReviews>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -177,7 +177,7 @@ export function useNearbyReviews<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getNearbyPlacesUrl = (params?: NearbyPlacesParams) => {
+export const getNearbyPlacesUrl = (params: NearbyPlacesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -198,7 +198,7 @@ export const getNearbyPlacesUrl = (params?: NearbyPlacesParams) => {
  * @summary 지도형 핀
  */
 export const nearbyPlaces = async (
-  params?: NearbyPlacesParams,
+  params: NearbyPlacesParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<NearbyPlacesResponse> => {
   return tmtFetch<NearbyPlacesResponse>(getNearbyPlacesUrl(params), {
@@ -215,7 +215,7 @@ export const getNearbyPlacesQueryOptions = <
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyPlacesParams,
+  params: NearbyPlacesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyPlaces>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -242,7 +242,7 @@ export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params: undefined | NearbyPlacesParams,
+  params: NearbyPlacesParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyPlaces>>, TError, TData>> &
       Pick<
@@ -261,7 +261,7 @@ export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyPlacesParams,
+  params: NearbyPlacesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyPlaces>>, TError, TData>> &
       Pick<
@@ -280,7 +280,7 @@ export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyPlacesParams,
+  params: NearbyPlacesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyPlaces>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -295,7 +295,7 @@ export function useNearbyPlaces<
   TData = Awaited<ReturnType<typeof nearbyPlaces>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NearbyPlacesParams,
+  params: NearbyPlacesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nearbyPlaces>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
