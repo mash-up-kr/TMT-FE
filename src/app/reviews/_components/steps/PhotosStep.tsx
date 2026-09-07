@@ -29,7 +29,7 @@ export function PhotosStep() {
           <Button inert={reviewSave.isPending} onClick={() => void reviewSave.saveAndGo("tags")}>
             다음
           </Button>
-          <Button variant="ghost" size="sm" onClick={requestExit}>
+          <Button variant="ghost" size="sm" className="py-ds-4" onClick={requestExit}>
             나중에 추가할게요
           </Button>
         </ButtonStack>
