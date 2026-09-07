@@ -9,7 +9,9 @@ export function PreviewBottomNavScreenLayout({
 }: ScreenLayoutProps & { activeTab: AppBottomNavValue }) {
   return (
     <div className="bottom-navigation-inset relative flex min-h-0 flex-1 flex-col">
-      <ScreenLayout {...screenLayoutProps} />
+      <div className="scroll-under-navigation flex min-h-0 flex-1 flex-col">
+        <ScreenLayout {...screenLayoutProps} />
+      </div>
       <AppBottomNav activeTab={activeTab} />
     </div>
   );

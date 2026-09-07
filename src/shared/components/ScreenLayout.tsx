@@ -3,7 +3,7 @@ import { cn } from "@/shared/utils/cn";
 
 export type ScreenLayoutProps = ComponentPropsWithoutRef<"div"> & {
   header: ReactNode;
-  /** 본문이 별도의 스크롤 영역을 가질 때 false. 자식은 inset을 적용한 자체 스크롤 또는 full-bleed 표면을 명시한다. */
+  /** 본문이 별도의 스크롤 영역을 가질 때 false. */
   bodyScrollable?: boolean;
   /** 스크롤과 무관하게 본문 위에 떠 있는 요소(FAB 등). 바텀 내브를 제외한 본문 영역을 기준으로 배치된다. */
   floating?: ReactNode;
@@ -18,12 +18,7 @@ export function ScreenLayout({
   ...props
 }: ScreenLayoutProps) {
   const body = (
-    <div
-      className={cn(
-        "flex min-h-0 flex-1 flex-col",
-        bodyScrollable && "scroll-under-navigation overflow-y-auto",
-      )}
-    >
+    <div className={cn("flex min-h-0 flex-1 flex-col", bodyScrollable && "overflow-y-auto")}>
       {children}
     </div>
   );
