@@ -4,7 +4,7 @@ export type GroupProfileData = {
   name: string;
   oneLineDescription: string;
   description: string | null;
-  coverImageUrl: string | null;
+  coverImageUrls: string[];
   imageUrl: string | null;
   memberCount: number;
   reviewCount: number;
