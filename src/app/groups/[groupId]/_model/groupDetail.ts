@@ -15,8 +15,6 @@ export type GroupProfileData = {
 
 export type GroupDetailViewData = GroupProfileData & {
   id: string;
-  availableTicketCount: number;
-  isJoinable: boolean;
   isOwner: boolean;
   isMember: boolean;
 };
@@ -41,18 +39,25 @@ export type GroupLeaveAction = Readonly<{
   isPending: boolean;
 }>;
 
-export type GroupReviewListState = Readonly<{
-  reviews: ReviewCardData[];
-}> &
-  (
-    | {
-        hasNextPage: false;
-        isFetchingNextPage?: never;
-        onLoadMore?: never;
-      }
-    | {
-        hasNextPage: true;
-        isFetchingNextPage: boolean;
-        onLoadMore: () => void;
-      }
-  );
+export type GroupJoinPreviewState =
+  | Readonly<{ status: "not-required" }>
+  | Readonly<{ status: "pending" }>
+  | Readonly<{ status: "error"; onRetry: () => void }>
+  | Readonly<{ status: "ready"; availableTicketCount: number; isJoinable: boolean }>;
+
+export type GroupReviewListState =
+  | Readonly<{ status: "pending" }>
+  | Readonly<{ status: "error"; onRetry: () => void }>
+  | (Readonly<{ status: "ready"; reviews: ReviewCardData[] }> &
+      (
+        | {
+            hasNextPage: false;
+            isFetchingNextPage?: never;
+            onLoadMore?: never;
+          }
+        | {
+            hasNextPage: true;
+            isFetchingNextPage: boolean;
+            onLoadMore: () => void;
+          }
+      ));

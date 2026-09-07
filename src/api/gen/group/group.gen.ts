@@ -19,8 +19,10 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPageGroupCardResponse } from "../_model/cursorPageGroupCardResponse.gen";
@@ -170,6 +172,99 @@ export function useGroupDetail<
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getGroupDetailSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof groupDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  groupId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGroupDetailQueryKey(groupId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof groupDetail>>> = ({ signal }) =>
+    groupDetail(groupId, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof groupDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GroupDetailSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupDetail>>>;
+export type GroupDetailSuspenseQueryError = ErrorType<ErrorResponse>;
+
+export function useGroupDetailSuspense<
+  TData = Awaited<ReturnType<typeof groupDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  groupId: string,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGroupDetailSuspense<
+  TData = Awaited<ReturnType<typeof groupDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  groupId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGroupDetailSuspense<
+  TData = Awaited<ReturnType<typeof groupDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  groupId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary 그룹 상세
+ */
+
+export function useGroupDetailSuspense<
+  TData = Awaited<ReturnType<typeof groupDetail>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  groupId: string,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupDetail>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGroupDetailSuspenseQueryOptions(groupId, options);
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

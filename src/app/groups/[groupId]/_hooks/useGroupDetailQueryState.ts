@@ -1,57 +1,82 @@
-import { useGroupDetail } from "@/api/gen/group/group.gen";
-import { useJoinPreview } from "@/api/gen/group-membership/group-membership.gen";
+import type { UseQueryResult } from "@tanstack/react-query";
+import {
+  type JoinPreviewQueryError,
+  type JoinPreviewQueryResult,
+  useJoinPreview,
+} from "@/api/gen/group-membership/group-membership.gen";
 import { toReviewCardData } from "@/shared/utils/reviewMapper";
-import type { GroupDetailViewData, GroupReviewListState } from "../_model/groupDetail";
+import type {
+  GroupDetailViewData,
+  GroupJoinPreviewState,
+  GroupReviewListState,
+} from "../_model/groupDetail";
 import { toGroupDetailViewData } from "../_utils/groupDetailMapper";
 import { useGroupReviewPages } from "./useGroupReviewPages";
+import { useSuspenseGroupDetail } from "./useSuspenseGroupDetail";
 
-type GroupDetailQueryState =
-  | Readonly<{ status: "pending" }>
-  | Readonly<{ status: "error" }>
-  | Readonly<{
-      status: "ready";
-      group: GroupDetailViewData;
-      reviewList: GroupReviewListState;
-    }>;
+type GroupDetailQueryState = Readonly<{
+  group: GroupDetailViewData;
+  reviewList: GroupReviewListState;
+  joinPreview: GroupJoinPreviewState;
+}>;
 
-export function useGroupDetailQueryState(groupId: string): GroupDetailQueryState {
-  const detail = useGroupDetail(groupId);
-  const reviews = useGroupReviewPages(groupId, detail.data?.isMember);
-  const joinPreview = useJoinPreview(groupId, {
-    query: { enabled: detail.data?.isMember === false },
-  });
-
-  if (detail.isPending) {
+function toReviewListState(reviews: ReturnType<typeof useGroupReviewPages>): GroupReviewListState {
+  if (reviews.isPending) {
     return { status: "pending" };
   }
 
-  if (!detail.data || detail.isError) {
-    return { status: "error" };
-  }
-
-  const isNonMember = !detail.data.isMember;
-
-  if (reviews.isPending || (isNonMember && joinPreview.isPending)) {
-    return { status: "pending" };
-  }
-
-  if (reviews.isError || (isNonMember && joinPreview.isError)) {
-    return { status: "error" };
+  if (reviews.isError || !reviews.data) {
+    return { status: "error", onRetry: () => reviews.refetch() };
   }
 
   const reviewItems = reviews.data.pages.flatMap((page) => page.items.map(toReviewCardData));
-  const reviewList: GroupReviewListState = reviews.hasNextPage
-    ? {
-        reviews: reviewItems,
-        hasNextPage: true,
-        isFetchingNextPage: reviews.isFetchingNextPage,
-        onLoadMore: () => reviews.fetchNextPage(),
-      }
-    : { reviews: reviewItems, hasNextPage: false };
+
+  if (!reviews.hasNextPage) {
+    return { status: "ready", reviews: reviewItems, hasNextPage: false };
+  }
 
   return {
     status: "ready",
-    group: toGroupDetailViewData(detail.data, joinPreview.data),
-    reviewList,
+    reviews: reviewItems,
+    hasNextPage: true,
+    isFetchingNextPage: reviews.isFetchingNextPage,
+    onLoadMore: () => reviews.fetchNextPage(),
+  };
+}
+
+function toJoinPreviewState(
+  isMember: boolean,
+  joinPreview: UseQueryResult<JoinPreviewQueryResult, JoinPreviewQueryError>,
+): GroupJoinPreviewState {
+  if (isMember) {
+    return { status: "not-required" };
+  }
+
+  if (joinPreview.isPending) {
+    return { status: "pending" };
+  }
+
+  if (joinPreview.isError || !joinPreview.data) {
+    return { status: "error", onRetry: () => joinPreview.refetch() };
+  }
+
+  return {
+    status: "ready",
+    availableTicketCount: joinPreview.data.availableTicketCount,
+    isJoinable: joinPreview.data.joinable,
+  };
+}
+
+export function useGroupDetailQueryState(groupId: string): GroupDetailQueryState {
+  const { data: detail } = useSuspenseGroupDetail(groupId);
+  const reviews = useGroupReviewPages(groupId, detail.isMember);
+  const joinPreview = useJoinPreview(groupId, {
+    query: { enabled: detail.isMember === false },
+  });
+
+  return {
+    group: toGroupDetailViewData(detail),
+    reviewList: toReviewListState(reviews),
+    joinPreview: toJoinPreviewState(detail.isMember, joinPreview),
   };
 }

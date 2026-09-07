@@ -4,12 +4,15 @@ import {
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
+import { RetryNotice } from "@/shared/ui/RetryNotice";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import type { FeedReview } from "../_model/home";
 
 type HomeFeedProps = {
   position: CurrentPosition;
   isPending: boolean;
   isError: boolean;
+  onRetry: () => void;
   reviews: FeedReview[] | undefined;
   favoriteAction?: ReviewCardFavoriteAction;
 };
@@ -19,12 +22,7 @@ type FeedNotice = {
   description?: string;
 };
 
-function resolveNotice({
-  position,
-  isPending,
-  isError,
-  reviews,
-}: HomeFeedProps): FeedNotice | null {
+function resolveNotice({ position, isError, reviews }: HomeFeedProps): FeedNotice | null {
   if (position.status === "unavailable") {
     return {
       title: "위치를 확인할 수 없어요.",
@@ -32,12 +30,8 @@ function resolveNotice({
     };
   }
 
-  if (position.status === "pending" || isPending) {
-    return { title: "게시물을 불러오는 중이에요." };
-  }
-
   if (isError) {
-    return { title: "게시물을 불러오지 못했어요." };
+    return null;
   }
 
   if (!reviews || reviews.length === 0) {
@@ -51,7 +45,25 @@ function resolveNotice({
 }
 
 export function HomeFeed(props: HomeFeedProps) {
+  if (props.position.status === "pending" || props.isPending) {
+    return <HomeFeedSkeleton />;
+  }
+
   const notice = resolveNotice(props);
+
+  if (props.isError) {
+    return (
+      <section
+        className="mt-ds-4 flex min-h-0 flex-1 flex-col bg-surface-primary"
+        aria-label="최근 게시물"
+      >
+        <h2 className="bg-surface-primary px-ds-20 pt-ds-20 pb-ds-12 text-heading-md text-content-primary">
+          최근 게시물
+        </h2>
+        <RetryNotice message="게시물을 불러오지 못했어요." onRetry={props.onRetry} />
+      </section>
+    );
+  }
 
   if (notice) {
     return (
@@ -77,6 +89,36 @@ export function HomeFeed(props: HomeFeedProps) {
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+function HomeFeedSkeleton() {
+  return (
+    <section
+      aria-busy="true"
+      aria-label="최근 게시물"
+      className="mt-ds-4 flex min-h-0 flex-1 flex-col bg-surface-primary"
+      style={{ overflowAnchor: "none" }}
+    >
+      <h2 className="px-ds-20 pt-ds-20 pb-ds-12 text-heading-md text-content-primary">
+        최근 게시물
+      </h2>
+      <article className="flex flex-col">
+        <div className="flex items-center gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
+          <Skeleton className="size-ds-40 shrink-0 rounded-ds-full" />
+          <div className="flex min-w-0 flex-1 flex-col gap-ds-4">
+            <Skeleton className="h-ds-20 w-ds-64" />
+            <Skeleton className="h-ds-12 w-ds-32" />
+          </div>
+        </div>
+        <Skeleton className="h-[360px] w-full rounded-none" />
+        <div className="flex flex-col gap-ds-12 p-ds-16">
+          <Skeleton className="h-ds-20 w-full" />
+          <Skeleton className="h-ds-20 w-2/3" />
+          <Skeleton className="h-ds-32 w-full" />
+        </div>
+      </article>
     </section>
   );
 }

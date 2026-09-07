@@ -6,6 +6,7 @@ import { GroupCard } from "@/shared/components/GroupCard/GroupCard";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { setUt2Step } from "@/shared/hooks/useUt2Step";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import type { GroupListItem } from "../_model/group";
 
 type GroupListProps = {
@@ -37,6 +38,32 @@ export function GroupList({ groups }: GroupListProps) {
               matchedCount={group.matchedCount}
             />
           </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function GroupListSkeleton() {
+  return (
+    <ul aria-busy="true" className="flex flex-col gap-ds-20 pb-ds-20">
+      {[0, 1].map((index) => (
+        <li key={index}>
+          <article className="flex w-full flex-col overflow-hidden rounded-ds-md bg-surface-primary">
+            <Skeleton className="h-25 w-full rounded-none" />
+            <div className="flex flex-col gap-ds-12 p-ds-16">
+              <div className="flex flex-col gap-ds-4">
+                <Skeleton className="h-ds-20 w-ds-64" />
+                <Skeleton className="h-ds-20 w-full" />
+                <Skeleton className="h-ds-20 w-2/3" />
+              </div>
+              <div className="flex gap-ds-12">
+                <Skeleton className="h-ds-12 w-ds-32" />
+                <Skeleton className="h-ds-12 w-ds-32" />
+                <Skeleton className="h-ds-12 w-ds-32" />
+              </div>
+            </div>
+          </article>
         </li>
       ))}
     </ul>
