@@ -4,13 +4,12 @@ import { useListGroups } from "@/api/gen/group/group.gen";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
-import { LoadingIcon } from "@/shared/ui/Icons";
 import { DEFAULT_SORT } from "../_constants/filters";
 import { useGroupFilters } from "../_hooks/useGroupFilters";
 import type { GroupListItem } from "../_model/group";
 import { toGroupListItem, toGroupListParams } from "../_utils/groupMappers";
 import { GroupFilters } from "./GroupFilters";
-import { GroupList, GroupListEmpty } from "./GroupList";
+import { GroupList, GroupListEmpty, GroupListSkeleton } from "./GroupList";
 import { GroupSearchBar } from "./GroupSearchBar";
 
 export type GroupsPreviewState = "pending" | "error" | "empty";
@@ -76,11 +75,7 @@ type GroupsResultProps = {
 
 function GroupsResult({ groups, isPending, isError, forceEmpty, onRetry }: GroupsResultProps) {
   if (isPending) {
-    return (
-      <output className="flex flex-1 items-center justify-center">
-        <LoadingIcon className="animate-spin text-icon-tertiary" />
-      </output>
-    );
+    return <GroupListSkeleton />;
   }
 
   if (isError) {

@@ -21,7 +21,7 @@ function ToastList() {
 }
 
 type ToasterProps = Readonly<{
-  /** 화면 아래에서 띄울 거리(px). BottomNav 대응 */
+  /** 화면 아래 고정 요소(BottomNav·CTA·가입 게이트)를 피할 거리(px). */
   bottomInset?: number;
 }>;
 

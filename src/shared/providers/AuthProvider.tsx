@@ -15,7 +15,7 @@ import {
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
 import { Button } from "@/shared/ui/Button";
-import { LoadingIcon } from "@/shared/ui/Icons";
+import { Spinner } from "@/shared/ui/Spinner";
 import { isPublicPage, safeReturnTo } from "@/shared/utils/authNavigation";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role="status"
       className="flex flex-1 items-center justify-center gap-ds-8 text-content-secondary"
     >
-      <LoadingIcon className="animate-spin" />
+      <Spinner />
       <span className="text-body-md-medium">
         {snapshot.status === "logging-out" ? "로그아웃 중이에요" : "로그인 상태를 확인하고 있어요"}
       </span>

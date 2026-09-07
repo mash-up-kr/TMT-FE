@@ -3,6 +3,7 @@ import Script from "next/script";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { AmplitudeAnalytics } from "@/shared/components/AmplitudeAnalytics";
+import { AppChrome } from "@/shared/components/AppChrome";
 import { AppToaster } from "@/shared/components/AppToaster";
 import { Ut2Tracker } from "@/shared/components/Ut2Tracker";
 import { AuthProvider } from "@/shared/providers/AuthProvider";
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <div className="app-frame">
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <AppChrome>{children}</AppChrome>
+            </AuthProvider>
           </div>
           <AppToaster />
         </QueryProvider>

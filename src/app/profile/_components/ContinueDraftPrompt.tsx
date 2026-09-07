@@ -7,7 +7,7 @@ import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { PROFILE_TABS } from "../_model/profile";
 import { ContinueDraftSheet } from "./ContinueDraftSheet";
 
-const TAB_PATHS: readonly string[] = PROFILE_TABS.map((tab) => `${ROUTES.PROFILE.ME}/${tab}`);
+const TAB_PATHS: readonly string[] = PROFILE_TABS.map((tab) => ROUTES.PROFILE.ME_TAB(tab));
 
 /**
  * 이어쓰기 안내 시트의 마운트 지점.

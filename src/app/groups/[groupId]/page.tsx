@@ -6,6 +6,5 @@ export default async function GroupDetailPage({
   params: Promise<{ groupId: string }>;
 }>) {
   const { groupId } = await params;
-
   return <GroupDetailScreen groupId={groupId} />;
 }

@@ -1,13 +1,14 @@
-import { LoadingIcon } from "@/shared/ui/Icons";
+import { Spinner } from "@/shared/ui/Spinner";
 
 export function GroupDetailLoading() {
   return (
     <div className="flex flex-1 items-center justify-center bg-surface-secondary">
-      <LoadingIcon className="animate-spin text-icon-tertiary" />
+      <Spinner size="lg" />
     </div>
   );
 }
 
+/** preview route가 error state를 표시할 때만 쓴다. */
 export function GroupDetailError() {
   return (
     <div role="alert" className="flex flex-1 items-center justify-center bg-surface-secondary">

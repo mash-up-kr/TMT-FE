@@ -6,6 +6,5 @@ type PlaceDetailPageProps = {
 
 export default async function PlaceDetailPage({ params }: PlaceDetailPageProps) {
   const { placeId } = await params;
-
   return <PlaceDetailScreen placeId={placeId} />;
 }

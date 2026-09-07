@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { BottomNavScreenLayout } from "@/shared/components/BottomNavScreenLayout";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
+import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
@@ -57,7 +57,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
 
   return (
     <>
-      <BottomNavScreenLayout activeTab="my" header={header}>
+      <ScreenLayout header={header}>
         <ProfileTabPageView
           summary={summary}
           tabPage={tabPage}
@@ -89,7 +89,7 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
             pendingPlaceId,
           }}
         />
-      </BottomNavScreenLayout>
+      </ScreenLayout>
       <ReviewDetailSheet
         open={sheet.isOpen}
         onOpenChange={sheet.onOpenChange}

@@ -15,11 +15,14 @@ import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon, LeaveGroupIcon, SettingsIcon } from "@/shared/ui/Icons";
+import { RetryNotice } from "@/shared/ui/RetryNotice";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import type {
   GroupDetailViewData,
   GroupJoinAction,
   GroupJoinInfo,
+  GroupJoinPreviewState,
   GroupLeaveAction,
   GroupReviewListState,
 } from "../_model/groupDetail";
@@ -32,6 +35,7 @@ import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
 type GroupDetailViewProps = {
   group: GroupDetailViewData;
   reviewList: GroupReviewListState;
+  joinPreview: GroupJoinPreviewState;
   joinAction: GroupJoinAction;
   leaveAction: GroupLeaveAction;
 };
@@ -39,6 +43,7 @@ type GroupDetailViewProps = {
 export function GroupDetailView({
   group,
   reviewList,
+  joinPreview,
   joinAction,
   leaveAction,
 }: GroupDetailViewProps) {
@@ -53,29 +58,33 @@ export function GroupDetailView({
     },
   });
   const isNonMember = !group.isMember;
-  const reviews = useMemo(
-    () =>
-      reviewList.reviews.map((review) => {
-        const isFavorite = favoriteOverrides[review.place.id];
+  const reviews = useMemo(() => {
+    if (reviewList.status !== "ready") {
+      return [];
+    }
 
-        return isFavorite === undefined
-          ? review
-          : { ...review, place: { ...review.place, isFavorite } };
-      }),
-    [favoriteOverrides, reviewList.reviews],
-  );
+    return reviewList.reviews.map((review) => {
+      const isFavorite = favoriteOverrides[review.place.id];
+
+      return isFavorite === undefined
+        ? review
+        : { ...review, place: { ...review.place, isFavorite } };
+    });
+  }, [favoriteOverrides, reviewList]);
   const favoriteAction: ReviewCardFavoriteAction = {
     isPending: favorite.isPending,
     onToggleAction: favorite.onToggleAction,
   };
-  const shouldPromptFirstReview = group.isMember && reviewList.reviews.length === 0;
+  const shouldPromptFirstReview =
+    group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
   const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
+  const joinPreviewData = joinPreview.status === "ready" ? joinPreview : null;
 
   // ⚠️ UT2 임시 계측. 상세 진입은 2-1, 티켓이 없는 채로 가입 시트가 열리면 2-3이다.
   useUt2Step(UT2_STEPS.GROUP_DETAIL_ENTER);
   useUt2Step(
     UT2_STEPS.TICKET_INSUFFICIENT_SHEET,
-    isJoinSheetOpen && isNonMember && group.availableTicketCount === 0,
+    isJoinSheetOpen && isNonMember && joinPreviewData?.availableTicketCount === 0,
   );
 
   const sheetJoinAction: GroupJoinAction = {
@@ -99,7 +108,7 @@ export function GroupDetailView({
   const groupJoinInfo: GroupJoinInfo = {
     name: group.name,
     imageUrl: group.imageUrl,
-    availableTicketCount: group.availableTicketCount,
+    availableTicketCount: joinPreviewData?.availableTicketCount ?? 0,
   };
   const leaveModalAction: GroupLeaveAction = {
     ...leaveAction,
@@ -157,15 +166,26 @@ export function GroupDetailView({
         <GroupReviewList
           isContentRestricted={isNonMember}
           isOwner={group.isOwner}
-          reviewList={{ ...reviewList, reviews }}
+          reviewList={reviewList.status === "ready" ? { ...reviewList, reviews } : reviewList}
           favoriteAction={group.isMember ? favoriteAction : undefined}
         />
+        {isNonMember && joinPreview.status === "error" ? (
+          <RetryNotice message="가입 정보를 불러오지 못했어요." onRetry={joinPreview.onRetry} />
+        ) : null}
       </main>
 
-      {isNonMember && <JoinGate onJoin={() => setIsJoinSheetOpen(true)} />}
+      {isNonMember &&
+        (joinPreview.status !== "error" ? (
+          <JoinGate
+            disabled={joinPreview.status === "pending"}
+            label={joinPreview.status === "pending" ? "가입 정보를 불러오는 중이에요" : undefined}
+            onJoin={() => setIsJoinSheetOpen(true)}
+          />
+        ) : null)}
 
       {isNonMember &&
-        (group.isJoinable ? (
+        joinPreviewData &&
+        (joinPreviewData.isJoinable ? (
           <JoinGroupTicketSheet
             open={isJoinSheetOpen}
             onOpenChangeAction={setIsJoinSheetOpen}
@@ -216,6 +236,29 @@ function GroupReviewList({
   reviewList,
   favoriteAction,
 }: GroupReviewListProps) {
+  if (reviewList.status === "pending") {
+    return (
+      <section
+        className="mt-ds-4 flex flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-20"
+        aria-label="그룹 리뷰"
+      >
+        <Skeleton className="h-ds-64 w-full" />
+        <Skeleton className="h-ds-64 w-full" />
+      </section>
+    );
+  }
+
+  if (reviewList.status === "error") {
+    return (
+      <section
+        className="mt-ds-4 flex min-h-0 flex-1 flex-col bg-surface-primary"
+        aria-label="그룹 리뷰"
+      >
+        <RetryNotice message="그룹 리뷰를 불러오지 못했어요." onRetry={reviewList.onRetry} />
+      </section>
+    );
+  }
+
   if (reviewList.reviews.length === 0) {
     return isOwner ? (
       <section className="mt-ds-4 flex-1 bg-surface-primary" aria-label="그룹 리뷰">
@@ -259,11 +302,19 @@ function GroupReviewList({
   );
 }
 
-function JoinGate({ onJoin }: { onJoin: () => void }) {
+function JoinGate({
+  disabled = false,
+  label = "그룹 가입하고 리뷰 보러가기",
+  onJoin,
+}: {
+  disabled?: boolean;
+  label?: string;
+  onJoin: () => void;
+}) {
   return (
     <div className="shrink-0 border-t border-stroke-secondary bg-surface-primary px-ds-20 py-ds-12">
-      <Button className="w-full" onClick={onJoin}>
-        그룹 가입하고 리뷰 보러가기
+      <Button className="w-full" disabled={disabled} onClick={onJoin}>
+        {label}
       </Button>
     </div>
   );

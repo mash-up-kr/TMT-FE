@@ -87,6 +87,7 @@ src/
 - UI는 한 라우트에서만 쓰는 동안 그 라우트에 둔다. 사용처가 둘 이상이 되면 승격하되, 도메인 무관하게 만들 수 있으면 `shared/ui/`, 도메인 성격이 남으면 `shared/components/`로 나눈다.
 - `shared/components/`도 API 응답을 그대로 받지 않는다. 응답을 props로 바꾸는 코드는 라우트 `_utils/`가 소유한다.
 - 서로 다른 공용 UI 컴포넌트 계열이 공유하는 기반 컴포넌트는 특정 계열의 하위 폴더에 두지 않고, 각 계열이 함께 의존할 수 있는 `shared/ui/`의 공통 상위 계층에 둔다.
+- BottomNav 관련 정책은 `bottomNavigationPolicy.ts`에서만 관리하고, 라우트나 컴포넌트에 중복 정의하지 않는다.
 
 ## Import 경계
 
@@ -118,6 +119,7 @@ shared/providers/   →  api/{mutator, auth-session}
 ## 현재 상태
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
+- 핵심 화면은 Orval Suspense hook으로 읽고 부분 데이터는 일반 hook을 쓴다. access token이 브라우저 메모리에 있으므로 보호 데이터의 서버 prefetch는 하지 않고, AuthProvider의 세션 복원 이후 브라우저에서 조회한다.
 - 인증은 `AuthProvider`와 `api/auth-session.ts`가 관리한다. access는 브라우저 메모리, refresh는 동일 출처의 HttpOnly 쿠키에 보관한다. 일반 API는 브라우저에서 Bearer 헤더로 직접 호출한다. 선택 이유와 한계는 `docs/authentication.md`를 따른다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
 - API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 동기화 명령은 `pnpm api:sync`다.

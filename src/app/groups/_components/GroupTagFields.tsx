@@ -6,7 +6,8 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Chip } from "@/shared/ui/Chip";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CancelIcon, ChevronDownIcon, LoadingIcon, RefreshIcon } from "@/shared/ui/Icons";
+import { CancelIcon, ChevronDownIcon, RefreshIcon } from "@/shared/ui/Icons";
+import { Spinner } from "@/shared/ui/Spinner";
 import type {
   GroupTagOption,
   GroupTagOptionsState,
@@ -213,7 +214,7 @@ function TagOptionsContent({
   if (status === "pending") {
     return (
       <div className="flex items-center justify-center py-ds-40">
-        <LoadingIcon className="animate-spin text-icon-tertiary" />
+        <Spinner />
       </div>
     );
   }

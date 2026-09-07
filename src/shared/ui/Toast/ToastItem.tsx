@@ -39,9 +39,6 @@ export function ToastItem({ toast }: ToastProps) {
   const isEnding = toast.transitionStatus === "ending";
   const style = {
     ...(isEnding ? { "--stack-y": exitY.current } : {}),
-    ...(toast.data.bottomInset === undefined
-      ? {}
-      : { "--toast-bottom-inset": `${toast.data.bottomInset}px` }),
   } as CSSProperties;
 
   /**
@@ -63,7 +60,7 @@ export function ToastItem({ toast }: ToastProps) {
       swipeDirection={[]}
       style={style}
       className={cn(
-        "absolute inset-x-(--layout-floating-inset-inline) bottom-[calc(var(--toast-bottom-inset,var(--layout-floating-inset-block))+env(safe-area-inset-bottom))]",
+        "absolute inset-x-(--layout-floating-inset-inline) bottom-[calc(var(--layout-floating-inset-block)+env(safe-area-inset-bottom))]",
         "pointer-events-auto flex items-center gap-ds-8",
         // 쌓인 위치와 등장·퇴장 이동을 분리해 서로 덮지 않게 한다.
         "[--stack-y:calc((var(--toast-offset-y)+var(--toast-index)*var(--spacing-ds-8))*-1)] [--slide-y:0px]",
