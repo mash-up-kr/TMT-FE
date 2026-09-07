@@ -718,7 +718,7 @@ export function useGroupReviews<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getNameAvailabilityUrl = (params?: NameAvailabilityParams) => {
+export const getNameAvailabilityUrl = (params: NameAvailabilityParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -739,7 +739,7 @@ export const getNameAvailabilityUrl = (params?: NameAvailabilityParams) => {
  * @summary 그룹 이름 중복 확인
  */
 export const nameAvailability = async (
-  params?: NameAvailabilityParams,
+  params: NameAvailabilityParams,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<NameAvailabilityResponse> => {
   return tmtFetch<NameAvailabilityResponse>(getNameAvailabilityUrl(params), {
@@ -756,7 +756,7 @@ export const getNameAvailabilityQueryOptions = <
   TData = Awaited<ReturnType<typeof nameAvailability>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NameAvailabilityParams,
+  params: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -783,7 +783,7 @@ export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params: undefined | NameAvailabilityParams,
+  params: NameAvailabilityParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>> &
       Pick<
@@ -802,7 +802,7 @@ export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NameAvailabilityParams,
+  params: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>> &
       Pick<
@@ -821,7 +821,7 @@ export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NameAvailabilityParams,
+  params: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;
@@ -836,7 +836,7 @@ export function useNameAvailability<
   TData = Awaited<ReturnType<typeof nameAvailability>>,
   TError = ErrorType<ErrorResponse>,
 >(
-  params?: NameAvailabilityParams,
+  params: NameAvailabilityParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof nameAvailability>>, TError, TData>>;
     request?: SecondParameter<typeof tmtFetch>;

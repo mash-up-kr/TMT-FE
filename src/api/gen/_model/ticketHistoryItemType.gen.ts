@@ -10,7 +10,6 @@ export type TicketHistoryItemType =
   (typeof TicketHistoryItemType)[keyof typeof TicketHistoryItemType];
 
 export const TicketHistoryItemType = {
-  SAVE_IN_PROGRESS: "SAVE_IN_PROGRESS",
   SIGNUP_REWARD: "SIGNUP_REWARD",
   REVIEW_REWARD: "REVIEW_REWARD",
   REVIEW_DELETE_REVOKE: "REVIEW_DELETE_REVOKE",

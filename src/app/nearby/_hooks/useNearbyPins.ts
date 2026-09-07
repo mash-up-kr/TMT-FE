@@ -15,10 +15,10 @@ export interface MapBounds {
 export function useNearbyPins(bounds: MapBounds | null, curationTagId: string | null) {
   return useNearbyPlaces<NearbyPins>(
     {
-      north: bounds?.north,
-      south: bounds?.south,
-      east: bounds?.east,
-      west: bounds?.west,
+      north: bounds?.north ?? 0,
+      south: bounds?.south ?? 0,
+      east: bounds?.east ?? 0,
+      west: bounds?.west ?? 0,
       curationTagId: curationTagId ?? undefined,
     },
     { query: { enabled: bounds !== null, select: toNearbyPins } },

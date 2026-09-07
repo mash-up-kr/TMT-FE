@@ -724,7 +724,7 @@ export const getMyTicketsUrl = (params?: MyTicketsParams) => {
 };
 
 /**
- * 발급·소비·회수와 미완성 저장이 한 목록이다. amount가 null이면 화면이 `작성 중` 배지를 그린다 (T10).
+ * 발급·소비·회수 이력과 잔액. 미완성 저장은 목록에 섞이지 않고 inProgressSaveCount 하나로 내린다 — 0보다 크면 화면이 상단 `작성 중` 배너를 그린다 (T10, J §4-1).
  * @summary 내 티켓
  */
 export const myTickets = async (
@@ -858,7 +858,7 @@ export const getMyReviewsUrl = (params?: MyReviewsParams) => {
 };
 
 /**
- * 2열 사진 그리드라 카드가 아니라 썸네일만 내린다. 미완성 저장은 나오지 않는다 (R8).
+ * 2열 사진 그리드라 카드가 아니라 썸네일만 내린다. 사진 0장 리뷰(C4-1)는 thumbnailUrl이 null이다. 미완성 저장은 나오지 않는다 (R8).
  * @summary 내 리뷰 탭
  */
 export const myReviews = async (

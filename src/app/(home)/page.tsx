@@ -1,16 +1,6 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getHomeQueryOptions } from "@/api/gen/home/home.gen";
-import { getServerQueryClient, getServerRequestInit } from "@/shared/providers/serverQuery";
 import { HomeScreen } from "./_components/HomeScreen";
 
-export default async function Home() {
-  const queryClient = getServerQueryClient();
-
-  await queryClient.prefetchQuery(getHomeQueryOptions({ request: await getServerRequestInit() }));
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <HomeScreen />
-    </HydrationBoundary>
-  );
+/** Access token은 브라우저 메모리에 있으므로 인증 복원 후 화면에서 조회한다. */
+export default function Home() {
+  return <HomeScreen />;
 }

@@ -49,6 +49,10 @@
       "description": "명세 v2 — D_01. 그룹 탐색 · D_02. 그룹 생성·상세·편집"
     },
     {
+      "name": "마이페이지·타인 프로필",
+      "description": "명세 v2 — J · J-01"
+    },
+    {
       "name": "리뷰 상세",
       "description": "명세 v2 — I §6-3·§6-4"
     },
@@ -61,16 +65,12 @@
       "description": "명세 v2 — B. 근처 탐색"
     },
     {
-      "name": "그룹 가입·리뷰 공유 (mock)",
-      "description": "명세 v2 — H. 그룹 게시(공유)"
+      "name": "인증",
+      "description": "명세 v2 — X. 로그인·회원가입"
     },
     {
       "name": "홈",
       "description": "명세 v2 — A. 홈"
-    },
-    {
-      "name": "마이페이지·타인 프로필 (mock)",
-      "description": "명세 v2 — J · J-01"
     },
     {
       "name": "가게 상세",
@@ -93,17 +93,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -158,7 +147,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -174,17 +168,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           },
           {
@@ -290,7 +273,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -306,17 +294,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -374,7 +351,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/places/{placeId}/favorite": {
@@ -393,17 +375,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -457,7 +428,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -474,17 +450,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -538,7 +503,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/groups/{groupId}": {
@@ -555,17 +525,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -626,17 +585,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -721,7 +669,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/groups/{groupId}/review-shares": {
@@ -756,17 +709,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -821,7 +763,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -837,17 +784,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -922,7 +858,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/saves": {
@@ -949,17 +890,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -1004,7 +934,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1014,17 +949,6 @@
         "description": "완성도 판정(C4)을 충족하면 리뷰·티켓·매장 집계까지 같은 트랜잭션에서 나간다 (TX-1).",
         "operationId": "createSave",
         "parameters": [
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          },
           {
             "name": "Idempotency-Key",
             "in": "header",
@@ -1128,7 +1052,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/recommendations/places": {
@@ -1139,19 +1068,7 @@
         "summary": "매장 추천받기",
         "description": "내 리뷰를 근거로 아직 리뷰하지 않은 매장 1곳을 고른다 (A3).",
         "operationId": "recommendPlace",
-        "parameters": [
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK",
@@ -1213,7 +1130,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/media/upload-intents": {
@@ -1224,19 +1146,7 @@
         "summary": "사진 업로드 presigned URL 발급",
         "description": "발급받은 assetId는 발급받은 사용자만 Save에 붙일 수 있다 (M2).",
         "operationId": "createUploadIntent",
-        "parameters": [
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          }
-        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1288,7 +1198,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/groups": {
@@ -1351,17 +1266,6 @@
               "type": "integer",
               "format": "int32"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -1404,19 +1308,7 @@
         "summary": "그룹 만들기",
         "description": "4단계 입력을 한 번에 보낸다. 요청자가 자동으로 그룹장이 되고 소유권은 이전되지 않는다 (G13).",
         "operationId": "createGroup",
-        "parameters": [
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          }
-        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1488,13 +1380,18 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/groups/{groupId}/memberships": {
       "post": {
         "tags": [
-          "그룹 가입·리뷰 공유 (mock)"
+          "그룹 가입·리뷰 공유"
         ],
         "summary": "가입",
         "description": "티켓 1장을 소비해 가입한다. 티켓 소비·멤버십 생성·자동 공유가 한 트랜잭션이다 (TX-3).",
@@ -1506,17 +1403,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           },
           {
@@ -1582,7 +1468,7 @@
             }
           },
           "409": {
-            "description": "- `ALREADY_GROUP_MEMBER` — 이미 가입한 그룹입니다.\n- `GROUP_JOIN_TICKET_REQUIRED` — 그룹 가입에 필요한 티켓이 부족합니다.",
+            "description": "- `ALREADY_GROUP_MEMBER` — 이미 가입한 그룹입니다.\n- `GROUP_JOIN_TICKET_REQUIRED` — 그룹 가입에 필요한 티켓이 부족합니다.\n- `IDEMPOTENCY_CONFLICT` — 같은 멱등성 키로 다른 요청이 이미 처리되었습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1593,6 +1479,145 @@
           },
           "500": {
             "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/auth/token/refresh": {
+      "post": {
+        "tags": [
+          "인증"
+        ],
+        "summary": "토큰 재발급",
+        "description": "refresh 토큰으로 access·refresh 토큰을 새로 발급한다.\n\nrefresh까지 만료(AUTH_TOKEN_EXPIRED)거나 유효하지 않으면(AUTH_TOKEN_INVALID) 재로그인으로 분기한다.",
+        "operationId": "refreshToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenRefreshResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `AUTH_TOKEN_INVALID` — 유효하지 않은 토큰입니다.\n- `AUTH_TOKEN_EXPIRED` — 만료된 토큰입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/login/kakao": {
+      "post": {
+        "tags": [
+          "인증"
+        ],
+        "summary": "카카오 로그인",
+        "description": "카카오 인가 코드를 교환해 로그인하고 토큰을 발급한다. 처음 온 카카오 계정이면 users 행을 만들고 `isNewUser=true`로 내린다 — FE는 이 값으로 온보딩(TMT-273)에 분기한다.\n\n`redirectUri`는 인가 요청에 사용한 값과 같아야 한다. 이후 요청은 `Authorization: Bearer {accessToken}`으로 보내고, 만료(AUTH_TOKEN_EXPIRED)되면 재발급 API로 갱신한다.",
+        "operationId": "loginWithKakao",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KakaoLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/KakaoLoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `AUTH_KAKAO_CODE_INVALID` — 카카오 인가 코드가 유효하지 않습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "- `AUTH_KAKAO_UNAVAILABLE` — 카카오 로그인 서비스가 응답하지 않습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1653,7 +1678,7 @@
     "/v1/users/{userId}": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "타인 프로필 상단",
         "description": "email·availableTicketCount는 본인에게만 내린다 (U7). 인증은 선택이다.",
@@ -1715,7 +1740,7 @@
     "/v1/users/{userId}/reviews": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "타인 리뷰 탭",
         "description": "saveId는 소유자만 쓰는 핸들이라 빠진다 (S8). 개인 프로필에는 게이트가 없다 (G2).",
@@ -1794,7 +1819,7 @@
     "/v1/users/{userId}/groups": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "타인 그룹 탭",
         "description": "matchedSavedPlaceCount는 조회자 기준이라 비로그인이면 0이다 (§6-1).",
@@ -1823,17 +1848,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -1884,7 +1898,7 @@
     "/v1/users/{userId}/favorites": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "타인 좋아요 탭",
         "description": "isFavorite은 조회자 기준이라 여기서는 true가 아닐 수 있다 (F3).",
@@ -1931,17 +1945,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -1992,24 +1995,12 @@
     "/v1/users/me": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "마이페이지 상단",
         "description": "프로필·티켓 배너·칩 카운트 3종. 칩 숫자는 탭을 열기 전에 보이므로 여기 함께 싣는다 (J §2).",
         "operationId": "me",
-        "parameters": [
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK",
@@ -2051,16 +2042,21 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/users/me/tickets": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "내 티켓",
-        "description": "발급·소비·회수와 미완성 저장이 한 목록이다. amount가 null이면 화면이 `작성 중` 배지를 그린다 (T10).",
+        "description": "발급·소비·회수 이력과 잔액. 미완성 저장은 목록에 섞이지 않고 inProgressSaveCount 하나로 내린다 — 0보다 크면 화면이 상단 `작성 중` 배너를 그린다 (T10, J §4-1).",
         "operationId": "myTickets",
         "parameters": [
           {
@@ -2078,17 +2074,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2133,16 +2118,21 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/users/me/reviews": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "내 리뷰 탭",
-        "description": "2열 사진 그리드라 카드가 아니라 썸네일만 내린다. 미완성 저장은 나오지 않는다 (R8).",
+        "description": "2열 사진 그리드라 카드가 아니라 썸네일만 내린다. 사진 0장 리뷰(C4-1)는 thumbnailUrl이 null이다. 미완성 저장은 나오지 않는다 (R8).",
         "operationId": "myReviews",
         "parameters": [
           {
@@ -2160,17 +2150,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2215,13 +2194,18 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/users/me/groups": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "내 그룹 탭",
         "description": "가입 오래된 순 — 홈의 myGroups와 같은 기준이라 두 화면에서 순서가 어긋나지 않는다 (G20).",
@@ -2242,17 +2226,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2297,13 +2270,18 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/users/me/favorites": {
       "get": {
         "tags": [
-          "마이페이지·타인 프로필 (mock)"
+          "마이페이지·타인 프로필"
         ],
         "summary": "내 좋아요 탭",
         "description": "찜한 매장 목록 (F1). 이 목록에서 isFavorite은 항상 true다.",
@@ -2342,17 +2320,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2397,7 +2364,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/reviews/{reviewId}": {
@@ -2415,17 +2387,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2487,17 +2448,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -2554,7 +2504,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/review-form-config": {
@@ -2604,17 +2559,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2712,17 +2656,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2837,17 +2770,6 @@
               "type": "integer",
               "format": "int32"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -2896,7 +2818,7 @@
           {
             "name": "latitude",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "number",
               "format": "double"
@@ -2905,7 +2827,7 @@
           {
             "name": "longitude",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "number",
               "format": "double"
@@ -2926,17 +2848,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -2986,7 +2897,7 @@
           {
             "name": "north",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "number",
               "format": "double"
@@ -2995,7 +2906,7 @@
           {
             "name": "south",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "number",
               "format": "double"
@@ -3004,7 +2915,7 @@
           {
             "name": "east",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "number",
               "format": "double"
@@ -3013,7 +2924,7 @@
           {
             "name": "west",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "number",
               "format": "double"
@@ -3051,17 +2962,6 @@
             "required": false,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -3107,19 +3007,7 @@
         "summary": "인사·내 그룹·추천 그룹",
         "description": "recommendedGroups는 가입 여부와 무관하게 채운다 — 이미 가입한 그룹을 뺀 추천순(G17) 상위 5개.",
         "operationId": "home",
-        "parameters": [
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK",
@@ -3161,7 +3049,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/home/feed": {
@@ -3207,17 +3100,6 @@
               "type": "integer",
               "format": "int32"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -3261,7 +3143,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/groups/{groupId}/reviews": {
@@ -3315,17 +3202,6 @@
               "type": "integer",
               "format": "int32"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -3375,7 +3251,7 @@
     "/v1/groups/{groupId}/join-preview": {
       "get": {
         "tags": [
-          "그룹 가입·리뷰 공유 (mock)"
+          "그룹 가입·리뷰 공유"
         ],
         "summary": "가입 팝업 정보",
         "description": "티켓 보유·부족 분기. preview는 참고값이고 가입이 조건을 다시 검증한다 (TX-3).",
@@ -3387,17 +3263,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -3452,7 +3317,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/groups/name-availability": {
@@ -3467,20 +3337,9 @@
           {
             "name": "name",
             "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
+              "type": "string"
             }
           }
         ],
@@ -3525,7 +3384,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/group-tags": {
@@ -3625,17 +3489,6 @@
               "type": "integer",
               "format": "int32"
             }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
           }
         ],
         "responses": {
@@ -3689,7 +3542,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/health/db": {
@@ -3765,7 +3623,7 @@
     "/v1/groups/{groupId}/memberships/me": {
       "delete": {
         "tags": [
-          "그룹 가입·리뷰 공유 (mock)"
+          "그룹 가입·리뷰 공유"
         ],
         "summary": "탈퇴",
         "description": "그 그룹에 공유했던 내 리뷰가 전부 내려간다 (G10). 티켓은 돌아오지 않는다 (T9).",
@@ -3777,17 +3635,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "X-User-Id",
-            "in": "header",
-            "description": "인증 스텁 — 사용자 ID. 카카오 로그인 도입 시 `Authorization` 헤더로 교체된다",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
             }
           }
         ],
@@ -3855,7 +3702,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
@@ -4364,6 +4216,100 @@
           "consumedCount"
         ]
       },
+      "TokenRefreshRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "TokenRefreshResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "accessTokenExpiresIn": {
+            "type": "integer",
+            "format": "int64",
+            "description": "accessToken 만료까지 남은 초"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "accessTokenExpiresIn",
+          "refreshToken"
+        ]
+      },
+      "KakaoLoginRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "카카오 인가 코드. 1회용이라 재사용하면 AUTH_KAKAO_CODE_INVALID다",
+            "minLength": 1
+          },
+          "redirectUri": {
+            "type": "string",
+            "description": "인가 요청에 사용한 리다이렉트 URI",
+            "example": "http://localhost:3000/auth/kakao/callback",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "redirectUri"
+        ]
+      },
+      "KakaoLoginResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "사용자 ID 표기 (`user_7`). 다른 응답의 userId와 같은 형식이다",
+            "example": "user_7"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "accessToken": {
+            "type": "string"
+          },
+          "accessTokenExpiresIn": {
+            "type": "integer",
+            "format": "int64",
+            "description": "accessToken 만료까지 남은 초"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "isNewUser": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accessToken",
+          "accessTokenExpiresIn",
+          "isNewUser",
+          "nickname",
+          "refreshToken",
+          "userId"
+        ]
+      },
       "UserProfileResponse": {
         "type": "object",
         "properties": {
@@ -4457,7 +4403,10 @@
             "type": "string"
           },
           "thumbnailUrl": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "place": {
             "$ref": "#/components/schemas/ReviewGridPlace"
@@ -4469,8 +4418,7 @@
         "required": [
           "createdAt",
           "place",
-          "reviewId",
-          "thumbnailUrl"
+          "reviewId"
         ]
       },
       "CursorPageGroupCardResponse": {
@@ -4730,7 +4678,6 @@
           "type": {
             "type": "string",
             "enum": [
-              "SAVE_IN_PROGRESS",
               "SIGNUP_REWARD",
               "REVIEW_REWARD",
               "REVIEW_DELETE_REVOKE",
@@ -4738,10 +4685,7 @@
             ]
           },
           "amount": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "saveId": {
@@ -4775,6 +4719,7 @@
           }
         },
         "required": [
+          "amount",
           "entryId",
           "occurredAt",
           "type"
@@ -4784,6 +4729,10 @@
         "type": "object",
         "properties": {
           "availableCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "inProgressSaveCount": {
             "type": "integer",
             "format": "int32"
           },
@@ -4806,6 +4755,7 @@
         "required": [
           "availableCount",
           "hasNext",
+          "inProgressSaveCount",
           "items"
         ]
       },
@@ -4848,7 +4798,10 @@
             "type": "string"
           },
           "thumbnailUrl": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "place": {
             "$ref": "#/components/schemas/ReviewGridPlace"
@@ -4861,8 +4814,7 @@
           "createdAt",
           "place",
           "reviewId",
-          "saveId",
-          "thumbnailUrl"
+          "saveId"
         ]
       },
       "CursorPageSaveListItemResponse": {
@@ -5964,6 +5916,13 @@
           "timestamp",
           "title"
         ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

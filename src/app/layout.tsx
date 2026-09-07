@@ -6,6 +6,7 @@ import { AmplitudeAnalytics } from "@/shared/components/AmplitudeAnalytics";
 import { AppChrome } from "@/shared/components/AppChrome";
 import { AppToaster } from "@/shared/components/AppToaster";
 import { Ut2Tracker } from "@/shared/components/Ut2Tracker";
+import { AuthProvider } from "@/shared/providers/AuthProvider";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
 import { isAmplitudeEnabled } from "@/shared/utils/amplitude";
 import { CLARITY_SNIPPET, isClarityEnabled } from "@/shared/utils/clarity";
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <div className="app-frame">
-            <AppChrome>{children}</AppChrome>
+            <AuthProvider>
+              <AppChrome>{children}</AppChrome>
+            </AuthProvider>
           </div>
           <AppToaster />
         </QueryProvider>

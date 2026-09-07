@@ -7,5 +7,5 @@
  */
 
 export type NameAvailabilityParams = {
-  name?: string;
+  name: string;
 };

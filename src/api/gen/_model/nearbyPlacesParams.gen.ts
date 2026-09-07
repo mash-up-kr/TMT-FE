@@ -7,10 +7,10 @@
  */
 
 export type NearbyPlacesParams = {
-  north?: number;
-  south?: number;
-  east?: number;
-  west?: number;
+  north: number;
+  south: number;
+  east: number;
+  west: number;
   latitude?: number;
   longitude?: number;
   query?: string;
