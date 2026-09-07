@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentPropsWithRef } from "react";
-import type { AppBottomNavValue } from "@/shared/model/appNavigation";
+import type { AppBottomNavValue } from "@/shared/utils/bottomNavigationPolicy";
 import { cn } from "@/shared/utils/cn";
 import { FeedIcon, GroupIcon, HomeIcon, MyIcon, PlusIcon } from "./Icons";
 

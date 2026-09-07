@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
-import type { AppBottomNavValue } from "@/shared/model/appNavigation";
 import { BottomNav } from "@/shared/ui/BottomNav";
-import { getBottomNavHref } from "@/shared/utils/bottomNavigationPolicy";
+import { type AppBottomNavValue, getBottomNavHref } from "@/shared/utils/bottomNavigationPolicy";
 
 /**
  * 알약을 본문 위에 띄운다. 스트립 높이를 여백이 아니라 토큰으로 잡아, 예약한 높이와
