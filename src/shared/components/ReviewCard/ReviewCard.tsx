@@ -7,6 +7,7 @@ import { placeDetailPath } from "@/shared/constants/routes";
 import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
+import { ImageCarousel } from "@/shared/ui/ImageCarousel";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 import { formatDistance } from "@/shared/utils/formatDistance";
@@ -51,7 +52,12 @@ export function ReviewCard({
         rating={review.rating}
         distanceMeters={review.distanceMeters}
       />
-      <ReviewCardPhoto url={review.photoUrls.at(0) ?? null} />
+      <ImageCarousel
+        imageUrls={review.photoUrls}
+        fallbackSrc={imageFallback}
+        label="리뷰 사진"
+        className="h-[360px] w-full shrink-0 bg-surface-tertiary"
+      />
       <div className="flex flex-col gap-ds-12 rounded-b-ds-md bg-surface-primary p-ds-16">
         <AiSummary
           pros={review.pros}
@@ -130,23 +136,6 @@ function AuthorAvatar({ imageUrl }: { imageUrl: string | null }) {
       height={40}
       className="size-ds-40 shrink-0 rounded-ds-full object-cover"
     />
-  );
-}
-
-function ReviewCardPhoto({ url }: { url: string | null }) {
-  if (!url) {
-    return null;
-  }
-
-  return (
-    <div className="relative h-[360px] w-full shrink-0 overflow-hidden bg-surface-tertiary">
-      <ImageWithFallback
-        src={url}
-        fallbackSrc={imageFallback}
-        alt=""
-        className="size-full object-cover"
-      />
-    </div>
   );
 }
 

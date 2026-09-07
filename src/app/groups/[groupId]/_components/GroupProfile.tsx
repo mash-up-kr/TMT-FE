@@ -1,6 +1,7 @@
 import groupFallbackImage from "@/shared/assets/dummy.png";
 import coverFallbackImage from "@/shared/assets/dummy-small.png";
 import { MatchedPlaceBadge } from "@/shared/components/MatchedPlaceBadge/MatchedPlaceBadge";
+import { ImageCarousel } from "@/shared/ui/ImageCarousel";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { GroupProfileData } from "../_model/groupDetail";
 
@@ -12,12 +13,21 @@ export function GroupProfile({ group }: GroupProfileProps) {
   return (
     <section className="shrink-0 bg-surface-primary">
       <div className="h-[140px] overflow-hidden bg-surface-secondary">
-        <ImageWithFallback
-          src={group.coverImageUrl}
-          fallbackSrc={coverFallbackImage}
-          alt={`${group.name} 대표 이미지`}
-          className="size-full object-cover"
-        />
+        {group.coverImageUrls.length > 0 ? (
+          <ImageCarousel
+            imageUrls={group.coverImageUrls}
+            fallbackSrc={coverFallbackImage}
+            label={`${group.name} 대표 이미지`}
+            className="size-full"
+          />
+        ) : (
+          <ImageWithFallback
+            src={null}
+            fallbackSrc={coverFallbackImage}
+            alt={`${group.name} 대표 이미지`}
+            className="size-full object-cover"
+          />
+        )}
       </div>
 
       <div className="flex flex-col gap-ds-12 px-ds-20 py-ds-16">

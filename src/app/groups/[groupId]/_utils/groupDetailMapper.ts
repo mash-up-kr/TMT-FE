@@ -7,7 +7,12 @@ export function toGroupDetailViewData(detail: GroupDetailResponse): GroupDetailV
     name: detail.name,
     oneLineDescription: detail.oneLineDescription,
     description: detail.description ?? null,
-    coverImageUrl: detail.coverImages.at(0)?.url ?? detail.imageUrl ?? null,
+    coverImageUrls:
+      detail.coverImages.length > 0
+        ? detail.coverImages.map((image) => image.url)
+        : detail.imageUrl
+          ? [detail.imageUrl]
+          : [],
     imageUrl: detail.imageUrl ?? null,
     memberCount: detail.memberCount,
     reviewCount: detail.reviewCount,
