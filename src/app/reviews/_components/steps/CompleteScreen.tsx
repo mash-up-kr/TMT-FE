@@ -10,18 +10,16 @@ import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { MapPinIcon } from "@/shared/ui/Icons";
-import { REVIEW_FLOW_EXIT_PATH, reviewStepPath } from "../../_constants/steps";
+import { REVIEW_FLOW_EXIT_PATH } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
 import type { CompleteReviewStore } from "../../_model/store";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
-import { useReviewFlowBase, useReviewFlowSaveId } from "../../_stores/ReviewFlowBaseProvider";
+import { useReviewFlowSaveId } from "../../_stores/ReviewFlowBaseProvider";
 import { ReviewCompleteVisual } from "../ReviewCompleteVisual";
 import { ReviewStepLayout } from "../ReviewStepLayout";
 import { GroupJoinCompleteScreen } from "./GroupJoinCompleteScreen";
 
 export function CompleteScreen() {
-  const router = useRouter();
-  const basePath = useReviewFlowBase();
   const saveId = useReviewFlowSaveId();
   const store = useReviewDraftGuard();
   const { saveResult } = useReviewDraft();
@@ -37,12 +35,6 @@ export function CompleteScreen() {
   useEffect(() => {
     setJoinGroupId(saveId === null ? null : readJoinGroupForSave(saveId));
   }, [saveId]);
-
-  useEffect(() => {
-    if (store !== null && saveId === null) {
-      router.replace(reviewStepPath(basePath, "rating"));
-    }
-  }, [basePath, router, saveId, store]);
 
   // ⚠️ UT2 임시 계측. Task 1의 건너뛰기 제출에서도 이 화면을 거쳐 한 번 더 찍힌다.
   useUt2Step(UT2_STEPS.REVIEW_COMPLETE, isReviewCompleted);

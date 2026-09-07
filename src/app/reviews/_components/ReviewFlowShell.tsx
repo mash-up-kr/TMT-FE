@@ -39,6 +39,11 @@ export function useReviewFlowExit() {
 }
 
 function findStepIndex(basePath: string, pathname: string) {
+  // 매장 검색은 초안이 없어 경로가 곧 첫 단계다. 뒤에 붙일 단계 세그먼트가 없다.
+  if (pathname === NEW_REVIEW_BASE_PATH) {
+    return 0;
+  }
+
   const index = REVIEW_STEPS.findIndex((segment) => pathname === reviewStepPath(basePath, segment));
 
   return index === -1 ? null : index;

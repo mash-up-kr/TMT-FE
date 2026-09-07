@@ -231,7 +231,7 @@ export function useReviewSave() {
         queryClient.removeQueries({ queryKey: getGetSaveQueryKey(saveId) });
         void queryClient.invalidateQueries({ queryKey: getListSavesQueryKey() });
         toast.error(getTmtApiErrorTitle(error) ?? SAVE_FAILED_MESSAGE);
-        router.replace(ROUTES.REVIEWS.CONTINUE);
+        router.replace(ROUTES.REVIEWS.DRAFTS);
         return;
       }
 

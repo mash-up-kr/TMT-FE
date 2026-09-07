@@ -99,7 +99,7 @@ export function useContinueDraftPrompt({ ready }: ContinueDraftPromptOptions) {
     setIsOpen(false);
     // 초안이 하나뿐이면 고를 것이 없으므로 선택 화면을 건너뛴다.
     router.push(
-      drafts.length === 1 ? ROUTES.REVIEWS.DRAFT(firstDraft.saveId) : ROUTES.REVIEWS.CONTINUE,
+      drafts.length === 1 ? ROUTES.REVIEWS.DRAFT(firstDraft.saveId) : ROUTES.REVIEWS.DRAFTS,
     );
   };
 

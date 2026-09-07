@@ -18,9 +18,10 @@ export const ROUTES = {
     MENUS: "/places/[placeId]/menus",
   },
   REVIEWS: {
-    NEW: "/reviews/new",
-    CONTINUE: "/reviews/continue",
+    /** 초안 목록. 쓰다 만 리뷰를 고르는 화면이다. */
     DRAFTS: "/reviews/drafts",
+    /** 새 리뷰의 첫 화면(매장 검색). 아직 초안이 없어 id 자리에 `new`가 온다. */
+    NEW: "/reviews/drafts/new",
     /** 작성 중인 초안의 흐름 진입점. 단계 세그먼트는 reviews 라우트가 붙인다. */
     DRAFT: (draftId: string) => `/reviews/drafts/${draftId}`,
     DETAIL: "/reviews/[saveId]",

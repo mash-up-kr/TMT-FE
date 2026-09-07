@@ -10,8 +10,8 @@ import { ROUTES } from "./routes";
  * 붙인다. 완료 화면은 지금 초안과 id가 같을 때만 그룹 화면을 띄우므로, 마이페이지에서 다른
  * 초안을 이어 써도 이 그룹이 따라붙지 않는다. 같은 초안이면 나중에 이어 써도 그룹 화면이다.
  *
- * sessionStorage를 쓰는 이유: 첫 저장에서 흐름이 `/reviews/new`에서 `/reviews/drafts/{id}`로
- * 옮겨가며 layout까지 새로 마운트되어 React 안의 상태로는 살아남지 못한다.
+ * sessionStorage를 쓰는 이유: 첫 저장에서 흐름이 `/reviews/drafts/new`에서 `/reviews/drafts/{id}`
+ * 로 옮겨가며 layout까지 새로 마운트되어 React 안의 상태로는 살아남지 못한다.
  */
 const JOIN_GROUP_PARAM = "joinGroup";
 const STORAGE_KEY = "review:joinGroup";
@@ -25,7 +25,7 @@ export function newReviewForGroupJoinPath(groupId: string) {
 
 /** 그룹 상세에서 쓰다 만 리뷰를 고르는 화면으로 보낼 때 쓴다. */
 export function continueDraftForGroupJoinPath(groupId: string) {
-  return `${ROUTES.REVIEWS.CONTINUE}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`;
+  return `${ROUTES.REVIEWS.DRAFTS}?${JOIN_GROUP_PARAM}=${encodeURIComponent(groupId)}`;
 }
 
 function read(): JoinGroupIntent | null {
