@@ -304,12 +304,22 @@ function GroupDetailPreviewScreen({ scenario }: { scenario: GroupDetailPreviewSc
       <GroupDetailView
         group={group}
         reviewList={{
+          status: "ready",
           reviews:
             scenario.key === "empty-reviews" || scenario.key === "member-empty-reviews"
               ? []
               : reviews,
           hasNextPage: false,
         }}
+        joinPreview={
+          group.isMember
+            ? { status: "not-required" }
+            : {
+                status: "ready",
+                availableTicketCount: group.availableTicketCount,
+                isJoinable: group.isJoinable,
+              }
+        }
         joinAction={joinAction}
         leaveAction={leaveAction}
       />
