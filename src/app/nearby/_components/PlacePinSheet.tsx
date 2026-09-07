@@ -11,6 +11,7 @@ import { CancelIcon } from "@/shared/ui/Icons";
 import { Spinner } from "@/shared/ui/Spinner";
 import { usePinPlace } from "../_hooks/usePinPlace";
 import type { PinPlace } from "../_utils/nearbyMapper";
+import { CopyAddressButton } from "./CopyAddressButton";
 
 type PlacePinSheetProps = {
   placeId: string | null;
@@ -90,7 +91,11 @@ function PinSheetBody({
         isFavoritePending={isFavoritePending}
         onToggleFavoriteAction={onToggleFavoriteAction}
       />
-      <PlaceSummary place={place} hidePhone />
+      <PlaceSummary
+        place={place}
+        hidePhone
+        addressAction={<CopyAddressButton address={place.roadAddress} />}
+      />
     </div>
   );
 }
@@ -131,11 +136,7 @@ function PinSheetHeader({
 
 function PinSheetActions({ place }: { place: PinPlace }) {
   return (
-    <ButtonStack type="horizontal">
-      {/* 나침반 동작이 시안에 정의돼 있지 않아 자리만 잡는다. */}
-      <Button variant="tertiary" size="md">
-        나침반
-      </Button>
+    <ButtonStack>
       <Button
         variant="secondary"
         size="md"

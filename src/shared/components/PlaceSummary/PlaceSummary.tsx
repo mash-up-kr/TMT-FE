@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import fallbackImage from "@/shared/assets/dummy-image.png";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { MapPinIcon, PhoneIcon, StarIcon } from "@/shared/ui/Icons";
@@ -21,6 +22,8 @@ type PlaceSummaryProps = {
    * 전환 대상 화면이 정해지면 핸들러를 넘긴다.
    */
   onMapClick?: () => void;
+  /** 주소 옆 액션. 지도 시트는 지도 이동 대신 주소 복사를 제공한다. */
+  addressAction?: ReactNode;
   /** 핀 시트에는 전화 줄이 없다 (시안 1340:28920). */
   hidePhone?: boolean;
 };
@@ -31,7 +34,12 @@ type PlaceSummaryProps = {
  * 가게명·별점은 포함하지 않는다 — 상세는 본문 제목으로, 시트는 찜·닫기와 한 줄로
  * 배치해 화면마다 형태가 다르다.
  */
-export function PlaceSummary({ place, onMapClick, hidePhone = false }: PlaceSummaryProps) {
+export function PlaceSummary({
+  place,
+  onMapClick,
+  addressAction,
+  hidePhone = false,
+}: PlaceSummaryProps) {
   return (
     <>
       {place.photoUrls.length > 0 ? <PhotoStrip urls={place.photoUrls} /> : null}
@@ -39,15 +47,19 @@ export function PlaceSummary({ place, onMapClick, hidePhone = false }: PlaceSumm
       <div className="flex flex-col gap-ds-12 px-ds-20 py-ds-20 text-body-md-medium text-content-tertiary">
         <p className="flex items-center gap-ds-4">
           <MapPinIcon size={20} className="shrink-0 text-icon-interactive-primary" />
-          <span className="min-w-0 truncate">{place.roadAddress}</span>
+          <span className="min-w-0 truncate" title={place.roadAddress}>
+            {place.roadAddress}
+          </span>
           <span aria-hidden="true" className="h-ds-12 w-px shrink-0 bg-stroke-primary" />
-          <button
-            type="button"
-            onClick={onMapClick}
-            className="shrink-0 text-body-md-medium text-content-info"
-          >
-            지도
-          </button>
+          {addressAction ?? (
+            <button
+              type="button"
+              onClick={onMapClick}
+              className="shrink-0 text-body-md-medium text-content-info"
+            >
+              지도
+            </button>
+          )}
         </p>
         {!hidePhone && place.phoneNumber ? (
           <p className="flex items-center gap-ds-4">
