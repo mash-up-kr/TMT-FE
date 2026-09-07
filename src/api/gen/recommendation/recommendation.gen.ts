@@ -7,33 +7,62 @@
  */
 
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import type { ErrorType } from "../../mutator";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
+import type { CursorPageReviewedPlaceItem } from "../_model/cursorPageReviewedPlaceItem.gen";
 import type { ErrorResponse } from "../_model/errorResponse.gen";
+import type { RecommendationRequest } from "../_model/recommendationRequest.gen";
 import type { RecommendationResponse } from "../_model/recommendationResponse.gen";
+import type { ReviewedPlacesParams } from "../_model/reviewedPlacesParams.gen";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
+  const result = { queryKey } as T & { queryKey: K };
+  for (const key of Object.keys(query)) {
+    // The explicit queryKey always wins, matching the previous
+    // `{ ...query, queryKey }` spread where it was set last.
+    if (key === "queryKey") continue;
+    Object.defineProperty(result, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => (query as Record<string, unknown>)[key],
+    });
+  }
+  return result;
+};
 
 export const getRecommendPlaceUrl = () => {
   return `/v1/recommendations/places`;
 };
 
 /**
- * 내 리뷰를 근거로 아직 리뷰하지 않은 매장 1곳을 고른다 (A3).
+ * 고른 매장을 근거로 아직 리뷰하지 않은 매장 1곳을 고른다. 외부 LLM을 호출하므로 같은 요청도 호출마다 결과가 달라진다 — `재추천` 버튼이 이것에 기댄다. `summary`는 그 매장 **최신 리뷰**의 요약을 그대로 쓴다 (A3). 매장에 리뷰가 없거나 요약이 아직 없으면 null이다 (A2).
  * @summary 매장 추천받기
  */
 export const recommendPlace = async (
+  recommendationRequest: RecommendationRequest,
   options?: Parameters<typeof tmtFetch>[1],
 ): Promise<RecommendationResponse> => {
   return tmtFetch<RecommendationResponse>(getRecommendPlaceUrl(), {
     ...options,
     method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(recommendationRequest),
   });
 };
 
@@ -41,9 +70,19 @@ export const getRecommendPlaceMutationOptions = <
   TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof recommendPlace>>, TError, void, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recommendPlace>>,
+    TError,
+    { data: BodyType<RecommendationRequest> },
+    TContext
+  >;
   request?: SecondParameter<typeof tmtFetch>;
-}): UseMutationOptions<Awaited<ReturnType<typeof recommendPlace>>, TError, void, TContext> => {
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof recommendPlace>>,
+  TError,
+  { data: BodyType<RecommendationRequest> },
+  TContext
+> => {
   const mutationKey = ["recommendPlace"];
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
@@ -51,15 +90,20 @@ export const getRecommendPlaceMutationOptions = <
       : { ...options, mutation: { ...options.mutation, mutationKey } }
     : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof recommendPlace>>, void> = () => {
-    return recommendPlace(requestOptions);
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof recommendPlace>>,
+    { data: BodyType<RecommendationRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return recommendPlace(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
 export type RecommendPlaceMutationResult = NonNullable<Awaited<ReturnType<typeof recommendPlace>>>;
-
+export type RecommendPlaceMutationBody = BodyType<RecommendationRequest>;
 export type RecommendPlaceMutationError = ErrorType<ErrorResponse>;
 
 /**
@@ -70,12 +114,150 @@ export const useRecommendPlace = <TError = ErrorType<ErrorResponse>, TContext = 
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof recommendPlace>>,
       TError,
-      void,
+      { data: BodyType<RecommendationRequest> },
       TContext
     >;
     request?: SecondParameter<typeof tmtFetch>;
   },
   queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof recommendPlace>>, TError, void, TContext> => {
+): UseMutationResult<
+  Awaited<ReturnType<typeof recommendPlace>>,
+  TError,
+  { data: BodyType<RecommendationRequest> },
+  TContext
+> => {
   return useMutation(getRecommendPlaceMutationOptions(options), queryClient);
 };
+export const getReviewedPlacesUrl = (params?: ReviewedPlacesParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/users/me/reviewed-places?${stringifiedParams}`
+    : `/v1/users/me/reviewed-places`;
+};
+
+/**
+ * 고른 매장을 `POST /v1/recommendations/places`의 `placeIds`에 그대로 싣는다. **매장 단위**라 같은 매장에 리뷰가 여러 건이어도 한 칸이다 (S6). `thumbnailUrl`이 null이면 화면이 `categoryId` 아이콘을 그린다 (C4-1·R11). 미완성 저장의 매장은 나오지 않는다 (R8).
+ * @summary 추천 격자 — 내가 리뷰한 매장
+ */
+export const reviewedPlaces = async (
+  params?: ReviewedPlacesParams,
+  options?: Parameters<typeof tmtFetch>[1],
+): Promise<CursorPageReviewedPlaceItem> => {
+  return tmtFetch<CursorPageReviewedPlaceItem>(getReviewedPlacesUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getReviewedPlacesQueryKey = (params?: ReviewedPlacesParams) => {
+  return [`/v1/users/me/reviewed-places`, ...(params ? [params] : [])] as const;
+};
+
+export const getReviewedPlacesQueryOptions = <
+  TData = Awaited<ReturnType<typeof reviewedPlaces>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: ReviewedPlacesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewedPlaces>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getReviewedPlacesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof reviewedPlaces>>> = ({ signal }) =>
+    reviewedPlaces(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof reviewedPlaces>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ReviewedPlacesQueryResult = NonNullable<Awaited<ReturnType<typeof reviewedPlaces>>>;
+export type ReviewedPlacesQueryError = ErrorType<ErrorResponse>;
+
+export function useReviewedPlaces<
+  TData = Awaited<ReturnType<typeof reviewedPlaces>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params: undefined | ReviewedPlacesParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewedPlaces>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reviewedPlaces>>,
+          TError,
+          Awaited<ReturnType<typeof reviewedPlaces>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useReviewedPlaces<
+  TData = Awaited<ReturnType<typeof reviewedPlaces>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: ReviewedPlacesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewedPlaces>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reviewedPlaces>>,
+          TError,
+          Awaited<ReturnType<typeof reviewedPlaces>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useReviewedPlaces<
+  TData = Awaited<ReturnType<typeof reviewedPlaces>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: ReviewedPlacesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewedPlaces>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary 추천 격자 — 내가 리뷰한 매장
+ */
+
+export function useReviewedPlaces<
+  TData = Awaited<ReturnType<typeof reviewedPlaces>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: ReviewedPlacesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reviewedPlaces>>, TError, TData>>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getReviewedPlacesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}

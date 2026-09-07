@@ -12,6 +12,9 @@ export interface RecommendedPlace {
   roadAddress: string;
   /** @nullable */
   categoryName?: string | null;
-  /** @nullable */
+  /**
+   * 이 매장 최신 리뷰의 첫 사진 (P7). 사진 있는 리뷰가 없으면 null
+   * @nullable
+   */
   thumbnailUrl?: string | null;
 }

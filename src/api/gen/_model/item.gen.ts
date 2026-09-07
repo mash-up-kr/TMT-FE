@@ -9,7 +9,11 @@
 export interface Item {
   reviewId: string;
   placeName: string;
-  thumbnailUrl: string;
+  /**
+   * 리뷰의 첫 사진. 사진 0장 리뷰면 null이고 화면이 기본 일러스트를 그린다
+   * @nullable
+   */
+  thumbnailUrl?: string | null;
   contentPreview: string;
   createdAt: string;
   isShared: boolean;
