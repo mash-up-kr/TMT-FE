@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
@@ -8,30 +7,28 @@ import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
-import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
-import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { PlusIcon } from "@/shared/ui/Icons";
+import { LeaveGroupIcon } from "@/shared/ui/Icons";
 import { toast } from "@/shared/ui/Toast";
 import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { useMyProfileTabPage } from "../_hooks/useMyProfileTabPage";
 import { useReviewDetailSheet } from "../_hooks/useReviewDetailSheet";
 import type { ProfileTab } from "../_model/profile";
 import { toGroupHref, toPlaceHref } from "../_utils/profileHrefs";
+import { LogoutConfirmModal } from "./LogoutConfirmModal";
 import { PlaceRecommendationCard } from "./PlaceRecommendationCard";
 import { ProfileTabPageView } from "./ProfileTabPageView";
 import { TicketCard } from "./TicketCard";
 
 export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
-  const router = useRouter();
   const { logout } = useAuth();
   const summary = useMyProfileSummary();
   const tabPage = useMyProfileTabPage(activeTab);
   const sheet = useReviewDetailSheet();
-  const reviewEntryPath = useReviewEntryPath();
   // 어느 카드가 대기 중인지 표시해야 해서 mutation의 isPending으로 대체하지 않는다.
   const [pendingPlaceId, setPendingPlaceId] = useState<string | null>(null);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const favorite = usePlaceFavorite({
     onSuccessAction: () => toast.success("좋아요를 취소했어요"),
   });
@@ -50,8 +47,8 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
       title={null}
       left={<TMTLogoHomeLink />}
       right={
-        <IconButton aria-label="리뷰 작성하기" onClick={() => router.push(reviewEntryPath)}>
-          <PlusIcon size={28} />
+        <IconButton aria-label="로그아웃" onClick={() => setLogoutOpen(true)}>
+          <LeaveGroupIcon size={28} />
         </IconButton>
       }
     />
@@ -72,14 +69,6 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
                 count={summary.data?.availableTicketCount}
                 href={ROUTES.PROFILE.TICKETS}
               />
-              <Button
-                size="sm"
-                variant="tertiary"
-                className="self-end"
-                onClick={() => void logout().catch(() => undefined)}
-              >
-                로그아웃
-              </Button>
             </>
           }
           tabBody={{
@@ -96,6 +85,11 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
         open={sheet.isOpen}
         onOpenChange={sheet.onOpenChange}
         detail={sheet.detail}
+      />
+      <LogoutConfirmModal
+        open={logoutOpen}
+        onOpenChange={setLogoutOpen}
+        onLogout={() => void logout().catch(() => undefined)}
       />
     </>
   );
