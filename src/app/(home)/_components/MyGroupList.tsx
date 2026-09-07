@@ -28,17 +28,17 @@ export function MyGroupList({ groups }: MyGroupListProps) {
         ))}
         <li className="flex w-19 shrink-0 flex-col items-center gap-ds-8">
           <Link
-            href={ROUTES.GROUPS.NEW}
-            aria-label="새 그룹 만들기"
+            href={ROUTES.GROUPS.ROOT}
+            aria-label="새 그룹 가입하기"
             className="flex size-15 items-center justify-center rounded-ds-full border-sm border-stroke-primary bg-surface-secondary text-icon-disabled"
           >
             <PlusIcon size={32} />
           </Link>
           {groups.length === 0 ? (
             <span className="line-clamp-2 w-full text-center text-body-sm-medium text-content-disabled">
-              새그룹
+              새 그룹
               <br />
-              만들기
+              가입하기
             </span>
           ) : null}
         </li>
