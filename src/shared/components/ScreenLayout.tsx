@@ -5,7 +5,7 @@ export type ScreenLayoutProps = ComponentPropsWithoutRef<"div"> & {
   header: ReactNode;
   /** 본문이 별도의 스크롤 영역을 가질 때 false. */
   bodyScrollable?: boolean;
-  /** 스크롤과 무관하게 본문 위에 떠 있는 요소(FAB 등). 본문 영역을 기준으로 배치된다. */
+  /** 스크롤과 무관하게 본문 위에 떠 있는 요소(FAB 등). 바텀 내브를 제외한 본문 영역을 기준으로 배치된다. */
   floating?: ReactNode;
 };
 
@@ -32,7 +32,11 @@ export function ScreenLayout({
       ) : (
         <div className="relative flex min-h-0 flex-1 flex-col">
           {body}
-          {floating}
+          {/* 바텀 내브가 오버레이라 이 레이어의 바닥을 알약 위로 올린다. 그래야 FAB이 내브 높이를
+              모른 채 `bottom-ds-20`만으로 알약 위에 놓인다. 레이어 자체는 이벤트를 먹지 않는다. */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 bottom-(--layout-bottom-inset)">
+            {floating}
+          </div>
         </div>
       )}
     </div>

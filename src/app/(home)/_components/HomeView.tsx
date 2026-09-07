@@ -28,30 +28,32 @@ export function HomeView({
   const hasGroups = summary.myGroups.length > 0;
 
   return (
-    <main className="flex flex-1 flex-col bg-surface-secondary">
-      <h1 className="truncate bg-surface-primary px-ds-20 py-ds-12 text-heading-lg text-content-primary">
-        {summary.nickname}님 안녕하세요
-      </h1>
+    <main className="flex flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
+        <h1 className="truncate bg-surface-primary px-ds-20 py-ds-12 text-heading-lg text-content-primary">
+          {summary.nickname}님 안녕하세요
+        </h1>
 
-      <MyGroupList groups={summary.myGroups} />
+        <MyGroupList groups={summary.myGroups} />
 
-      {hasGroups ? (
-        <HomeFeed
-          position={position}
-          isPending={feedIsPending}
-          isError={feedIsError}
-          onRetry={onFeedRetry}
-          reviews={reviews}
-          favoriteAction={favoriteAction}
+        {hasGroups ? (
+          <HomeFeed
+            position={position}
+            isPending={feedIsPending}
+            isError={feedIsError}
+            onRetry={onFeedRetry}
+            reviews={reviews}
+            favoriteAction={favoriteAction}
+          />
+        ) : (
+          <EmptyFeed />
+        )}
+
+        <RecommendedGroupList
+          groups={summary.recommendedGroups}
+          className={hasGroups ? "mt-ds-4" : undefined}
         />
-      ) : (
-        <EmptyFeed />
-      )}
-
-      <RecommendedGroupList
-        groups={summary.recommendedGroups}
-        className={hasGroups ? "mt-ds-4" : undefined}
-      />
+      </div>
     </main>
   );
 }

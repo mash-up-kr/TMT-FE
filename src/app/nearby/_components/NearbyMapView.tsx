@@ -4,7 +4,9 @@ import { useState } from "react";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { type MapBounds, useNearbyPins } from "../_hooks/useNearbyPins";
 import type { NearbyPin } from "../_utils/nearbyMapper";
+import { NearbyCurationChips } from "./NearbyCurationChips";
 import { NearbyMap } from "./NearbyMap";
+import { NearbySearchEntry } from "./NearbySearchEntry";
 import { PlacePinSheet } from "./PlacePinSheet";
 
 /** 매 렌더 새 배열을 넘기면 마커 effect가 계속 다시 돌아 깜빡인다. */
@@ -12,13 +14,21 @@ const EMPTY_PINS: NearbyPin[] = [];
 
 type NearbyMapViewProps = {
   position: ResolvedPosition | null;
+  query: string | null;
+  curationTagId: string | null;
+  onCurationSelect: (id: string | null) => void;
 };
 
 /** 지도형 — viewport 안의 핀과 핀 클릭 시트 (명세 §2-3). */
-export function NearbyMapView({ position }: NearbyMapViewProps) {
+export function NearbyMapView({
+  position,
+  query,
+  curationTagId,
+  onCurationSelect,
+}: NearbyMapViewProps) {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
-  const { data } = useNearbyPins(bounds);
+  const { data } = useNearbyPins(bounds, curationTagId);
 
   return (
     <div className="relative isolate flex min-h-0 flex-1 flex-col">
@@ -30,11 +40,19 @@ export function NearbyMapView({ position }: NearbyMapViewProps) {
         onBoundsChange={setBounds}
         onPinClick={setSelectedPlaceId}
       />
-      {data?.truncated ? (
-        <p className="-translate-x-1/2 absolute top-ds-12 left-1/2 rounded-ds-full bg-surface-inverse px-ds-12 py-ds-4 text-body-sm-medium text-content-interactive-inverse">
-          지도를 확대해 주세요
-        </p>
-      ) : null}
+      <div className="absolute top-ds-12 right-0 left-0 z-overlay flex flex-col gap-ds-12 px-ds-20">
+        <NearbySearchEntry keyword={query} />
+        <NearbyCurationChips
+          selectedId={curationTagId}
+          onSelect={onCurationSelect}
+          className="flex-nowrap overflow-x-auto"
+        />
+        {data?.truncated ? (
+          <p className="self-center rounded-ds-full bg-surface-inverse px-ds-12 py-ds-4 text-body-sm-medium text-content-interactive-inverse">
+            지도를 확대해 주세요
+          </p>
+        ) : null}
+      </div>
       <PlacePinSheet placeId={selectedPlaceId} onClose={() => setSelectedPlaceId(null)} />
     </div>
   );

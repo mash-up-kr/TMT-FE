@@ -1,7 +1,10 @@
 import { ROUTES } from "@/shared/constants/routes";
 import { getActiveBottomNav } from "./bottomNavigationPolicy";
 
-/** 하단 요소(내브 86 · CTA 92 · 가입 게이트 73) 중 최댓값 하나로 통일한다. */
+/**
+ * 하단 요소(내브 `--layout-bottom-navigation-height` · CTA 92 · 가입 게이트 73) 중 최댓값 하나로 통일한다.
+ * 내브 높이만 토큰인 건 토스트가 프레임 밖 portal이라 CSS 변수가 닿지 않기 때문이다.
+ */
 const TOAST_BOTTOM_INSET = 92;
 
 /**

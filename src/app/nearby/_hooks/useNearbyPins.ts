@@ -12,13 +12,14 @@ export interface MapBounds {
  * viewport 안의 핀을 조회한다. 지도를 움직이는 것이 페이지 이동이라 커서를 쓰지 않고
  * bounds가 바뀔 때마다 다시 조회한다 (명세 §2-3).
  */
-export function useNearbyPins(bounds: MapBounds | null) {
+export function useNearbyPins(bounds: MapBounds | null, curationTagId: string | null) {
   return useNearbyPlaces<NearbyPins>(
     {
       north: bounds?.north,
       south: bounds?.south,
       east: bounds?.east,
       west: bounds?.west,
+      curationTagId: curationTagId ?? undefined,
     },
     { query: { enabled: bounds !== null, select: toNearbyPins } },
   );
