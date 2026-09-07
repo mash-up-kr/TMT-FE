@@ -113,7 +113,7 @@ function ViewSwitchButton({ view, onToggle }: ViewSwitchButtonProps) {
       type="button"
       onClick={onToggle}
       aria-label={isFeed ? "지도로 보기" : "피드로 보기"}
-      className="pointer-events-auto absolute right-ds-20 bottom-ds-20 z-overlay rounded-ds-md bg-surface-interactive-secondary p-ds-8 text-icon-interactive-inverse"
+      className="pointer-events-auto absolute right-ds-20 bottom-ds-0 z-overlay rounded-ds-md bg-surface-interactive-secondary p-ds-8 text-icon-interactive-inverse"
     >
       {isFeed ? <MapIcon size={24} /> : <FeedIcon filled size={24} />}
     </button>
