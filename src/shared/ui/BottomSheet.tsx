@@ -56,6 +56,9 @@ type BottomSheetProps = BottomSheetBaseProps & BottomSheetNameProps;
  * 헤더로 GNB를 쓰므로 시트 이름은 `Drawer.Title` 대신 팝업 `aria-label`로 건다. Base UI는
  * Title이 없으면 `aria-labelledby`를 붙이지 않아 충돌하지 않는다.
  *
+ * `VirtualKeyboardProvider`가 없으면 iOS에서 시트 하단이 키보드에 가린다. 레이아웃 뷰포트가
+ * 줄지 않아 CSS만으로는 가려진 높이를 알 수 없다.
+ *
  * @example
  * <BottomSheet title="메뉴 34" right={<CloseButton />}>…</BottomSheet>
  * <BottomSheet label="추천 결과">…</BottomSheet>
@@ -74,58 +77,62 @@ export function BottomSheet({
 }: BottomSheetProps) {
   return (
     <Drawer.Root open={open} onOpenChange={onOpenChange}>
-      <Drawer.Portal>
-        <Drawer.Backdrop
-          className={cn(
-            "fixed inset-0 z-overlay bg-surface-backdrop",
-            "transition-opacity duration-300 ease-out",
-            "data-starting-style:opacity-0 data-ending-style:opacity-0",
-            "data-swiping:duration-0",
-            "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
-          )}
-        />
-        <Drawer.Viewport className="sheet-viewport">
-          <Drawer.Popup
-            aria-label={label ?? title}
+      <Drawer.VirtualKeyboardProvider>
+        <Drawer.Portal>
+          <Drawer.Backdrop
             className={cn(
-              "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
-              heightStyles[height],
-              "-mb-(--layout-sheet-overscroll) pb-(--layout-sheet-overscroll)",
-              "transition-transform duration-300 ease-out",
-              "data-starting-style:translate-y-full data-ending-style:translate-y-full",
-              // 드래그 중 위치는 Base UI가 인라인 transform으로 잡는다. 전환을 켜두면 손가락보다
-              // 늦게 따라오고, translate로 관여하면 그 인라인 값과 충돌한다.
+              "fixed inset-0 z-overlay bg-surface-backdrop",
+              "transition-opacity duration-300 ease-out",
+              "data-starting-style:opacity-0 data-ending-style:opacity-0",
               "data-swiping:duration-0",
               "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
-              className,
             )}
-          >
-            {/* 마우스·펜에서 본문 텍스트 선택이 스와이프로 오인되지 않게 하는 Base UI 파트다. */}
-            <Drawer.Content className="flex min-h-0 flex-1 flex-col">
-              <div aria-hidden="true" className="flex shrink-0 justify-center py-ds-12">
-                {/* 시안 36x4. ds 스케일에 36이 없어 기본 스케일을 쓴다. */}
-                <div className="h-1 w-9 rounded-ds-full bg-stroke-primary" />
-              </div>
+          />
+          <Drawer.Viewport className="sheet-viewport">
+            <Drawer.Popup
+              aria-label={label ?? title}
+              className={cn(
+                "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
+                heightStyles[height],
+                "-mb-(--layout-sheet-overscroll) pb-(--layout-sheet-overscroll)",
+                "transition-transform duration-300 ease-out",
+                "data-starting-style:translate-y-full data-ending-style:translate-y-full",
+                // 드래그 중 위치는 Base UI가 인라인 transform으로 잡는다. 전환을 켜두면 손가락보다
+                // 늦게 따라오고, translate로 관여하면 그 인라인 값과 충돌한다.
+                "data-swiping:duration-0",
+                "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
+                className,
+              )}
+            >
+              {/* 마우스·펜에서 본문 텍스트 선택이 스와이프로 오인되지 않게 하는 Base UI 파트다. */}
+              <Drawer.Content className="flex min-h-0 flex-1 flex-col">
+                <div aria-hidden="true" className="flex shrink-0 justify-center py-ds-12">
+                  {/* 시안 36x4. ds 스케일에 36이 없어 기본 스케일을 쓴다. */}
+                  <div className="h-1 w-9 rounded-ds-full bg-stroke-primary" />
+                </div>
 
-              {title ? (
-                <GNB align="left" title={title} left={left} right={right} className="shrink-0" />
-              ) : null}
+                {title ? (
+                  <GNB align="left" title={title} left={left} right={right} className="shrink-0" />
+                ) : null}
 
-              <div
-                className={cn(
-                  // min-h-0이 빠지면 본문이 줄지 않아 시트가 max-h를 넘긴다.
-                  "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20 pt-ds-12",
-                  !footer && "pb-ds-20",
-                )}
-              >
-                {children}
-              </div>
+                <div
+                  className={cn(
+                    // min-h-0이 빠지면 본문이 줄지 않아 시트가 max-h를 넘긴다.
+                    "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-ds-20 pt-ds-12",
+                    !footer && "pb-ds-20",
+                  )}
+                >
+                  {children}
+                </div>
 
-              {footer ? <div className="shrink-0 px-ds-20 pt-ds-12 pb-ds-32">{footer}</div> : null}
-            </Drawer.Content>
-          </Drawer.Popup>
-        </Drawer.Viewport>
-      </Drawer.Portal>
+                {footer ? (
+                  <div className="shrink-0 px-ds-20 pt-ds-12 pb-ds-32">{footer}</div>
+                ) : null}
+              </Drawer.Content>
+            </Drawer.Popup>
+          </Drawer.Viewport>
+        </Drawer.Portal>
+      </Drawer.VirtualKeyboardProvider>
     </Drawer.Root>
   );
 }
