@@ -6,7 +6,7 @@ export function PageLoading() {
     <div
       role="status"
       aria-label="로딩 중"
-      className="flex min-h-0 flex-1 items-center justify-center bg-surface-secondary"
+      className="flex min-h-0 flex-1 items-center justify-center bg-surface-primary"
     >
       <Spinner size="lg" />
     </div>
