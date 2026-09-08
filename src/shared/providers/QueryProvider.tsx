@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { TmtApiError } from "@/api/mutator";
 
-const STALE_TIME_MS = 60_000;
 const MAX_RETRY_COUNT = 2;
 const HTTP_STATUS_BAD_GATEWAY = 502;
 
@@ -27,8 +26,10 @@ function createQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: STALE_TIME_MS,
-        refetchOnWindowFocus: false,
+        // 화면에 들어오거나 탭으로 돌아올 때마다 서버를 다시 확인한다. 캐시는 그 사이를
+        // 메워 화면을 즉시 그리는 용도지, 최신성을 미루는 용도가 아니다.
+        staleTime: 0,
+        refetchOnWindowFocus: true,
         retry: isServer ? false : shouldRetryQuery,
       },
       mutations: {
