@@ -5,9 +5,9 @@ export function PageLoading() {
   return (
     <div
       role="status"
-      aria-label="로딩 중"
       className="flex min-h-0 flex-1 items-center justify-center bg-surface-primary"
     >
+      <span className="sr-only">로딩 중</span>
       <Spinner size="lg" />
     </div>
   );
