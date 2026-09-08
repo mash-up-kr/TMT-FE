@@ -1,3 +1,4 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { useSearchPlaces } from "@/api/gen/place/place.gen";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { type PlaceCard, toPlaceCards } from "../_utils/feedMapper";
@@ -29,6 +30,13 @@ export function usePlaceSearch({ query, curationTagId, position }: PlaceSearchIn
       longitude: position?.longitude,
       nearbyOnly,
     },
-    { query: { enabled: hasCondition && position !== null, select: toPlaceCards } },
+    {
+      query: {
+        enabled: hasCondition && position !== null,
+        select: toPlaceCards,
+        // 검색어·칩을 바꾸는 동안 이전 결과를 띄워둔다. 매번 비웠다 채우면 화면이 껌벅인다.
+        placeholderData: keepPreviousData,
+      },
+    },
   );
 }
