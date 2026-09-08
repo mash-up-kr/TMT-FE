@@ -39,7 +39,7 @@ export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
         <button
           type="button"
           onClick={onSkip}
-          className="text-body-lg-regular text-content-disabled"
+          className="-mr-ds-8 cursor-pointer px-ds-8 py-ds-8 text-body-lg-regular text-content-disabled active:text-content-tertiary"
         >
           건너뛰기
         </button>
@@ -74,6 +74,7 @@ export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
               src={step.image}
               alt={step.alt}
               priority={index === 0}
+              draggable={false}
               className="h-auto max-h-full w-full self-start object-contain"
             />
           </div>
