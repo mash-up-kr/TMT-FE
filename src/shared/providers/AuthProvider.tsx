@@ -14,12 +14,12 @@ import {
 } from "@/api/auth-session";
 import type { MyProfileResponse } from "@/api/gen/_model/myProfileResponse.gen";
 import { useMe } from "@/api/gen/profile/profile.gen";
-import { getTmtApiErrorCode, TmtApiError } from "@/api/mutator";
 import { ErrorFallback } from "@/shared/components/ErrorFallback";
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
 import { Spinner } from "@/shared/ui/Spinner";
 import { isPublicPage, safeReturnTo } from "@/shared/utils/authNavigation";
+import { getAuthState } from "./authState";
 
 function selectProfileCompleted(profile: MyProfileResponse): boolean {
   if (typeof profile.profileCompleted !== "boolean") {
@@ -38,23 +38,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const preview = pathname === "/preview" || pathname.startsWith("/preview/");
-  const authenticated = snapshot.status === "authenticated";
+  const hasSession = snapshot.status === "authenticated";
   const profile = useMe<boolean>({
-    query: { enabled: authenticated && !preview, select: selectProfileCompleted },
+    query: { enabled: hasSession && !preview, select: selectProfileCompleted },
   });
-  const profileCompleted = authenticated ? (profile.data ?? null) : null;
-  // 다른 사용자의 프로필 404와 구분하기 위해 내 프로필 조회 결과만 판단한다.
-  const accountNotFound =
-    !preview &&
-    authenticated &&
-    profile.isError &&
-    profile.error instanceof TmtApiError &&
-    profile.error.httpStatus === 404 &&
-    getTmtApiErrorCode(profile.error) === "USER_NOT_FOUND";
+  const state = getAuthState(snapshot.status, profile);
   const requiresSignup =
     !preview &&
-    !accountNotFound &&
-    profileCompleted === false &&
+    state.status === "signup-required" &&
     pathname !== ROUTES.SIGNUP &&
     pathname !== "/auth/complete";
 
@@ -91,62 +82,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [pathname, router, snapshot.status]);
 
-  const waitingForPublicProfile = pathname.startsWith("/profile/") && snapshot.status === "loading";
-  const mustWait =
-    (!isPublicPage(pathname) && !authenticated) ||
-    waitingForPublicProfile ||
-    (!preview && authenticated && profileCompleted === null) ||
-    requiresSignup;
-  const logoutFailed = snapshot.status === "logout-error";
-  const sessionFailed = snapshot.status === "error";
-  // 가입 상태가 확인된 뒤의 재조회 실패로 작성 중인 화면을 언마운트하지 않는다.
-  const profileFailed = !preview && authenticated && profileCompleted === null && profile.isError;
-  const failed =
-    logoutFailed || profileFailed || ((mustWait || pathname === "/auth/complete") && sessionFailed);
-
   function returnToLogin() {
     void logoutSession()
       .then(() => router.replace(ROUTES.LOGIN))
       .catch(() => undefined);
   }
 
-  const content = accountNotFound ? (
-    <ErrorFallback
-      title="로그인 정보를 확인할 수 없어요."
-      description="재 로그인해 주세요."
-      actionLabel="재 로그인"
-      onRetry={returnToLogin}
-    />
-  ) : failed ? (
-    <ErrorFallback
-      title={
-        logoutFailed
-          ? "로그아웃하지 못했어요. 다시 시도해 주세요."
-          : "로그인 상태를 확인하지 못했어요."
-      }
-      onRetry={() => {
-        if (logoutFailed) returnToLogin();
-        else if (profileFailed) void profile.refetch();
-        else void refreshSession().catch(() => undefined);
-      }}
-    />
-  ) : mustWait || snapshot.status === "logging-out" ? (
+  function renderContent(): ReactNode {
+    // 미리보기는 인증 가드를 거치지 않지만, 진행 중인 로그아웃은 끝까지 처리한다.
+    if (preview && state.status !== "logging-out") {
+      if (state.status !== "error" || state.source !== "logout") return children;
+    }
+
+    switch (state.status) {
+      case "authenticated":
+        return children;
+      case "anonymous":
+        return isPublicPage(pathname) ? children : <AuthPending />;
+      case "restoring-session":
+        // 공개 프로필도 내 계정인지 구분할 수 있도록 세션 복원을 기다린다.
+        if (isPublicPage(pathname) && !pathname.startsWith("/profile/")) return children;
+        return <AuthPending />;
+      case "checking-profile":
+        return <AuthPending />;
+      case "signup-required":
+        return requiresSignup ? <AuthPending /> : children;
+      case "account-not-found":
+        return (
+          <ErrorFallback
+            title="로그인 정보를 확인할 수 없어요."
+            description="재 로그인해 주세요."
+            actionLabel="재 로그인"
+            onRetry={returnToLogin}
+          />
+        );
+      case "logging-out":
+        return <AuthPending message="로그아웃 중이에요" />;
+      case "error":
+        switch (state.source) {
+          case "logout":
+            return (
+              <ErrorFallback
+                title="로그아웃하지 못했어요. 다시 시도해 주세요."
+                onRetry={returnToLogin}
+              />
+            );
+          case "profile":
+            return (
+              <ErrorFallback
+                title="로그인 상태를 확인하지 못했어요."
+                onRetry={() => void profile.refetch()}
+              />
+            );
+          case "session":
+            if (isPublicPage(pathname) && pathname !== "/auth/complete") return children;
+            return (
+              <ErrorFallback
+                title="로그인 상태를 확인하지 못했어요."
+                onRetry={() => void refreshSession().catch(() => undefined)}
+              />
+            );
+        }
+    }
+  }
+
+  return (
+    <AuthContext value={{ state, logout: logoutSession, announceLogin }}>
+      {renderContent()}
+    </AuthContext>
+  );
+}
+
+function AuthPending({ message = "로그인 상태를 확인하고 있어요" }: { message?: string }) {
+  return (
     <main
       role="status"
       className="flex flex-1 items-center justify-center gap-ds-8 text-content-secondary"
     >
       <Spinner />
-      <span className="text-body-md-medium">
-        {snapshot.status === "logging-out" ? "로그아웃 중이에요" : "로그인 상태를 확인하고 있어요"}
-      </span>
+      <span className="text-body-md-medium">{message}</span>
     </main>
-  ) : (
-    children
-  );
-
-  return (
-    <AuthContext value={{ ...snapshot, profileCompleted, logout: logoutSession, announceLogin }}>
-      {content}
-    </AuthContext>
   );
 }

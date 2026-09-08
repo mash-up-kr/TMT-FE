@@ -8,14 +8,14 @@ import { useSignup } from "../_hooks/useSignup";
 import { SignupForm } from "./SignupForm";
 
 export function SignupScreen() {
-  const { profileCompleted } = useAuth();
+  const { state } = useAuth();
   const router = useRouter();
   const signup = useSignup();
   useEffect(() => {
-    if (profileCompleted === true) router.replace(ROUTES.ONBOARDING);
-  }, [profileCompleted, router]);
+    if (state.status === "authenticated") router.replace(ROUTES.ONBOARDING);
+  }, [state.status, router]);
 
-  if (profileCompleted !== false) return null;
+  if (state.status !== "signup-required") return null;
   return (
     <SignupForm
       isPending={signup.isPending}

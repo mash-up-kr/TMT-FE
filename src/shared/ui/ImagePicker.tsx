@@ -5,21 +5,22 @@ import { CameraIcon, PlusIcon, XCircleIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 
-type ImagePickerProps = {
+type ImagePickerBaseProps = {
   id?: string;
   label: string;
   src?: string | null;
   fallbackSrc?: string | { src: string };
   accept: string;
-  variant?: "camera" | "removable";
   disabled?: boolean;
   describedBy?: string;
   invalid?: boolean;
   className?: string;
   onSelect: (file: File) => void;
-  onRemove?: () => void;
   onImageError?: () => void;
 };
+
+type ImagePickerProps = ImagePickerBaseProps &
+  ({ variant?: "camera"; onRemove?: never } | { variant: "removable"; onRemove: () => void });
 
 /** 파일 선택과 표시를 공유한다. 검증·object URL 수명·업로드는 사용처가 소유한다. */
 export function ImagePicker({
@@ -79,7 +80,7 @@ export function ImagePicker({
           }}
         />
       </label>
-      {src && onRemove && variant === "removable" ? (
+      {src && variant === "removable" ? (
         <button
           type="button"
           aria-label={`${label} 삭제`}

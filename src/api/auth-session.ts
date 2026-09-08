@@ -1,6 +1,6 @@
 import { TmtApiError } from "./error";
 
-type SessionStatus =
+export type SessionStatus =
   | "loading"
   | "authenticated"
   | "anonymous"
