@@ -13,7 +13,7 @@ import { SearchField } from "@/shared/ui/TextField";
  * 결과 목록은 이 화면이 아니라 피드 화면이 그린다 — 검색어를 URL로 넘겨 돌아간다.
  * 라우트가 달라 상태를 공유할 수 없고, URL이면 뒤로가기·새로고침·공유가 모두 자연스럽다.
  */
-export function NearbySearchScreen() {
+export function FeedSearchScreen() {
   const [query, setQuery] = useState("");
   const router = useRouter();
   // 한글 조합 중 누른 Enter는 글자 확정에 쓰여 검색으로 잡히지 않는다.

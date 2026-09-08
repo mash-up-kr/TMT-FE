@@ -10,7 +10,7 @@ import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon } from "@/shared/ui/Icons";
 import { Spinner } from "@/shared/ui/Spinner";
 import { usePinPlace } from "../_hooks/usePinPlace";
-import type { PinPlace } from "../_utils/nearbyMapper";
+import type { PinPlace } from "../_utils/feedMapper";
 import { CopyAddressButton } from "./CopyAddressButton";
 
 type PlacePinSheetProps = {

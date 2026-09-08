@@ -1,5 +1,5 @@
 import { useNearbyPlaces } from "@/api/gen/nearby/nearby.gen";
-import { type NearbyPins, toNearbyPins } from "../_utils/nearbyMapper";
+import { type FeedPins, toFeedPins } from "../_utils/feedMapper";
 
 export interface MapBounds {
   north: number;
@@ -12,8 +12,8 @@ export interface MapBounds {
  * viewport 안의 핀을 조회한다. 지도를 움직이는 것이 페이지 이동이라 커서를 쓰지 않고
  * bounds가 바뀔 때마다 다시 조회한다 (명세 §2-3).
  */
-export function useNearbyPins(bounds: MapBounds | null, curationTagId: string | null) {
-  return useNearbyPlaces<NearbyPins>(
+export function useFeedPins(bounds: MapBounds | null, curationTagId: string | null) {
+  return useNearbyPlaces<FeedPins>(
     {
       north: bounds?.north ?? 0,
       south: bounds?.south ?? 0,
@@ -21,6 +21,6 @@ export function useNearbyPins(bounds: MapBounds | null, curationTagId: string | 
       west: bounds?.west ?? 0,
       curationTagId: curationTagId ?? undefined,
     },
-    { query: { enabled: bounds !== null, select: toNearbyPins } },
+    { query: { enabled: bounds !== null, select: toFeedPins } },
   );
 }

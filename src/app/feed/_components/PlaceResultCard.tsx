@@ -5,7 +5,7 @@ import { placeDetailPath } from "@/shared/constants/routes";
 import { ReviewsIcon, StarIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { formatDistance } from "@/shared/utils/formatDistance";
-import type { PlaceCard } from "../_utils/nearbyMapper";
+import type { PlaceCard } from "../_utils/feedMapper";
 
 /** 지표 아이콘 크기. GroupCard와 같은 12px 고정이라 값으로 둔다. */
 const ICON_SIZE = 12;

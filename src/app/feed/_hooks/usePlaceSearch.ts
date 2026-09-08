@@ -1,6 +1,6 @@
 import { useSearchPlaces } from "@/api/gen/place/place.gen";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
-import { type PlaceCard, toPlaceCards } from "../_utils/nearbyMapper";
+import { type PlaceCard, toPlaceCards } from "../_utils/feedMapper";
 
 type PlaceSearchInput = {
   query: string | null;

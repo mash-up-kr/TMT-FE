@@ -6,7 +6,7 @@ type GroupSearchBarProps = {
   onValueChange: (value: string) => void;
 };
 
-/** 피드의 검색 진입(NearbySearchEntry)과 같은 모양이다. 입력 즉시 목록을 거르므로 검색 아이콘은 두지 않는다. */
+/** 피드의 검색 진입(FeedSearchEntry)과 같은 모양이다. 입력 즉시 목록을 거르므로 검색 아이콘은 두지 않는다. */
 export function GroupSearchBar({ value, onValueChange }: GroupSearchBarProps) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onValueChange(event.target.value);

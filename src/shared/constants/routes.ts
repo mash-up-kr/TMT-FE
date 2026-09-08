@@ -11,8 +11,8 @@ const PROFILE_ME_TABS = ["reviews", "groups", "favorites"] as const;
 
 export const ROUTES = {
   ROOT: "/",
-  FEED: "/nearby",
-  SEARCH: "/nearby/search",
+  FEED: "/feed",
+  SEARCH: "/feed/search",
   PLACES: {
     DETAIL: "/places/[placeId]",
     MENUS: "/places/[placeId]/menus",
