@@ -8,17 +8,17 @@ import { ROUTES } from "@/shared/constants/routes";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
-import { NearbyCurationChips } from "./NearbyCurationChips";
-import { NearbyFeedView } from "./NearbyFeedView";
-import { NearbyMapView } from "./NearbyMapView";
-import { NearbySearchEntry } from "./NearbySearchEntry";
-import { NearbySearchResults } from "./NearbySearchResults";
+import { FeedCurationChips } from "./FeedCurationChips";
+import { FeedListView } from "./FeedListView";
+import { FeedMapView } from "./FeedMapView";
+import { FeedSearchEntry } from "./FeedSearchEntry";
+import { FeedSearchResults } from "./FeedSearchResults";
 
-type NearbyView = "feed" | "map";
+type FeedView = "feed" | "map";
 
-export function NearbyScreen() {
+export function FeedScreen() {
   const position = useResolvedPosition();
-  const [view, setView] = useState<NearbyView>("feed");
+  const [view, setView] = useState<FeedView>("feed");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -51,15 +51,15 @@ export function NearbyScreen() {
       <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
         {view === "feed" ? (
           <div className="flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
-            <NearbySearchEntry keyword={query} />
-            <NearbyCurationChips
+            <FeedSearchEntry keyword={query} />
+            <FeedCurationChips
               selectedId={curationTagId}
               onSelect={handleCurationSelect}
               className="flex-nowrap overflow-x-auto"
             />
           </div>
         ) : null}
-        <NearbyBody
+        <FeedBody
           view={view}
           position={position}
           query={query}
@@ -71,18 +71,18 @@ export function NearbyScreen() {
   );
 }
 
-type NearbyBodyProps = {
-  view: NearbyView;
+type FeedBodyProps = {
+  view: FeedView;
   position: ResolvedPosition | null;
   query: string | null;
   curationTagId: string | null;
   onCurationSelect: (id: string | null) => void;
 };
 
-function NearbyBody({ view, position, query, curationTagId, onCurationSelect }: NearbyBodyProps) {
+function FeedBody({ view, position, query, curationTagId, onCurationSelect }: FeedBodyProps) {
   if (view === "map") {
     return (
-      <NearbyMapView
+      <FeedMapView
         position={position}
         query={query}
         curationTagId={curationTagId}
@@ -93,14 +93,14 @@ function NearbyBody({ view, position, query, curationTagId, onCurationSelect }: 
 
   // 명세 §0 — 검색어·칩이 있으면 목록이 리뷰 카드에서 가게 카드로 바뀐다.
   if (query || curationTagId) {
-    return <NearbySearchResults position={position} query={query} curationTagId={curationTagId} />;
+    return <FeedSearchResults position={position} query={query} curationTagId={curationTagId} />;
   }
 
-  return <NearbyFeedView position={position} />;
+  return <FeedListView position={position} />;
 }
 
 type ViewSwitchButtonProps = {
-  view: NearbyView;
+  view: FeedView;
   onToggle: () => void;
 };
 

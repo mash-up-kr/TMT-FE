@@ -11,7 +11,7 @@ export interface CurationChip {
   label: string;
 }
 
-export function toNearbyReviews(page: CursorPageReviewCardResponse): ReviewCardData[] {
+export function toFeedReviews(page: CursorPageReviewCardResponse): ReviewCardData[] {
   return page.items.map(toReviewCardData);
 }
 
@@ -19,7 +19,7 @@ export function toCurationChips(response: ItemsResponseCurationTagResponse): Cur
   return response.items.map((tag) => ({ id: tag.curationTagId, label: tag.label }));
 }
 
-export interface NearbyPin {
+export interface FeedPin {
   id: string;
   name: string;
   latitude: number;
@@ -27,13 +27,13 @@ export interface NearbyPin {
   reviewCount: number;
 }
 
-export interface NearbyPins {
-  pins: NearbyPin[];
+export interface FeedPins {
+  pins: FeedPin[];
   /** 상한(30개)에 걸려 잘렸는지. 화면이 확대 안내를 띄운다 (명세 §2-3). */
   truncated: boolean;
 }
 
-export function toNearbyPins(response: NearbyPlacesResponse): NearbyPins {
+export function toFeedPins(response: NearbyPlacesResponse): FeedPins {
   return {
     pins: response.items.map((pin) => ({
       id: pin.placeId,

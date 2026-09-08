@@ -2,19 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import { loadNaverMaps } from "@/shared/utils/naverMaps";
-import type { MapBounds } from "../_hooks/useNearbyPins";
+import type { MapBounds } from "../_hooks/useFeedPins";
+import type { FeedPin } from "../_utils/feedMapper";
 import { buildMarkerIcon } from "../_utils/mapPinIcon";
-import type { NearbyPin } from "../_utils/nearbyMapper";
 
 /** 권한 거부 시 보내는 기준 좌표 — 강남역 (명세 E3). */
 const FALLBACK_CENTER = { latitude: 37.4979, longitude: 127.0276 };
 const DEFAULT_ZOOM = 15;
 
-type NearbyMapProps = {
+type FeedMapProps = {
   /** 초기 중심. 위치 권한이 늦게 확정되므로 확정되는 시점에 한 번만 반영한다. */
   centerLatitude: number | null;
   centerLongitude: number | null;
-  pins: NearbyPin[];
+  pins: FeedPin[];
   /** 선택된 핀은 이름 라벨과 함께 크게 그린다 (시안 1340:28900). */
   selectedPlaceId: string | null;
   onBoundsChange: (bounds: MapBounds) => void;
@@ -31,14 +31,14 @@ function isSameBounds(previous: MapBounds | null, next: MapBounds) {
   );
 }
 
-export function NearbyMap({
+export function FeedMap({
   centerLatitude,
   centerLongitude,
   pins,
   selectedPlaceId,
   onBoundsChange,
   onPinClick,
-}: NearbyMapProps) {
+}: FeedMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markersRef = useRef<naver.maps.Marker[]>([]);

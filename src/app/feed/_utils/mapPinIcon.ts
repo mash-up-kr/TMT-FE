@@ -1,4 +1,4 @@
-import type { NearbyPin } from "./nearbyMapper";
+import type { FeedPin } from "./feedMapper";
 
 /**
  * 지도 핀 마커의 HTML. 네이버 SDK는 커스텀 마커를 HTML 문자열로 받는다(HtmlIcon).
@@ -46,7 +46,7 @@ export interface MarkerIcon {
   anchor: { x: number; y: number };
 }
 
-export function buildMarkerIcon(pin: NearbyPin, selected: boolean): MarkerIcon {
+export function buildMarkerIcon(pin: FeedPin, selected: boolean): MarkerIcon {
   if (!selected) {
     const dropWidth = Math.round((PIN_SIZE * TEARDROP_WIDTH) / TEARDROP_HEIGHT);
 

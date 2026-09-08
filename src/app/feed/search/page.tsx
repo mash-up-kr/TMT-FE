@@ -1,5 +1,5 @@
-import { NearbySearchScreen } from "../_components/NearbySearchScreen";
+import { FeedSearchScreen } from "../_components/FeedSearchScreen";
 
-export default function NearbySearchPage() {
-  return <NearbySearchScreen />;
+export default function FeedSearchPage() {
+  return <FeedSearchScreen />;
 }

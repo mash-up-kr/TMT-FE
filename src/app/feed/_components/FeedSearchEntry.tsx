@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ROUTES } from "@/shared/constants/routes";
 import { cn } from "@/shared/utils/cn";
 
-export function NearbySearchEntry({ keyword }: { keyword: string | null }) {
+export function FeedSearchEntry({ keyword }: { keyword: string | null }) {
   return (
     <Link
       href={ROUTES.SEARCH}

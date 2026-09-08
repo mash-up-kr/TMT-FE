@@ -1,5 +1,5 @@
 import { usePlaceDetail } from "@/api/gen/place-detail/place-detail.gen";
-import { type PinPlace, toPinPlace } from "../_utils/nearbyMapper";
+import { type PinPlace, toPinPlace } from "../_utils/feedMapper";
 
 /** 핀 클릭 시트용. placeId가 없으면 조회하지 않는다. */
 export function usePinPlace(placeId: string | null) {
