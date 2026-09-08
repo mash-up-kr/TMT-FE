@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { UserProfileScreen } from "../../_components/UserProfileScreen";
 import { parseProfileTab } from "../../_utils/profileTab";
+
+export const metadata: Metadata = {
+  title: "프로필",
+};
 
 export default async function Page({
   params,

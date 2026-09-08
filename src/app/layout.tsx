@@ -6,14 +6,34 @@ import { AmplitudeAnalytics } from "@/shared/components/AmplitudeAnalytics";
 import { AppChrome } from "@/shared/components/AppChrome";
 import { AppToaster } from "@/shared/components/AppToaster";
 import { Ut2Tracker } from "@/shared/components/Ut2Tracker";
+import { SITE, SITE_ORIGIN } from "@/shared/constants/site";
 import { AuthProvider } from "@/shared/providers/AuthProvider";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
 import { isAmplitudeEnabled } from "@/shared/utils/amplitude";
 import { CLARITY_SNIPPET, isClarityEnabled } from "@/shared/utils/clarity";
 
+/**
+ * 검색 색인은 홈만 허용한다. 여기서 `noindex`를 기본값으로 두고 홈만 뒤집으므로,
+ * 앞으로 추가되는 화면도 명시적으로 열지 않는 한 색인되지 않는다.
+ */
 export const metadata: Metadata = {
-  title: "딸깍",
-  description: "딸깍 웹 서비스",
+  metadataBase: new URL(SITE_ORIGIN),
+  applicationName: SITE.name,
+  title: { default: SITE.title, template: `%s | ${SITE.name}` },
+  description: SITE.description,
+  robots: { index: false, follow: false },
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    locale: SITE.locale,
+    title: SITE.title,
+    description: SITE.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.title,
+    description: SITE.description,
+  },
 };
 
 export const viewport: Viewport = {
