@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { ContinueDraftSheet } from "@/shared/components/ContinueDraftSheet";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import {
@@ -291,7 +292,7 @@ function GroupReviewList({
       <section className="mt-ds-4 flex-1 bg-surface-primary" aria-label="그룹 리뷰">
         <h2 className="sr-only">그룹 리뷰</h2>
         <div className="flex items-center justify-center px-ds-20 py-[60px]">
-          <EmptyNotice title="아직 등록된 리뷰가 없어요.">
+          <EmptyNotice src={emptyMascot} title="아직 등록된 리뷰가 없어요.">
             멤버들과 가게 리뷰를 공유해보세요!
           </EmptyNotice>
         </div>

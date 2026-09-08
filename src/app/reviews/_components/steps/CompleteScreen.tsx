@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
+import writingMascot from "@/shared/components/assets/mascot-writing.png";
 import { readJoinGroupForSave } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
@@ -15,7 +17,6 @@ import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
 import type { CompleteReviewStore } from "../../_model/store";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { useReviewFlowSaveId } from "../../_stores/ReviewFlowBaseProvider";
-import { ReviewCompleteVisual } from "../ReviewCompleteVisual";
 import { ReviewStepLayout } from "../ReviewStepLayout";
 import { GroupJoinCompleteScreen } from "./GroupJoinCompleteScreen";
 
@@ -99,7 +100,13 @@ function ReviewCompleteBody({
         ) : null}
       </header>
 
-      <ReviewCompleteVisual />
+      <Image
+        src={writingMascot}
+        alt=""
+        priority
+        sizes="220px"
+        className="size-[220px] object-contain"
+      />
     </ReviewStepLayout>
   );
 }

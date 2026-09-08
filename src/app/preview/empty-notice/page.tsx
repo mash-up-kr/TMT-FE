@@ -1,5 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
+import searchMascot from "@/shared/components/assets/mascot-search.png";
+import writingMascot from "@/shared/components/assets/mascot-writing.png";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { buttonStyles } from "@/shared/ui/Button";
 
@@ -24,13 +28,16 @@ export default function EmptyNoticePreviewPage() {
 
         <PreviewSection title="기본형 · 설명 있음">
           <NoticeFrame previewCase="description">
-            <EmptyNotice title="검색 결과가 없어요.">다른 이름이나 태그로 찾아보세요!</EmptyNotice>
+            <EmptyNotice title="검색 결과가 없어요." src={searchMascot}>
+              다른 이름이나 태그로 찾아보세요!
+            </EmptyNotice>
           </NoticeFrame>
         </PreviewSection>
 
         <PreviewSection title="액션 포함형">
           <NoticeFrame previewCase="action">
             <EmptyNotice
+              src={emptyMascot}
               title="아직 작성한 리뷰가 없어요"
               action={
                 <Link
@@ -50,6 +57,7 @@ export default function EmptyNoticePreviewPage() {
           <NoticeFrame previewCase="prominent">
             <EmptyNotice
               variant="prominent"
+              src={writingMascot}
               eyebrow="아직 게시된 리뷰가 없어요."
               title={"그룹 첫 리뷰를\n등록해보세요!"}
             />
@@ -60,9 +68,20 @@ export default function EmptyNoticePreviewPage() {
           <NoticeFrame previewCase="prominent-writing">
             <EmptyNotice
               variant="prominent"
-              illustration="writing"
+              src={writingMascot}
               eyebrow="작성 중인 리뷰가 있어요"
               title={"리뷰를 이어서\n작성하시겠어요?"}
+            />
+          </NoticeFrame>
+        </PreviewSection>
+        <PreviewSection title="리뷰 작성·저장 완료">
+          <NoticeFrame previewCase="complete">
+            <Image
+              src={writingMascot}
+              alt=""
+              priority
+              sizes="220px"
+              className="size-[220px] object-contain"
             />
           </NoticeFrame>
         </PreviewSection>

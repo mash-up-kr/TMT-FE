@@ -1,5 +1,7 @@
 "use client";
 
+import writingMascot from "@/shared/components/assets/mascot-writing.png";
+
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
@@ -35,6 +37,7 @@ export function GroupFirstReviewSheet({
       <div className="pb-ds-12">
         <EmptyNotice
           variant="prominent"
+          src={writingMascot}
           eyebrow="아직 게시된 리뷰가 없어요."
           title={"그룹 첫 리뷰를\n등록해보세요!"}
         />

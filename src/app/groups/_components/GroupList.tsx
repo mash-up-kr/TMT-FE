@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import searchMascot from "@/shared/components/assets/mascot-search.png";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { GroupCard } from "@/shared/components/GroupCard/GroupCard";
 import { ROUTES } from "@/shared/constants/routes";
@@ -73,7 +74,7 @@ export function GroupListSkeleton() {
 export function GroupListEmpty() {
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center py-ds-32">
-      <EmptyNotice title="검색 결과가 없어요">
+      <EmptyNotice title="검색 결과가 없어요" src={searchMascot}>
         찾으시는 음식 종류, 가게명 등으로 검색해 보세요
       </EmptyNotice>
     </div>
