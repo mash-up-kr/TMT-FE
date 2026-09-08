@@ -21,7 +21,7 @@ export function TMTLogo({ height = 18, variant = "color", className, ...props }:
       aria-label="또맛또"
       height={height}
       width={(height * 128) / 28}
-      className={cn("shrink-0", variant === "simple" && "text-content-primary", className)}
+      className={cn("shrink-0", className)}
       {...props}
     />
   );
