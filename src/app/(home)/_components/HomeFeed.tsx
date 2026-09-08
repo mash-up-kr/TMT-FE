@@ -46,7 +46,11 @@ function resolveNotice({ position, isError, reviews }: HomeFeedProps): FeedNotic
 }
 
 export function HomeFeed(props: HomeFeedProps) {
-  if (props.position.status === "pending" || props.isPending) {
+  // 좌표가 없으면 피드 쿼리가 비활성이라 isPending이 풀리지 않는다. 위치 안내가 스켈레톤보다 우선한다.
+  if (
+    props.position.status === "pending" ||
+    (props.position.status === "granted" && props.isPending)
+  ) {
     return <HomeFeedSkeleton />;
   }
 

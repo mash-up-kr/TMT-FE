@@ -214,7 +214,8 @@ const SCENARIOS: Scenario[] = [
     props: {
       summary: JOINED,
       position: { status: "unavailable" },
-      feedIsPending: false,
+      // 좌표가 없으면 피드 쿼리가 비활성이라 isPending은 true로 남는다.
+      feedIsPending: true,
       feedIsError: false,
       reviews: undefined,
     },
