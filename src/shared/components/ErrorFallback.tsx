@@ -11,6 +11,7 @@ type ErrorFallbackProps = {
   actionLabel?: string;
   onRetry?: () => void;
   actionHref?: string;
+  secondaryAction?: { label: string; onClick: () => void };
 };
 
 export function ErrorFallback({
@@ -19,6 +20,7 @@ export function ErrorFallback({
   actionLabel = "다시 시도",
   onRetry,
   actionHref,
+  secondaryAction,
 }: ErrorFallbackProps) {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-ds-12 bg-surface-primary px-ds-20 py-ds-48">
@@ -37,6 +39,11 @@ export function ErrorFallback({
           {actionLabel}
         </Button>
       )}
+      {secondaryAction ? (
+        <Button variant="ghost" size="md" onClick={secondaryAction.onClick}>
+          {secondaryAction.label}
+        </Button>
+      ) : null}
     </main>
   );
 }

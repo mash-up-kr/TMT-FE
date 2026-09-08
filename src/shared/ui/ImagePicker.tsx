@@ -20,7 +20,10 @@ type ImagePickerBaseProps = {
 };
 
 type ImagePickerProps = ImagePickerBaseProps &
-  ({ variant?: "camera"; onRemove?: never } | { variant: "removable"; onRemove: () => void });
+  (
+    | { variant?: "camera"; onRemove?: never }
+    | { variant: "removable" | "camera-removable"; onRemove: () => void }
+  );
 
 /** 파일 선택과 표시를 공유한다. 검증·object URL 수명·업로드는 사용처가 소유한다. */
 export function ImagePicker({
@@ -56,7 +59,7 @@ export function ImagePicker({
           className="size-full rounded-ds-full object-cover"
           onError={onImageError}
         />
-        {variant === "camera" ? (
+        {variant !== "removable" ? (
           <span
             aria-hidden="true"
             className="absolute right-0 bottom-0 flex rounded-ds-full border border-surface-primary bg-surface-tertiary p-ds-4 text-icon-primary"
@@ -80,7 +83,7 @@ export function ImagePicker({
           }}
         />
       </label>
-      {src && variant === "removable" ? (
+      {src && variant !== "camera" ? (
         <button
           type="button"
           aria-label={`${label} 삭제`}

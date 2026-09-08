@@ -51,6 +51,8 @@ export function SignupForm({ isPending, error, onConfirm, onResetError }: Signup
               invalid={Boolean(draft.imageError)}
               describedBy={draft.imageError ? imageErrorId : undefined}
               onSelect={draft.selectImage}
+              variant="camera-removable"
+              onRemove={draft.removeImage}
               onImageError={draft.rejectImage}
             />
             {draft.imageError ? (

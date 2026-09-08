@@ -27,10 +27,15 @@ export function useSignupDraft() {
     setImage({ file, previewUrl });
   }
 
-  function rejectImage() {
+  function removeImage() {
     if (imageUrlRef.current) URL.revokeObjectURL(imageUrlRef.current);
     imageUrlRef.current = undefined;
     setImage(undefined);
+    setImageError(undefined);
+  }
+
+  function rejectImage() {
+    removeImage();
     setImageError("이미지를 불러올 수 없어요. 다른 파일을 선택해주세요.");
   }
 
@@ -44,6 +49,7 @@ export function useSignupDraft() {
     image,
     imageError,
     selectImage,
+    removeImage,
     rejectImage,
   };
 }

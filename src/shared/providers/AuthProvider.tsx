@@ -132,6 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               <ErrorFallback
                 title="로그인 상태를 확인하지 못했어요."
                 onRetry={() => void profile.refetch()}
+                secondaryAction={{ label: "재 로그인", onClick: returnToLogin }}
               />
             );
           case "session":
