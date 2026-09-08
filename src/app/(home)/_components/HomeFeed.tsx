@@ -18,6 +18,9 @@ type HomeFeedProps = {
   favoriteAction?: ReviewCardFavoriteAction;
 };
 
+/** 한 장은 화면을 못 채워 아래 추천 그룹이 빼꼼 보였다 밀린다. 두 장이면 첫 화면을 넘긴다. */
+const SKELETON_CARDS = [0, 1];
+
 type FeedNotice = {
   title: string;
   description?: string;
@@ -98,32 +101,34 @@ export function HomeFeed(props: HomeFeedProps) {
   );
 }
 
+/** 로드 완료 구조(section > ul > li > ReviewCard)를 그대로 따라야 전환 때 밀리지 않는다. */
 function HomeFeedSkeleton() {
   return (
     <section
       aria-busy="true"
       aria-label="최근 게시물"
-      className="mt-ds-4 flex min-h-0 flex-1 flex-col bg-surface-primary"
+      className="mt-ds-4 flex min-h-0 flex-1 flex-col"
       style={{ overflowAnchor: "none" }}
     >
-      <h2 className="px-ds-20 pt-ds-20 pb-ds-12 text-heading-md text-content-primary">
-        최근 게시물
-      </h2>
-      <article className="flex flex-col">
-        <div className="flex items-center gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
-          <Skeleton className="size-ds-40 shrink-0 rounded-ds-full" />
-          <div className="flex min-w-0 flex-1 flex-col gap-ds-4">
-            <Skeleton className="h-ds-20 w-ds-64" />
-            <Skeleton className="h-ds-12 w-ds-32" />
-          </div>
-        </div>
-        <Skeleton className="h-[360px] w-full rounded-none" />
-        <div className="flex flex-col gap-ds-12 p-ds-16">
-          <Skeleton className="h-ds-20 w-full" />
-          <Skeleton className="h-ds-20 w-2/3" />
-          <Skeleton className="h-ds-32 w-full" />
-        </div>
-      </article>
+      <ul className="flex flex-1 flex-col gap-ds-4">
+        {SKELETON_CARDS.map((card) => (
+          <li key={card} className="flex flex-col bg-surface-primary">
+            <div className="flex items-center gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
+              <Skeleton className="size-ds-40 shrink-0 rounded-ds-full" />
+              <div className="flex min-w-0 flex-1 flex-col gap-ds-4">
+                <Skeleton className="h-ds-20 w-ds-64" />
+                <Skeleton className="h-ds-12 w-ds-32" />
+              </div>
+            </div>
+            <Skeleton className="h-[360px] w-full rounded-none" />
+            <div className="flex flex-col gap-ds-12 p-ds-16">
+              <Skeleton className="h-ds-20 w-full" />
+              <Skeleton className="h-ds-20 w-2/3" />
+              <Skeleton className="h-ds-32 w-full" />
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
