@@ -121,7 +121,7 @@ shared/providers/   →  api/{mutator, auth-session}, api/gen/profile
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
 - 핵심 화면은 Orval Suspense hook으로 읽고 부분 데이터는 일반 hook을 쓴다. access token이 브라우저 메모리에 있으므로 보호 데이터의 서버 prefetch는 하지 않고, AuthProvider의 세션 복원 이후 브라우저에서 조회한다.
-- 인증은 `AuthProvider`와 `api/auth-session.ts`가 관리한다. access는 브라우저 메모리, refresh는 동일 출처의 HttpOnly 쿠키에 보관한다. 일반 API는 브라우저에서 Bearer 헤더로 직접 호출한다. 선택 이유와 한계는 `docs/authentication.md`를 따른다.
+- 인증은 `AuthProvider`와 `api/auth-session.ts`가 관리한다. access는 브라우저 메모리, refresh는 동일 출처의 HttpOnly 쿠키에 보관한다. 일반 API는 브라우저에서 Bearer 헤더로 직접 호출한다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
 - API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 동기화 명령은 `pnpm api:sync`다.
 - mock layer(MSW 등)는 도입하지 않는다.
