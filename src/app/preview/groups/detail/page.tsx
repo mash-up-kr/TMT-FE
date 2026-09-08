@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  GroupDetailError,
-  GroupDetailLoading,
-} from "@/app/groups/[groupId]/_components/GroupDetailFeedback";
+import { GroupDetailError } from "@/app/groups/[groupId]/_components/GroupDetailFeedback";
 import { GroupDetailScreen } from "@/app/groups/[groupId]/_components/GroupDetailScreen";
 import { GroupDetailView } from "@/app/groups/[groupId]/_components/GroupDetailView";
 import { GroupLeaveModal } from "@/app/groups/[groupId]/_components/GroupLeaveModal";
@@ -14,6 +11,7 @@ import {
   requireGroupDetailPageFixture,
 } from "@/app/groups/[groupId]/_constants/groupDetail";
 import type { GroupJoinAction, GroupLeaveAction } from "@/app/groups/[groupId]/_model/groupDetail";
+import { PageLoading } from "@/shared/ui/PageLoading";
 import { toast } from "@/shared/ui/Toast";
 import { cn } from "@/shared/utils/cn";
 
@@ -241,7 +239,7 @@ export default function GroupDetailPreviewPage() {
       {scenario.key === "api" ? (
         <GroupDetailScreen groupId={API_GROUP_ID} />
       ) : scenario.key === "loading" ? (
-        <GroupDetailLoading />
+        <PageLoading />
       ) : scenario.key === "error" ? (
         <GroupDetailError />
       ) : (

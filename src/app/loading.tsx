@@ -1,9 +1,5 @@
-import { Spinner } from "@/shared/ui/Spinner";
+import { PageLoading } from "@/shared/ui/PageLoading";
 
 export default function Loading() {
-  return (
-    <output className="flex min-h-0 flex-1 items-center justify-center">
-      <Spinner size="lg" />
-    </output>
-  );
+  return <PageLoading />;
 }

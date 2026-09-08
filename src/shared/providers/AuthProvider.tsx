@@ -17,6 +17,7 @@ import { useMe } from "@/api/gen/profile/profile.gen";
 import { ErrorFallback } from "@/shared/components/ErrorFallback";
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
+import { PageLoading } from "@/shared/ui/PageLoading";
 import { Spinner } from "@/shared/ui/Spinner";
 import { isPublicPage, safeReturnTo } from "@/shared/utils/authNavigation";
 import { getAuthState } from "./authState";
@@ -98,15 +99,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       case "authenticated":
         return children;
       case "anonymous":
-        return isPublicPage(pathname) ? children : <AuthPending />;
+        return isPublicPage(pathname) ? children : <PageLoading />;
       case "restoring-session":
         // 공개 프로필도 내 계정인지 구분할 수 있도록 세션 복원을 기다린다.
         if (isPublicPage(pathname) && !pathname.startsWith("/profile/")) return children;
-        return <AuthPending />;
+        return <PageLoading />;
       case "checking-profile":
-        return <AuthPending />;
+        return <PageLoading />;
       case "signup-required":
-        return requiresSignup ? <AuthPending /> : children;
+        return requiresSignup ? <PageLoading /> : children;
       case "account-not-found":
         return (
           <ErrorFallback
@@ -117,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           />
         );
       case "logging-out":
-        return <AuthPending message="로그아웃 중이에요" />;
+        return <LogoutPending />;
       case "error":
         switch (state.source) {
           case "logout":
@@ -154,14 +155,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function AuthPending({ message = "로그인 상태를 확인하고 있어요" }: { message?: string }) {
+function LogoutPending() {
   return (
     <main
       role="status"
       className="flex flex-1 items-center justify-center gap-ds-8 text-content-secondary"
     >
       <Spinner />
-      <span className="text-body-md-medium">{message}</span>
+      <span className="text-body-md-medium">로그아웃 중이에요</span>
     </main>
   );
 }
