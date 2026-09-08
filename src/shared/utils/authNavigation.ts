@@ -26,7 +26,6 @@ export function safeReturnTo(value: unknown): string {
 export function isPublicPage(pathname: string): boolean {
   return (
     pathname === ROUTES.LOGIN ||
-    pathname === ROUTES.SIGNUP ||
     pathname === "/auth/complete" ||
     pathname === "/preview" ||
     pathname.startsWith("/preview/") ||

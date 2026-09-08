@@ -95,7 +95,7 @@ src/
 app/{route}/        →  shared/{ui, components, hooks, utils, model, constants, stores, styles, providers}
 app/{route}/        →  api/gen
 shared/components/  →  shared/{ui, hooks, utils, model, constants, styles}
-shared/providers/   →  api/{mutator, auth-session}
+shared/providers/   →  api/{mutator, auth-session}, api/gen/profile
 ```
 
 - 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
@@ -105,6 +105,7 @@ shared/providers/   →  api/{mutator, auth-session}
 - 예외: `app/preview/**`는 화면 확인용 임시 라우트라 다른 라우트의 private segment를 import할 수 있다. 제품 코드가 preview를 import하지 않는다.
 - `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
 - shared 계층에서는 `shared/providers/`만 `api/mutator`, `api/auth-session`을 import한다. 전역 retry 정책과 인증 세션·캐시 수명 관리를 위한 경계다.
+- `AuthProvider`는 가입 완료 가드를 위해 `api/gen/profile`의 내 프로필 조회와 응답 타입을 사용한다. 인증 복원 후 `profileCompleted` 확인을 마쳐야 보호 화면을 마운트하며, 미완료 사용자는 `/signup`으로 보낸다.
 - `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.
 - 라우트 group 전용 코드는 `app/(group)/_*/`에 둔다.
 
@@ -120,7 +121,7 @@ shared/providers/   →  api/{mutator, auth-session}
 
 - 서버 상태는 `src/shared/providers/QueryProvider.tsx`를 통한 react-query를 사용한다.
 - 핵심 화면은 Orval Suspense hook으로 읽고 부분 데이터는 일반 hook을 쓴다. access token이 브라우저 메모리에 있으므로 보호 데이터의 서버 prefetch는 하지 않고, AuthProvider의 세션 복원 이후 브라우저에서 조회한다.
-- 인증은 `AuthProvider`와 `api/auth-session.ts`가 관리한다. access는 브라우저 메모리, refresh는 동일 출처의 HttpOnly 쿠키에 보관한다. 일반 API는 브라우저에서 Bearer 헤더로 직접 호출한다. 선택 이유와 한계는 `docs/authentication.md`를 따른다.
+- 인증은 `AuthProvider`와 `api/auth-session.ts`가 관리한다. access는 브라우저 메모리, refresh는 동일 출처의 HttpOnly 쿠키에 보관한다. 일반 API는 브라우저에서 Bearer 헤더로 직접 호출한다.
 - `zustand`는 설치되어 있지만 여러 라우트가 공유하는 상태 요구가 확인되기 전에는 전역 store를 만들지 않는다.
 - API client, hook, 타입은 OpenAPI에서 orval로 생성한다. 동기화 명령은 `pnpm api:sync`다.
 - mock layer(MSW 등)는 도입하지 않는다.

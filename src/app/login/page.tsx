@@ -2,26 +2,34 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
+import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { safeReturnTo } from "@/shared/utils/authNavigation";
 import { LoginScreen } from "./_components/LoginScreen";
 import { useKakaoLogin } from "./_hooks/useKakaoLogin";
 
 function Login() {
-  const { status } = useAuth();
+  const { state } = useAuth();
   const params = useSearchParams();
   const router = useRouter();
   const returnTo = safeReturnTo(params.get("returnTo"));
   const { pending, error, login } = useKakaoLogin(returnTo, params.get("error"));
 
   useEffect(() => {
-    if (status === "authenticated") router.replace(returnTo);
-  }, [status, returnTo, router]);
+    switch (state.status) {
+      case "authenticated":
+        router.replace(returnTo);
+        break;
+      case "signup-required":
+        router.replace(ROUTES.SIGNUP);
+        break;
+    }
+  }, [state.status, returnTo, router]);
 
   return (
     <LoginScreen
       loading={pending}
-      disabled={status === "loading" || status === "authenticated"}
+      disabled={state.status !== "anonymous" && state.status !== "error"}
       error={error}
       onLogin={() => void login()}
     />

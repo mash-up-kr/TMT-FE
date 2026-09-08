@@ -78,6 +78,94 @@
     }
   ],
   "paths": {
+    "/v1/users/me/profile": {
+      "put": {
+        "tags": [
+          "마이페이지·타인 프로필"
+        ],
+        "summary": "가입 완결·프로필 수정",
+        "description": "닉네임과 프로필 사진을 저장한다 (TMT-370). 카카오 로그인 직후에는 닉네임이 카카오 값이라 이 요청을 마쳐야 `profileCompleted=true`가 되고 다른 API를 쓸 수 있다.\n\n`profileImageAssetId`는 `POST /v1/media/upload-intents`로 받은 것이고, 보내지 않으면 사진 없는 상태가 된다. 가입 후에도 같은 요청으로 프로필을 수정한다.",
+        "operationId": "updateMyProfile",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "- `MEDIA_NOT_OWNED` — 본인이 발급받은 사진만 사용할 수 있습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "- `MEDIA_ALREADY_ATTACHED` — 이미 다른 저장에 사용된 사진입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/v1/saves/{saveId}": {
       "get": {
         "tags": [
@@ -1583,7 +1671,7 @@
           "인증"
         ],
         "summary": "카카오 로그인",
-        "description": "카카오 인가 코드를 교환해 로그인하고 토큰을 발급한다. 처음 온 카카오 계정이면 users 행을 만들고 `isNewUser=true`로 내린다 — FE는 이 값으로 온보딩(TMT-273)에 분기한다.\n\n`redirectUri`는 인가 요청에 사용한 값과 같아야 한다. 이후 요청은 `Authorization: Bearer {accessToken}`으로 보내고, 만료(AUTH_TOKEN_EXPIRED)되면 재발급 API로 갱신한다.",
+        "description": "카카오 인가 코드를 교환해 로그인하고 토큰을 발급한다. 처음 온 카카오 계정이면 users 행을 만들고 `isNewUser=true`로 내린다.\n\n`profileCompleted=false`면 가입 화면(`PUT /v1/users/me/profile`)을 끝내야 한다 — 그전까지 다른 API는 SIGNUP_NOT_COMPLETED(403)로 막힌다. 이때 함께 내려가는 `nickname`은 카카오 닉네임이라 입력칸 초깃값으로 쓸 수 있다. `profileImageUrl`은 가입 전에는 항상 null이다.\n\n`redirectUri`는 인가 요청에 사용한 값과 같아야 한다. 이후 요청은 `Authorization: Bearer {accessToken}`으로 보내고, 만료(AUTH_TOKEN_EXPIRED)되면 재발급 API로 갱신한다.",
         "operationId": "loginWithKakao",
         "requestBody": {
           "content": {
@@ -3809,6 +3897,79 @@
   },
   "components": {
     "schemas": {
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "description": "2~20자 (U3)",
+            "example": "또맛또",
+            "minLength": 1
+          },
+          "profileImageAssetId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "업로드 발급(POST /v1/media/upload-intents)으로 받은 assetId. 없으면 사진 없는 상태가 된다"
+          }
+        },
+        "required": [
+          "nickname"
+        ]
+      },
+      "MyProfileResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "profileImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "availableTicketCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "joinedGroupCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "favoritePlaceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "profileCompleted": {
+            "type": "boolean",
+            "description": "가입 화면을 끝냈는지 (TMT-370)"
+          }
+        },
+        "required": [
+          "availableTicketCount",
+          "favoritePlaceCount",
+          "joinedGroupCount",
+          "nickname",
+          "profileCompleted",
+          "reviewCount",
+          "userId"
+        ]
+      },
       "NewPlaceRequest": {
         "type": "object",
         "properties": {
@@ -4403,6 +4564,10 @@
               "null"
             ]
           },
+          "profileCompleted": {
+            "type": "boolean",
+            "description": "가입 화면(닉네임·프로필 사진)을 끝냈는지 — false면 가입 화면으로 보낸다"
+          },
           "accessToken": {
             "type": "string"
           },
@@ -4423,6 +4588,7 @@
           "accessTokenExpiresIn",
           "isNewUser",
           "nickname",
+          "profileCompleted",
           "refreshToken",
           "userId"
         ]
@@ -4703,53 +4869,6 @@
           "regionName",
           "reviewCount",
           "roadAddress"
-        ]
-      },
-      "MyProfileResponse": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string"
-          },
-          "nickname": {
-            "type": "string"
-          },
-          "email": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "profileImageUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "availableTicketCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "reviewCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "joinedGroupCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "favoritePlaceCount": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "required": [
-          "availableTicketCount",
-          "favoritePlaceCount",
-          "joinedGroupCount",
-          "nickname",
-          "reviewCount",
-          "userId"
         ]
       },
       "GroupRef": {

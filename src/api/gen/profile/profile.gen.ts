@@ -10,15 +10,18 @@ import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-import type { ErrorType } from "../../mutator";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { BodyType, ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { CursorPageGroupCardResponse } from "../_model/cursorPageGroupCardResponse.gen";
 import type { CursorPageMyReviewGridItem } from "../_model/cursorPageMyReviewGridItem.gen";
@@ -31,6 +34,7 @@ import type { MyProfileResponse } from "../_model/myProfileResponse.gen";
 import type { MyReviewsParams } from "../_model/myReviewsParams.gen";
 import type { MyTicketsParams } from "../_model/myTicketsParams.gen";
 import type { TicketHistoryResponse } from "../_model/ticketHistoryResponse.gen";
+import type { UpdateProfileRequest } from "../_model/updateProfileRequest.gen";
 import type { UserFavoritesParams } from "../_model/userFavoritesParams.gen";
 import type { UserGroupsParams } from "../_model/userGroupsParams.gen";
 import type { UserProfileResponse } from "../_model/userProfileResponse.gen";
@@ -53,6 +57,92 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
+export const getUpdateMyProfileUrl = () => {
+  return `/v1/users/me/profile`;
+};
+
+/**
+ * 닉네임과 프로필 사진을 저장한다 (TMT-370). 카카오 로그인 직후에는 닉네임이 카카오 값이라 이 요청을 마쳐야 `profileCompleted=true`가 되고 다른 API를 쓸 수 있다.
+ *
+ * `profileImageAssetId`는 `POST /v1/media/upload-intents`로 받은 것이고, 보내지 않으면 사진 없는 상태가 된다. 가입 후에도 같은 요청으로 프로필을 수정한다.
+ * @summary 가입 완결·프로필 수정
+ */
+export const updateMyProfile = async (
+  updateProfileRequest: UpdateProfileRequest,
+  options?: Parameters<typeof tmtFetch>[1],
+): Promise<MyProfileResponse> => {
+  return tmtFetch<MyProfileResponse>(getUpdateMyProfileUrl(), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateProfileRequest),
+  });
+};
+
+export const getUpdateMyProfileMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMyProfile>>,
+    TError,
+    { data: BodyType<UpdateProfileRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof tmtFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateMyProfile>>,
+  TError,
+  { data: BodyType<UpdateProfileRequest> },
+  TContext
+> => {
+  const mutationKey = ["updateMyProfile"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateMyProfile>>,
+    { data: BodyType<UpdateProfileRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateMyProfile(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateMyProfileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateMyProfile>>
+>;
+export type UpdateMyProfileMutationBody = BodyType<UpdateProfileRequest>;
+export type UpdateMyProfileMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary 가입 완결·프로필 수정
+ */
+export const useUpdateMyProfile = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateMyProfile>>,
+      TError,
+      { data: BodyType<UpdateProfileRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateMyProfile>>,
+  TError,
+  { data: BodyType<UpdateProfileRequest> },
+  TContext
+> => {
+  return useMutation(getUpdateMyProfileMutationOptions(options), queryClient);
+};
 export const getUserProfileUrl = (userId: string) => {
   return `/v1/users/${userId}`;
 };

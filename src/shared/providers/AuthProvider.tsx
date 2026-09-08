@@ -12,11 +12,21 @@ import {
   refreshSession,
   subscribeSession,
 } from "@/api/auth-session";
+import type { MyProfileResponse } from "@/api/gen/_model/myProfileResponse.gen";
+import { useMe } from "@/api/gen/profile/profile.gen";
+import { ErrorFallback } from "@/shared/components/ErrorFallback";
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
-import { Button } from "@/shared/ui/Button";
 import { Spinner } from "@/shared/ui/Spinner";
 import { isPublicPage, safeReturnTo } from "@/shared/utils/authNavigation";
+import { getAuthState } from "./authState";
+
+function selectProfileCompleted(profile: MyProfileResponse): boolean {
+  if (typeof profile.profileCompleted !== "boolean") {
+    throw new Error("가입 상태 응답이 올바르지 않습니다.");
+  }
+  return profile.profileCompleted;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const snapshot = useSyncExternalStore(
@@ -28,6 +38,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const preview = pathname === "/preview" || pathname.startsWith("/preview/");
+  const hasSession = snapshot.status === "authenticated";
+  const profile = useMe<boolean>({
+    query: { enabled: hasSession && !preview, select: selectProfileCompleted },
+  });
+  const state = getAuthState(snapshot.status, profile);
+  const requiresSignup =
+    !preview &&
+    state.status === "signup-required" &&
+    pathname !== ROUTES.SIGNUP &&
+    pathname !== "/auth/complete";
+
+  useEffect(() => {
+    if (requiresSignup) router.replace(ROUTES.SIGNUP);
+  }, [requiresSignup, router]);
 
   useEffect(() => {
     let revision = getSessionSnapshot().revision;
@@ -58,44 +82,86 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [pathname, router, snapshot.status]);
 
-  const waitingForPublicProfile = pathname.startsWith("/profile/") && snapshot.status === "loading";
-  const mustWait =
-    (!isPublicPage(pathname) && snapshot.status !== "authenticated") || waitingForPublicProfile;
-  const logoutFailed = snapshot.status === "logout-error";
-  const sessionFailed = snapshot.status === "error";
-  const failed = logoutFailed || ((mustWait || pathname === "/auth/complete") && sessionFailed);
-  const content = failed ? (
-    <main className="content-container flex flex-1 flex-col items-center justify-center gap-ds-20 text-center">
-      <p role="alert" className="text-body-md-medium text-content-secondary">
-        {logoutFailed
-          ? "로그아웃하지 못했어요. 다시 시도해 주세요."
-          : "로그인 상태를 확인하지 못했어요."}
-      </p>
-      <Button
-        onClick={() =>
-          void (logoutFailed ? logoutSession() : refreshSession()).catch(() => undefined)
+  function returnToLogin() {
+    void logoutSession()
+      .then(() => router.replace(ROUTES.LOGIN))
+      .catch(() => undefined);
+  }
+
+  function renderContent(): ReactNode {
+    // 미리보기는 인증 가드를 거치지 않지만, 진행 중인 로그아웃은 끝까지 처리한다.
+    if (preview && state.status !== "logging-out") {
+      if (state.status !== "error" || state.source !== "logout") return children;
+    }
+
+    switch (state.status) {
+      case "authenticated":
+        return children;
+      case "anonymous":
+        return isPublicPage(pathname) ? children : <AuthPending />;
+      case "restoring-session":
+        // 공개 프로필도 내 계정인지 구분할 수 있도록 세션 복원을 기다린다.
+        if (isPublicPage(pathname) && !pathname.startsWith("/profile/")) return children;
+        return <AuthPending />;
+      case "checking-profile":
+        return <AuthPending />;
+      case "signup-required":
+        return requiresSignup ? <AuthPending /> : children;
+      case "account-not-found":
+        return (
+          <ErrorFallback
+            title="로그인 정보를 확인할 수 없어요."
+            description="재 로그인해 주세요."
+            actionLabel="재 로그인"
+            onRetry={returnToLogin}
+          />
+        );
+      case "logging-out":
+        return <AuthPending message="로그아웃 중이에요" />;
+      case "error":
+        switch (state.source) {
+          case "logout":
+            return (
+              <ErrorFallback
+                title="로그아웃하지 못했어요. 다시 시도해 주세요."
+                onRetry={returnToLogin}
+              />
+            );
+          case "profile":
+            return (
+              <ErrorFallback
+                title="로그인 상태를 확인하지 못했어요."
+                onRetry={() => void profile.refetch()}
+                secondaryAction={{ label: "재 로그인", onClick: returnToLogin }}
+              />
+            );
+          case "session":
+            if (isPublicPage(pathname) && pathname !== "/auth/complete") return children;
+            return (
+              <ErrorFallback
+                title="로그인 상태를 확인하지 못했어요."
+                onRetry={() => void refreshSession().catch(() => undefined)}
+              />
+            );
         }
-      >
-        다시 시도
-      </Button>
-    </main>
-  ) : mustWait || snapshot.status === "logging-out" ? (
+    }
+  }
+
+  return (
+    <AuthContext value={{ state, logout: logoutSession, announceLogin }}>
+      {renderContent()}
+    </AuthContext>
+  );
+}
+
+function AuthPending({ message = "로그인 상태를 확인하고 있어요" }: { message?: string }) {
+  return (
     <main
       role="status"
       className="flex flex-1 items-center justify-center gap-ds-8 text-content-secondary"
     >
       <Spinner />
-      <span className="text-body-md-medium">
-        {snapshot.status === "logging-out" ? "로그아웃 중이에요" : "로그인 상태를 확인하고 있어요"}
-      </span>
+      <span className="text-body-md-medium">{message}</span>
     </main>
-  ) : (
-    children
-  );
-
-  return (
-    <AuthContext value={{ ...snapshot, logout: logoutSession, announceLogin }}>
-      {content}
-    </AuthContext>
   );
 }

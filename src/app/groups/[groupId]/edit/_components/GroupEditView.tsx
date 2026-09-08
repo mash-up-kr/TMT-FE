@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type ChangeEvent, type FormEvent, useEffect, useId, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { GroupTagFields } from "@/app/groups/_components/GroupTagFields";
 import type { GroupTagOptionsState } from "@/app/groups/_model/groupTag";
 import { GROUP_IMAGE_ACCEPT, getGroupImageValidationError } from "@/app/groups/_utils/groupImage";
@@ -12,8 +12,8 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { CameraIcon, CancelIcon, ChevronLeftIcon, TrashIcon } from "@/shared/ui/Icons";
-import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
+import { CancelIcon, ChevronLeftIcon, TrashIcon } from "@/shared/ui/Icons";
+import { ImagePicker } from "@/shared/ui/ImagePicker";
 import { Textarea, TextField } from "@/shared/ui/TextField";
 import { toast } from "@/shared/ui/Toast";
 import type {
@@ -50,7 +50,6 @@ export function GroupEditView({
   onRetryTagOptionsAction,
 }: GroupEditViewProps) {
   const router = useRouter();
-  const imageInputId = useId();
   const [form, setForm] = useState(initialForm);
   const [selectedImage, setSelectedImage] = useState<SelectedGroupImage>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(initialDeleteModalOpen);
@@ -70,20 +69,13 @@ export function GroupEditView({
     };
   }, [selectedImage]);
 
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.item(0);
-
-    if (file) {
-      const validationError = getGroupImageValidationError(file);
-
-      if (validationError) {
-        toast.error(validationError);
-      } else {
-        setSelectedImage({ file, previewUrl: URL.createObjectURL(file) });
-      }
+  const handleImageSelect = (file: File) => {
+    const validationError = getGroupImageValidationError(file);
+    if (validationError) {
+      toast.error(validationError);
+    } else {
+      setSelectedImage({ file, previewUrl: URL.createObjectURL(file) });
     }
-
-    event.target.value = "";
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -143,31 +135,13 @@ export function GroupEditView({
         <main className="content-container flex min-h-0 flex-1 flex-col gap-ds-20 overflow-y-auto pt-ds-20 pb-ds-20">
           <div className="flex flex-col gap-ds-12">
             <p className="text-body-lg-medium text-content-primary">대표 이미지</p>
-            <label
-              htmlFor={imageInputId}
-              className="relative self-center cursor-pointer rounded-ds-full outline-none focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-stroke-interactive-primary"
-            >
-              <span className="sr-only">그룹 대표 이미지 선택</span>
-              <ImageWithFallback
-                src={selectedImage?.previewUrl ?? form.imageUrl}
-                fallbackSrc={groupFallbackImage}
-                alt="그룹 대표 이미지"
-                className="size-[120px] rounded-ds-full object-cover"
-              />
-              <span
-                aria-hidden="true"
-                className="absolute right-0 bottom-0 flex rounded-ds-full border border-surface-primary bg-surface-tertiary p-ds-4 text-icon-primary"
-              >
-                <CameraIcon filled size={20} />
-              </span>
-              <input
-                id={imageInputId}
-                type="file"
-                accept={GROUP_IMAGE_ACCEPT}
-                className="sr-only"
-                onChange={handleImageChange}
-              />
-            </label>
+            <ImagePicker
+              label="그룹 대표 이미지"
+              src={selectedImage?.previewUrl ?? form.imageUrl}
+              fallbackSrc={groupFallbackImage}
+              accept={GROUP_IMAGE_ACCEPT}
+              onSelect={handleImageSelect}
+            />
           </div>
 
           <TextField

@@ -62,7 +62,13 @@ export async function GET(request: NextRequest) {
       { code, redirectUri: new URL(request.nextUrl.pathname, request.url).href },
       { cache: "no-store", signal: AbortSignal.timeout(10_000) },
     );
-    if (!isTokenPair(result) || !("isNewUser" in result) || typeof result.isNewUser !== "boolean") {
+    if (
+      !isTokenPair(result) ||
+      !("isNewUser" in result) ||
+      typeof result.isNewUser !== "boolean" ||
+      !("profileCompleted" in result) ||
+      typeof result.profileCompleted !== "boolean"
+    ) {
       console.error("[auth:kakao] Invalid login response contract");
       return failure("unavailable");
     }

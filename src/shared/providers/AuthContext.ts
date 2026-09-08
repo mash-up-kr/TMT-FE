@@ -1,9 +1,11 @@
 "use client";
 
 import { createContext } from "react";
-import type { announceLogin, getSessionSnapshot, logoutSession } from "@/api/auth-session";
+import type { announceLogin, logoutSession } from "@/api/auth-session";
+import type { AuthState } from "./authState";
 
-type AuthContextValue = ReturnType<typeof getSessionSnapshot> & {
+type AuthContextValue = {
+  state: AuthState;
   logout: typeof logoutSession;
   announceLogin: typeof announceLogin;
 };

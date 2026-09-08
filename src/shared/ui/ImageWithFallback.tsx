@@ -5,10 +5,7 @@ import { useState } from "react";
 
 type FallbackImageSource = string | { src: string };
 
-type ImageWithFallbackBaseProps = Omit<
-  ComponentPropsWithoutRef<"img">,
-  "alt" | "onError" | "src"
-> & {
+type ImageWithFallbackBaseProps = Omit<ComponentPropsWithoutRef<"img">, "alt" | "src"> & {
   alt: string;
   src: string | null;
 };
@@ -26,6 +23,7 @@ export function ImageWithFallback({
   fallback,
   alt,
   loading = "lazy",
+  onError,
   ...props
 }: ImageWithFallbackProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -39,7 +37,16 @@ export function ImageWithFallback({
 
     return (
       // biome-ignore lint/performance/noImgElement: 실제 이미지 호스트가 확정되면 next/image로 전환한다.
-      <img {...props} alt={alt} loading={loading} src={src} onError={() => setFailedSrc(src)} />
+      <img
+        {...props}
+        alt={alt}
+        loading={loading}
+        src={src}
+        onError={(event) => {
+          setFailedSrc(src);
+          onError?.(event);
+        }}
+      />
     );
   }
 
@@ -53,10 +60,11 @@ export function ImageWithFallback({
       alt={alt}
       loading={loading}
       src={resolvedSrc}
-      onError={() => {
+      onError={(event) => {
         if (src !== null && resolvedSrc !== fallbackImageSrc) {
           setFailedSrc(src);
         }
+        onError?.(event);
       }}
     />
   );
