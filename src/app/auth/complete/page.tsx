@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
+import { PageLoading } from "@/shared/ui/PageLoading";
 import { toast } from "@/shared/ui/Toast";
 import { safeReturnTo } from "@/shared/utils/authNavigation";
 
@@ -27,16 +28,12 @@ function CompleteLogin() {
     // 가입 직후에만 온보딩을 거친다. 이후 로그인은 원래 가려던 곳으로 돌아간다.
     router.replace(isNewUser ? ROUTES.ONBOARDING : safeReturnTo(params.get("returnTo")));
   }, [state.status, announceLogin, router, params]);
-  return (
-    <p role="status" className="m-auto text-body-md-medium text-content-secondary">
-      로그인을 완료하고 있어요
-    </p>
-  );
+  return <PageLoading />;
 }
 
 export default function CompleteLoginPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<PageLoading />}>
       <CompleteLogin />
     </Suspense>
   );
