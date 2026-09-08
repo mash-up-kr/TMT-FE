@@ -19,8 +19,8 @@ function CompleteLogin() {
     announceLogin();
     const isNewUser = params.get("new") === "1";
     if (!isNewUser) toast.success("로그인했어요");
-    // 온보딩 연결 전까지 신규 사용자도 홈에서 서비스를 시작한다.
-    router.replace(isNewUser ? ROUTES.ROOT : safeReturnTo(params.get("returnTo")));
+    // 가입 직후에만 온보딩을 거친다. 이후 로그인은 원래 가려던 곳으로 돌아간다.
+    router.replace(isNewUser ? ROUTES.ONBOARDING : safeReturnTo(params.get("returnTo")));
   }, [status, announceLogin, router, params]);
   return (
     <p role="status" className="m-auto text-body-md-medium text-content-secondary">
