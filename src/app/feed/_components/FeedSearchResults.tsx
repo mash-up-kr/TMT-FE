@@ -1,6 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
+import searchMascot from "@/shared/components/assets/mascot-search.png";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { usePlaceSearch } from "../_hooks/usePlaceSearch";
@@ -33,16 +36,16 @@ export function FeedSearchResults({ position, query, curationTagId }: FeedSearch
   );
 
   if (position === null || isPending) {
-    return <FeedNotice title="검색 중이에요." />;
+    return <FeedNotice title="검색 중이에요." src={searchMascot} />;
   }
 
   if (isError) {
-    return <FeedNotice title="검색에 실패했어요." />;
+    return <FeedNotice src={emptyMascot} title="검색에 실패했어요." />;
   }
 
   if (!places || places.length === 0) {
     return (
-      <FeedNotice title="검색 결과가 없어요.">
+      <FeedNotice title="검색 결과가 없어요." src={searchMascot}>
         {query
           ? "다른 이름이나 태그로 찾아보세요!"
           : position.isFallback

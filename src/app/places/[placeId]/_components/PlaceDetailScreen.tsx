@@ -1,6 +1,8 @@
 "use client";
 
+import type { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { PlaceRating, PlaceSummary } from "@/shared/components/PlaceSummary/PlaceSummary";
@@ -122,7 +124,7 @@ function PlaceReviews({ count, isPending, isError, onRetry, reviews }: PlaceRevi
       ) : isError ? (
         <RetryNotice message="리뷰를 불러오지 못했어요." onRetry={onRetry} />
       ) : !reviews || reviews.length === 0 ? (
-        <PlaceDetailNotice title="아직 올라온 리뷰가 없어요.">
+        <PlaceDetailNotice src={emptyMascot} title="아직 올라온 리뷰가 없어요.">
           이 가게의 첫 번째 리뷰를 남겨보세요!
         </PlaceDetailNotice>
       ) : (
@@ -138,10 +140,20 @@ function PlaceReviews({ count, isPending, isError, onRetry, reviews }: PlaceRevi
   );
 }
 
-function PlaceDetailNotice({ title, children }: { title: string; children?: string }) {
+function PlaceDetailNotice({
+  title,
+  children,
+  src,
+}: {
+  title: string;
+  children?: string;
+  src?: StaticImageData;
+}) {
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center px-ds-20 py-ds-32">
-      <EmptyNotice title={title}>{children}</EmptyNotice>
+      <EmptyNotice title={title} src={src}>
+        {children}
+      </EmptyNotice>
     </div>
   );
 }

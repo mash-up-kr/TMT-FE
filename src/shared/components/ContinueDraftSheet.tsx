@@ -1,5 +1,7 @@
 "use client";
 
+import writingMascot from "@/shared/components/assets/mascot-writing.png";
+
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
@@ -52,7 +54,7 @@ export function ContinueDraftSheet({
       <div className="pb-ds-12">
         <EmptyNotice
           variant="prominent"
-          illustration="writing"
+          src={writingMascot}
           eyebrow="작성 중인 리뷰가 있어요"
           title={"리뷰를 이어서\n작성하시겠어요?"}
         />

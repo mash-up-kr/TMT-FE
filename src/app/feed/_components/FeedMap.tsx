@@ -9,6 +9,12 @@ import { buildMarkerIcon } from "../_utils/mapPinIcon";
 /** 권한 거부 시 보내는 기준 좌표 — 강남역 (명세 E3). */
 const FALLBACK_CENTER = { latitude: 37.4979, longitude: 127.0276 };
 const DEFAULT_ZOOM = 15;
+/**
+ * 마커를 놓을 세로 위치. 지도 높이 기준 비율이고 0.5가 정중앙, 작을수록 위로 간다.
+ * 핀 시트가 아래를 덮어 정중앙에 두면 가려지므로 위쪽에 둔다.
+ */
+const MARKER_FOCUS_Y_RATIO = 0.3;
+const MARKER_PAN_DURATION_MS = 300;
 
 type FeedMapProps = {
   /** 초기 중심. 위치 권한이 늦게 확정되므로 확정되는 시점에 한 번만 반영한다. */
@@ -20,6 +26,19 @@ type FeedMapProps = {
   onBoundsChange: (bounds: MapBounds) => void;
   onPinClick: (placeId: string) => void;
 };
+
+/** 마커를 시트에 가리지 않는 높이로 옮긴다. */
+function focusMarker(map: naver.maps.Map, position: naver.maps.Coord) {
+  const projection = map.getProjection();
+  const offset = projection.fromCoordToOffset(position);
+  const mapHeight = map.getSize().height;
+  // 마커를 목표 높이에 놓으려면 지도 중심이 그만큼 아래에 있어야 한다.
+  const centerY = offset.y + (mapHeight / 2 - mapHeight * MARKER_FOCUS_Y_RATIO);
+
+  map.panTo(projection.fromOffsetToCoord(new naver.maps.Point(offset.x, centerY)), {
+    duration: MARKER_PAN_DURATION_MS,
+  });
+}
 
 function isSameBounds(previous: MapBounds | null, next: MapBounds) {
   return (
@@ -159,7 +178,10 @@ export function FeedMap({
         zIndex: pin.id === selectedPlaceId ? 100 : 1,
       });
 
-      maps.Event.addListener(marker, "click", () => pinClickRef.current(pin.id));
+      maps.Event.addListener(marker, "click", () => {
+        focusMarker(map, marker.getPosition());
+        pinClickRef.current(pin.id);
+      });
 
       return marker;
     });

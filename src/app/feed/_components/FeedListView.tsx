@@ -1,5 +1,8 @@
 "use client";
 
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
+import searchMascot from "@/shared/components/assets/mascot-search.png";
+
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { useFeedReviews } from "../_hooks/useFeedReviews";
@@ -17,16 +20,16 @@ export function FeedListView({ position }: FeedListViewProps) {
   const { data: reviews, isPending, isError } = useFeedReviews(position);
 
   if (position === null || isPending) {
-    return <FeedNotice title="게시물을 불러오는 중이에요." />;
+    return <FeedNotice title="게시물을 불러오는 중이에요." src={searchMascot} />;
   }
 
   if (isError) {
-    return <FeedNotice title="게시물을 불러오지 못했어요." />;
+    return <FeedNotice src={emptyMascot} title="게시물을 불러오지 못했어요." />;
   }
 
   if (!reviews || reviews.length === 0) {
     return (
-      <FeedNotice title="근처에 올라온 리뷰가 없어요.">
+      <FeedNotice src={emptyMascot} title="근처에 올라온 리뷰가 없어요.">
         {position.isFallback
           ? "위치 권한이 없어 강남역 주변 1km를 보여드리고 있어요."
           : "내 위치에서 1km 안의 리뷰를 보여드려요."}

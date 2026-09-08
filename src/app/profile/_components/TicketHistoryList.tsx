@@ -1,4 +1,5 @@
 import Link from "next/link";
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { buttonStyles } from "@/shared/ui/Button";
 import type { ProfileTicketHistoryItem } from "../_model/profile";
 import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
@@ -14,6 +15,7 @@ export function TicketHistoryList({ items, getSaveHref, writeReviewHref }: Ticke
   if (items.length === 0) {
     return (
       <ProfileEmptyNotice
+        src={emptyMascot}
         title="아직 작성한 리뷰가 없어요"
         action={
           <Link

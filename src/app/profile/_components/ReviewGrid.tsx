@@ -1,6 +1,7 @@
 "use client";
 
 import dummyImage from "@/shared/assets/dummy-image.png";
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { ProfileReviewItem } from "../_model/profile";
 import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
@@ -12,7 +13,7 @@ type ReviewGridProps = {
 
 export function ReviewGrid({ reviews, onSelect }: ReviewGridProps) {
   if (reviews.length === 0) {
-    return <ProfileEmptyNotice title="아직 작성한 리뷰가 없어요" />;
+    return <ProfileEmptyNotice src={emptyMascot} title="아직 작성한 리뷰가 없어요" />;
   }
 
   return (
