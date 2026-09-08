@@ -13,6 +13,11 @@ const PREVIEWS = [
     description: "기본·설명·액션·강조 변형과 배치 영역",
   },
   {
+    href: "/preview/pull-to-refresh",
+    title: "당겨서 새로고침",
+    description: "당김 저항, 임계값, 새로고침 대기 인디케이터",
+  },
+  {
     href: "/preview/home",
     title: "홈",
     description: "가입 여부, 피드, 이미지 fallback, 로딩·오류·위치 상태",

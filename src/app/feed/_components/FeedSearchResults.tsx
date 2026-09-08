@@ -6,9 +6,12 @@ import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import searchMascot from "@/shared/components/assets/mascot-search.png";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { usePlaceSearch } from "../_hooks/usePlaceSearch";
 import { FeedNotice } from "./FeedNotice";
 import { PlaceResultCard } from "./PlaceResultCard";
+
+const SKELETON_ROWS = [0, 1, 2, 3, 4];
 
 type FeedSearchResultsProps = {
   position: ResolvedPosition | null;
@@ -35,8 +38,9 @@ export function FeedSearchResults({ position, query, curationTagId }: FeedSearch
     [data, favoriteOverrides],
   );
 
+  // 로딩 중에도 자리와 배경을 잡아야 한다. 비워두면 뒤 회색이 비쳤다가 흰 콘텐츠로 바뀐다.
   if (position === null || isPending) {
-    return <FeedNotice title="검색 중이에요." src={searchMascot} />;
+    return <PlaceResultSkeleton />;
   }
 
   if (isError) {
@@ -66,6 +70,24 @@ export function FeedSearchResults({ position, query, curationTagId }: FeedSearch
               onToggleAction: favorite.onToggleAction,
             }}
           />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** PlaceResultCard 형태를 흉내낸다 — 80px 썸네일 + 텍스트 세 줄. */
+function PlaceResultSkeleton() {
+  return (
+    <ul aria-busy="true" className="flex flex-1 flex-col gap-ds-4">
+      {SKELETON_ROWS.map((row) => (
+        <li key={row} className="flex items-center gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
+          <Skeleton className="size-[80px] shrink-0 rounded-ds-md" />
+          <div className="flex min-w-0 flex-1 flex-col gap-ds-4">
+            <Skeleton className="h-ds-20 w-1/2" />
+            <Skeleton className="h-ds-16 w-3/4" />
+            <Skeleton className="h-ds-16 w-1/3" />
+          </div>
         </li>
       ))}
     </ul>
