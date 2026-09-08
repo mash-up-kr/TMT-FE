@@ -21,7 +21,6 @@ type FeedMapProps = {
   centerLatitude: number | null;
   centerLongitude: number | null;
   pins: FeedPin[];
-  /** 선택된 핀은 이름 라벨과 함께 크게 그린다 (시안 1340:28900). */
   selectedPlaceId: string | null;
   onBoundsChange: (bounds: MapBounds) => void;
   onPinClick: (placeId: string) => void;
@@ -174,7 +173,7 @@ export function FeedMap({
           size: new maps.Size(icon.size.width, icon.size.height),
           anchor: new maps.Point(icon.anchor.x, icon.anchor.y),
         },
-        // 선택된 핀이 라벨까지 가진 큰 마커라 다른 핀 위에 오도록 올린다.
+        // 라벨이 서로 겹치므로 선택된 핀을 위로 올린다.
         zIndex: pin.id === selectedPlaceId ? 100 : 1,
       });
 

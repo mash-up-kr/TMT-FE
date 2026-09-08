@@ -3,12 +3,9 @@ import type { FeedPin } from "./feedMapper";
 /**
  * 지도 핀 마커의 HTML. 네이버 SDK는 커스텀 마커를 HTML 문자열로 받는다(HtmlIcon).
  *
- * 마커는 페이지 DOM 안에 붙으므로 CSS 변수가 상속된다 — 색은 semantic 토큰을 참조한다.
- *
- * 시안 실측(1340:28900 · 1041:22021) — 선택된 핀은 56px에 이름 라벨이 붙고 나머지는 24px이며,
- * 크기와 무관하게 물방울 안에 흰 원이 있다. 흰 원을 viewBox 안에 그려 두 크기가 같은 비율을
- * 유지하게 한다. 원 안 카테고리 아이콘은 `GET /v1/nearby/places` 응답에 카테고리가 없어
- * 아직 비워둔다.
+ * 마커는 페이지 DOM 안에 붙으므로 전역 Tailwind 유틸리티가 그대로 먹는다 — 색과 타이포는
+ * 클래스로 토큰을 참조한다. 물방울 크기만 상수로 두는데, 같은 값을 `maps.Size`·`maps.Point`에도
+ * 넘겨야 해서 한 곳에서 계산해야 하기 때문이다.
  */
 const TEARDROP_WIDTH = 42;
 const TEARDROP_HEIGHT = 52;
@@ -18,7 +15,9 @@ const HOLE_CENTER_Y = 21.2727;
 const HOLE_RADIUS = 6;
 const SELECTED_PIN_SIZE = 56;
 const PIN_SIZE = 24;
-const LABEL_HEIGHT = 20;
+/** 라벨 한 줄(18px)과 핀과의 간격(2px). */
+const LABEL_BLOCK_HEIGHT = 20;
+const LABEL_STROKE = "-webkit-text-stroke:1px var(--color-stroke-inverse);paint-order:stroke fill";
 
 function escapeHtml(value: string) {
   return value
@@ -42,31 +41,21 @@ function teardrop(width: number) {
 export interface MarkerIcon {
   content: string;
   size: { width: number; height: number };
-  /** 물방울 꼭지가 좌표를 가리키도록 아래 중앙을 기준점으로 잡는다. */
+  /** 물방울 꼭지가 좌표를 가리키도록 핀 아래 중앙을 기준점으로 잡는다. */
   anchor: { x: number; y: number };
 }
 
 export function buildMarkerIcon(pin: FeedPin, selected: boolean): MarkerIcon {
-  if (!selected) {
-    const dropWidth = Math.round((PIN_SIZE * TEARDROP_WIDTH) / TEARDROP_HEIGHT);
-
-    return {
-      content: `<div style="width:${dropWidth}px;height:${PIN_SIZE}px;">${teardrop(dropWidth)}</div>`,
-      size: { width: dropWidth, height: PIN_SIZE },
-      anchor: { x: Math.round(dropWidth / 2), y: PIN_SIZE },
-    };
-  }
-
-  const dropWidth = Math.round((SELECTED_PIN_SIZE * TEARDROP_WIDTH) / TEARDROP_HEIGHT);
-  const height = SELECTED_PIN_SIZE + LABEL_HEIGHT;
+  const pinSize = selected ? SELECTED_PIN_SIZE : PIN_SIZE;
+  const dropWidth = Math.round((pinSize * TEARDROP_WIDTH) / TEARDROP_HEIGHT);
 
   return {
     content:
-      `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;width:${SELECTED_PIN_SIZE}px;">` +
-      `<div style="display:flex;justify-content:center;width:${SELECTED_PIN_SIZE}px;height:${SELECTED_PIN_SIZE}px;">${teardrop(dropWidth)}</div>` +
-      `<span style="font-size:12px;line-height:18px;font-weight:700;color:var(--color-content-primary);white-space:nowrap;">${escapeHtml(pin.name)}</span>` +
+      `<div class="flex flex-col items-center gap-ds-2" style="width:${pinSize}px">` +
+      `<div class="flex justify-center" style="width:${pinSize}px;height:${pinSize}px">${teardrop(dropWidth)}</div>` +
+      `<span class="pointer-events-none whitespace-nowrap text-body-sm-bold text-content-primary" style="${LABEL_STROKE}">${escapeHtml(pin.name)}</span>` +
       `</div>`,
-    size: { width: SELECTED_PIN_SIZE, height },
-    anchor: { x: Math.round(SELECTED_PIN_SIZE / 2), y: SELECTED_PIN_SIZE },
+    size: { width: pinSize, height: pinSize + LABEL_BLOCK_HEIGHT },
+    anchor: { x: Math.round(pinSize / 2), y: pinSize },
   };
 }
