@@ -18,7 +18,6 @@ import { ErrorFallback } from "@/shared/components/ErrorFallback";
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
 import { PageLoading } from "@/shared/ui/PageLoading";
-import { Spinner } from "@/shared/ui/Spinner";
 import { isPublicPage, safeReturnTo } from "@/shared/utils/authNavigation";
 import { getAuthState } from "./authState";
 
@@ -118,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           />
         );
       case "logging-out":
-        return <LogoutPending />;
+        return <PageLoading />;
       case "error":
         switch (state.source) {
           case "logout":
@@ -152,17 +151,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext value={{ state, logout: logoutSession, announceLogin }}>
       {renderContent()}
     </AuthContext>
-  );
-}
-
-function LogoutPending() {
-  return (
-    <main
-      role="status"
-      className="flex flex-1 items-center justify-center gap-ds-8 text-content-secondary"
-    >
-      <Spinner />
-      <span className="text-body-md-medium">로그아웃 중이에요</span>
-    </main>
   );
 }
