@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { type QueryClient, useQuery } from "@tanstack/react-query";
 
 export type CurrentPosition =
   | { status: "pending" }
@@ -63,6 +63,11 @@ function requestPosition(): Promise<CurrentPosition> {
  * 있어도 측위가 끝날 때까지 로딩을 보게 된다. 캐시를 공유하면 재진입이 즉시 끝나고,
  * 여러 화면이 동시에 물어도 측위는 한 번만 일어난다.
  */
+/** 사용자가 직접 새로고침할 때만 쓴다. staleTime을 무시하고 지금 다시 잰다. */
+export function invalidateCurrentPosition(queryClient: QueryClient) {
+  return queryClient.invalidateQueries({ queryKey: POSITION_QUERY_KEY });
+}
+
 export function useCurrentPosition({
   enabled = true,
 }: UseCurrentPositionOptions = {}): CurrentPosition {
