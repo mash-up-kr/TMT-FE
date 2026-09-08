@@ -1,21 +1,12 @@
-import Image from "next/image";
+import type { StaticImageData } from "next/image";
 import type { ReactNode } from "react";
-import tomatoEmpty from "@/shared/components/assets/tomato-mascot-empty.png";
-import tomatoWriting from "@/shared/components/assets/tomato-mascot-writing.png";
+import { MascotImage } from "@/shared/components/MascotImage";
 import { cn } from "@/shared/utils/cn";
-
-/** 마스코트 원본은 크기와 여백을 맞춰 두어 프레임 크롭이 모두 같다. */
-const illustrations = {
-  empty: tomatoEmpty,
-  writing: tomatoWriting,
-};
-
-type EmptyNoticeIllustration = keyof typeof illustrations;
 
 type EmptyNoticeBaseProps = {
   title: string;
-  /** 문구 위 마스코트. */
-  illustration?: EmptyNoticeIllustration;
+  /** 문구 위 이미지. 생략하면 이미지 없이 표시한다. */
+  src?: StaticImageData;
   /** 다음 행동으로 보내는 control. 있을 때만 문구 아래에 놓인다. */
   action?: ReactNode;
 };
@@ -38,7 +29,7 @@ type EmptyNoticeProps = EmptyNoticeBaseProps &
 export function EmptyNotice({
   title,
   variant = "default",
-  illustration = "empty",
+  src,
   eyebrow,
   children,
   action,
@@ -47,36 +38,26 @@ export function EmptyNotice({
 
   return (
     <div data-slot="empty-notice" className="flex shrink-0 flex-col items-center gap-ds-12">
-      {/* 시안 실측값. 세로로 긴 원본을 폭에 맞춰 확대하면 프레임(130px)보다 높아지므로
-          위로 밀어 다리를 잘라내고, 잘린 경계는 gradient로 배경에 녹인다. */}
-      <div aria-hidden="true" className="relative h-[130px] w-[172px] shrink-0">
-        <Image
-          src={illustrations[illustration]}
-          alt=""
-          width={172}
-          height={130}
-          sizes="172px"
-          className="h-full w-full object-cover object-[center_-34.254px]"
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-transparent from-[77.31%] to-surface-primary to-[92.81%]" />
-      </div>
-      <div className={cn("flex flex-col text-center", isProminent ? "gap-ds-8" : "gap-ds-4")}>
-        {eyebrow ? <p className="text-body-lg-regular text-content-primary">{eyebrow}</p> : null}
-        <p
-          className={cn(
-            "whitespace-pre-line text-content-primary",
-            isProminent ? "text-heading-lg" : "text-heading-sm",
+      <div className="flex flex-col items-center gap-[6px]">
+        {src ? <MascotImage src={src} /> : null}
+        <div className={cn("flex flex-col text-center", isProminent ? "gap-ds-8" : "gap-ds-4")}>
+          {eyebrow ? <p className="text-body-lg-regular text-content-primary">{eyebrow}</p> : null}
+          <p
+            className={cn(
+              "whitespace-pre-line text-content-primary",
+              isProminent ? "text-heading-lg" : "text-heading-sm",
+            )}
+          >
+            {title}
+          </p>
+          {isProminent ? null : (
+            <div className="min-h-ds-20">
+              {children ? (
+                <p className="text-body-md-regular text-content-tertiary">{children}</p>
+              ) : null}
+            </div>
           )}
-        >
-          {title}
-        </p>
-        {isProminent ? null : (
-          <div className="min-h-ds-20">
-            {children ? (
-              <p className="text-body-md-regular text-content-tertiary">{children}</p>
-            ) : null}
-          </div>
-        )}
+        </div>
       </div>
       {action}
     </div>

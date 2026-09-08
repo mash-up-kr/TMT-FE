@@ -1,5 +1,7 @@
 "use client";
 
+import emptyMascot from "@/shared/components/assets/mascot-empty.png";
+
 import type { ProfileFavoriteItem } from "../_model/profile";
 import { FavoriteListItem } from "./FavoriteListItem";
 import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
@@ -18,7 +20,7 @@ export function FavoriteList({
   pendingPlaceId,
 }: FavoriteListProps) {
   if (places.length === 0) {
-    return <ProfileEmptyNotice title="아직 좋아요한 매장이 없어요" />;
+    return <ProfileEmptyNotice src={emptyMascot} title="아직 좋아요한 매장이 없어요" />;
   }
 
   return (
