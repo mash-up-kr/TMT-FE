@@ -12,6 +12,8 @@ export interface KakaoLoginResponse {
   nickname: string;
   /** @nullable */
   profileImageUrl?: string | null;
+  /** 가입 화면(닉네임·프로필 사진)을 끝냈는지 — false면 가입 화면으로 보낸다 */
+  profileCompleted: boolean;
   accessToken: string;
   /** accessToken 만료까지 남은 초 */
   accessTokenExpiresIn: number;

@@ -95,7 +95,7 @@ src/
 app/{route}/        →  shared/{ui, components, hooks, utils, model, constants, stores, styles, providers}
 app/{route}/        →  api/gen
 shared/components/  →  shared/{ui, hooks, utils, model, constants, styles}
-shared/providers/   →  api/{mutator, auth-session}
+shared/providers/   →  api/{mutator, auth-session}, api/gen/profile
 ```
 
 - 허용: 라우트 → shared, 라우트 → `api/gen`, 같은 라우트의 private segment 간 import.
@@ -105,6 +105,7 @@ shared/providers/   →  api/{mutator, auth-session}
 - 예외: `app/preview/**`는 화면 확인용 임시 라우트라 다른 라우트의 private segment를 import할 수 있다. 제품 코드가 preview를 import하지 않는다.
 - `src/api/`는 `app/`과 `shared/`를 import하지 않는다.
 - shared 계층에서는 `shared/providers/`만 `api/mutator`, `api/auth-session`을 import한다. 전역 retry 정책과 인증 세션·캐시 수명 관리를 위한 경계다.
+- `AuthProvider`는 가입 완료 가드를 위해 `api/gen/profile`의 내 프로필 조회와 응답 타입을 사용한다. 인증 복원 후 `profileCompleted` 확인을 마쳐야 보호 화면을 마운트하며, 미완료 사용자는 `/signup`으로 보낸다.
 - `shared/ui/`는 `api/`를 import하지 않는다. 생성 타입이 필요한 UI는 라우트에 둔다.
 - 라우트 group 전용 코드는 `app/(group)/_*/`에 둔다.
 

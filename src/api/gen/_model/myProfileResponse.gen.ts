@@ -17,4 +17,6 @@ export interface MyProfileResponse {
   reviewCount: number;
   joinedGroupCount: number;
   favoritePlaceCount: number;
+  /** 가입 화면을 끝냈는지 (TMT-370) */
+  profileCompleted: boolean;
 }

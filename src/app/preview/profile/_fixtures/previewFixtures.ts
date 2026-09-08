@@ -21,6 +21,7 @@ import dummyProfile from "@/shared/assets/dummy-profile.png";
 const page = <T>(items: T[]) => ({ items, nextCursor: null, hasNext: false });
 
 export const ME: MyProfileResponse = {
+  profileCompleted: true,
   userId: "user_1",
   nickname: "조용한 미식가",
   email: "ayanha@gmail.com",
