@@ -1,12 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { type UIEvent, useState } from "react";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Progress } from "@/shared/ui/Progress";
 import { ONBOARDING_STEP_COUNT, ONBOARDING_STEPS } from "../_constants/steps";
-import { OnboardingSlide } from "./OnboardingSlide";
 
 type OnboardingViewProps = {
   onSkip: () => void;
@@ -64,7 +64,19 @@ export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
         className="scrollbar-hidden flex min-h-0 flex-1 snap-x snap-mandatory select-none overflow-x-auto overscroll-x-contain active:snap-none"
       >
         {ONBOARDING_STEPS.map((step, index) => (
-          <OnboardingSlide key={step.id} step={step} priority={index === 0} />
+          <div key={step.id} className="flex w-full shrink-0 snap-start justify-center px-ds-20">
+            {/*
+              위에 붙인다. 진행바와의 간격이 시안값 그대로 유지되고, 남는 높이는 CTA 쪽으로 간다.
+              짧은 화면에서는 max-h가 높이를 잡으므로 비율은 object-contain이 지킨다.
+              첫 장만 즉시 받고 나머지는 스와이프할 때 받는다.
+            */}
+            <Image
+              src={step.image}
+              alt={step.alt}
+              priority={index === 0}
+              className="h-auto max-h-full w-full self-start object-contain"
+            />
+          </div>
         ))}
       </section>
 

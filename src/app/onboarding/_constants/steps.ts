@@ -38,5 +38,3 @@ export const ONBOARDING_STEPS = [
 ] as const satisfies readonly OnboardingStep[];
 
 export const ONBOARDING_STEP_COUNT = ONBOARDING_STEPS.length;
-
-export type { OnboardingStep };
