@@ -1,15 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      {
-        source: "/nearby/:path*",
-        destination: "/feed/:path*",
-        permanent: true,
-      },
-    ];
-  },
   turbopack: {
     rules: {
       "*.svg": {
