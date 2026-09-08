@@ -77,11 +77,9 @@ export function HomeFeed(props: HomeFeedProps) {
           최근 게시물
         </h2>
         <div className="flex min-h-0 flex-1 items-center justify-center bg-surface-primary px-ds-20 py-ds-32">
-          <div className="translate-y-[calc(0px_-_clamp(0px,calc(50dvh_-_320px),var(--spacing-ds-64)))]">
-            <EmptyNotice src={emptyMascot} title={notice.title}>
-              {notice.description}
-            </EmptyNotice>
-          </div>
+          <EmptyNotice src={emptyMascot} title={notice.title}>
+            {notice.description}
+          </EmptyNotice>
         </div>
       </section>
     );
