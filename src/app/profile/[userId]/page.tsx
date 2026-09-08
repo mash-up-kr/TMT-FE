@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { toUserProfileHref } from "../_utils/profileHrefs";
+
+export const metadata: Metadata = {
+  title: "프로필",
+};
 
 export default async function Page({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = await params;

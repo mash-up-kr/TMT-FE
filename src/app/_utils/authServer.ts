@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import type { TokenRefreshResponse } from "@/api/gen/_model/tokenRefreshResponse.gen";
 import { getTmtApiErrorCode, TmtApiError } from "@/api/mutator";
+import { SITE_ORIGIN } from "@/shared/constants/site";
 
 export const REFRESH_COOKIE = "tmt-refresh";
 export const STATE_COOKIE = "tmt-kakao-state";
@@ -32,10 +33,7 @@ function privateAuthResponse(response: NextResponse) {
 }
 
 export function isAllowedOrigin(origin: string) {
-  return (
-    origin === (process.env.APP_ORIGIN ?? "https://ttomatto-web.vercel.app") ||
-    origin === "http://localhost:3000"
-  );
+  return origin === SITE_ORIGIN || origin === "http://localhost:3000";
 }
 
 /** SameSite만 믿지 않고, 쿠키를 사용하는 POST의 출처를 검사한다. */

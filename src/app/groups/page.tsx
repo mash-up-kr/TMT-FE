@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
@@ -5,6 +6,10 @@ import { ROUTES } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
 import { PlusIcon } from "@/shared/ui/Icons";
 import { GroupsView } from "./_components/GroupsView";
+
+export const metadata: Metadata = {
+  title: "맛집 그룹 찾기",
+};
 
 export default function GroupsPage() {
   return (
