@@ -44,6 +44,8 @@ export function GroupTicketShortageSheet({
           src={group.imageUrl}
           fallbackSrc={groupFallbackImage}
           alt=""
+          width={60}
+          height={60}
           className="size-[60px] rounded-ds-full object-cover"
         />
         <div className="flex w-full flex-col gap-ds-8">

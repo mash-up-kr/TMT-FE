@@ -5,10 +5,13 @@ import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 
-type ImageCarouselProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
+type ImageCarouselProps = Omit<ComponentPropsWithoutRef<"div">, "children" | "width" | "height"> & {
   imageUrls: readonly string[];
   fallbackSrc: string | { src: string };
   label: string;
+  /** 슬라이드 한 장이 실제로 그려지는 크기. className이 정하는 박스와 같아야 한다. */
+  width: number;
+  height: number;
 };
 
 export function ImageCarousel(props: ImageCarouselProps) {
@@ -20,6 +23,8 @@ function ImageCarouselContent({
   imageUrls,
   fallbackSrc,
   label,
+  width,
+  height,
   className,
   ...props
 }: ImageCarouselProps) {
@@ -56,6 +61,8 @@ function ImageCarouselContent({
             src={url}
             fallbackSrc={fallbackSrc}
             alt={`${label} ${index + 1}`}
+            width={width}
+            height={height}
             draggable={false}
             className="size-full shrink-0 snap-start object-cover"
           />

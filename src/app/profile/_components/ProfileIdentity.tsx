@@ -15,6 +15,8 @@ export function ProfileIdentity({ profile }: ProfileIdentityProps) {
           src={profile.profileImageUrl}
           fallbackSrc={dummyProfile}
           alt=""
+          width={70}
+          height={70}
           className="size-[70px] shrink-0 rounded-ds-full object-cover"
         />
       ) : (

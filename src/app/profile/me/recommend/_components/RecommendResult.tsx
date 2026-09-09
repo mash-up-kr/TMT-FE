@@ -13,6 +13,10 @@ import { GRID_SURFACE, RESULT_LAYOUT } from "../_constants/appearance";
 import type { RecommendResult as RecommendResultModel } from "../_model/recommend";
 import BoilingPotShape from "./assets/pot-boiling.svg?react";
 
+/** 카드 안 썸네일: content-container 여백 20과 카드 패딩 20을 프레임 430에서 뺀 폭. */
+const THUMBNAIL_WIDTH = 350;
+const THUMBNAIL_HEIGHT = 155;
+
 type RecommendResultProps = Readonly<{
   result: RecommendResultModel;
   onOpenDetail: () => void;
@@ -85,6 +89,8 @@ export function RecommendResult({ result, onOpenDetail }: RecommendResultProps) 
             src={result.thumbnailUrl}
             alt=""
             fallbackSrc={dummyImage}
+            width={THUMBNAIL_WIDTH}
+            height={THUMBNAIL_HEIGHT}
             className="size-full object-cover"
           />
         </div>

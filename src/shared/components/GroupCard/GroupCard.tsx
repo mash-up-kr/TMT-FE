@@ -8,6 +8,10 @@ import { cn } from "@/shared/utils/cn";
 /** 지표에 쓰는 아이콘 크기. 시안이 12px 고정이라 ds 스케일 대신 값으로 둔다. */
 const ICON_SIZE = 12;
 
+/** 썸네일은 카드 너비를 가득 채우고, 카드는 프레임(--layout-frame-max)까지 넓어진다. */
+const THUMBNAIL_WIDTH = 430;
+const THUMBNAIL_HEIGHT = 100;
+
 const matchedLabel = (count: number) => `내가 저장한 가게와 ${count}개 일치해요`;
 
 type GroupCardProps = Omit<ComponentProps<"div">, "title"> & {
@@ -66,6 +70,8 @@ function GroupCardThumbnail({ src }: GroupCardThumbnailProps) {
         src={src}
         fallbackSrc={fallbackImage}
         alt=""
+        width={THUMBNAIL_WIDTH}
+        height={THUMBNAIL_HEIGHT}
         className="size-full object-cover"
       />
     </div>

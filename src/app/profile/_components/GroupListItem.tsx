@@ -16,6 +16,11 @@ const thumbnailStyles = {
   other: "size-ds-48 rounded-ds-sm",
 } satisfies Record<ProfileViewer, string>;
 
+const thumbnailSizes = {
+  mine: 80,
+  other: 48,
+} satisfies Record<ProfileViewer, number>;
+
 export function GroupListItem({ group, href, viewer }: GroupListItemProps) {
   const showsMatched = viewer === "mine" && Boolean(group.matchedSavedPlaceCount);
 
@@ -26,6 +31,8 @@ export function GroupListItem({ group, href, viewer }: GroupListItemProps) {
           src={group.coverImageUrl}
           fallbackSrc={dummy}
           alt=""
+          width={thumbnailSizes[viewer]}
+          height={thumbnailSizes[viewer]}
           className={cn("shrink-0 object-cover", thumbnailStyles[viewer])}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-ds-12">

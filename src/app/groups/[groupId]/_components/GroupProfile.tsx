@@ -5,6 +5,10 @@ import { ImageCarousel } from "@/shared/ui/ImageCarousel";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { GroupProfileData } from "../_model/groupDetail";
 
+/** 커버는 프레임(--layout-frame-max) 너비를 가득 채운다. */
+const COVER_WIDTH = 430;
+const COVER_HEIGHT = 140;
+
 type GroupProfileProps = {
   group: GroupProfileData;
 };
@@ -18,6 +22,8 @@ export function GroupProfile({ group }: GroupProfileProps) {
             imageUrls={group.coverImageUrls}
             fallbackSrc={coverFallbackImage}
             label={`${group.name} 대표 이미지`}
+            width={COVER_WIDTH}
+            height={COVER_HEIGHT}
             className="size-full"
           />
         ) : (
@@ -25,6 +31,8 @@ export function GroupProfile({ group }: GroupProfileProps) {
             src={null}
             fallbackSrc={coverFallbackImage}
             alt={`${group.name} 대표 이미지`}
+            width={COVER_WIDTH}
+            height={COVER_HEIGHT}
             className="size-full object-cover"
           />
         )}
@@ -36,6 +44,8 @@ export function GroupProfile({ group }: GroupProfileProps) {
             src={group.imageUrl}
             fallbackSrc={groupFallbackImage}
             alt=""
+            width={48}
+            height={48}
             className="size-ds-48 shrink-0 rounded-ds-full object-cover"
           />
           <div className="min-w-0">

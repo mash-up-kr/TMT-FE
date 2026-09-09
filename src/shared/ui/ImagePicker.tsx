@@ -56,6 +56,8 @@ export function ImagePicker({
           src={src ?? null}
           {...(fallbackSrc ? { fallbackSrc } : { fallback: <PlusIcon size={24} /> })}
           alt={label}
+          width={120}
+          height={120}
           className="size-full rounded-ds-full object-cover"
           onError={onImageError}
         />

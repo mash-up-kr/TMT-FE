@@ -96,6 +96,8 @@ function PhotoStrip({ urls }: { urls: string[] }) {
             src={url}
             fallbackSrc={fallbackImage}
             alt=""
+            width={120}
+            height={120}
             draggable={false}
             className="size-full object-cover"
           />

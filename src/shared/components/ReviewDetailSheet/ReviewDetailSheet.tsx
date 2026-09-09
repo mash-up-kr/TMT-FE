@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
@@ -15,6 +16,12 @@ import { cn } from "@/shared/utils/cn";
 const PHOTO_HEIGHT = "h-[168px]";
 const PHOTO_WIDTH_PAIR = "w-[194px]";
 const PHOTO_WIDTH_TRIPLE = "w-[128px]";
+
+/** next/image가 srcset을 고를 때 쓰는 실제 렌더 크기. 위 클래스와 같은 값이어야 한다. */
+const PHOTO_HEIGHT_PX = 168;
+const PHOTO_WIDTH_SINGLE_PX = 340;
+const PHOTO_WIDTH_PAIR_PX = 194;
+const PHOTO_WIDTH_TRIPLE_PX = 128;
 
 export interface ReviewDetailPhoto {
   id: string;
@@ -180,10 +187,11 @@ function PhotoStrip({ photos }: PhotoStripProps) {
           PHOTO_HEIGHT,
         )}
       >
-        {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-        <img
+        <Image
           src={photos[0].url}
           alt="리뷰 사진"
+          width={PHOTO_WIDTH_SINGLE_PX}
+          height={PHOTO_HEIGHT_PX}
           className="size-full object-cover"
           loading="lazy"
         />
@@ -206,10 +214,11 @@ function PhotoStrip({ photos }: PhotoStripProps) {
             index === photos.length - 1 && "rounded-r-ds-lg",
           )}
         >
-          {/* biome-ignore lint/performance/noImgElement: 이미지 호스트가 확정되지 않아 next.config의 remotePatterns를 채울 수 없다. */}
-          <img
+          <Image
             src={photo.url}
             alt={`리뷰 사진 ${index + 1}`}
+            width={photos.length === 2 ? PHOTO_WIDTH_PAIR_PX : PHOTO_WIDTH_TRIPLE_PX}
+            height={PHOTO_HEIGHT_PX}
             draggable={false}
             className="size-full object-cover"
             loading="lazy"
