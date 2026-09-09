@@ -122,32 +122,25 @@ function ReviewFlowContent({
     setExitOpen(true);
   };
 
-  const handleClose = () => {
-    if (isComplete) {
-      exitFlow();
-      return;
-    }
-
-    requestExit();
-  };
-
   return (
     <ReviewFlowExitContext.Provider value={requestExit}>
-      <GNB
-        title={isComplete ? "완료" : "리뷰 쓰기"}
-        left={
-          canGoBack && (
-            <IconButton aria-label="이전 단계로" onClick={() => router.back()}>
-              <ChevronLeftIcon />
+      {!isComplete && (
+        <GNB
+          title="리뷰 쓰기"
+          left={
+            canGoBack && (
+              <IconButton aria-label="이전 단계로" onClick={() => router.back()}>
+                <ChevronLeftIcon />
+              </IconButton>
+            )
+          }
+          right={
+            <IconButton aria-label="리뷰 작성 닫기" onClick={requestExit}>
+              <CancelIcon thick />
             </IconButton>
-          )
-        }
-        right={
-          <IconButton aria-label={isComplete ? "닫기" : "리뷰 작성 닫기"} onClick={handleClose}>
-            <CancelIcon thick />
-          </IconButton>
-        }
-      />
+          }
+        />
+      )}
 
       <main className="flex min-h-0 flex-1 flex-col">
         {completedSteps !== null && (

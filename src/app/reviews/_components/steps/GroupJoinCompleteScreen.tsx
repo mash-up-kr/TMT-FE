@@ -53,7 +53,7 @@ export function GroupJoinCompleteScreen({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-gradient-to-b from-surface-celebration to-surface-primary to-39%">
+    <div className="flex min-h-0 flex-1 flex-col">
       <ReviewStepLayout
         className="gap-ds-20 pt-ds-20"
         footer={
