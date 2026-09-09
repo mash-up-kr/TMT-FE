@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { FoodCategory } from "../_model/recommend";
+import type { FoodCategory } from "@/shared/model/foodCategory";
 import asian from "./assets/asian.png";
 import bar from "./assets/bar.png";
 import brunch from "./assets/brunch.png";

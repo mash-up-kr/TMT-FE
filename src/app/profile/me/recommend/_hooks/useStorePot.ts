@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import type { FoodCategory } from "@/shared/model/foodCategory";
 import { toast } from "@/shared/ui/Toast";
-import type { FoodCategory, RecommendStore } from "../_model/recommend";
+import type { RecommendStore } from "../_model/recommend";
 
 /** 한 번에 담을 수 있는 매장 수. */
 export const MAX_PICKED = 5;

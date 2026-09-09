@@ -3,8 +3,8 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef } from "react";
+import type { FoodCategory } from "@/shared/model/foodCategory";
 import { BALL_DROP } from "../_constants/motion";
-import type { FoodCategory } from "../_model/recommend";
 import { StoreSticker } from "./StoreSticker";
 
 type DroppingBallProps = Readonly<{
