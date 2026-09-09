@@ -1,6 +1,6 @@
 "use client";
 
-import { type PointerEvent, type TouchEvent, useCallback, useRef, useState } from "react";
+import { type PointerEvent, type TouchEvent, useRef, useState } from "react";
 
 /** 이 거리를 넘겨 당긴 채 놓으면 새로고침한다. 인디케이터 높이이기도 하다. */
 export const PULL_THRESHOLD_PX = 64;
@@ -33,18 +33,15 @@ export function usePullToRefresh<T extends HTMLElement>({
   const startY = useRef<number | null>(null);
   const latestDistance = useRef(0);
 
-  const begin = useCallback(
-    (clientY: number, element: T) => {
-      if (disabled || isRefreshing || element.scrollTop > 0) {
-        return;
-      }
+  function begin(clientY: number, element: T) {
+    if (disabled || isRefreshing || element.scrollTop > 0) {
+      return;
+    }
 
-      startY.current = clientY;
-    },
-    [disabled, isRefreshing],
-  );
+    startY.current = clientY;
+  }
 
-  const move = useCallback((clientY: number, element: T) => {
+  function move(clientY: number, element: T) {
     if (startY.current === null) {
       return;
     }
@@ -63,9 +60,9 @@ export function usePullToRefresh<T extends HTMLElement>({
 
     latestDistance.current = distance;
     setPullDistance(distance);
-  }, []);
+  }
 
-  const end = useCallback(() => {
+  function end() {
     if (startY.current === null) {
       return;
     }
@@ -90,77 +87,62 @@ export function usePullToRefresh<T extends HTMLElement>({
         setIsRefreshing(false);
         setPullDistance(0);
       });
-  }, [onRefresh]);
+  }
 
-  const onTouchStart = useCallback(
-    (event: TouchEvent<T>) => {
-      const touch = event.touches[0];
+  function onTouchStart(event: TouchEvent<T>) {
+    const touch = event.touches[0];
 
-      if (touch !== undefined) {
-        begin(touch.clientY, event.currentTarget);
-      }
-    },
-    [begin],
-  );
+    if (touch !== undefined) {
+      begin(touch.clientY, event.currentTarget);
+    }
+  }
 
-  const onTouchMove = useCallback(
-    (event: TouchEvent<T>) => {
-      const touch = event.touches[0];
+  function onTouchMove(event: TouchEvent<T>) {
+    const touch = event.touches[0];
 
-      if (touch !== undefined) {
-        move(touch.clientY, event.currentTarget);
-      }
-    },
-    [move],
-  );
+    if (touch !== undefined) {
+      move(touch.clientY, event.currentTarget);
+    }
+  }
 
-  const onPointerDown = useCallback(
-    (event: PointerEvent<T>) => {
-      if (event.pointerType !== "mouse" || event.button !== 0) {
-        return;
-      }
+  function onPointerDown(event: PointerEvent<T>) {
+    if (event.pointerType !== "mouse" || event.button !== 0) {
+      return;
+    }
 
-      // 여기서 캡처하면 안 된다. 캡처 중엔 click이 pointerdown·pointerup 타깃의 공통 조상인
-      // 이 컨테이너로 가서, 안쪽 버튼·링크가 마우스 클릭을 받지 못한다.
-      begin(event.clientY, event.currentTarget);
-    },
-    [begin],
-  );
+    // 여기서 캡처하면 안 된다. 캡처 중엔 click이 pointerdown·pointerup 타깃의 공통 조상인
+    // 이 컨테이너로 가서, 안쪽 버튼·링크가 마우스 클릭을 받지 못한다.
+    begin(event.clientY, event.currentTarget);
+  }
 
-  const onPointerMove = useCallback(
-    (event: PointerEvent<T>) => {
-      if (event.pointerType !== "mouse") {
-        return;
-      }
+  function onPointerMove(event: PointerEvent<T>) {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
 
-      move(event.clientY, event.currentTarget);
+    move(event.clientY, event.currentTarget);
 
-      // 당김이 실제로 시작된 뒤에만 캡처한다. 요소 밖에서 놓아도 끝맺기 위해서다.
-      if (
-        startY.current !== null &&
-        latestDistance.current > 0 &&
-        !event.currentTarget.hasPointerCapture(event.pointerId)
-      ) {
-        event.currentTarget.setPointerCapture(event.pointerId);
-      }
-    },
-    [move],
-  );
+    // 당김이 실제로 시작된 뒤에만 캡처한다. 요소 밖에서 놓아도 끝맺기 위해서다.
+    if (
+      startY.current !== null &&
+      latestDistance.current > 0 &&
+      !event.currentTarget.hasPointerCapture(event.pointerId)
+    ) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+  }
 
-  const onPointerEnd = useCallback(
-    (event: PointerEvent<T>) => {
-      if (event.pointerType !== "mouse") {
-        return;
-      }
+  function onPointerEnd(event: PointerEvent<T>) {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
 
-      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-        event.currentTarget.releasePointerCapture(event.pointerId);
-      }
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
 
-      end();
-    },
-    [end],
-  );
+    end();
+  }
 
   const status: PullToRefreshStatus = isRefreshing
     ? "refreshing"

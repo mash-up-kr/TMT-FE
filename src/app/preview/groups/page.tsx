@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -46,7 +46,9 @@ export default function GroupsPreviewPage() {
           />
         }
       >
-        <GroupsView previewState={state === "default" ? undefined : state} />
+        <Suspense>
+          <GroupsView previewState={state === "default" ? undefined : state} />
+        </Suspense>
       </PreviewBottomNavScreenLayout>
 
       <nav aria-label="프리뷰 상태" className={SWITCHER}>

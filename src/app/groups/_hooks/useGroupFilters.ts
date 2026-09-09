@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchQuery } from "@/shared/hooks/useSearchQuery";
 import { DEFAULT_SORT, type GroupSort } from "../_constants/filters";
 
 export type GroupFilters = {
@@ -12,8 +13,7 @@ export type GroupFilters = {
   regionTagIds: string[];
 };
 
-const INITIAL: GroupFilters = {
-  keyword: "",
+const INITIAL: Omit<GroupFilters, "keyword"> = {
   sort: DEFAULT_SORT,
   categoryId: null,
   regionTagIds: [],
@@ -21,13 +21,18 @@ const INITIAL: GroupFilters = {
 
 /** 검색어·필터를 한곳에 모은다. 목록 쿼리가 이 값 전부를 파라미터로 쓴다. */
 export function useGroupFilters() {
-  const [filters, setFilters] = useState<GroupFilters>(INITIAL);
-
-  const setKeyword = (keyword: string) => setFilters((prev) => ({ ...prev, keyword }));
+  const search = useSearchQuery();
+  const [filters, setFilters] = useState(INITIAL);
   const setSort = (sort: GroupSort) => setFilters((prev) => ({ ...prev, sort }));
   const setCategory = (categoryId: string | null) =>
     setFilters((prev) => ({ ...prev, categoryId }));
   const setRegions = (regionTagIds: string[]) => setFilters((prev) => ({ ...prev, regionTagIds }));
 
-  return { filters, setKeyword, setSort, setCategory, setRegions };
+  return {
+    filters: { ...filters, keyword: search.value },
+    search,
+    setSort,
+    setCategory,
+    setRegions,
+  };
 }

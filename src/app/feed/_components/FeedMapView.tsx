@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { type MapBounds, useFeedPins } from "../_hooks/useFeedPins";
 import type { FeedPin } from "../_utils/feedMapper";
 import { FeedCurationChips } from "./FeedCurationChips";
 import { FeedMap } from "./FeedMap";
-import { FeedSearchEntry } from "./FeedSearchEntry";
 import { PlacePinSheet } from "./PlacePinSheet";
 
 /** 매 렌더 새 배열을 넘기면 마커 effect가 계속 다시 돌아 깜빡인다. */
@@ -17,6 +16,7 @@ type FeedMapViewProps = {
   query: string | null;
   curationTagId: string | null;
   onCurationSelect: (id: string | null) => void;
+  searchBar: ReactNode;
 };
 
 /** 지도형 — viewport 안의 핀과 핀 클릭 시트 (명세 §2-3). */
@@ -25,10 +25,11 @@ export function FeedMapView({
   query,
   curationTagId,
   onCurationSelect,
+  searchBar,
 }: FeedMapViewProps) {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
-  const { data } = useFeedPins(bounds, curationTagId);
+  const { data } = useFeedPins(bounds, curationTagId, query);
 
   return (
     <div className="relative isolate flex min-h-0 flex-1 flex-col">
@@ -41,7 +42,7 @@ export function FeedMapView({
         onPinClick={setSelectedPlaceId}
       />
       <div className="absolute top-ds-12 right-0 left-0 z-overlay flex flex-col gap-ds-12 px-ds-20">
-        <FeedSearchEntry keyword={query} />
+        {searchBar}
         <FeedCurationChips
           selectedId={curationTagId}
           onSelect={onCurationSelect}

@@ -1,13 +1,20 @@
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, CompositionEventHandler } from "react";
 import { TextField } from "@/shared/ui/TextField";
 
 type GroupSearchBarProps = {
   value: string;
   onValueChange: (value: string) => void;
+  onCompositionStart: CompositionEventHandler<HTMLInputElement>;
+  onCompositionEnd: CompositionEventHandler<HTMLInputElement>;
 };
 
-/** 피드의 검색 진입(FeedSearchEntry)과 같은 모양이다. 입력 즉시 목록을 거르므로 검색 아이콘은 두지 않는다. */
-export function GroupSearchBar({ value, onValueChange }: GroupSearchBarProps) {
+/** 그룹 검색은 별도 제출 버튼 없이 입력에 따라 목록을 갱신한다. */
+export function GroupSearchBar({
+  value,
+  onValueChange,
+  onCompositionStart,
+  onCompositionEnd,
+}: GroupSearchBarProps) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onValueChange(event.target.value);
   };
@@ -18,7 +25,9 @@ export function GroupSearchBar({ value, onValueChange }: GroupSearchBarProps) {
       placeholder="장소나 태그로 검색해보세요"
       value={value}
       onChange={handleChange}
-      // 피드 진입점의 안내 문구는 tertiary 원색이라 필드 기본 70% 불투명도를 걷어낸다.
+      onCompositionStart={onCompositionStart}
+      onCompositionEnd={onCompositionEnd}
+      // 기존 그룹 검색창의 안내 문구 농도를 유지한다.
       className="placeholder:opacity-100"
     />
   );
