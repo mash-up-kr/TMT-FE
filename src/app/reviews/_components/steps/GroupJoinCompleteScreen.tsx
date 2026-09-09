@@ -1,9 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { GroupCard } from "@/shared/components/GroupCard/GroupCard";
-import { clearJoinGroupIntent } from "@/shared/constants/reviewJoinGroup";
-import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { FireIcon } from "@/shared/ui/ColorIcons";
@@ -21,15 +18,10 @@ const ERROR_MESSAGE = "그룹 정보를 불러오지 못했어요. 잠시 후 �
 export function GroupJoinCompleteScreen({
   groupId,
   reviewId,
-}: Readonly<{ groupId: string; reviewId: string | null }>) {
-  const router = useRouter();
+  onLeave,
+}: Readonly<{ groupId: string; reviewId: string | null; onLeave: () => void }>) {
   const { group, isPending, isError, retry, isJoinable, joinGroup, isJoining } =
     useGroupJoinAfterReview({ groupId, reviewId });
-
-  const leaveToGroups = () => {
-    clearJoinGroupIntent();
-    router.replace(ROUTES.GROUPS.ROOT);
-  };
 
   // 리뷰는 이미 저장됐다. 그룹을 못 받았다고 이 화면에 가둘 이유가 없어 다시 받거나 나갈 길을 준다.
   if (isError || (!isPending && group === undefined)) {
@@ -39,7 +31,7 @@ export function GroupJoinCompleteScreen({
           {ERROR_MESSAGE}
         </p>
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" className="whitespace-nowrap" onClick={leaveToGroups}>
+          <Button variant="tertiary" className="whitespace-nowrap" onClick={onLeave}>
             다른 그룹 보러가기
           </Button>
           <Button onClick={retry}>다시 시도</Button>
@@ -53,12 +45,12 @@ export function GroupJoinCompleteScreen({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-gradient-to-b from-surface-celebration to-surface-primary to-39%">
+    <div className="flex min-h-0 flex-1 flex-col">
       <ReviewStepLayout
         className="gap-ds-20 pt-ds-20"
         footer={
           <ButtonStack type="horizontal">
-            <Button variant="tertiary" className="whitespace-nowrap" onClick={leaveToGroups}>
+            <Button variant="tertiary" className="whitespace-nowrap" onClick={onLeave}>
               다른 그룹 보러가기
             </Button>
             <Button disabled={!isJoinable} loading={isJoining} onClick={joinGroup}>
