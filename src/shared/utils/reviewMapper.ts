@@ -1,5 +1,6 @@
 import type { ReviewCardResponse } from "@/api/gen/_model/reviewCardResponse.gen";
 import type { ReviewCardData } from "@/shared/model/review";
+import { toFoodCategory } from "@/shared/utils/foodCategoryMapper";
 
 export function toReviewCardData(review: ReviewCardResponse): ReviewCardData {
   return {
@@ -21,6 +22,7 @@ export function toReviewCardData(review: ReviewCardResponse): ReviewCardData {
       id: review.place.placeId,
       name: review.place.name,
       regionName: review.place.regionName,
+      category: toFoodCategory(review.place.categoryId),
       isFavorite: review.place.isFavorite,
     },
   };

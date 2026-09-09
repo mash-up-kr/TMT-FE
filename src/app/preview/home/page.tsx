@@ -79,7 +79,13 @@ const REVIEW: FeedReview = {
     { id: "tag_alone", label: "혼자" },
     { id: "tag_tasty", label: "음식이 맛있어요" },
   ],
-  place: { id: "place_2", name: "오즈 커피", regionName: "마포구 도화동", isFavorite: false },
+  place: {
+    id: "place_2",
+    name: "오즈 커피",
+    regionName: "마포구 도화동",
+    category: "cafe",
+    isFavorite: false,
+  },
 };
 
 const NOT_JOINED: HomeSummary = {
