@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { useGetSave } from "@/api/gen/save/save.gen";
 import writingMascot from "@/shared/components/assets/mascot-writing.png";
-import { readJoinGroupForSave } from "@/shared/constants/reviewJoinGroup";
+import { clearJoinGroupIntent, readJoinGroupForSave } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
@@ -24,6 +24,8 @@ import { ReviewStepLayout } from "../ReviewStepLayout";
 import { GroupJoinCompleteScreen } from "./GroupJoinCompleteScreen";
 
 export function CompleteScreen() {
+  const router = useRouter();
+  const returnTo = useReviewFlowReturnTo();
   const saveId = useReviewFlowSaveId();
   const store = useReviewDraftGuard();
   const { saveResult } = useReviewDraft();
@@ -43,25 +45,44 @@ export function CompleteScreen() {
   // ⚠️ UT2 임시 계측. Task 1의 건너뛰기 제출에서도 이 화면을 거쳐 한 번 더 찍힌다.
   useUt2Step(UT2_STEPS.REVIEW_COMPLETE, isReviewCompleted);
 
+  const closeComplete = () => {
+    if (joinGroupId !== undefined && joinGroupId !== null) {
+      clearJoinGroupIntent();
+      router.replace(ROUTES.GROUPS.ROOT);
+      return;
+    }
+
+    router.replace(returnTo);
+  };
+
   if (joinGroupId === undefined) {
-    return <ReviewCompleteLayout variant="pending" />;
+    return <ReviewCompleteLayout variant="pending" onClose={closeComplete} />;
   }
 
   if (store === null || saveId === null || !save.isSuccess) {
-    return <ReviewCompleteLayout variant={joinGroupId === null ? "review" : "group-join"} />;
+    return (
+      <ReviewCompleteLayout
+        variant={joinGroupId === null ? "review" : "group-join"}
+        onClose={closeComplete}
+      />
+    );
   }
 
   // 그룹 가입 때문에 쓴 리뷰는 완성 여부와 무관하게 그 그룹으로 이어준다.
   if (joinGroupId !== null) {
     return (
-      <ReviewCompleteLayout variant="group-join">
-        <GroupJoinCompleteScreen groupId={joinGroupId} reviewId={save.data?.reviewId ?? null} />
+      <ReviewCompleteLayout variant="group-join" onClose={closeComplete}>
+        <GroupJoinCompleteScreen
+          groupId={joinGroupId}
+          reviewId={save.data?.reviewId ?? null}
+          onLeave={closeComplete}
+        />
       </ReviewCompleteLayout>
     );
   }
 
   return (
-    <ReviewCompleteLayout variant="review">
+    <ReviewCompleteLayout variant="review" onClose={closeComplete}>
       <ReviewCompleteBody
         store={store}
         isReviewCompleted={isReviewCompleted}
@@ -74,11 +95,13 @@ export function CompleteScreen() {
 /** 완료 화면이 GNB와 본문의 배경을 함께 소유해 상단에 흰 띠가 생기지 않게 한다. */
 function ReviewCompleteLayout({
   variant,
+  onClose,
   children,
-}: Readonly<{ variant: "pending" | "group-join" | "review"; children?: ReactNode }>) {
-  const router = useRouter();
-  const returnTo = useReviewFlowReturnTo();
-
+}: Readonly<{
+  variant: "pending" | "group-join" | "review";
+  onClose: () => void;
+  children?: ReactNode;
+}>) {
   return (
     <div
       className={cn(
@@ -91,7 +114,7 @@ function ReviewCompleteLayout({
         title={variant === "review" ? "완료" : null}
         className="shrink-0 bg-transparent"
         right={
-          <IconButton aria-label="닫기" onClick={() => router.replace(returnTo)}>
+          <IconButton aria-label="닫기" onClick={onClose}>
             <CancelIcon thick />
           </IconButton>
         }
