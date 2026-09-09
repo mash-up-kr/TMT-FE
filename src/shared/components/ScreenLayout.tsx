@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode, Ref } from "react";
 import { PULL_THRESHOLD_PX, usePullToRefresh } from "@/shared/hooks/usePullToRefresh";
 import { Spinner } from "@/shared/ui/Spinner";
 import { cn } from "@/shared/utils/cn";
@@ -9,6 +9,10 @@ export type ScreenLayoutProps = ComponentPropsWithoutRef<"div"> & {
   header: ReactNode;
   /** 본문이 별도의 스크롤 영역을 가질 때 false. 자식은 inset을 적용한 자체 스크롤 또는 full-bleed 표면을 명시한다. */
   bodyScrollable?: boolean;
+  /** false면 본문이 내비게이션 뒤까지 채워지며, 각 콘텐츠가 마지막 항목의 하단 여백을 소유한다. */
+  bodyBottomInset?: boolean;
+  /** 본문 스크롤 위치를 제어할 때 사용한다. */
+  bodyRef?: Ref<HTMLDivElement>;
   /** 스크롤과 무관하게 본문 위에 떠 있는 요소(FAB 등). 바텀 내브를 제외한 본문 영역을 기준으로 배치된다. */
   floating?: ReactNode;
   /** 본문을 맨 위에서 당겨 놓으면 호출한다. resolve될 때까지 인디케이터를 유지한다. 본문이 스크롤될 때만 동작한다. */
@@ -27,18 +31,24 @@ export function ScreenLayout({
   children,
   className,
   bodyScrollable = true,
+  bodyBottomInset = true,
+  bodyRef,
   floating,
   onRefresh,
   ...props
 }: ScreenLayoutProps) {
   const body =
     bodyScrollable && onRefresh ? (
-      <RefreshableBody onRefresh={onRefresh}>{children}</RefreshableBody>
+      <RefreshableBody onRefresh={onRefresh} bottomInset={bodyBottomInset} bodyRef={bodyRef}>
+        {children}
+      </RefreshableBody>
     ) : (
       <div
+        ref={bodyRef}
         className={cn(
           "flex min-h-0 flex-1 flex-col",
-          bodyScrollable && "scroll-under-navigation overflow-y-auto",
+          bodyScrollable && "overflow-y-auto",
+          bodyScrollable && bodyBottomInset && "scroll-under-navigation",
         )}
       >
         {children}
@@ -71,9 +81,13 @@ export function ScreenLayout({
  */
 function RefreshableBody({
   onRefresh,
+  bottomInset,
+  bodyRef,
   children,
 }: {
   onRefresh: () => Promise<unknown>;
+  bottomInset: boolean;
+  bodyRef?: Ref<HTMLDivElement>;
   children: ReactNode;
 }) {
   const { status, pullDistance, handlers } = usePullToRefresh<HTMLDivElement>({ onRefresh });
@@ -94,8 +108,10 @@ function RefreshableBody({
       </output>
       <div
         {...handlers}
+        ref={bodyRef}
         className={cn(
-          "scroll-under-navigation flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-none",
+          "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-none",
+          bottomInset && "scroll-under-navigation",
           !isTracking &&
             "transition-[translate] duration-200 ease-out motion-reduce:transition-none",
         )}

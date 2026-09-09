@@ -40,7 +40,7 @@ export function FeedListView({ position }: FeedListViewProps) {
   }
 
   return (
-    <ul className="flex flex-1 flex-col gap-ds-4">
+    <ul className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {reviews.map((review) => (
         <li key={review.id}>
           <ReviewCard review={review} maxVisibleTags={MAX_VISIBLE_TAGS} />
@@ -53,7 +53,7 @@ export function FeedListView({ position }: FeedListViewProps) {
 /** ReviewCard 형태를 흉내낸다 — 헤더(아바타+텍스트) → 사진 → 본문. */
 function FeedListSkeleton() {
   return (
-    <ul aria-busy="true" className="flex flex-1 flex-col gap-ds-4">
+    <ul aria-busy="true" className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {SKELETON_CARDS.map((card) => (
         <li key={card}>
           <article className="flex flex-col bg-surface-primary">

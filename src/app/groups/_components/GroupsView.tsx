@@ -2,7 +2,6 @@
 
 import { useListGroups } from "@/api/gen/group/group.gen";
 import { UT2_STEPS } from "@/shared/constants/ut2";
-import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { DEFAULT_SORT } from "../_constants/filters";
 import { useGroupFilters } from "../_hooks/useGroupFilters";
@@ -20,11 +19,10 @@ type GroupsViewProps = {
 };
 
 export function GroupsView({ previewState }: GroupsViewProps) {
-  const { filters, setKeyword, setSort, setCategory, setRegions } = useGroupFilters();
-  const searchQuery = useDebouncedValue(filters.keyword.trim());
+  const { filters, search, setSort, setCategory, setRegions } = useGroupFilters();
 
   const { data, isPending, isError, refetch } = useListGroups(
-    toGroupListParams(filters, searchQuery),
+    toGroupListParams(filters, search.query ?? ""),
   );
 
   const groups = (data?.items ?? []).map(toGroupListItem).filter((item) => item !== null);
@@ -40,9 +38,14 @@ export function GroupsView({ previewState }: GroupsViewProps) {
   useUt2Step(UT2_STEPS.GROUP_TAB_FILTER, hasFiltered);
 
   return (
-    <>
-      <div className="flex shrink-0 flex-col gap-ds-12 px-ds-20 py-ds-12">
-        <GroupSearchBar value={filters.keyword} onValueChange={setKeyword} />
+    <main className="scroll-under-navigation flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div className="sticky top-0 z-overlay flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
+        <GroupSearchBar
+          value={filters.keyword}
+          onValueChange={search.changeSearch}
+          onCompositionStart={search.startComposition}
+          onCompositionEnd={search.endComposition}
+        />
         <GroupFilters
           sort={filters.sort}
           categoryId={filters.categoryId}
@@ -52,7 +55,7 @@ export function GroupsView({ previewState }: GroupsViewProps) {
           onRegionsChange={setRegions}
         />
       </div>
-      <main className="scroll-under-navigation flex min-h-0 flex-1 flex-col overflow-y-auto px-ds-20">
+      <div className="flex flex-1 flex-col px-ds-20">
         <GroupsResult
           groups={groups}
           isPending={previewState === "pending" || (!previewState && isPending)}
@@ -60,8 +63,8 @@ export function GroupsView({ previewState }: GroupsViewProps) {
           forceEmpty={previewState === "empty"}
           onRetry={refetch}
         />
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
 

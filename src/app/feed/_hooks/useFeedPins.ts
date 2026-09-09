@@ -12,7 +12,11 @@ export interface MapBounds {
  * viewport 안의 핀을 조회한다. 지도를 움직이는 것이 페이지 이동이라 커서를 쓰지 않고
  * bounds가 바뀔 때마다 다시 조회한다 (명세 §2-3).
  */
-export function useFeedPins(bounds: MapBounds | null, curationTagId: string | null) {
+export function useFeedPins(
+  bounds: MapBounds | null,
+  curationTagId: string | null,
+  query: string | null,
+) {
   return useNearbyPlaces<FeedPins>(
     {
       north: bounds?.north ?? 0,
@@ -20,6 +24,7 @@ export function useFeedPins(bounds: MapBounds | null, curationTagId: string | nu
       east: bounds?.east ?? 0,
       west: bounds?.west ?? 0,
       curationTagId: curationTagId ?? undefined,
+      query: query ?? undefined,
     },
     { query: { enabled: bounds !== null, select: toFeedPins } },
   );

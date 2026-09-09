@@ -60,7 +60,7 @@ export function FeedSearchResults({ position, query, curationTagId }: FeedSearch
   }
 
   return (
-    <ul className="flex flex-1 flex-col gap-ds-4">
+    <ul className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {places.map((place) => (
         <li key={place.id}>
           <PlaceResultCard
@@ -79,7 +79,7 @@ export function FeedSearchResults({ position, query, curationTagId }: FeedSearch
 /** PlaceResultCard 형태를 흉내낸다 — 80px 썸네일 + 텍스트 세 줄. */
 function PlaceResultSkeleton() {
   return (
-    <ul aria-busy="true" className="flex flex-1 flex-col gap-ds-4">
+    <ul aria-busy="true" className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {SKELETON_ROWS.map((row) => (
         <li key={row} className="flex items-center gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
           <Skeleton className="size-[80px] shrink-0 rounded-ds-md" />

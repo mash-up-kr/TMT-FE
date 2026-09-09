@@ -1,21 +1,21 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { getNearbyReviewsQueryKey } from "@/api/gen/nearby/nearby.gen";
 import { getSearchPlacesQueryKey } from "@/api/gen/place/place.gen";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
-import { ROUTES } from "@/shared/constants/routes";
 import { invalidateCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
+import { SearchField } from "@/shared/ui/TextField";
+import { useFeedScroll } from "../_hooks/useFeedScroll";
+import { useFeedSearch } from "../_hooks/useFeedSearch";
 import { FeedCurationChips } from "./FeedCurationChips";
 import { FeedListView } from "./FeedListView";
 import { FeedMapView } from "./FeedMapView";
-import { FeedSearchEntry } from "./FeedSearchEntry";
 import { FeedSearchResults } from "./FeedSearchResults";
 
 type FeedView = "feed" | "map";
@@ -24,23 +24,20 @@ export function FeedScreen() {
   const queryClient = useQueryClient();
   const position = useResolvedPosition();
   const [view, setView] = useState<FeedView>("feed");
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const search = useFeedSearch();
+  const { query, curationTagId } = search;
+  const bodyRef = useFeedScroll({ query, curationTagId, enabled: view === "feed" });
 
-  const query = searchParams.get("q");
-  const curationTagId = searchParams.get("curation");
-
-  const handleCurationSelect = (next: string | null) => {
-    const params = new URLSearchParams(searchParams);
-
-    if (next) {
-      params.set("curation", next);
-    } else {
-      params.delete("curation");
-    }
-
-    router.replace(params.size > 0 ? `${ROUTES.FEED}?${params}` : ROUTES.FEED);
-  };
+  const searchBar = (
+    <SearchField
+      value={search.value}
+      onValueChange={search.changeSearch}
+      onCompositionStart={search.startComposition}
+      onCompositionEnd={search.endComposition}
+      placeholder="장소나 태그로 검색해보세요"
+      aria-label="장소나 태그 검색"
+    />
+  );
 
   // 좌표만 다시 재면 같은 칸에 있을 때 목록 키가 안 바뀐다. 좌표와 조회를 함께 무효화한다.
   const refresh = () =>
@@ -53,6 +50,8 @@ export function FeedScreen() {
   return (
     <ScreenLayout
       bodyScrollable={view === "feed"}
+      bodyBottomInset={false}
+      bodyRef={bodyRef}
       onRefresh={refresh}
       header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       floating={
@@ -62,13 +61,19 @@ export function FeedScreen() {
         />
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
+      <div
+        className={
+          view === "feed"
+            ? "flex min-h-full shrink-0 flex-col bg-surface-secondary"
+            : "flex min-h-0 flex-1 flex-col bg-surface-secondary"
+        }
+      >
         {view === "feed" ? (
-          <div className="flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
-            <FeedSearchEntry keyword={query} />
+          <div className="sticky top-0 z-overlay flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
+            {searchBar}
             <FeedCurationChips
               selectedId={curationTagId}
-              onSelect={handleCurationSelect}
+              onSelect={search.selectCuration}
               className="flex-nowrap overflow-x-auto"
             />
           </div>
@@ -78,7 +83,8 @@ export function FeedScreen() {
           position={position}
           query={query}
           curationTagId={curationTagId}
-          onCurationSelect={handleCurationSelect}
+          onCurationSelect={search.selectCuration}
+          searchBar={searchBar}
         />
       </div>
     </ScreenLayout>
@@ -91,9 +97,17 @@ type FeedBodyProps = {
   query: string | null;
   curationTagId: string | null;
   onCurationSelect: (id: string | null) => void;
+  searchBar: ReactNode;
 };
 
-function FeedBody({ view, position, query, curationTagId, onCurationSelect }: FeedBodyProps) {
+function FeedBody({
+  view,
+  position,
+  query,
+  curationTagId,
+  onCurationSelect,
+  searchBar,
+}: FeedBodyProps) {
   if (view === "map") {
     return (
       <FeedMapView
@@ -101,6 +115,7 @@ function FeedBody({ view, position, query, curationTagId, onCurationSelect }: Fe
         query={query}
         curationTagId={curationTagId}
         onCurationSelect={onCurationSelect}
+        searchBar={searchBar}
       />
     );
   }

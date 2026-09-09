@@ -71,6 +71,6 @@ IDE와 Biome이 이 축약을 제안하지만 편집 중에만 보이므로, 코
 - 앱 프레임은 `app-frame` 유틸리티(`--layout-frame-max`, 430px)를 쓴다. 넓은 화면에서는 중앙 정렬한다.
 - 좌우 여백과 그리드는 `content-container` / `grid-container` 유틸리티를 쓴다. 임의 breakpoint를 추가하기 전에 기존 기준을 확인한다.
 - 바텀 내브는 본문 위에 떠 있고 레이아웃 높이를 차지하지 않는다. 점유 높이는 `--layout-bottom-navigation-height`이고, 내브를 그리는 쪽만 `bottom-navigation-inset`으로 선언한다.
-- `ScreenLayout`의 기본 본문은 `scroll-under-navigation`으로 그 높이를 padding으로 되돌린다. 자체 스크롤을 쓰려고 `bodyScrollable={false}`로 바꾼 화면만 스크롤 소유 요소에 직접 붙인다. 지도처럼 화면을 채우는 표면은 붙이지 않고 내브 뒤까지 연장한다.
+- `ScreenLayout`의 기본 본문은 `scroll-under-navigation`으로 그 높이를 padding으로 되돌린다. 자체 스크롤을 쓰려고 `bodyScrollable={false}`로 바꾼 화면은 스크롤 소유 요소에 직접 붙인다. 스크롤 영역은 유지하면서 콘텐츠 표면을 내브 뒤까지 채워야 하면 `bodyBottomInset={false}`로 설정하고, 목록·로딩·빈 상태 각각의 콘텐츠가 하단 여백을 소유한다. 지도처럼 화면을 채우는 표면은 여백 없이 내브 뒤까지 연장한다.
 - `ScreenLayout`의 `floating`은 이미 내브를 제외한 좌표계라 FAB이 내브 높이를 알 필요가 없다.
 - 긴 텍스트, 오류 메시지, 빈 상태에서도 레이아웃을 확인한다.

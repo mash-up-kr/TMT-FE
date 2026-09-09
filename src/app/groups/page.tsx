@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 export default function GroupsPage() {
   return (
     <ScreenLayout
-      // 목록이 자체 스크롤을 갖고 필터 바를 고정한다. 여기서 또 감싸면 필터가 같이 밀린다.
+      // GroupsView가 검색 영역의 고정과 목록 스크롤을 함께 소유한다.
       bodyScrollable={false}
       header={
         <GNB
@@ -34,7 +35,9 @@ export default function GroupsPage() {
         />
       }
     >
-      <GroupsView />
+      <Suspense>
+        <GroupsView />
+      </Suspense>
     </ScreenLayout>
   );
 }
