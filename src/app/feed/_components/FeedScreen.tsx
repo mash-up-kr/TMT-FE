@@ -63,23 +63,29 @@ export function FeedScreen() {
       }
     >
       {view === "feed" ? (
-        <RefreshableScrollArea ref={bodyRef} onRefresh={refresh}>
-          <div className="flex min-h-full shrink-0 flex-col bg-surface-secondary">
-            <div className="sticky top-0 z-overlay flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
-              {searchBar}
-              <FeedCurationChips
-                selectedId={curationTagId}
-                onSelect={search.selectCuration}
-                className="flex-nowrap overflow-x-auto"
-              />
-            </div>
-            {query || curationTagId ? (
-              <FeedSearchResults position={position} query={query} curationTagId={curationTagId} />
-            ) : (
-              <FeedListView position={position} />
-            )}
+        <>
+          <div className="flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
+            {searchBar}
+            <FeedCurationChips
+              selectedId={curationTagId}
+              onSelect={search.selectCuration}
+              className="flex-nowrap overflow-x-auto"
+            />
           </div>
-        </RefreshableScrollArea>
+          <RefreshableScrollArea ref={bodyRef} onRefresh={refresh}>
+            <div className="flex min-h-full shrink-0 flex-col bg-surface-secondary">
+              {query || curationTagId ? (
+                <FeedSearchResults
+                  position={position}
+                  query={query}
+                  curationTagId={curationTagId}
+                />
+              ) : (
+                <FeedListView position={position} />
+              )}
+            </div>
+          </RefreshableScrollArea>
+        </>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
           <FeedMapView
