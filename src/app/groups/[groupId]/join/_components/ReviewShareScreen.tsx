@@ -28,8 +28,8 @@ const EMPTY_MESSAGE = "공유할 리뷰가 없어요";
  * 티켓이 있는 사람이 가입 팝업에서 `가입하기`를 누른 뒤, 가입과 함께 공유할 리뷰를 고르는
  * 화면이다. 공유는 가입 요청에 함께 실어야 하므로 가입도 이 화면이 맡는다.
  *
- * 닫기와 X는 이전 화면으로 돌아간다. 팝업에서 이미 가입을 택한 뒤이므로 공유 없이 가입하고
- * 그룹으로 돌아간다. 가입 자체를 접는 길은 브라우저 뒤로가기다.
+ * X와 하단 닫기는 가입하지 않고 그룹 상세로 돌아간다.
+ * 공유하기는 선택한 리뷰와 함께 가입한다.
  */
 export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
   const router = useRouter();
@@ -40,21 +40,24 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
 
   const items = toReviewShareItems(pages.data?.pages.flatMap((page) => page.items));
 
-  const joinThenLeave = async (sourceReviewIds: readonly string[]) => {
-    if (!(await join.joinGroup({ sourceReviewIds }))) {
+  const leaveWithoutJoining = () => router.replace(ROUTES.GROUPS.DETAIL(groupId));
+  const shareSelected = async () => {
+    if (!(await join.joinGroup({ sourceReviewIds: selectedIds }))) {
       return;
     }
     router.replace(ROUTES.GROUPS.DETAIL(groupId));
   };
-  const skipSharing = () => void joinThenLeave([]);
-  const shareSelected = () => void joinThenLeave(selectedIds);
 
   return (
     <>
       <GNB
         title="리뷰 공유"
         right={
-          <IconButton aria-label="리뷰 공유 닫기" disabled={join.isPending} onClick={skipSharing}>
+          <IconButton
+            aria-label="리뷰 공유 닫기"
+            disabled={join.isPending}
+            onClick={leaveWithoutJoining}
+          >
             <CancelIcon thick />
           </IconButton>
         }
@@ -88,7 +91,7 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" disabled={join.isPending} onClick={skipSharing}>
+          <Button variant="tertiary" disabled={join.isPending} onClick={leaveWithoutJoining}>
             닫기
           </Button>
           <Button loading={join.isPending} onClick={shareSelected}>
