@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { type CompositionEvent, useEffect, useRef, useState } from "react";
+import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 
 const SEARCH_DELAY_MS = 200;
 
@@ -10,16 +11,9 @@ export function useSearchQuery() {
   const searchParams = useSearchParams();
   const urlQuery = searchParams.get("q") ?? "";
   const [value, setValue] = useState(urlQuery);
-  const [query, setQuery] = useState(urlQuery);
+  const { debouncedValue: query, reset: resetQuery } = useDebouncedValue(value, SEARCH_DELAY_MS);
   const [isComposing, setIsComposing] = useState(false);
   const lastWrittenQuery = useRef(urlQuery);
-
-  useEffect(() => {
-    if (value === query) return;
-
-    const timer = setTimeout(() => setQuery(value), SEARCH_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [value, query]);
 
   useEffect(() => {
     const currentUrlQuery = new URL(window.location.href).searchParams.get("q") ?? "";
@@ -30,7 +24,7 @@ export function useSearchQuery() {
     if (urlQuery !== lastWrittenQuery.current) {
       lastWrittenQuery.current = urlQuery;
       setValue(urlQuery);
-      setQuery(urlQuery);
+      resetQuery(urlQuery);
       setIsComposing(false);
       return;
     }
@@ -39,14 +33,14 @@ export function useSearchQuery() {
 
     lastWrittenQuery.current = value;
     replaceQuery(value);
-  }, [isComposing, query, urlQuery, value]);
+  }, [isComposing, query, resetQuery, urlQuery, value]);
 
   function changeSearch(nextValue: string) {
     setValue(nextValue);
     if (nextValue !== "") return;
 
     // 이전 검색값도 비워야 지운 직후 입력해도 예전 검색이 되살아나지 않는다.
-    setQuery("");
+    resetQuery("");
     setIsComposing(false);
     lastWrittenQuery.current = "";
     replaceQuery("");

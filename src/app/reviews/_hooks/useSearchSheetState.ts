@@ -28,16 +28,21 @@ export function useSearchSheetState({
 }: SearchSheetOptions = {}): SearchSheetState {
   const [open, setOpen] = useState(false);
   const [value, setValueState] = useState("");
-  const debouncedValue = useDebouncedValue(value, debounceMs);
+  const { debouncedValue, reset } = useDebouncedValue(value, debounceMs);
   const valueWithoutSpace = value.trim();
   const query = debouncedValue.trim();
   const enabled = valueWithoutSpace.length >= minQueryLength && query.length >= minQueryLength;
+
+  const setValue = (nextValue: string) => {
+    setValueState(nextValue);
+    if (nextValue === "") reset("");
+  };
 
   const onOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
 
     if (!nextOpen) {
-      setValueState("");
+      setValue("");
     }
   };
 
@@ -45,7 +50,7 @@ export function useSearchSheetState({
     open,
     onOpenChange,
     value,
-    setValue: setValueState,
+    setValue,
     query: enabled ? query : "",
     enabled,
   };
