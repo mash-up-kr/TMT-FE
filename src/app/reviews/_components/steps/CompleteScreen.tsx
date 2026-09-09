@@ -17,11 +17,13 @@ import { CancelIcon, MapPinIcon } from "@/shared/ui/Icons";
 import { cn } from "@/shared/utils/cn";
 import { REVIEW_FLOW_EXIT_PATH } from "../../_constants/steps";
 import { useReviewDraftGuard } from "../../_hooks/useReviewDraftGuard";
+import { useReviewMissingSteps } from "../../_hooks/useReviewMissingSteps";
 import type { CompleteReviewStore } from "../../_model/store";
 import { useReviewDraft } from "../../_stores/ReviewDraftProvider";
 import { useReviewFlowReturnTo, useReviewFlowSaveId } from "../../_stores/ReviewFlowBaseProvider";
 import { ReviewStepLayout } from "../ReviewStepLayout";
 import { GroupJoinCompleteScreen } from "./GroupJoinCompleteScreen";
+import { TicketPendingCompleteScreen } from "./TicketPendingCompleteScreen";
 
 export function CompleteScreen() {
   const router = useRouter();
@@ -30,6 +32,7 @@ export function CompleteScreen() {
   const store = useReviewDraftGuard();
   const { saveResult } = useReviewDraft();
   const grantedTicketCount = saveResult?.grantedTicketCount ?? 0;
+  const { missingSteps, nextStep } = useReviewMissingSteps();
   const save = useGetSave(saveId ?? "", {
     query: { enabled: saveId !== null },
   });
@@ -70,6 +73,27 @@ export function CompleteScreen() {
 
   // 그룹 가입 때문에 쓴 리뷰는 완성 여부와 무관하게 그 그룹으로 이어준다.
   if (joinGroupId !== null) {
+    // 티켓을 못 받았는데 "그룹 가입하기"를 띄우면 티켓 부족 시트 → 리뷰 작성 → 여기로 되돌아
+    // 무한히 돈다. 남은 항목을 채우도록 유도하는 화면으로 대신 보낸다.
+    //
+    // 리뷰가 성립해야 티켓이 나가므로 서버가 준 reviewId가 곧 발급 여부다. 저장 응답과 달리
+    // 이 값은 새로고침해도 남아, 완료 URL로 다시 들어와도 화면이 뒤바뀌지 않는다.
+    if (!isReviewCompleted) {
+      // 이어 쓸 초안이 남는다. 여기서 의도를 지우면 나중에 이어 썼을 때 이 그룹으로 못 돌아온다.
+      const leaveToGroup = () => router.replace(ROUTES.GROUPS.DETAIL(joinGroupId));
+
+      return (
+        <ReviewCompleteLayout variant="group-join" onClose={leaveToGroup}>
+          <TicketPendingCompleteScreen
+            groupId={joinGroupId}
+            missingSteps={missingSteps}
+            nextStep={nextStep}
+            onLeave={leaveToGroup}
+          />
+        </ReviewCompleteLayout>
+      );
+    }
+
     return (
       <ReviewCompleteLayout variant="group-join" onClose={closeComplete}>
         <GroupJoinCompleteScreen

@@ -10,17 +10,14 @@ import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../../mutator";
 import { tmtFetch } from "../../mutator";
 import type { ErrorResponse } from "../_model/errorResponse.gen";
@@ -43,108 +40,6 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getErrorTestTmtUrl = () => {
-  return `/health/error-test-tmt`;
-};
-
-export const errorTestTmt = async (options?: Parameters<typeof tmtFetch>[1]): Promise<void> => {
-  return tmtFetch<void>(getErrorTestTmtUrl(), {
-    ...options,
-    method: "POST",
-  });
-};
-
-export const getErrorTestTmtMutationOptions = <
-  TError = ErrorType<ErrorResponse>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof errorTestTmt>>, TError, void, TContext>;
-  request?: SecondParameter<typeof tmtFetch>;
-}): UseMutationOptions<Awaited<ReturnType<typeof errorTestTmt>>, TError, void, TContext> => {
-  const mutationKey = ["errorTestTmt"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
-
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof errorTestTmt>>, void> = () => {
-    return errorTestTmt(requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ErrorTestTmtMutationResult = NonNullable<Awaited<ReturnType<typeof errorTestTmt>>>;
-
-export type ErrorTestTmtMutationError = ErrorType<ErrorResponse>;
-
-export const useErrorTestTmt = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof errorTestTmt>>, TError, void, TContext>;
-    request?: SecondParameter<typeof tmtFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof errorTestTmt>>, TError, void, TContext> => {
-  return useMutation(getErrorTestTmtMutationOptions(options), queryClient);
-};
-export const getErrorTestGlobalUrl = () => {
-  return `/health/error-test-global`;
-};
-
-export const errorTestGlobal = async (options?: Parameters<typeof tmtFetch>[1]): Promise<void> => {
-  return tmtFetch<void>(getErrorTestGlobalUrl(), {
-    ...options,
-    method: "POST",
-  });
-};
-
-export const getErrorTestGlobalMutationOptions = <
-  TError = ErrorType<ErrorResponse>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof errorTestGlobal>>,
-    TError,
-    void,
-    TContext
-  >;
-  request?: SecondParameter<typeof tmtFetch>;
-}): UseMutationOptions<Awaited<ReturnType<typeof errorTestGlobal>>, TError, void, TContext> => {
-  const mutationKey = ["errorTestGlobal"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
-
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof errorTestGlobal>>, void> = () => {
-    return errorTestGlobal(requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ErrorTestGlobalMutationResult = NonNullable<
-  Awaited<ReturnType<typeof errorTestGlobal>>
->;
-
-export type ErrorTestGlobalMutationError = ErrorType<ErrorResponse>;
-
-export const useErrorTestGlobal = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof errorTestGlobal>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof tmtFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof errorTestGlobal>>, TError, void, TContext> => {
-  return useMutation(getErrorTestGlobalMutationOptions(options), queryClient);
-};
 export const getDbHealthUrl = () => {
   return `/health/db`;
 };

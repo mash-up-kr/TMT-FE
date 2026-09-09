@@ -30,7 +30,9 @@ export const getRefreshTokenUrl = () => {
 /**
  * refresh 토큰으로 access·refresh 토큰을 새로 발급한다.
  *
- * refresh까지 만료(AUTH_TOKEN_EXPIRED)거나 유효하지 않으면(AUTH_TOKEN_INVALID) 재로그인으로 분기한다.
+ * refresh까지 만료(AUTH_TOKEN_EXPIRED)거나 유효하지 않으면(AUTH_TOKEN_INVALID) 재로그인으로 분기한다. 로그아웃(`POST /v1/auth/logout`) 이전에 발급된 refresh도 AUTH_TOKEN_INVALID다 — 서명이 맞아도 거절한다.
+ *
+ * 재발급은 사용자 행을 한 번 읽는다. DB 장애면 401이 아니라 500이다 — 401로 내면 DB 장애가 곧 전 사용자 로그아웃이 된다. FE는 500을 재시도 대상으로 두고 세션은 유지한다.
  * @summary 토큰 재발급
  */
 export const refreshToken = async (
@@ -106,6 +108,60 @@ export const useRefreshToken = <TError = ErrorType<ErrorResponse>, TContext = un
   TContext
 > => {
   return useMutation(getRefreshTokenMutationOptions(options), queryClient);
+};
+export const getLogoutUrl = () => {
+  return `/v1/auth/logout`;
+};
+
+/**
+ * 이 사용자에게 지금까지 발급된 refresh 토큰을 전부 폐기한다 (U8). 이후 그 refresh로 재발급하면 AUTH_TOKEN_INVALID다. access 토큰은 만료(최대 1시간)까지 유효하다 — 클라이언트가 지운다.
+ *
+ * 멱등이다 — 이미 로그아웃했어도 204. 토큰이 없으면 401, 만료됐으면 401 AUTH_TOKEN_EXPIRED라 다른 API와 같이 재발급 뒤 한 번 다시 부른다. 가입을 끝내지 않은 사용자도 부를 수 있다.
+ * @summary 로그아웃
+ */
+export const logout = async (options?: Parameters<typeof tmtFetch>[1]): Promise<void> => {
+  return tmtFetch<void>(getLogoutUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getLogoutMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>;
+  request?: SecondParameter<typeof tmtFetch>;
+}): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+  const mutationKey = ["logout"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, void> = () => {
+    return logout(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof logout>>>;
+
+export type LogoutMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary 로그아웃
+ */
+export const useLogout = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+  return useMutation(getLogoutMutationOptions(options), queryClient);
 };
 export const getLoginWithKakaoUrl = () => {
   return `/v1/auth/login/kakao`;

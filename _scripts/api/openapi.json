@@ -1060,8 +1060,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "*/*": {
                 "schema": {
@@ -1121,7 +1121,7 @@
             }
           },
           "500": {
-            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.\n- `ADDRESS_PROVIDER_MISCONFIGURED` — 주소 검색 기능을 사용할 수 없습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1219,7 +1219,7 @@
             }
           },
           "500": {
-            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.\n- `LLM_MISCONFIGURED` — AI 기능을 사용할 수 없습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1609,7 +1609,7 @@
           "인증"
         ],
         "summary": "토큰 재발급",
-        "description": "refresh 토큰으로 access·refresh 토큰을 새로 발급한다.\n\nrefresh까지 만료(AUTH_TOKEN_EXPIRED)거나 유효하지 않으면(AUTH_TOKEN_INVALID) 재로그인으로 분기한다.",
+        "description": "refresh 토큰으로 access·refresh 토큰을 새로 발급한다.\n\nrefresh까지 만료(AUTH_TOKEN_EXPIRED)거나 유효하지 않으면(AUTH_TOKEN_INVALID) 재로그인으로 분기한다. 로그아웃(`POST /v1/auth/logout`) 이전에 발급된 refresh도 AUTH_TOKEN_INVALID다 — 서명이 맞아도 거절한다.\n\n재발급은 사용자 행을 한 번 읽는다. DB 장애면 401이 아니라 500이다 — 401로 내면 DB 장애가 곧 전 사용자 로그아웃이 된다. FE는 500을 재시도 대상으로 두고 세션은 유지한다.",
         "operationId": "refreshToken",
         "requestBody": {
           "content": {
@@ -1665,6 +1665,57 @@
         }
       }
     },
+    "/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "인증"
+        ],
+        "summary": "로그아웃",
+        "description": "이 사용자에게 지금까지 발급된 refresh 토큰을 전부 폐기한다 (U8). 이후 그 refresh로 재발급하면 AUTH_TOKEN_INVALID다. access 토큰은 만료(최대 1시간)까지 유효하다 — 클라이언트가 지운다.\n\n멱등이다 — 이미 로그아웃했어도 204. 토큰이 없으면 401, 만료됐으면 401 AUTH_TOKEN_EXPIRED라 다른 API와 같이 재발급 뒤 한 번 다시 부른다. 가입을 끝내지 않은 사용자도 부를 수 있다.",
+        "operationId": "logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/v1/auth/login/kakao": {
       "post": {
         "tags": [
@@ -1715,7 +1766,7 @@
             }
           },
           "500": {
-            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.\n- `AUTH_KAKAO_MISCONFIGURED` — 로그인 기능을 사용할 수 없습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1726,52 +1777,6 @@
           },
           "502": {
             "description": "- `AUTH_KAKAO_UNAVAILABLE` — 카카오 로그인 서비스가 응답하지 않습니다.",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/health/error-test-tmt": {
-      "post": {
-        "tags": [
-          "health-check-controller"
-        ],
-        "operationId": "errorTestTmt",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.\n- `INTERNAL_ERROR_TEST` — 에러 테스트용 예외입니다.",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/health/error-test-global": {
-      "post": {
-        "tags": [
-          "health-check-controller"
-        ],
-        "operationId": "errorTestGlobal",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -3707,7 +3712,7 @@
             }
           },
           "500": {
-            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.\n- `ADDRESS_PROVIDER_MISCONFIGURED` — 주소 검색 기능을 사용할 수 없습니다.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -4060,6 +4065,19 @@
           },
           "ticket": {
             "$ref": "#/components/schemas/TicketGrantSummary"
+          },
+          "missing": {
+            "type": "array",
+            "description": "리뷰 성립(C4)에 모자란 항목. 리뷰가 됐으면 빈 배열. 사진은 항목이 아니다 (C4-1)",
+            "items": {
+              "type": "string",
+              "enum": [
+                "COMPANION_TAG",
+                "POSITIVE_POINT_TAG",
+                "RATING",
+                "CONTENT"
+              ]
+            }
           }
         },
         "required": [

@@ -207,13 +207,16 @@ export function useReviewSave() {
       setAttachedPhotoCount(photoAssetIds.length);
     }
 
+    // 완료 화면은 티켓을 받았는지, 못 받았으면 무엇이 모자란지를 이 결과로만 안다. 리뷰가
+    // 성립했을 때만 담아두면 미발급 안내가 근거를 잃으므로 성립 여부와 무관하게 담는다.
+    setSaveResult(toReviewSaveResult(result));
+
     if (result.reviewId === null || result.reviewId === undefined) {
       invalidateDraftList();
     } else {
       queryClient.setQueryData<SaveDetailResponse>(getGetSaveQueryKey(result.saveId), (current) =>
         current === undefined ? current : { ...current, reviewId: result.reviewId },
       );
-      setSaveResult(toReviewSaveResult(result));
       invalidateCompletedReviewQueries(result.placeId);
     }
 
