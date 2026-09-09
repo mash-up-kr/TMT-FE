@@ -194,5 +194,6 @@ export function toReviewSaveResult(response: SaveResultResponse): ReviewSaveResu
     placeId: response.placeId,
     grantedTicketCount: response.ticket.grantedCount,
     availableTicketCount: response.ticket.availableCount,
+    missingItems: response.missing ?? [],
   };
 }
