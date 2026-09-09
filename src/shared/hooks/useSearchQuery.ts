@@ -7,12 +7,12 @@ import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 const SEARCH_DELAY_MS = 200;
 
 type SearchQueryOptions = {
-  /** 입력을 비울 때 검색어와 함께 제거할 URL 파라미터. */
-  clearOnEmpty?: readonly string[];
+  /** 검색어를 입력하거나 비울 때 해제할 다른 검색 조건. */
+  clearOnChange?: readonly string[];
 };
 
 /** 입력은 즉시, 검색은 200ms 뒤에 반영한다. URL 기록만 한글 조합 완료를 기다린다. */
-export function useSearchQuery({ clearOnEmpty }: SearchQueryOptions = {}) {
+export function useSearchQuery({ clearOnChange }: SearchQueryOptions = {}) {
   const searchParams = useSearchParams();
   const urlQuery = searchParams.get("q") ?? "";
   const [value, setValue] = useState(urlQuery);
@@ -41,14 +41,27 @@ export function useSearchQuery({ clearOnEmpty }: SearchQueryOptions = {}) {
   }, [isComposing, query, resetQuery, urlQuery, value]);
 
   function changeSearch(nextValue: string) {
-    setValue(nextValue);
-    if (nextValue !== "") return;
+    if (nextValue === "") {
+      clearSearch();
+      return;
+    }
 
+    setValue(nextValue);
+    const url = new URL(window.location.href);
+    if (clearOnChange?.some((param) => url.searchParams.has(param))) {
+      // 칩 해제는 즉시 반영하되 검색어의 URL 기록은 디바운스·조합 완료를 기다린다.
+      replaceQuery(url.searchParams.get("q") ?? "", clearOnChange);
+    }
+  }
+
+  /** 검색을 초기화하면서 새 조건을 같은 URL 변경에 반영한다. */
+  function clearSearch(paramsToSet: Readonly<Record<string, string>> = {}) {
     // 이전 검색값도 비워야 지운 직후 입력해도 예전 검색이 되살아나지 않는다.
+    setValue("");
     resetQuery("");
     setIsComposing(false);
     lastWrittenQuery.current = "";
-    replaceQuery("", clearOnEmpty);
+    replaceQuery("", clearOnChange, paramsToSet);
   }
 
   function startComposition() {
@@ -64,15 +77,21 @@ export function useSearchQuery({ clearOnEmpty }: SearchQueryOptions = {}) {
     value,
     query: query.trim() || null,
     changeSearch,
+    clearSearch,
     startComposition,
     endComposition,
   };
 }
 
-function replaceQuery(query: string, paramsToClear: readonly string[] = []) {
+function replaceQuery(
+  query: string,
+  paramsToClear: readonly string[] = [],
+  paramsToSet: Readonly<Record<string, string>> = {},
+) {
   const url = new URL(window.location.href);
+  for (const param of paramsToClear) url.searchParams.delete(param);
+  for (const [param, value] of Object.entries(paramsToSet)) url.searchParams.set(param, value);
   if (query) url.searchParams.set("q", query);
   else url.searchParams.delete("q");
-  for (const param of paramsToClear) url.searchParams.delete(param);
   window.history.replaceState(null, "", url);
 }
