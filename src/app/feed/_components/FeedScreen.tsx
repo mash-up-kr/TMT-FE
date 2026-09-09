@@ -1,15 +1,16 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { type ReactNode, useState } from "react";
+import { useState } from "react";
 import { getNearbyReviewsQueryKey } from "@/api/gen/nearby/nearby.gen";
 import { getSearchPlacesQueryKey } from "@/api/gen/place/place.gen";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { invalidateCurrentPosition } from "@/shared/hooks/useCurrentPosition";
-import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
+import { useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
+import { RefreshableScrollArea } from "@/shared/ui/RefreshableScrollArea";
 import { SearchField } from "@/shared/ui/TextField";
 import { useFeedScroll } from "../_hooks/useFeedScroll";
 import { useFeedSearch } from "../_hooks/useFeedSearch";
@@ -49,10 +50,7 @@ export function FeedScreen() {
 
   return (
     <ScreenLayout
-      bodyScrollable={view === "feed"}
-      bodyBottomInset={false}
-      bodyRef={bodyRef}
-      onRefresh={refresh}
+      bodyScrollable={false}
       header={<GNB align="left" className="shrink-0" title={null} left={<TMTLogoHomeLink />} />}
       floating={
         <ViewSwitchButton
@@ -61,71 +59,37 @@ export function FeedScreen() {
         />
       }
     >
-      <div
-        className={
-          view === "feed"
-            ? "flex min-h-full shrink-0 flex-col bg-surface-secondary"
-            : "flex min-h-0 flex-1 flex-col bg-surface-secondary"
-        }
-      >
-        {view === "feed" ? (
-          <div className="sticky top-0 z-overlay flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
-            {searchBar}
-            <FeedCurationChips
-              selectedId={curationTagId}
-              onSelect={search.selectCuration}
-              className="flex-nowrap overflow-x-auto"
-            />
+      {view === "feed" ? (
+        <RefreshableScrollArea ref={bodyRef} onRefresh={refresh}>
+          <div className="flex min-h-full shrink-0 flex-col bg-surface-secondary">
+            <div className="sticky top-0 z-overlay flex shrink-0 flex-col gap-ds-12 bg-surface-primary px-ds-20 py-ds-12">
+              {searchBar}
+              <FeedCurationChips
+                selectedId={curationTagId}
+                onSelect={search.selectCuration}
+                className="flex-nowrap overflow-x-auto"
+              />
+            </div>
+            {query || curationTagId ? (
+              <FeedSearchResults position={position} query={query} curationTagId={curationTagId} />
+            ) : (
+              <FeedListView position={position} />
+            )}
           </div>
-        ) : null}
-        <FeedBody
-          view={view}
-          position={position}
-          query={query}
-          curationTagId={curationTagId}
-          onCurationSelect={search.selectCuration}
-          searchBar={searchBar}
-        />
-      </div>
+        </RefreshableScrollArea>
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
+          <FeedMapView
+            position={position}
+            query={query}
+            curationTagId={curationTagId}
+            onCurationSelect={search.selectCuration}
+            searchBar={searchBar}
+          />
+        </div>
+      )}
     </ScreenLayout>
   );
-}
-
-type FeedBodyProps = {
-  view: FeedView;
-  position: ResolvedPosition | null;
-  query: string | null;
-  curationTagId: string | null;
-  onCurationSelect: (id: string | null) => void;
-  searchBar: ReactNode;
-};
-
-function FeedBody({
-  view,
-  position,
-  query,
-  curationTagId,
-  onCurationSelect,
-  searchBar,
-}: FeedBodyProps) {
-  if (view === "map") {
-    return (
-      <FeedMapView
-        position={position}
-        query={query}
-        curationTagId={curationTagId}
-        onCurationSelect={onCurationSelect}
-        searchBar={searchBar}
-      />
-    );
-  }
-
-  // 명세 §0 — 검색어·칩이 있으면 목록이 리뷰 카드에서 가게 카드로 바뀐다.
-  if (query || curationTagId) {
-    return <FeedSearchResults position={position} query={query} curationTagId={curationTagId} />;
-  }
-
-  return <FeedListView position={position} />;
 }
 
 type ViewSwitchButtonProps = {
