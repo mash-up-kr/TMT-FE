@@ -21,6 +21,8 @@ export function FavoriteListItem({ place, href, onUnfavorite, pending }: Favorit
           src={place.thumbnailUrl}
           fallbackSrc={dummyImage}
           alt=""
+          width={48}
+          height={48}
           className="size-ds-48 shrink-0 rounded-ds-sm object-cover"
         />
         <span className="flex min-w-0 flex-1 flex-col gap-ds-4">

@@ -1,13 +1,17 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import Image, { type ImageProps } from "next/image";
+import type { ReactNode } from "react";
 import { useState } from "react";
 
 type FallbackImageSource = string | { src: string };
 
-type ImageWithFallbackBaseProps = Omit<ComponentPropsWithoutRef<"img">, "alt" | "src"> & {
+/** 렌더 박스는 CSS가 정하지만, srcset을 고르려면 next/image가 그 크기를 알아야 한다. */
+type ImageWithFallbackBaseProps = Omit<ImageProps, "alt" | "src" | "width" | "height"> & {
   alt: string;
   src: string | null;
+  width: number;
+  height: number;
 };
 
 /** 대체 이미지와 대체 노드는 함께 쓰지 않는다. 무엇이 그려질지 호출부에서 하나로 읽혀야 한다. */
@@ -36,8 +40,7 @@ export function ImageWithFallback({
     }
 
     return (
-      // biome-ignore lint/performance/noImgElement: 실제 이미지 호스트가 확정되면 next/image로 전환한다.
-      <img
+      <Image
         {...props}
         alt={alt}
         loading={loading}
@@ -54,8 +57,7 @@ export function ImageWithFallback({
   const resolvedSrc = isUnavailable ? fallbackImageSrc : src;
 
   return (
-    // biome-ignore lint/performance/noImgElement: 실제 이미지 호스트가 확정되면 next/image로 전환한다.
-    <img
+    <Image
       {...props}
       alt={alt}
       loading={loading}

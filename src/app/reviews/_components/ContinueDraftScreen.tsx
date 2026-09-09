@@ -147,6 +147,8 @@ function DraftList({ drafts, selected, onSelect, isError, isPending }: DraftList
             src={draft.thumbnailUrl}
             fallbackSrc={dummyImage}
             alt=""
+            width={48}
+            height={48}
             className="size-ds-48 shrink-0 rounded-ds-sm border border-stroke-secondary object-cover"
           />
           <span className="flex min-w-0 flex-1 flex-col gap-ds-4">

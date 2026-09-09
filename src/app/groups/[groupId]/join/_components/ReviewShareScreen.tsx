@@ -182,6 +182,8 @@ function ReviewShareList({
               src={item.thumbnailUrl}
               fallbackSrc={dummyImage}
               alt=""
+              width={64}
+              height={64}
               className="size-ds-64 shrink-0 rounded-ds-sm object-cover"
             />
             <span className="flex min-w-0 flex-1 flex-col gap-ds-4 text-content-primary">

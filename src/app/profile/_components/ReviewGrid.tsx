@@ -6,6 +6,9 @@ import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import type { ProfileReviewItem } from "../_model/profile";
 import { ProfileEmptyNotice } from "./ProfileEmptyNotice";
 
+/** 2열 그리드 한 칸: 프레임 430 - 좌우 여백 20 - 열 간격 8, 반으로 나눈 값. */
+const THUMBNAIL_SIZE = 191;
+
 type ReviewGridProps = {
   reviews: readonly ProfileReviewItem[];
   onSelect: (review: ProfileReviewItem) => void;
@@ -30,6 +33,8 @@ export function ReviewGrid({ reviews, onSelect }: ReviewGridProps) {
               src={review.thumbnailUrl}
               fallbackSrc={dummyImage}
               alt=""
+              width={THUMBNAIL_SIZE}
+              height={THUMBNAIL_SIZE}
               className="aspect-square w-full object-cover"
             />
           </button>

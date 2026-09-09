@@ -17,6 +17,10 @@ const MASKED_CONTENT_CHARACTER = "가";
 const MASKED_CONS_MIN_LENGTH = 14;
 const MASKED_CONS_LENGTH_RANGE = 17;
 
+/** 리뷰 사진은 카드 너비를 가득 채우고, 카드는 프레임(--layout-frame-max)까지 넓어진다. */
+const PHOTO_WIDTH = 430;
+const PHOTO_HEIGHT = 360;
+
 type ReviewCardProps = {
   review: ReviewCardData;
   isContentRestricted?: boolean;
@@ -56,6 +60,8 @@ export function ReviewCard({
         imageUrls={review.photoUrls}
         fallbackSrc={imageFallback}
         label="리뷰 사진"
+        width={PHOTO_WIDTH}
+        height={PHOTO_HEIGHT}
         className="h-[360px] w-full shrink-0 bg-surface-tertiary"
       />
       <div className="flex flex-col gap-ds-12 rounded-b-ds-md bg-surface-primary p-ds-16">

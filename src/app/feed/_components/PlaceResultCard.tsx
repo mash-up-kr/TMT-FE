@@ -36,6 +36,8 @@ export function PlaceResultCard({ place, favoriteAction }: PlaceResultCardProps)
           src={place.thumbnailUrl}
           fallbackSrc={fallbackImage}
           alt=""
+          width={80}
+          height={80}
           className={`${THUMBNAIL_SIZE} shrink-0 rounded-ds-md object-cover`}
         />
 
