@@ -28,8 +28,14 @@ export function useFeedScroll({ query, curationTagId, enabled }: FeedScrollOptio
     const rememberPosition = () => {
       lastPosition = { query, curationTagId, top: body.scrollTop };
     };
-    const finishRestoring = () => {
+    const stopRestoring = () => {
       observer.disconnect();
+      body.removeEventListener("wheel", finishRestoring);
+      body.removeEventListener("pointerdown", finishRestoring);
+      body.removeEventListener("keydown", finishRestoring);
+    };
+    const finishRestoring = () => {
+      stopRestoring();
       rememberPosition();
       body.addEventListener("scroll", rememberPosition, { passive: true });
     };
@@ -41,17 +47,14 @@ export function useFeedScroll({ query, curationTagId, enabled }: FeedScrollOptio
     // 로딩 UI가 결과로 교체되어 충분한 높이가 생긴 뒤 위치를 복원한다.
     const observer = new ResizeObserver(restorePosition);
     if (body.firstElementChild) observer.observe(body.firstElementChild);
-    restorePosition();
     // 복원 중 사용자가 직접 조작하면 그 위치를 우선한다.
     body.addEventListener("wheel", finishRestoring, { passive: true });
     body.addEventListener("pointerdown", finishRestoring);
     body.addEventListener("keydown", finishRestoring);
+    restorePosition();
     return () => {
-      observer.disconnect();
+      stopRestoring();
       body.removeEventListener("scroll", rememberPosition);
-      body.removeEventListener("wheel", finishRestoring);
-      body.removeEventListener("pointerdown", finishRestoring);
-      body.removeEventListener("keydown", finishRestoring);
     };
   }, [query, curationTagId, enabled]);
 

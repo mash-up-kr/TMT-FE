@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getNearbyReviewsQueryKey } from "@/api/gen/nearby/nearby.gen";
 import { getSearchPlacesQueryKey } from "@/api/gen/place/place.gen";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
@@ -41,12 +41,15 @@ export function FeedScreen() {
   );
 
   // 좌표만 다시 재면 같은 칸에 있을 때 목록 키가 안 바뀐다. 좌표와 조회를 함께 무효화한다.
-  const refresh = () =>
-    Promise.all([
-      invalidateCurrentPosition(queryClient),
-      queryClient.invalidateQueries({ queryKey: getNearbyReviewsQueryKey() }),
-      queryClient.invalidateQueries({ queryKey: getSearchPlacesQueryKey() }),
-    ]);
+  const refresh = useCallback(
+    () =>
+      Promise.all([
+        invalidateCurrentPosition(queryClient),
+        queryClient.invalidateQueries({ queryKey: getNearbyReviewsQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getSearchPlacesQueryKey() }),
+      ]),
+    [queryClient],
+  );
 
   return (
     <ScreenLayout

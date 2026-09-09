@@ -1,5 +1,6 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
 import type { ComponentPropsWithRef } from "react";
 import { PULL_THRESHOLD_PX, usePullToRefresh } from "@/shared/hooks/usePullToRefresh";
 import { Spinner } from "@/shared/ui/Spinner";
@@ -45,8 +46,7 @@ export function RefreshableScrollArea({
         <span className="sr-only">{REFRESH_LABEL[status]}</span>
       </output>
       <div
-        {...props}
-        {...handlers}
+        {...mergeProps<"div">(handlers, props)}
         ref={ref}
         className={cn(
           "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-none",

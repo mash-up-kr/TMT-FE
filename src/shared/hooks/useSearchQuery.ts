@@ -6,8 +6,13 @@ import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 
 const SEARCH_DELAY_MS = 200;
 
+type SearchQueryOptions = {
+  /** 입력을 비울 때 검색어와 함께 제거할 URL 파라미터. */
+  clearOnEmpty?: readonly string[];
+};
+
 /** 입력은 즉시, 검색은 200ms 뒤에 반영한다. URL 기록만 한글 조합 완료를 기다린다. */
-export function useSearchQuery() {
+export function useSearchQuery({ clearOnEmpty }: SearchQueryOptions = {}) {
   const searchParams = useSearchParams();
   const urlQuery = searchParams.get("q") ?? "";
   const [value, setValue] = useState(urlQuery);
@@ -43,7 +48,7 @@ export function useSearchQuery() {
     resetQuery("");
     setIsComposing(false);
     lastWrittenQuery.current = "";
-    replaceQuery("");
+    replaceQuery("", clearOnEmpty);
   }
 
   function startComposition() {
@@ -64,9 +69,10 @@ export function useSearchQuery() {
   };
 }
 
-function replaceQuery(query: string) {
+function replaceQuery(query: string, paramsToClear: readonly string[] = []) {
   const url = new URL(window.location.href);
   if (query) url.searchParams.set("q", query);
   else url.searchParams.delete("q");
+  for (const param of paramsToClear) url.searchParams.delete(param);
   window.history.replaceState(null, "", url);
 }
