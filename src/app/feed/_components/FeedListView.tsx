@@ -4,6 +4,7 @@ import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import type { ResolvedPosition } from "@/shared/hooks/useResolvedPosition";
+import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useFeedReviews } from "../_hooks/useFeedReviews";
 import { FeedNotice } from "./FeedNotice";
@@ -19,7 +20,8 @@ type FeedListViewProps = {
 
 /** 검색어·칩이 없을 때의 기본 목록 — 반경 1km 안의 리뷰 카드 (명세 §2-1). */
 export function FeedListView({ position }: FeedListViewProps) {
-  const { data: reviews, isPending, isError } = useFeedReviews(position);
+  const { data, isPending, isError } = useFeedReviews(position);
+  const { reviews, favoriteAction } = useReviewFavorites(data);
   // 로딩 중에도 자리와 배경을 잡아야 한다. 비워두면 뒤 회색이 비쳤다가 흰 콘텐츠로 바뀐다.
   if (position === null || isPending) {
     return <FeedListSkeleton />;
@@ -43,7 +45,11 @@ export function FeedListView({ position }: FeedListViewProps) {
     <ul className="scroll-under-navigation flex flex-1 flex-col gap-ds-4">
       {reviews.map((review) => (
         <li key={review.id}>
-          <ReviewCard review={review} maxVisibleTags={MAX_VISIBLE_TAGS} />
+          <ReviewCard
+            review={review}
+            maxVisibleTags={MAX_VISIBLE_TAGS}
+            favoriteAction={favoriteAction}
+          />
         </li>
       ))}
     </ul>
