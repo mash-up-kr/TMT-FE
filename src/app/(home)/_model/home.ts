@@ -1,3 +1,5 @@
+import type { FoodCategory } from "@/shared/model/foodCategory";
+
 export interface HomeGroup {
   id: string;
   name: string;
@@ -28,6 +30,7 @@ export interface FeedReviewPlace {
   name: string;
   /** 구 + 동 (예: 마포구 도화동). */
   regionName: string;
+  category?: FoodCategory | null;
   isFavorite?: boolean;
 }
 

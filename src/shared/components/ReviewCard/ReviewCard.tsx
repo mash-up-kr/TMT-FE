@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AvatarTomato from "@/shared/assets/avatar-tomato.svg?react";
 import imageFallback from "@/shared/assets/dummy-image.png";
+import { FoodCategoryIcon } from "@/shared/components/FoodCategoryIcon/FoodCategoryIcon";
 import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { placeDetailPath } from "@/shared/constants/routes";
@@ -238,6 +239,7 @@ function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
 
     return (
       <div className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8">
+        <PlaceCategoryBadge category={place.category} />
         <Link href={placeDetailPath(place.id)} className="flex min-w-0 flex-1 flex-col">
           <PlaceInfo place={place} />
         </Link>
@@ -258,6 +260,7 @@ function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
       href={placeDetailPath(place.id)}
       className="flex items-center gap-ds-4 rounded-ds-sm bg-surface-secondary px-ds-12 py-ds-8"
     >
+      <PlaceCategoryBadge category={place.category} />
       <PlaceInfo place={place} />
       <HeartIcon
         filled={place.isFavorite}
@@ -269,6 +272,15 @@ function PlaceRow({ place, favoriteAction }: PlaceRowProps) {
         )}
       />
     </Link>
+  );
+}
+
+/** 흰 원 안의 24px 카테고리 아이콘. 카테고리를 모르면 가게 아이콘이 들어간다. */
+function PlaceCategoryBadge({ category }: { category: ReviewCardData["place"]["category"] }) {
+  return (
+    <div className="flex size-ds-32 shrink-0 items-center justify-center rounded-ds-full bg-surface-primary">
+      <FoodCategoryIcon category={category ?? null} />
+    </div>
   );
 }
 

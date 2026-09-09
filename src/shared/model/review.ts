@@ -1,3 +1,5 @@
+import type { FoodCategory } from "@/shared/model/foodCategory";
+
 export type ReviewCardData = {
   id: string;
   authorNickname: string;
@@ -10,5 +12,11 @@ export type ReviewCardData = {
   content: string | null;
   contentLength: number;
   tags: { id: string; label: string }[];
-  place: { id: string; name: string; regionName: string; isFavorite?: boolean };
+  place: {
+    id: string;
+    name: string;
+    regionName: string;
+    category?: FoodCategory | null;
+    isFavorite?: boolean;
+  };
 };

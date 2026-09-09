@@ -1,22 +1,4 @@
-/** 시안 「마이페이지 - 일러스트 에셋」(Figma 1659:56764)이 가진 14종. */
-export const FOOD_CATEGORIES = [
-  "grill",
-  "bar",
-  "snack",
-  "buffet",
-  "brunch",
-  "asian",
-  "western",
-  "japanese",
-  "pub",
-  "chinese",
-  "cafe",
-  "fastfood",
-  "korean",
-  "seafood",
-] as const;
-
-export type FoodCategory = (typeof FOOD_CATEGORIES)[number];
+import type { FoodCategory } from "@/shared/model/foodCategory";
 
 /** 냄비에 담을 수 있는 매장 한 곳. `_utils/recommendMapper.ts`가 응답을 이 모양으로 바꾼다. */
 export type RecommendStore = {

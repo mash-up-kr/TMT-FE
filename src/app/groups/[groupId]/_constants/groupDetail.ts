@@ -64,7 +64,7 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
       { id: "price", label: "가격" },
       { id: "waiting", label: "웨이팅" },
     ],
-    place: { id: "store_1", name: "온화 커피 성수", regionName: "성수동" },
+    place: { id: "store_1", name: "온화 커피 성수", regionName: "성수동", category: "cafe" },
   },
   {
     id: "review_2",
@@ -82,7 +82,12 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
       { id: "atmosphere", label: "분위기가 좋아요" },
       { id: "waiting", label: "웨이팅이 많아요" },
     ],
-    place: { id: "store_2", name: "이자카야 고쿄 강남 신논현점", regionName: "역삼동" },
+    place: {
+      id: "store_2",
+      name: "이자카야 고쿄 강남 신논현점",
+      regionName: "역삼동",
+      category: "pub",
+    },
   },
   {
     id: "review_3",
@@ -100,7 +105,12 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
       { id: "atmosphere", label: "분위기가 좋아요" },
       { id: "waiting", label: "웨이팅이 많아요" },
     ],
-    place: { id: "store_3", name: "이자카야 고쿄 강남 신논현점", regionName: "역삼동" },
+    place: {
+      id: "store_3",
+      name: "이자카야 고쿄 강남 신논현점",
+      regionName: "역삼동",
+      category: "pub",
+    },
   },
 ];
 

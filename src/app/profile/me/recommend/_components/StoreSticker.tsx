@@ -1,7 +1,7 @@
 "use client";
 
+import type { FoodCategory } from "@/shared/model/foodCategory";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
-import type { FoodCategory } from "../_model/recommend";
 import { FoodCategorySticker } from "./FoodCategorySticker";
 
 type StoreStickerProps = Readonly<{
