@@ -26,7 +26,7 @@ import {
   useReviewFlowReturnTo,
   useReviewFlowSaveId,
 } from "../_stores/ReviewFlowBaseProvider";
-import { ExitConfirmModal } from "./ExitConfirmModal";
+import { ExitConfirmModal, type ExitConfirmVariant } from "./ExitConfirmModal";
 
 // 이탈 확인 모달은 셸이 하나만 들고 있다. X 버튼과 "나중에 추가할게요"가 같은 흐름이라
 // 확인 UI가 하나여야 동작이 갈리지 않는다. 단계는 여는 것만 요청한다.
@@ -111,16 +111,10 @@ function ReviewFlowContent({
   // 진입 직전 화면으로 replace해야 리뷰 플로우의 단계 URL이 히스토리에 남지 않는다.
   const exitFlow = () => router.replace(returnTo);
 
-  // 첫 단계에서는 아직 초안이 없다(초안은 다음 단계로 넘어갈 때 처음 만들어진다).
-  // 저장할 것이 없는데 "저장하고 나가기"를 묻는 셈이라 확인 없이 바로 나간다.
-  const requestExit = () => {
-    if (saveId === null) {
-      exitFlow();
-      return;
-    }
-
-    setExitOpen(true);
-  };
+  // 초안은 다음 단계로 넘어갈 때 처음 만들어진다. 그래서 첫 단계에서 나가면 입력이 사라지고,
+  // 그 뒤로는 초안으로 저장된다. 나가기가 남기는 결과가 다르니 확인 문구도 갈라야 한다.
+  const exitVariant: ExitConfirmVariant = saveId === null ? "discard" : "keep";
+  const requestExit = () => setExitOpen(true);
 
   return (
     <ReviewFlowExitContext.Provider value={requestExit}>
@@ -158,7 +152,8 @@ function ReviewFlowContent({
       <ExitConfirmModal
         open={exitOpen}
         onOpenChange={setExitOpen}
-        onExit={reviewSave.saveAndExit}
+        variant={exitVariant}
+        onExit={exitVariant === "discard" ? exitFlow : reviewSave.saveAndExit}
         isPending={reviewSave.isPending}
       />
     </ReviewFlowExitContext.Provider>
