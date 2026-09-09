@@ -21,6 +21,7 @@ import { ChevronLeftIcon, LeaveGroupIcon, SettingsIcon } from "@/shared/ui/Icons
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
+import { useFirstReviewPrompt } from "../_hooks/useFirstReviewPrompt";
 import { useGroupReviewEntry } from "../_hooks/useGroupReviewEntry";
 import { useGroupShareEntry } from "../_hooks/useGroupShareEntry";
 import type {
@@ -55,7 +56,6 @@ export function GroupDetailView({
   const router = useRouter();
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
-  const [isFirstReviewSheetDismissed, setIsFirstReviewSheetDismissed] = useState(false);
   const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({});
   const favorite = usePlaceFavorite({
     onSuccessAction: (result) => {
@@ -84,7 +84,7 @@ export function GroupDetailView({
   };
   const shouldPromptFirstReview =
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
-  const isFirstReviewSheetOpen = shouldPromptFirstReview && !isFirstReviewSheetDismissed;
+  const firstReviewPrompt = useFirstReviewPrompt(shouldPromptFirstReview);
   const joinPreviewData = joinPreview.status === "ready" ? joinPreview : null;
   const shareEntry = useGroupShareEntry(group.id, {
     enabled: isNonMember && joinPreviewData?.isJoinable === true,
@@ -145,9 +145,6 @@ export function GroupDetailView({
     if (!leaveAction.isPending) {
       setIsLeaveModalOpen(open);
     }
-  };
-  const handleFirstReviewSheetOpenChange = (open: boolean) => {
-    setIsFirstReviewSheetDismissed(!open);
   };
 
   return (
@@ -239,10 +236,10 @@ export function GroupDetailView({
 
       {shouldPromptFirstReview ? (
         <GroupFirstReviewSheet
-          open={isFirstReviewSheetOpen}
-          onOpenChangeAction={handleFirstReviewSheetOpenChange}
+          open={firstReviewPrompt.isOpen}
+          onOpenChangeAction={firstReviewPrompt.onOpenChange}
           onWriteReviewAction={() => {
-            handleFirstReviewSheetOpenChange(false);
+            firstReviewPrompt.onOpenChange(false);
             router.push(reviewEntryPath);
           }}
         />

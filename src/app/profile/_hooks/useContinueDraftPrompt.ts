@@ -3,16 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useListSaves } from "@/api/gen/save/save.gen";
+import { SHEET_PROMPT_DELAY_MS } from "@/shared/constants/motion";
 import { ROUTES } from "@/shared/constants/routes";
 import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { isContinuableSave } from "@/shared/utils/continuableSave";
 import { withReviewReturnTo } from "@/shared/utils/reviewNavigation";
-
-/**
- * 본문이 자리를 잡은 뒤 시트를 올리기까지의 간격.
- * 진입과 동시에 덮으면 시트가 화면의 일부처럼 보이고, 너무 늦으면 조작을 끊는다.
- */
-const PROMPT_DELAY_MS = 450;
 
 /**
  * 안내를 이미 띄웠다는 사실을 세션 동안 들고 있는 자리.
@@ -89,7 +84,7 @@ export function useContinueDraftPrompt({ ready }: ContinueDraftPromptOptions) {
       markPromptedInSession();
       setHasPrompted(true);
       setIsOpen(true);
-    }, PROMPT_DELAY_MS);
+    }, SHEET_PROMPT_DELAY_MS);
 
     return () => window.clearTimeout(timer);
   }, [shouldPrompt]);
