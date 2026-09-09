@@ -5,6 +5,7 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
+import type { SaveResultResponseMissingItem } from "./saveResultResponseMissingItem.gen";
 import type { TicketGrantSummary } from "./ticketGrantSummary.gen";
 
 export interface SaveResultResponse {
@@ -13,4 +14,6 @@ export interface SaveResultResponse {
   reviewId?: string | null;
   placeId: string;
   ticket: TicketGrantSummary;
+  /** 리뷰 성립(C4)에 모자란 항목. 리뷰가 됐으면 빈 배열. 사진은 항목이 아니다 (C4-1) */
+  missing?: SaveResultResponseMissingItem[];
 }
