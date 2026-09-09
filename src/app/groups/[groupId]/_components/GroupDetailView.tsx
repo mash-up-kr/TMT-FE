@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { ContinueDraftSheet } from "@/shared/components/ContinueDraftSheet";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
@@ -11,8 +11,8 @@ import {
 } from "@/shared/components/ReviewCard/ReviewCard";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
-import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
 import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
+import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
@@ -56,32 +56,13 @@ export function GroupDetailView({
   const router = useRouter();
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
-  const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({});
-  const favorite = usePlaceFavorite({
-    onSuccessAction: (result) => {
-      setFavoriteOverrides((current) => ({ ...current, [result.placeId]: result.isFavorite }));
-    },
-  });
+  const favorite = useReviewFavorites(
+    reviewList.status === "ready" ? reviewList.reviews : undefined,
+  );
+  const reviews = favorite.reviews ?? [];
   const isNonMember = !group.isMember;
   const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
   const reviewEntryPath = useReviewEntryPath();
-  const reviews = useMemo(() => {
-    if (reviewList.status !== "ready") {
-      return [];
-    }
-
-    return reviewList.reviews.map((review) => {
-      const isFavorite = favoriteOverrides[review.place.id];
-
-      return isFavorite === undefined
-        ? review
-        : { ...review, place: { ...review.place, isFavorite } };
-    });
-  }, [favoriteOverrides, reviewList]);
-  const favoriteAction: ReviewCardFavoriteAction = {
-    isPending: favorite.isPending,
-    onToggleAction: favorite.onToggleAction,
-  };
   const shouldPromptFirstReview =
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
   const firstReviewPrompt = useFirstReviewPrompt(shouldPromptFirstReview);
@@ -179,7 +160,7 @@ export function GroupDetailView({
           isContentRestricted={isNonMember}
           isOwner={group.isOwner}
           reviewList={reviewList.status === "ready" ? { ...reviewList, reviews } : reviewList}
-          favoriteAction={group.isMember ? favoriteAction : undefined}
+          favoriteAction={group.isMember ? favorite.favoriteAction : undefined}
         />
         {isNonMember && joinPreview.status === "error" ? (
           <RetryNotice message="가입 정보를 불러오지 못했어요." onRetry={joinPreview.onRetry} />
