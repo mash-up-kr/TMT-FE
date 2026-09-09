@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { loadNaverMaps } from "@/shared/utils/naverMaps";
 import type { MapBounds } from "../_hooks/useFeedPins";
 import type { FeedPin } from "../_utils/feedMapper";
-import { buildMarkerIcon } from "../_utils/mapPinIcon";
+import { FeedMapPin, MAP_PIN_MARKER } from "./FeedMapPin";
 
 /** 권한 거부 시 보내는 기준 좌표 — 강남역 (명세 E3). */
 const FALLBACK_CENTER = { latitude: 37.4979, longitude: 127.0276 };
@@ -15,6 +16,16 @@ const DEFAULT_ZOOM = 15;
  */
 const MARKER_FOCUS_Y_RATIO = 0.3;
 const MARKER_PAN_DURATION_MS = 300;
+/** 라벨이 서로 겹치므로 선택된 핀을 위로 올린다. */
+const SELECTED_MARKER_Z_INDEX = 100;
+const MARKER_Z_INDEX = 1;
+
+/** 마커 하나와 그 안에 React를 그릴 자리. 네이버 SDK는 넘긴 노드를 그대로 붙인다. */
+type PinMarker = {
+  pin: FeedPin;
+  element: HTMLDivElement;
+  marker: naver.maps.Marker;
+};
 
 type FeedMapProps = {
   /** 초기 중심. 위치 권한이 늦게 확정되므로 확정되는 시점에 한 번만 반영한다. */
@@ -59,7 +70,8 @@ export function FeedMap({
 }: FeedMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<naver.maps.Map | null>(null);
-  const markersRef = useRef<naver.maps.Marker[]>([]);
+  const pinMarkersRef = useRef<PinMarker[]>([]);
+  const [pinMarkers, setPinMarkers] = useState<PinMarker[]>([]);
   const lastBoundsRef = useRef<MapBounds | null>(null);
   const centeredRef = useRef(false);
   const [ready, setReady] = useState(false);
@@ -123,10 +135,10 @@ export function FeedMap({
 
     return () => {
       disposed = true;
-      for (const marker of markersRef.current) {
+      for (const { marker } of pinMarkersRef.current) {
         marker.setMap(null);
       }
-      markersRef.current = [];
+      pinMarkersRef.current = [];
       mapRef.current?.destroy();
       mapRef.current = null;
     };
@@ -148,7 +160,8 @@ export function FeedMap({
     map.setCenter(new naver.maps.LatLng(centerLatitude, centerLongitude));
   }, [ready, centerLatitude, centerLongitude]);
 
-  // 핀은 지도와 별개로 갱신한다.
+  // 핀은 지도와 별개로 갱신한다. 선택 상태는 여기 끼지 않는다 — 끼면 클릭마다 마커가
+  // 새로 만들어져 이전 크기를 잃고, 커지는 전환이 걸리지 않는다.
   useEffect(() => {
     const map = mapRef.current;
 
@@ -158,23 +171,22 @@ export function FeedMap({
 
     const maps = naver.maps;
 
-    for (const marker of markersRef.current) {
+    for (const { marker } of pinMarkersRef.current) {
       marker.setMap(null);
     }
 
-    markersRef.current = pins.map((pin) => {
-      const icon = buildMarkerIcon(pin, pin.id === selectedPlaceId);
+    const next = pins.map((pin) => {
+      // 마커 내용을 우리가 소유하는 노드로 넘기고, 그 안을 React가 계속 그린다.
+      const element = document.createElement("div");
       const marker = new maps.Marker({
         map,
         position: new maps.LatLng(pin.latitude, pin.longitude),
         title: pin.name,
         icon: {
-          content: icon.content,
-          size: new maps.Size(icon.size.width, icon.size.height),
-          anchor: new maps.Point(icon.anchor.x, icon.anchor.y),
+          content: element,
+          size: new maps.Size(MAP_PIN_MARKER.size.width, MAP_PIN_MARKER.size.height),
+          anchor: new maps.Point(MAP_PIN_MARKER.anchor.x, MAP_PIN_MARKER.anchor.y),
         },
-        // 라벨이 서로 겹치므로 선택된 핀을 위로 올린다.
-        zIndex: pin.id === selectedPlaceId ? 100 : 1,
       });
 
       maps.Event.addListener(marker, "click", () => {
@@ -182,9 +194,19 @@ export function FeedMap({
         pinClickRef.current(pin.id);
       });
 
-      return marker;
+      return { pin, element, marker };
     });
-  }, [ready, pins, selectedPlaceId]);
+
+    pinMarkersRef.current = next;
+    setPinMarkers(next);
+  }, [ready, pins]);
+
+  // 선택이 바뀌면 마커는 그대로 두고 쌓임 순서만 손댄다. 크기 변화는 React가 그린다.
+  useEffect(() => {
+    for (const { pin, marker } of pinMarkers) {
+      marker.setZIndex(pin.id === selectedPlaceId ? SELECTED_MARKER_Z_INDEX : MARKER_Z_INDEX);
+    }
+  }, [pinMarkers, selectedPlaceId]);
 
   if (error) {
     return (
@@ -197,5 +219,16 @@ export function FeedMap({
     );
   }
 
-  return <div ref={containerRef} className="min-h-0 flex-1" />;
+  return (
+    <>
+      <div ref={containerRef} className="min-h-0 flex-1" />
+      {pinMarkers.map(({ pin, element }) =>
+        createPortal(
+          <FeedMapPin pin={pin} selected={pin.id === selectedPlaceId} />,
+          element,
+          pin.id,
+        ),
+      )}
+    </>
+  );
 }
