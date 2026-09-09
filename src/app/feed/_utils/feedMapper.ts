@@ -3,7 +3,9 @@ import type { CursorPageReviewCardResponse } from "@/api/gen/_model/cursorPageRe
 import type { ItemsResponseCurationTagResponse } from "@/api/gen/_model/itemsResponseCurationTagResponse.gen";
 import type { NearbyPlacesResponse } from "@/api/gen/_model/nearbyPlacesResponse.gen";
 import type { PlaceDetailResponse } from "@/api/gen/_model/placeDetailResponse.gen";
+import type { FoodCategory } from "@/shared/model/foodCategory";
 import type { ReviewCardData } from "@/shared/model/review";
+import { toFoodCategory } from "@/shared/utils/foodCategoryMapper";
 import { toReviewCardData } from "@/shared/utils/reviewMapper";
 
 export interface CurationChip {
@@ -24,6 +26,8 @@ export interface FeedPin {
   name: string;
   latitude: number;
   longitude: number;
+  /** 선택된 핀이 그리는 아이콘. 서버가 모르는 매장은 null이고 가게 아이콘이 대신 들어간다. */
+  category: FoodCategory | null;
   reviewCount: number;
 }
 
@@ -40,6 +44,7 @@ export function toFeedPins(response: NearbyPlacesResponse): FeedPins {
       name: pin.name,
       latitude: pin.latitude,
       longitude: pin.longitude,
+      category: toFoodCategory(pin.categoryId),
       reviewCount: pin.reviewCount,
     })),
     truncated: response.truncated,
