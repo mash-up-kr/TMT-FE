@@ -90,14 +90,13 @@ export function FeedMapPin({ pin, selected }: FeedMapPinProps) {
         </div>
       </div>
 
+      {/*
+       * 핀은 아래 중앙을 축으로 커지고 줄어서 아래끝이 늘 좌표에 머문다. 그래서 라벨은 크기와
+       * 무관하게 제자리에 두면 되고, 축소분을 따라 옮기면 핀 위로 올라가 겹친다.
+       */}
       <span
-        className={`pointer-events-none whitespace-nowrap text-body-sm-bold text-content-primary ${TRANSITION}`}
-        style={{
-          marginTop: LABEL_GAP,
-          // 핀이 줄어든 만큼 라벨도 따라 올라와야 핀과 떨어지지 않는다.
-          transform: `translateY(${(scale - 1) * PIN_HEIGHT}px)`,
-          ...LABEL_STROKE,
-        }}
+        className="pointer-events-none whitespace-nowrap text-body-sm-bold text-content-primary"
+        style={{ marginTop: LABEL_GAP, ...LABEL_STROKE }}
       >
         {pin.name}
       </span>
