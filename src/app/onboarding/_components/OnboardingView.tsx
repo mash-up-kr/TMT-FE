@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { type UIEvent, useState } from "react";
+import { type UIEvent, useRef, useState } from "react";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
@@ -16,12 +16,14 @@ type OnboardingViewProps = {
 /**
  * 가입 직후 한 번 보여주는 소개 화면의 표시 계층.
  *
- * 시안에 다음 버튼이 없고 CTA가 네 장 모두 같아, 가로 스와이프로 넘기고 CTA는 어느 장에서든
- * 나가는 상시 진입구로 본다. 진행바는 현재 장을 표시한다.
+ * CTA는 마지막 장까지 다음 장으로 넘기고, 마지막 장에서만 화면을 나가는 진입구가 된다.
+ * 가로 스와이프로도 넘길 수 있고, 진행바는 현재 장을 표시한다.
  */
 export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const stepsRef = useRef<HTMLElement>(null);
   const dragScroll = useDragScroll<HTMLElement>();
+  const isLastStep = currentIndex === ONBOARDING_STEP_COUNT - 1;
 
   function handleScroll(event: UIEvent<HTMLElement>) {
     const { scrollLeft, clientWidth } = event.currentTarget;
@@ -31,6 +33,17 @@ export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
         Math.max(0, Math.min(ONBOARDING_STEP_COUNT - 1, Math.round(scrollLeft / clientWidth))),
       );
     }
+  }
+
+  // 스와이프와 같은 경로를 타야 한다. index를 직접 올리면 스크롤 위치와 진행바가 어긋난다.
+  function goToNextStep() {
+    const steps = stepsRef.current;
+
+    if (steps === null) {
+      return;
+    }
+
+    steps.scrollTo({ left: steps.clientWidth * (currentIndex + 1), behavior: "smooth" });
   }
 
   return (
@@ -55,9 +68,10 @@ export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
       </div>
 
       <section
+        ref={stepsRef}
         {...dragScroll}
         aria-label="또맛또 소개"
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: 가로 스크롤 영역이라 키보드로 장을 넘길 유일한 수단이다. 이름을 가진 region이라 스크린리더에도 목적이 드러난다.
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: CTA는 앞으로만 넘기므로 이전 장으로 돌아가려면 이 영역에 포커스가 닿아야 한다. 이름을 가진 region이라 스크린리더에도 목적이 드러난다.
         tabIndex={0}
         onScroll={handleScroll}
         // 드래그 중에는 스냅을 끈다. 켜두면 손가락을 따라오지 못한다.
@@ -82,7 +96,9 @@ export function OnboardingView({ onSkip, onStart }: OnboardingViewProps) {
       </section>
 
       <ButtonStack className="content-container shrink-0 pt-ds-16 pb-ds-32">
-        <Button onClick={onStart}>또맛또 시작하기</Button>
+        <Button onClick={isLastStep ? onStart : goToNextStep}>
+          {isLastStep ? "또맛또 시작하기" : "다음으로"}
+        </Button>
       </ButtonStack>
     </div>
   );
