@@ -28,8 +28,11 @@ const EMPTY_MESSAGE = "공유할 리뷰가 없어요";
  * 티켓이 있는 사람이 가입 팝업에서 `가입하기`를 누른 뒤, 가입과 함께 공유할 리뷰를 고르는
  * 화면이다. 공유는 가입 요청에 함께 실어야 하므로 가입도 이 화면이 맡는다.
  *
- * X와 하단 닫기는 가입하지 않고 그룹 상세로 돌아간다.
- * 공유하기는 선택한 리뷰와 함께 가입한다.
+ * 여기까지 왔다는 것은 가입을 이미 택했다는 뜻이라 하단 두 버튼은 모두 가입한다. 고를 게
+ * 공유뿐이므로 건너뛰기는 선택을 무시하고 가입만 하고, 가입하기는 고른 리뷰를 함께 싣는다.
+ * 하나도 고르지 않은 채 가입하기를 눌러도 막지 않는다. 그때는 건너뛰기와 같다.
+ *
+ * 가입을 무르는 길은 GNB의 X 하나다. 그것만 가입하지 않고 그룹 상세로 돌아간다.
  */
 export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
   const router = useRouter();
@@ -41,8 +44,8 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
   const items = toReviewShareItems(pages.data?.pages.flatMap((page) => page.items));
 
   const leaveWithoutJoining = () => router.replace(ROUTES.GROUPS.DETAIL(groupId));
-  const shareSelected = async () => {
-    if (!(await join.joinGroup({ sourceReviewIds: selectedIds }))) {
+  const joinWith = async (sourceReviewIds: readonly string[]) => {
+    if (!(await join.joinGroup({ sourceReviewIds }))) {
       return;
     }
     router.replace(ROUTES.GROUPS.DETAIL(groupId));
@@ -91,11 +94,11 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
 
       <div className="content-container pt-ds-12 pb-ds-32">
         <ButtonStack type="horizontal">
-          <Button variant="tertiary" disabled={join.isPending} onClick={leaveWithoutJoining}>
-            닫기
+          <Button variant="tertiary" disabled={join.isPending} onClick={() => void joinWith([])}>
+            건너뛰기
           </Button>
-          <Button loading={join.isPending} onClick={shareSelected}>
-            공유하기
+          <Button loading={join.isPending} onClick={() => void joinWith(selectedIds)}>
+            가입하기
           </Button>
         </ButtonStack>
       </div>
