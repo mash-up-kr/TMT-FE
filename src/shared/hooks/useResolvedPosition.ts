@@ -1,6 +1,10 @@
 "use client";
 
-import { type CurrentPosition, useCurrentPosition } from "./useCurrentPosition";
+import {
+  type CurrentPosition,
+  type PreciseCoordinates,
+  useCurrentPosition,
+} from "./useCurrentPosition";
 
 /** 권한 거부·미지원 시 쓰는 기준 좌표 — 강남역 (B 명세 §2-1, E3). */
 export const FALLBACK_COORDINATES = { latitude: 37.4979, longitude: 127.0276 };
@@ -10,6 +14,7 @@ export interface ResolvedPosition {
   longitude: number;
   /** 실제 위치가 아니라 강남역 기준으로 조회하는 중인지. 화면이 안내에 쓴다. */
   isFallback: boolean;
+  precise: PreciseCoordinates | null;
 }
 
 /**
@@ -27,8 +32,13 @@ export function useResolvedPosition(): ResolvedPosition | null {
   }
 
   if (position.status === "granted") {
-    return { latitude: position.latitude, longitude: position.longitude, isFallback: false };
+    return {
+      latitude: position.latitude,
+      longitude: position.longitude,
+      isFallback: false,
+      precise: position.precise,
+    };
   }
 
-  return { ...FALLBACK_COORDINATES, isFallback: true };
+  return { ...FALLBACK_COORDINATES, isFallback: true, precise: null };
 }
