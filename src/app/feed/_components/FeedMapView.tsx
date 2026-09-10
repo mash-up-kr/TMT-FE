@@ -36,6 +36,7 @@ export function FeedMapView({
       <FeedMap
         centerLatitude={position?.latitude ?? null}
         centerLongitude={position?.longitude ?? null}
+        myLocation={position?.precise ?? null}
         pins={data?.pins ?? EMPTY_PINS}
         selectedPlaceId={selectedPlaceId}
         onBoundsChange={setBounds}

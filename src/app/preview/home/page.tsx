@@ -27,7 +27,12 @@ const SWITCHER = [
   "min-[431px]:left-auto min-[431px]:right-[calc(50%_+_215px_+_var(--spacing-ds-16))]",
 ].join(" ");
 
-const GRANTED: CurrentPosition = { status: "granted", latitude: 37.5445, longitude: 126.9506 };
+const GRANTED: CurrentPosition = {
+  status: "granted",
+  latitude: 37.5445,
+  longitude: 126.9506,
+  precise: { latitude: 37.5445, longitude: 126.9506, accuracy: 20 },
+};
 const BROKEN_IMAGE_URL = "/image-not-found.png";
 
 /** mock 서버가 미가입 유저(user 9)에게 실제로 내려주는 값. */

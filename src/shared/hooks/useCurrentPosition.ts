@@ -2,9 +2,15 @@
 
 import { type QueryClient, useQuery } from "@tanstack/react-query";
 
+export interface PreciseCoordinates {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+}
+
 export type CurrentPosition =
   | { status: "pending" }
-  | { status: "granted"; latitude: number; longitude: number }
+  | { status: "granted"; latitude: number; longitude: number; precise: PreciseCoordinates }
   | { status: "unavailable" };
 
 type UseCurrentPositionOptions = {
@@ -32,6 +38,9 @@ const POSITION_STALE_TIME_MS = 5 * 60_000;
 /** 재진입이 즉시 끝나려면 좌표가 낡은 뒤에도 캐시에 남아 있어야 한다. */
 const POSITION_GC_TIME_MS = 30 * 60_000;
 
+/** 정밀 측위가 실내에서 오래 걸린다. 이 시간을 넘기면 미지원과 같게 다뤄 화면을 세우지 않는다. */
+const POSITION_TIMEOUT_MS = 10_000;
+
 function snapToGrid(value: number) {
   return Number(value.toFixed(COORDINATE_FRACTION_DIGITS));
 }
@@ -50,8 +59,20 @@ function requestPosition(): Promise<CurrentPosition> {
           status: "granted",
           latitude: snapToGrid(coords.latitude),
           longitude: snapToGrid(coords.longitude),
+          precise: {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            accuracy: coords.accuracy,
+          },
         }),
       () => resolve({ status: "unavailable" }),
+      // 기본값은 기지국·와이파이 측위라 도심에서 수백 m 어긋난다. 지도에 점을 찍으려면 정밀 측위가
+      // 필요하다. 좌표는 5분간 캐시하므로 이 비용은 그 주기로만 발생한다.
+      {
+        enableHighAccuracy: true,
+        timeout: POSITION_TIMEOUT_MS,
+        maximumAge: POSITION_STALE_TIME_MS,
+      },
     );
   });
 }

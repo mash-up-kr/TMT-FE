@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { PreciseCoordinates } from "@/shared/hooks/useCurrentPosition";
 import { loadNaverMaps } from "@/shared/utils/naverMaps";
 import type { MapBounds } from "../_hooks/useFeedPins";
 import type { FeedPin } from "../_utils/feedMapper";
 import { FeedMapPin, MAP_PIN_MARKER } from "./FeedMapPin";
+import { FeedMyLocationPin, MY_LOCATION_MARKER } from "./FeedMyLocationPin";
 
 /** 권한 거부 시 보내는 기준 좌표 — 강남역 (명세 E3). */
 const FALLBACK_CENTER = { latitude: 37.4979, longitude: 127.0276 };
@@ -19,6 +21,15 @@ const MARKER_PAN_DURATION_MS = 300;
 /** 라벨이 서로 겹치므로 선택된 핀을 위로 올린다. */
 const SELECTED_MARKER_Z_INDEX = 100;
 const MARKER_Z_INDEX = 1;
+/** 내 위치는 매장 핀 아래에 둔다. 탐색 대상은 매장이고 내 위치는 배경 정보다. */
+const MY_LOCATION_Z_INDEX = 0;
+const ACCURACY_CIRCLE_FILL_OPACITY = 0.12;
+const ACCURACY_CIRCLE_STROKE_OPACITY = 0.4;
+const ACCURACY_CIRCLE_STROKE_WEIGHT = 1;
+
+function readToken(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
 /** 마커 하나와 그 안에 React를 그릴 자리. 네이버 SDK는 넘긴 노드를 그대로 붙인다. */
 type PinMarker = {
@@ -32,6 +43,8 @@ type FeedMapProps = {
   centerLatitude: number | null;
   centerLongitude: number | null;
   pins: FeedPin[];
+  /** 측위에 성공했을 때의 내 위치. 대체 좌표를 쓰는 동안에는 `null`이라 점을 그리지 않는다. */
+  myLocation: PreciseCoordinates | null;
   selectedPlaceId: string | null;
   onBoundsChange: (bounds: MapBounds) => void;
   onPinClick: (placeId: string) => void;
@@ -64,6 +77,7 @@ export function FeedMap({
   centerLatitude,
   centerLongitude,
   pins,
+  myLocation,
   selectedPlaceId,
   onBoundsChange,
   onPinClick,
@@ -72,6 +86,7 @@ export function FeedMap({
   const mapRef = useRef<naver.maps.Map | null>(null);
   const pinMarkersRef = useRef<PinMarker[]>([]);
   const [pinMarkers, setPinMarkers] = useState<PinMarker[]>([]);
+  const [myLocationElement, setMyLocationElement] = useState<HTMLDivElement | null>(null);
   const lastBoundsRef = useRef<MapBounds | null>(null);
   const centeredRef = useRef(false);
   const [ready, setReady] = useState(false);
@@ -201,6 +216,53 @@ export function FeedMap({
     setPinMarkers(next);
   }, [ready, pins]);
 
+  // 내 위치는 매장 핀과 생애가 달라 따로 관리한다. 좌표가 바뀌면 점과 원을 다시 만드는데,
+  // 측위 결과는 몇 분에 한 번만 갱신되므로 재생성 비용이 없다 — 지도를 움직일 때마다 바뀌는
+  // 매장 핀과 달라서, 여기서는 만든 자리에서 정리하는 쪽이 안전하다.
+  useEffect(() => {
+    const map = mapRef.current;
+
+    if (!ready || !map || !myLocation) {
+      return;
+    }
+
+    const maps = naver.maps;
+    const center = new maps.LatLng(myLocation.latitude, myLocation.longitude);
+    const color = readToken("--color-content-info");
+    const circle = new maps.Circle({
+      map,
+      center,
+      radius: myLocation.accuracy,
+      fillColor: color,
+      fillOpacity: ACCURACY_CIRCLE_FILL_OPACITY,
+      strokeColor: color,
+      strokeOpacity: ACCURACY_CIRCLE_STROKE_OPACITY,
+      strokeWeight: ACCURACY_CIRCLE_STROKE_WEIGHT,
+      clickable: false,
+    });
+
+    const element = document.createElement("div");
+    const marker = new maps.Marker({
+      map,
+      position: center,
+      clickable: false,
+      zIndex: MY_LOCATION_Z_INDEX,
+      icon: {
+        content: element,
+        size: new maps.Size(MY_LOCATION_MARKER.size.width, MY_LOCATION_MARKER.size.height),
+        anchor: new maps.Point(MY_LOCATION_MARKER.anchor.x, MY_LOCATION_MARKER.anchor.y),
+      },
+    });
+
+    setMyLocationElement(element);
+
+    return () => {
+      marker.setMap(null);
+      circle.setMap(null);
+      setMyLocationElement(null);
+    };
+  }, [ready, myLocation]);
+
   // 선택이 바뀌면 마커는 그대로 두고 쌓임 순서만 손댄다. 크기 변화는 React가 그린다.
   useEffect(() => {
     for (const { pin, marker } of pinMarkers) {
@@ -229,6 +291,7 @@ export function FeedMap({
           pin.id,
         ),
       )}
+      {myLocationElement ? createPortal(<FeedMyLocationPin />, myLocationElement) : null}
     </>
   );
 }
