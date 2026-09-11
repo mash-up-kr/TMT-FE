@@ -20,13 +20,7 @@ type GroupReviewSelectionStepProps = {
   onRetryReviewOptionsAction: () => void;
 };
 
-export function GroupReviewSelectionStep({
-  reviewOptionsState,
-  selectedReviewIds,
-  onSelectedReviewIdsChangeAction,
-  onLoadMoreReviewOptionsAction,
-  onRetryReviewOptionsAction,
-}: GroupReviewSelectionStepProps) {
+export function GroupReviewSelectionStep(props: GroupReviewSelectionStepProps) {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-ds-24">
       <GroupCreateStepHeader
@@ -34,13 +28,7 @@ export function GroupReviewSelectionStep({
         required={false}
       />
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        <GroupReviewOptionList
-          reviewOptionsState={reviewOptionsState}
-          selectedReviewIds={selectedReviewIds}
-          onSelectedReviewIdsChangeAction={onSelectedReviewIdsChangeAction}
-          onLoadMoreReviewOptionsAction={onLoadMoreReviewOptionsAction}
-          onRetryReviewOptionsAction={onRetryReviewOptionsAction}
-        />
+        <GroupReviewOptionList {...props} />
       </div>
     </div>
   );

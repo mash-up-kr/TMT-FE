@@ -9,7 +9,6 @@ import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { CancelIcon, ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Progress } from "@/shared/ui/Progress";
-import { cn } from "@/shared/utils/cn";
 import { GROUP_CREATE_STEPS } from "../_constants/groupCreate";
 import { useGroupCreateDraft } from "../_hooks/useGroupCreateDraft";
 import type {
@@ -124,13 +123,7 @@ export function GroupCreateScreen({
           />
         </div>
 
-        {/* 리뷰 선택은 타이틀을 고정하고 목록만 스크롤한다. 스크롤은 단계가 소유한다. */}
-        <main
-          className={cn(
-            "content-container min-h-0 flex-1 pt-ds-32 pb-ds-20",
-            step === "reviews" ? "flex flex-col" : "overflow-y-auto",
-          )}
-        >
+        <main className="content-container flex min-h-0 flex-1 flex-col overflow-y-auto pt-ds-32 pb-ds-20">
           <GroupCreateStepContent
             step={step}
             draft={draft}
