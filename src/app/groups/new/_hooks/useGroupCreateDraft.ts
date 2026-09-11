@@ -11,6 +11,7 @@ const INITIAL_DRAFT: GroupCreateDraft = {
   foodCategoryId: "",
   regionIds: [],
   detailedDescription: "",
+  reviewIds: [],
 };
 
 type SelectedGroupImage = {

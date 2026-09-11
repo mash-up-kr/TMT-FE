@@ -5,4 +5,5 @@ export const GROUP_CREATE_STEPS = [
   "tags",
   "image",
   "description",
+  "reviews",
 ] as const satisfies readonly GroupCreateStep[];
