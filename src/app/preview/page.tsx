@@ -43,6 +43,11 @@ const PREVIEWS = [
     description: "목록, 검색 결과 없음, 로딩·오류 상태",
   },
   {
+    href: "/preview/groups/ticket-onboarding",
+    title: "그룹 티켓 온보딩",
+    description: "그룹 탭 첫 진입 티켓 안내 시트 3단계",
+  },
+  {
     href: "/preview/groups/detail",
     title: "그룹 상세",
     description: "가입·탈퇴와 상세 화면 상태",

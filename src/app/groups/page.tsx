@@ -7,6 +7,7 @@ import { ROUTES } from "@/shared/constants/routes";
 import { GNB } from "@/shared/ui/GNB";
 import { PlusIcon } from "@/shared/ui/Icons";
 import { GroupsView } from "./_components/GroupsView";
+import { TicketOnboardingPrompt } from "./_components/TicketOnboardingPrompt";
 
 export const metadata: Metadata = {
   title: "맛집 그룹 찾기",
@@ -38,6 +39,7 @@ export default function GroupsPage() {
       <Suspense>
         <GroupsView />
       </Suspense>
+      <TicketOnboardingPrompt />
     </ScreenLayout>
   );
 }
