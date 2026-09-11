@@ -1,3 +1,4 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { useNearbyPlaces } from "@/api/gen/nearby/nearby.gen";
 import { type FeedPins, toFeedPins } from "../_utils/feedMapper";
 
@@ -26,6 +27,10 @@ export function useFeedPins(
       curationTagId: curationTagId ?? undefined,
       query: query ?? undefined,
     },
-    { query: { enabled: bounds !== null, select: toFeedPins } },
+    {
+      // bounds가 곧 queryKey라 지도를 움직일 때마다 캐시가 비어 핀이 사라진다.
+      // 새 응답이 올 때까지 이전 핀을 화면에 남긴다.
+      query: { enabled: bounds !== null, select: toFeedPins, placeholderData: keepPreviousData },
+    },
   );
 }

@@ -50,9 +50,12 @@ export function FeedMapPin({ pin, selected }: FeedMapPinProps) {
   const holeScale = selected ? 1 : UNSELECTED_HOLE_SCALE;
 
   return (
-    <div className="flex flex-col items-center" style={{ width: PIN_WIDTH }}>
+    // 마커 상자는 선택 상태와 무관하게 고정이라, 상자 전체를 누를 수 있게 두면 줄어든 핀의
+    // 빈 여백까지 눌린다. 판정은 보이는 물방울에만 준다 — scale은 히트 테스트에도 적용되므로
+    // 클릭 영역이 보이는 크기를 그대로 따라간다.
+    <div className="pointer-events-none flex flex-col items-center" style={{ width: PIN_WIDTH }}>
       <div
-        className={`relative shrink-0 ${TRANSITION}`}
+        className={`pointer-events-auto relative shrink-0 ${TRANSITION}`}
         style={{
           width: PIN_WIDTH,
           height: PIN_HEIGHT,
