@@ -5,6 +5,7 @@ import { toFoodCategory } from "@/shared/utils/foodCategoryMapper";
 export function toReviewCardData(review: ReviewCardResponse): ReviewCardData {
   return {
     id: review.reviewId,
+    authorId: review.author.userId,
     authorNickname: review.author.nickname,
     authorProfileImageUrl: review.author.profileImageUrl ?? null,
     rating: review.rating,

@@ -177,7 +177,7 @@ export const getUpdateSaveUrl = (saveId: string) => {
 };
 
 /**
- * 전체 교체다. 매장은 바꿀 수 없다 (S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6).
+ * 전체 교체다. 매장은 바꿀 수 없다 (S6). 서버는 같은 완성도 판정을 다시 돌린다 (C6). `draft: true`면 확정하지 않는다 — 자동 저장은 매 호출 새 Idempotency-Key를 쓴다.
  * @summary 작성 완료 (이어쓰기)
  */
 export const updateSave = async (
@@ -471,7 +471,7 @@ export const getCreateSaveUrl = () => {
 };
 
 /**
- * 완성도 판정(C4)을 충족하면 리뷰·티켓·매장 집계까지 같은 트랜잭션에서 나간다 (TX-1).
+ * 완성도 판정(C4)을 충족하면 리뷰·티켓·매장 집계까지 같은 트랜잭션에서 나간다 (TX-1). `draft: true`면 판정을 충족해도 확정하지 않는다 — 단계 사이의 중간 저장용이다.
  * @summary 작성 완료 (신규)
  */
 export const createSave = async (

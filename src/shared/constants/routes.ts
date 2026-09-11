@@ -52,3 +52,5 @@ export const ROUTES = {
 
 /** 동적 세그먼트를 채워 실제 pathname을 만든다. 템플릿 문자열을 화면에 흩지 않기 위한 것이다. */
 export const placeDetailPath = (placeId: string) => `/places/${placeId}`;
+
+export const userProfilePath = (userId: string) => `/profile/${userId}`;

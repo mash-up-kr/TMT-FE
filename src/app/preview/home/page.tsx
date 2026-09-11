@@ -71,6 +71,7 @@ const RECOMMENDED: HomeRecommendedGroup[] = [
 
 const REVIEW: FeedReview = {
   id: "review_1",
+  authorId: "user_1",
   authorNickname: "하아얀",
   authorProfileImageUrl: null,
   rating: 5,

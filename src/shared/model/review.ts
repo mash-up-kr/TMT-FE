@@ -2,6 +2,7 @@ import type { FoodCategory } from "@/shared/model/foodCategory";
 
 export type ReviewCardData = {
   id: string;
+  authorId: string;
   authorNickname: string;
   authorProfileImageUrl: string | null;
   rating: number;

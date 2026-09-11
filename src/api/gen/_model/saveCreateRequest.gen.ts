@@ -18,4 +18,11 @@ export interface SaveCreateRequest {
   rating?: number | null;
   /** @nullable */
   content?: string | null;
+  /** 중간 저장이면 true — 값이 다 차도 리뷰·티켓이 나가지 않는다. 생략하면 작성 완료(false) */
+  draft?: boolean;
+  /**
+   * 이 리뷰를 시작한 그룹. 리뷰가 성립하면 같은 트랜잭션에서 그 그룹에 공유한다 (TMT-423). 멤버가 아니거나 없는 그룹이면 리뷰만 만들고 공유는 건너뛴다
+   * @nullable
+   */
+  groupId?: string | null;
 }

@@ -64,7 +64,7 @@ export const getUpdateMyProfileUrl = () => {
 /**
  * 닉네임과 프로필 사진을 저장한다 (TMT-370). 카카오 로그인 직후에는 닉네임이 카카오 값이라 이 요청을 마쳐야 `profileCompleted=true`가 되고 다른 API를 쓸 수 있다.
  *
- * `profileImageAssetId`는 `POST /v1/media/upload-intents`로 받은 것이고, 보내지 않으면 사진 없는 상태가 된다. 가입 후에도 같은 요청으로 프로필을 수정한다.
+ * `profileImageAssetId`는 `POST /v1/media/upload-intents`로 받은 것이고, 생략하면 현재 사진을 유지하고 `null`을 실으면 지운다 (TMT-415). 가입 후에도 같은 요청으로 프로필을 수정한다.
  * @summary 가입 완결·프로필 수정
  */
 export const updateMyProfile = async (

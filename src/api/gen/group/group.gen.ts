@@ -274,7 +274,7 @@ export const getUpdateGroupUrl = (groupId: string) => {
 };
 
 /**
- * 생성자만 호출할 수 있다 (G13). 전체 교체라 바꾸지 않는 필드도 현재 값을 실어 보내야 한다.
+ * 생성자만 호출할 수 있다 (G13). 전체 교체라 바꾸지 않는 필드도 현재 값을 실어 보내야 한다. 다만 `imageAssetId`는 생략하면 기존 대표 이미지를 유지하고, `null`을 실으면 지운다 (TMT-415).
  * @summary 그룹 편집
  */
 export const updateGroup = async (
