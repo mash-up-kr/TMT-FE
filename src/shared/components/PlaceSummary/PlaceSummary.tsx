@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import fallbackImage from "@/shared/assets/dummy-image.png";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { MapPinIcon, PhoneIcon, StarIcon } from "@/shared/ui/Icons";
+import { ImageViewer, ImageViewerTrigger } from "@/shared/ui/ImageViewer";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 
 /** 시안 실측 120px 정사각 스트립. ds 스케일에 없어 값으로 둔다. */
@@ -83,27 +84,31 @@ function PhotoStrip({ urls }: { urls: string[] }) {
   const dragScroll = useDragScroll<HTMLUListElement>();
 
   return (
-    <ul
-      {...dragScroll}
-      className="scrollbar-hidden flex select-none gap-ds-8 overflow-x-auto px-ds-20"
-    >
-      {urls.map((url) => (
-        <li
-          key={url}
-          className={`${PHOTO_SIZE} shrink-0 overflow-hidden rounded-ds-lg bg-surface-secondary`}
-        >
-          <ImageWithFallback
-            src={url}
-            fallbackSrc={fallbackImage}
-            alt=""
-            width={120}
-            height={120}
-            draggable={false}
-            className="size-full object-cover"
-          />
-        </li>
-      ))}
-    </ul>
+    <ImageViewer imageUrls={urls} label="가게 사진" fallbackSrc={fallbackImage}>
+      <ul
+        {...dragScroll}
+        className="scrollbar-hidden flex select-none gap-ds-8 overflow-x-auto px-ds-20"
+      >
+        {urls.map((url, index) => (
+          <li
+            key={url}
+            className={`${PHOTO_SIZE} shrink-0 overflow-hidden rounded-ds-lg bg-surface-secondary`}
+          >
+            <ImageViewerTrigger index={index} className="size-full">
+              <ImageWithFallback
+                src={url}
+                fallbackSrc={fallbackImage}
+                alt=""
+                width={120}
+                height={120}
+                draggable={false}
+                className="size-full object-cover"
+              />
+            </ImageViewerTrigger>
+          </li>
+        ))}
+      </ul>
+    </ImageViewer>
   );
 }
 

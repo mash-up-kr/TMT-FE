@@ -47,6 +47,8 @@
   --color-surface-inverse: var(--primitive-transparent-84);
   /* 이미지·일러스트 위에 얹는 알약. 아래 그림이 비쳐야 해서 surface-inverse보다 옅다. */
   --color-surface-inverse-weak: var(--primitive-transparent-50);
+  /* 사진 뷰어 바탕. 뒤 화면이 비치면 사진이 묻혀 불투명하게 둔다. */
+  --color-surface-viewer: var(--primitive-base-black);
 
   /* ===================== content (글자) ===================== */
   --color-content-primary: var(--primitive-neutral-900);
@@ -383,6 +385,19 @@
   transform: translateX(-50%);
   display: flex;
   align-items: flex-end;
+  width: 100%;
+  max-width: var(--layout-frame-max);
+}
+
+/* ===================== viewer viewport ===================== */
+/* 사진 뷰어처럼 프레임을 가득 채우는 오버레이의 배치 영역. safe area 여백은 뷰어가 잡는다. */
+@utility viewer-viewport {
+  position: fixed;
+  inset-block: 0;
+  left: 50%;
+  z-index: var(--z-index-overlay);
+  transform: translateX(-50%);
+  display: flex;
   width: 100%;
   max-width: var(--layout-frame-max);
 }

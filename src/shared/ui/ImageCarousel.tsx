@@ -1,7 +1,9 @@
 "use client";
 
-import { type ComponentPropsWithoutRef, type UIEvent, useState } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
+import { useSnapScrollIndex } from "@/shared/hooks/useSnapScrollIndex";
+import { ImageViewer, ImageViewerTrigger } from "@/shared/ui/ImageViewer";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 
@@ -28,53 +30,50 @@ function ImageCarouselContent({
   className,
   ...props
 }: ImageCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const snap = useSnapScrollIndex<HTMLElement>(imageUrls.length);
   const dragScroll = useDragScroll<HTMLElement>();
 
   if (imageUrls.length === 0) {
     return null;
   }
 
-  function handleScroll(event: UIEvent<HTMLElement>) {
-    const { scrollLeft, clientWidth } = event.currentTarget;
-
-    if (clientWidth > 0) {
-      setCurrentIndex(
-        Math.max(0, Math.min(imageUrls.length - 1, Math.round(scrollLeft / clientWidth))),
-      );
-    }
-  }
-
   return (
-    <div {...props} className={cn("relative overflow-hidden", className)}>
-      <section
-        {...dragScroll}
-        aria-label={label}
-        tabIndex={imageUrls.length > 1 ? 0 : undefined}
-        onScroll={handleScroll}
-        className="scrollbar-hidden flex size-full snap-x snap-mandatory select-none overflow-x-auto overscroll-x-contain active:snap-none"
-      >
-        {imageUrls.map((url, index) => (
-          <ImageWithFallback
-            // biome-ignore lint/suspicious/noArrayIndexKey: 같은 URL도 별도 사진이며, 목록 변경 시 부모 key로 전체를 초기화한다.
-            key={`${index}:${url}`}
-            src={url}
-            fallbackSrc={fallbackSrc}
-            alt={`${label} ${index + 1}`}
-            width={width}
-            height={height}
-            draggable={false}
-            className="size-full shrink-0 snap-start object-cover"
-          />
-        ))}
-      </section>
-      {imageUrls.length > 1 ? (
-        <span className="pointer-events-none absolute top-ds-12 right-ds-12 flex items-center gap-ds-2 rounded-ds-full bg-surface-inverse-weak px-ds-8 py-ds-2 text-body-sm-medium text-content-interactive-inverse">
-          <span>{currentIndex + 1}</span>
-          <span>/</span>
-          <span>{imageUrls.length}</span>
-        </span>
-      ) : null}
-    </div>
+    <ImageViewer imageUrls={imageUrls} label={label} fallbackSrc={fallbackSrc}>
+      <div {...props} className={cn("relative overflow-hidden", className)}>
+        <section
+          {...dragScroll}
+          ref={snap.ref}
+          aria-label={label}
+          onScroll={snap.onScroll}
+          className="scrollbar-hidden flex size-full snap-x snap-mandatory select-none overflow-x-auto overscroll-x-contain active:snap-none"
+        >
+          {imageUrls.map((url, index) => (
+            <ImageViewerTrigger
+              // biome-ignore lint/suspicious/noArrayIndexKey: 같은 URL도 별도 사진이며, 목록 변경 시 부모 key로 전체를 초기화한다.
+              key={`${index}:${url}`}
+              index={index}
+              className="size-full shrink-0 snap-start"
+            >
+              <ImageWithFallback
+                src={url}
+                fallbackSrc={fallbackSrc}
+                alt={`${label} ${index + 1}`}
+                width={width}
+                height={height}
+                draggable={false}
+                className="size-full object-cover"
+              />
+            </ImageViewerTrigger>
+          ))}
+        </section>
+        {imageUrls.length > 1 ? (
+          <span className="pointer-events-none absolute top-ds-12 right-ds-12 flex items-center gap-ds-2 rounded-ds-full bg-surface-inverse-weak px-ds-8 py-ds-2 text-body-sm-medium text-content-interactive-inverse">
+            <span>{snap.index + 1}</span>
+            <span>/</span>
+            <span>{imageUrls.length}</span>
+          </span>
+        ) : null}
+      </div>
+    </ImageViewer>
   );
 }
