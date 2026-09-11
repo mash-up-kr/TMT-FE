@@ -33,7 +33,7 @@ export function RecommendedGroupList({ groups, className }: RecommendedGroupList
     <section className={cn("flex flex-col gap-ds-12 bg-surface-primary p-ds-20", className)}>
       <h2 className="px-ds-4 text-heading-sm text-content-primary">혹시, 이런 그룹은 어떠세요?</h2>
       <ul
-        className="-mx-ds-20 flex gap-ds-12 overflow-x-auto px-ds-20"
+        className="-mx-ds-20 scrollbar-hidden flex gap-ds-12 overflow-x-auto px-ds-20"
         onScroll={() => setUt2Step(UT2_STEPS.HOME_CAROUSEL_COMPARE)}
       >
         {groups.map((group) => (
