@@ -1,11 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { groupReviews } from "@/api/gen/group/group.gen";
+import { getGroupReviewsQueryKey } from "@/shared/constants/queryKeys";
 
 const REVIEW_PAGE_SIZE = 3;
 
 export function useGroupReviewPages(groupId: string, isMember: boolean | undefined) {
   return useInfiniteQuery({
-    queryKey: ["group-reviews", groupId, isMember],
+    queryKey: [...getGroupReviewsQueryKey(groupId), isMember],
     queryFn: ({ pageParam }) =>
       groupReviews(groupId, {
         cursor: pageParam,

@@ -6,6 +6,7 @@ import { useGroupDetail } from "@/api/gen/group/group.gen";
 import dummyImage from "@/shared/assets/dummy-image.png";
 import { ROUTES } from "@/shared/constants/routes";
 import { useJoinGroup } from "@/shared/hooks/useJoinGroup";
+import { useShareReviewsToGroup } from "@/shared/hooks/useShareReviewsToGroup";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Checkbox, CheckboxGroup } from "@/shared/ui/Checkbox";
@@ -24,28 +25,50 @@ const SHARE_NOTICE =
 const ERROR_MESSAGE = "공유할 리뷰를 불러오지 못했어요. 잠시 후 다시 시도해 주세요";
 const EMPTY_MESSAGE = "공유할 리뷰가 없어요";
 
+type ReviewShareScreenProps = Readonly<{
+  groupId: string;
+  /**
+   * join: 가입하면서 공유할 리뷰를 고른다 (비멤버). 하단은 `건너뛰기` / `가입하기`.
+   * share: 이미 가입한 사람이 공유를 추가한다. 하단은 `공유하기` 하나.
+   */
+  mode: "join" | "share";
+}>;
+
 /**
- * 티켓이 있는 사람이 가입 팝업에서 `가입하기`를 누른 뒤, 가입과 함께 공유할 리뷰를 고르는
- * 화면이다. 공유는 가입 요청에 함께 실어야 하므로 가입도 이 화면이 맡는다.
+ * 그룹에 공유할 내 리뷰를 고르는 화면. 가입 흐름과 멤버의 공유 추가가 함께 쓴다.
  *
- * 여기까지 왔다는 것은 가입을 이미 택했다는 뜻이라 하단 두 버튼은 모두 가입한다. 고를 게
- * 공유뿐이므로 건너뛰기는 선택을 무시하고 가입만 하고, 가입하기는 고른 리뷰를 함께 싣는다.
- * 하나도 고르지 않은 채 가입하기를 눌러도 막지 않는다. 그때는 건너뛰기와 같다.
+ * **join** — 티켓이 있는 사람이 가입 팝업에서 `가입하기`를 누른 뒤 온다. 공유는 가입 요청에
+ * 함께 실어야 하므로 가입도 이 화면이 맡는다. 여기까지 왔다는 것은 가입을 이미 택했다는 뜻이라
+ * 하단 두 버튼은 모두 가입한다. 건너뛰기는 선택을 무시하고 가입만 하고, 가입하기는 고른 리뷰를
+ * 함께 싣는다. 하나도 고르지 않은 채 가입하기를 눌러도 막지 않는다.
  *
- * 가입을 무르는 길은 GNB의 X 하나다. 그것만 가입하지 않고 그룹 상세로 돌아간다.
+ * **share** — 멤버가 그룹 상세의 `+`에서 온다. 이미 공유된 리뷰는 체크된 채 잠가 실수로 풀리지
+ * 않게 하고, 새로 고른 것만 더해 보낸다. 고른 게 없으면 보낼 게 없으니 버튼을 막는다.
+ *
+ * 무르는 길은 GNB의 X 하나다. 아무것도 바꾸지 않고 그룹 상세로 돌아간다.
  */
-export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
+export function ReviewShareScreen({ groupId, mode }: ReviewShareScreenProps) {
   const router = useRouter();
   const detail = useGroupDetail(groupId);
   const pages = useReviewSharePages(groupId);
   const join = useJoinGroup(groupId);
+  const share = useShareReviewsToGroup(groupId);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const items = toReviewShareItems(pages.data?.pages.flatMap((page) => page.items));
+  // 이미 공유된 리뷰. 가입 전에는 공유된 게 있을 수 없어 mode를 따로 보지 않는다.
+  const lockedIds = new Set(items.filter((item) => item.isShared).map((item) => item.reviewId));
+  // 새로 고른 것만. 잠긴 리뷰는 합집합으로 항상 실리므로 여기서 세지 않는다.
+  const newIds = selectedIds.filter((id) => !lockedIds.has(id));
+  const isPending = mode === "join" ? join.isPending : share.isPending;
 
-  const leaveWithoutJoining = () => router.replace(ROUTES.GROUPS.DETAIL(groupId));
-  const joinWith = async (sourceReviewIds: readonly string[]) => {
-    if (!(await join.joinGroup({ sourceReviewIds }))) {
+  const leave = () => router.replace(ROUTES.GROUPS.DETAIL(groupId));
+  const submit = async (reviewIds: readonly string[]) => {
+    const didSubmit =
+      mode === "join"
+        ? await join.joinGroup({ sourceReviewIds: reviewIds })
+        : await share.shareReviews(reviewIds);
+    if (!didSubmit) {
       return;
     }
     router.replace(ROUTES.GROUPS.DETAIL(groupId));
@@ -56,11 +79,7 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
       <GNB
         title="리뷰 공유"
         right={
-          <IconButton
-            aria-label="리뷰 공유 닫기"
-            disabled={join.isPending}
-            onClick={leaveWithoutJoining}
-          >
+          <IconButton aria-label="리뷰 공유 닫기" disabled={isPending} onClick={leave}>
             <CancelIcon thick />
           </IconButton>
         }
@@ -81,7 +100,7 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
 
         <ReviewShareList
           items={items}
-          selectedIds={selectedIds}
+          selectedIds={[...new Set([...lockedIds, ...selectedIds])]}
           onSelectedIdsChange={setSelectedIds}
           isPending={pages.isPending}
           isError={pages.isError}
@@ -93,14 +112,26 @@ export function ReviewShareScreen({ groupId }: Readonly<{ groupId: string }>) {
       </main>
 
       <div className="content-container pt-ds-12 pb-ds-32">
-        <ButtonStack type="horizontal">
-          <Button variant="tertiary" disabled={join.isPending} onClick={() => void joinWith([])}>
-            건너뛰기
-          </Button>
-          <Button loading={join.isPending} onClick={() => void joinWith(selectedIds)}>
-            가입하기
-          </Button>
-        </ButtonStack>
+        {mode === "join" ? (
+          <ButtonStack type="horizontal">
+            <Button variant="tertiary" disabled={isPending} onClick={() => void submit([])}>
+              건너뛰기
+            </Button>
+            <Button loading={isPending} onClick={() => void submit(selectedIds)}>
+              가입하기
+            </Button>
+          </ButtonStack>
+        ) : (
+          <ButtonStack>
+            <Button
+              loading={isPending}
+              disabled={newIds.length === 0}
+              onClick={() => void submit(newIds)}
+            >
+              공유하기
+            </Button>
+          </ButtonStack>
+        )}
       </div>
     </>
   );
@@ -177,6 +208,7 @@ function ReviewShareList({
                   그대로 둔다. */}
               <Checkbox
                 value={item.reviewId}
+                disabled={item.isShared}
                 aria-label={item.placeName}
                 className="relative after:-inset-ds-8 after:absolute after:content-['']"
               />

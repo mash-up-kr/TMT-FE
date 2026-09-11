@@ -33,6 +33,7 @@ export const ROUTES = {
     DETAIL: (groupId: string) => `/groups/${groupId}`,
     EDIT: (groupId: string) => `/groups/${groupId}/edit`,
     JOIN: (groupId: string) => `/groups/${groupId}/join`,
+    SHARE: (groupId: string) => `/groups/${groupId}/share`,
   },
   PROFILE: {
     ME: "/profile/me",

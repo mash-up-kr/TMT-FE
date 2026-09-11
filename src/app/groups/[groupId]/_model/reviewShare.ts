@@ -5,4 +5,6 @@ export type ReviewShareItem = Readonly<{
   /** 리뷰의 첫 사진. 사진 없는 리뷰는 없다 (C4-1·R11) — 서버가 대체 이미지를 채우지 않는다. */
   thumbnailUrl: string | null;
   contentPreview: string;
+  /** 이미 이 그룹에 공유된 리뷰. 공유 편집 화면은 이걸 체크된 채 잠근다. */
+  isShared: boolean;
 }>;
