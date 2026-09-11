@@ -17,28 +17,36 @@ import type {
   GroupCreateStep,
   GroupCreateSubmission,
   GroupCreateTagSheet,
+  GroupReviewOptionsState,
   GroupTagOptionsState,
 } from "../_model/groupCreate";
 import { GroupBasicInfoStep } from "./GroupBasicInfoStep";
 import { GroupDescriptionStep } from "./GroupDescriptionStep";
 import { GroupImageStep } from "./GroupImageStep";
+import { GroupReviewSelectionStep } from "./GroupReviewSelectionStep";
 import { GroupTagSelectionStep } from "./GroupTagSelectionStep";
 
 const GROUP_CREATE_STEP_COUNT = GROUP_CREATE_STEPS.length;
 
 type GroupCreateScreenProps = {
   tagOptionsState: GroupTagOptionsState;
+  reviewOptionsState: GroupReviewOptionsState;
   isCreating: boolean;
   onCreateAction: (submission: GroupCreateSubmission) => void;
   onRetryTagOptionsAction: () => void;
+  onLoadMoreReviewOptionsAction: () => void;
+  onRetryReviewOptionsAction: () => void;
   initialState?: GroupCreateInitialState;
 };
 
 export function GroupCreateScreen({
   tagOptionsState,
+  reviewOptionsState,
   isCreating,
   onCreateAction,
   onRetryTagOptionsAction,
+  onLoadMoreReviewOptionsAction,
+  onRetryReviewOptionsAction,
   initialState,
 }: GroupCreateScreenProps) {
   const router = useRouter();
@@ -115,17 +123,20 @@ export function GroupCreateScreen({
           />
         </div>
 
-        <main className="content-container min-h-0 flex-1 overflow-y-auto pt-ds-32 pb-ds-20">
+        <main className="content-container flex min-h-0 flex-1 flex-col overflow-y-auto pt-ds-32 pb-ds-20">
           <GroupCreateStepContent
             step={step}
             draft={draft}
             tagOptionsState={tagOptionsState}
+            reviewOptionsState={reviewOptionsState}
             initialOpenTagSheet={initialState?.openTagSheet}
             groupImagePreviewUrl={groupImage?.previewUrl}
             onDraftChangeAction={updateDraft}
             onGroupImageSelectAction={selectGroupImage}
             onGroupImageRemoveAction={removeGroupImage}
             onRetryTagOptionsAction={onRetryTagOptionsAction}
+            onLoadMoreReviewOptionsAction={onLoadMoreReviewOptionsAction}
+            onRetryReviewOptionsAction={onRetryReviewOptionsAction}
           />
         </main>
 
@@ -149,24 +160,30 @@ type GroupCreateStepContentProps = {
   step: GroupCreateStep;
   draft: GroupCreateDraft;
   tagOptionsState: GroupTagOptionsState;
+  reviewOptionsState: GroupReviewOptionsState;
   initialOpenTagSheet?: GroupCreateTagSheet;
   groupImagePreviewUrl?: string;
   onDraftChangeAction: (patch: Partial<GroupCreateDraft>) => void;
   onGroupImageSelectAction: (file: File) => void;
   onGroupImageRemoveAction: () => void;
   onRetryTagOptionsAction: () => void;
+  onLoadMoreReviewOptionsAction: () => void;
+  onRetryReviewOptionsAction: () => void;
 };
 
 function GroupCreateStepContent({
   step,
   draft,
   tagOptionsState,
+  reviewOptionsState,
   initialOpenTagSheet,
   groupImagePreviewUrl,
   onDraftChangeAction,
   onGroupImageSelectAction,
   onGroupImageRemoveAction,
   onRetryTagOptionsAction,
+  onLoadMoreReviewOptionsAction,
+  onRetryReviewOptionsAction,
 }: GroupCreateStepContentProps) {
   if (step === "basicInfo") {
     return (
@@ -204,12 +221,24 @@ function GroupCreateStepContent({
     );
   }
 
+  if (step === "description") {
+    return (
+      <GroupDescriptionStep
+        detailedDescription={draft.detailedDescription ?? ""}
+        onDetailedDescriptionChangeAction={(value) =>
+          onDraftChangeAction({ detailedDescription: value })
+        }
+      />
+    );
+  }
+
   return (
-    <GroupDescriptionStep
-      detailedDescription={draft.detailedDescription ?? ""}
-      onDetailedDescriptionChangeAction={(value) =>
-        onDraftChangeAction({ detailedDescription: value })
-      }
+    <GroupReviewSelectionStep
+      reviewOptionsState={reviewOptionsState}
+      selectedReviewIds={draft.reviewIds}
+      onSelectedReviewIdsChangeAction={(reviewIds) => onDraftChangeAction({ reviewIds })}
+      onLoadMoreReviewOptionsAction={onLoadMoreReviewOptionsAction}
+      onRetryReviewOptionsAction={onRetryReviewOptionsAction}
     />
   );
 }

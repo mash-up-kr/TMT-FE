@@ -1,6 +1,7 @@
 import type { GroupDetailResponse } from "@/api/gen/_model/groupDetailResponse.gen";
 import type { GroupRequest } from "@/api/gen/_model/groupRequest.gen";
-import type { CreatedGroupData, GroupCreateDraft } from "../_model/groupCreate";
+import type { MyReviewGridItem } from "@/api/gen/_model/myReviewGridItem.gen";
+import type { CreatedGroupData, GroupCreateDraft, GroupReviewOption } from "../_model/groupCreate";
 
 export function toGroupCreateRequest(draft: GroupCreateDraft): GroupRequest {
   return {
@@ -15,4 +16,20 @@ export function toGroupCreateRequest(draft: GroupCreateDraft): GroupRequest {
 
 export function toCreatedGroupData(response: GroupDetailResponse): CreatedGroupData {
   return { id: response.groupId };
+}
+
+function hasText(value: string | null | undefined): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+/** 내 리뷰 목록 응답에는 본문 미리보기가 없다 (TMT-428). 받기 전까지 본문 영역을 비운다. */
+export function toGroupReviewOptions(
+  items: readonly MyReviewGridItem[] | undefined,
+): GroupReviewOption[] {
+  return (items ?? []).map((item) => ({
+    reviewId: item.reviewId,
+    placeName: item.place.name,
+    thumbnailUrl: hasText(item.thumbnailUrl) ? item.thumbnailUrl : null,
+    contentPreview: null,
+  }));
 }

@@ -7,6 +7,8 @@ import type {
   GroupCreateDraft,
   GroupCreateStep,
   GroupCreateTagSheet,
+  GroupReviewOption,
+  GroupReviewOptionsStatus,
   GroupTagOptionsStatus,
 } from "@/app/groups/new/_model/groupCreate";
 import { toast } from "@/shared/ui/Toast";
@@ -42,6 +44,45 @@ const FILLED_DRAFT: Partial<GroupCreateDraft> = {
   detailedDescription: "맛있는 초밥을 찾아다니는 사람들과 새로운 가게를 함께 발견해요.",
 };
 
+const REVIEW_OPTIONS: GroupReviewOption[] = [
+  {
+    reviewId: "review_1",
+    placeName: "한판승부",
+    thumbnailUrl: null,
+    contentPreview:
+      "처음엔 미나리가 특이해서 왔는데, 이제는 고기보다 미나리 생각나서 오는 집. 같이 간 친구들 다 만족해서 단골만 셋 생겼어요. 고기 구우면서 수다 떨기 딱 좋은 분위기입니다.",
+  },
+  {
+    reviewId: "review_2",
+    placeName: "마이니치라멘",
+    thumbnailUrl: null,
+    contentPreview: "진한 돈코츠 국물에 차슈가 두툼해요. 점심엔 웨이팅이 있으니 조금 일찍 가세요.",
+  },
+  {
+    reviewId: "review_3",
+    placeName: "본문 없이 사진만 올린 리뷰",
+    thumbnailUrl: null,
+    contentPreview: null,
+  },
+  {
+    reviewId: "review_4",
+    placeName: "이름이 아주 길어서 한 줄에 다 들어가지 않는 매장 선릉역 본점",
+    thumbnailUrl: null,
+    contentPreview: "매장명이 길면 한 줄로 자른다.",
+  },
+  {
+    reviewId: "review_5",
+    placeName: "솥내음강남역삼 선릉역점",
+    thumbnailUrl: null,
+    contentPreview: "솥밥이 바로 지어져 나와요. 누룽지까지 알차게 먹고 왔습니다.",
+  },
+];
+
+const REVIEWS_DRAFT: Partial<GroupCreateDraft> = {
+  ...FILLED_DRAFT,
+  reviewIds: ["review_1"],
+};
+
 const MAX_DESCRIPTION_DRAFT: Partial<GroupCreateDraft> = {
   ...FILLED_DRAFT,
   detailedDescription: "가".repeat(200),
@@ -54,6 +95,9 @@ type Scenario = {
   draft?: Partial<GroupCreateDraft>;
   tagOptionsStatus?: GroupTagOptionsStatus;
   openTagSheet?: GroupCreateTagSheet;
+  reviewOptions?: GroupReviewOption[];
+  reviewOptionsStatus?: GroupReviewOptionsStatus;
+  hasNextReviewPage?: boolean;
   isCreating?: boolean;
   createResult?: "success" | "error";
 };
@@ -86,25 +130,54 @@ const SCENARIOS: Scenario[] = [
     step: "description",
     draft: MAX_DESCRIPTION_DRAFT,
   },
+  { key: "reviews", label: "5 · 리뷰 선택", step: "reviews", draft: REVIEWS_DRAFT },
+  {
+    key: "reviews-more",
+    label: "5 · 리뷰 더보기",
+    step: "reviews",
+    draft: REVIEWS_DRAFT,
+    hasNextReviewPage: true,
+  },
+  {
+    key: "reviews-empty",
+    label: "5 · 리뷰 없음",
+    step: "reviews",
+    draft: FILLED_DRAFT,
+    reviewOptions: [],
+  },
+  {
+    key: "reviews-pending",
+    label: "5 · 리뷰 로딩",
+    step: "reviews",
+    draft: FILLED_DRAFT,
+    reviewOptionsStatus: "pending",
+  },
+  {
+    key: "reviews-error",
+    label: "5 · 리뷰 실패",
+    step: "reviews",
+    draft: FILLED_DRAFT,
+    reviewOptionsStatus: "error",
+  },
   {
     key: "creating",
-    label: "4 · 생성 중",
-    step: "description",
-    draft: FILLED_DRAFT,
+    label: "5 · 생성 중",
+    step: "reviews",
+    draft: REVIEWS_DRAFT,
     isCreating: true,
   },
   {
     key: "create-success",
-    label: "4 · 생성 성공",
-    step: "description",
-    draft: FILLED_DRAFT,
+    label: "5 · 생성 성공",
+    step: "reviews",
+    draft: REVIEWS_DRAFT,
     createResult: "success",
   },
   {
     key: "create-error",
-    label: "4 · 생성 실패",
-    step: "description",
-    draft: FILLED_DRAFT,
+    label: "5 · 생성 실패",
+    step: "reviews",
+    draft: REVIEWS_DRAFT,
     createResult: "error",
   },
 ];
@@ -154,6 +227,12 @@ export default function GroupCreatePreviewPage() {
           options: TAG_OPTIONS,
           status: scenario.tagOptionsStatus ?? "success",
         }}
+        reviewOptionsState={{
+          options: scenario.reviewOptions ?? REVIEW_OPTIONS,
+          status: scenario.reviewOptionsStatus ?? "success",
+          hasNextPage: scenario.hasNextReviewPage ?? false,
+          isFetchingNextPage: false,
+        }}
         isCreating={scenario.isCreating ?? false}
         initialState={{
           step: scenario.step,
@@ -161,6 +240,8 @@ export default function GroupCreatePreviewPage() {
           openTagSheet: scenario.openTagSheet,
         }}
         onRetryTagOptionsAction={() => toast.success("태그를 다시 불러왔어요.")}
+        onLoadMoreReviewOptionsAction={() => toast.success("리뷰를 더 불러왔어요.")}
+        onRetryReviewOptionsAction={() => toast.success("리뷰를 다시 불러왔어요.")}
         onCreateAction={() => showCreateResult(scenario.createResult ?? "success")}
       />
 
