@@ -6,7 +6,7 @@ import type { PreciseCoordinates } from "@/shared/hooks/useCurrentPosition";
 import { loadNaverMaps } from "@/shared/utils/naverMaps";
 import type { MapBounds } from "../_hooks/useFeedPins";
 import type { FeedPin } from "../_utils/feedMapper";
-import { FeedMapPinMarker } from "./FeedMapPinMarker";
+import { FeedMapPinMarker, MAP_PIN_ATTRIBUTE } from "./FeedMapPinMarker";
 import { FeedMyLocationPin, MY_LOCATION_MARKER } from "./FeedMyLocationPin";
 
 /** 권한 거부 시 보내는 기준 좌표 — 강남역 (명세 E3). */
@@ -38,6 +38,8 @@ type FeedMapProps = {
   selectedPlaceId: string | null;
   onBoundsChange: (bounds: MapBounds) => void;
   onPinClick: (placeId: string) => void;
+  /** 핀이 아닌 빈 지도를 눌렀을 때. 드래그와 핀 클릭으로는 오지 않는다. */
+  onMapClick: () => void;
 };
 
 /** 마커를 시트에 가리지 않는 높이로 옮긴다. */
@@ -71,6 +73,7 @@ export function FeedMap({
   selectedPlaceId,
   onBoundsChange,
   onPinClick,
+  onMapClick,
 }: FeedMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
@@ -82,6 +85,8 @@ export function FeedMap({
   // 최신 콜백을 ref로 들고 있어야 지도를 다시 만들지 않는다.
   const boundsChangeRef = useRef(onBoundsChange);
   boundsChangeRef.current = onBoundsChange;
+  const mapClickRef = useRef(onMapClick);
+  mapClickRef.current = onMapClick;
 
   // 지도는 마운트당 한 번만 만든다. 의존성이 있으면 렌더마다 재생성돼 깜빡인다.
   useEffect(() => {
@@ -125,6 +130,17 @@ export function FeedMap({
         };
 
         maps.Event.addListener(instance, "idle", emitBounds);
+        maps.Event.addListener(instance, "click", (event: naver.maps.PointerEvent) => {
+          // 핀을 누르면 그 클릭이 지도까지 올라와 지도 클릭도 함께 일어난다. 그대로 두면 핀이
+          // 고른 매장을 곧바로 지워 시트가 닫힌다.
+          const target = event.pointerEvent.target;
+
+          if (target instanceof Element && target.closest(`[${MAP_PIN_ATTRIBUTE}]`)) {
+            return;
+          }
+
+          mapClickRef.current();
+        });
         emitBounds();
         setMap(instance);
       })

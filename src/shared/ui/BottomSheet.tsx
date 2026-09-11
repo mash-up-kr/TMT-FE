@@ -17,6 +17,13 @@ type BottomSheetBaseProps = Readonly<{
   onOpenChange: (open: boolean) => void;
   /** 시트 높이. `content`는 내용만큼, `fixed`는 시안 높이로 고정한다. */
   height?: SheetHeight;
+  /**
+   * 시트 뒤를 계속 쓸 수 있는지. `false`면 딤과 포인터 차단을 걷어내 뒤 화면이 살아 있고,
+   * 바깥 누름으로도 닫지 않는다 — 지도처럼 시트를 띄운 채 뒤를 조작하는 화면용이다.
+   * 이때 닫는 시점은 호출부가 정한다.
+   * @default true
+   */
+  modal?: boolean;
   /** 헤더 좌측 슬롯. */
   left?: ReactNode;
   /** 헤더 우측 슬롯. */
@@ -67,6 +74,7 @@ export function BottomSheet({
   open,
   onOpenChange,
   height = "content",
+  modal = true,
   label,
   title,
   left,
@@ -76,23 +84,31 @@ export function BottomSheet({
   className,
 }: BottomSheetProps) {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root
+      open={open}
+      onOpenChange={onOpenChange}
+      modal={modal}
+      disablePointerDismissal={!modal}
+    >
       <Drawer.VirtualKeyboardProvider>
         <Drawer.Portal>
-          <Drawer.Backdrop
-            className={cn(
-              "fixed inset-0 z-overlay bg-surface-backdrop",
-              "transition-opacity duration-300 ease-out",
-              "data-starting-style:opacity-0 data-ending-style:opacity-0",
-              "data-swiping:duration-0",
-              "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
-            )}
-          />
-          <Drawer.Viewport className="sheet-viewport">
+          {modal ? (
+            <Drawer.Backdrop
+              className={cn(
+                "fixed inset-0 z-overlay bg-surface-backdrop",
+                "transition-opacity duration-300 ease-out",
+                "data-starting-style:opacity-0 data-ending-style:opacity-0",
+                "data-swiping:duration-0",
+                "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*0.4s)]",
+              )}
+            />
+          ) : null}
+          <Drawer.Viewport className={cn("sheet-viewport", !modal && "pointer-events-none")}>
             <Drawer.Popup
               aria-label={label ?? title}
               className={cn(
                 "flex w-full flex-col overflow-hidden rounded-t-ds-xl bg-surface-primary shadow-modal",
+                !modal && "pointer-events-auto",
                 heightStyles[height],
                 "-mb-(--layout-sheet-overscroll) pb-(--layout-sheet-overscroll)",
                 "transition-transform duration-300 ease-out",

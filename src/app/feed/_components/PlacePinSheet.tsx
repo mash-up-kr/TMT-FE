@@ -29,6 +29,7 @@ export function PlacePinSheet({ placeId, onClose }: PlacePinSheetProps) {
   return (
     <BottomSheet
       label="가게 요약"
+      modal={false}
       open={placeId !== null}
       onOpenChange={(next) => {
         if (!next) {
