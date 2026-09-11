@@ -9,9 +9,10 @@ import {
   ReviewCard,
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
+import { newReviewForGroupJoinPath } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
-import { useReviewEntryPath } from "@/shared/hooks/useReviewEntryPath";
+import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
@@ -62,7 +63,7 @@ export function GroupDetailView({
   const reviews = favorite.reviews ?? [];
   const isNonMember = !group.isMember;
   const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
-  const reviewEntryPath = useReviewEntryPath();
+  const reviewReturnTo = useReviewReturnTo();
   const shouldPromptFirstReview =
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
   const firstReviewPrompt = useFirstReviewPrompt(shouldPromptFirstReview);
@@ -221,7 +222,7 @@ export function GroupDetailView({
           onOpenChangeAction={firstReviewPrompt.onOpenChange}
           onWriteReviewAction={() => {
             firstReviewPrompt.onOpenChange(false);
-            router.push(reviewEntryPath);
+            router.push(newReviewForGroupJoinPath(group.id, reviewReturnTo));
           }}
         />
       ) : null}
