@@ -12,7 +12,7 @@ type MyGroupListProps = {
 export function MyGroupList({ groups }: MyGroupListProps) {
   return (
     <div className="bg-surface-primary px-ds-20 py-ds-12">
-      <ul className="-mx-ds-20 flex gap-ds-4 overflow-x-auto px-ds-20">
+      <ul className="-mx-ds-20 scrollbar-hidden flex gap-ds-4 overflow-x-auto px-ds-20">
         {groups.map((group) => (
           <li key={group.id} className="flex w-19 shrink-0 flex-col items-center gap-ds-8">
             <Link
