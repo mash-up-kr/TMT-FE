@@ -13,6 +13,11 @@ const PREVIEWS = [
     description: "기본·설명·액션·강조 변형과 배치 영역",
   },
   {
+    href: "/preview/image-viewer",
+    title: "사진 뷰어",
+    description: "캐러셀·사진 스트립·시트에서 여는 전체화면 뷰어와 fallback",
+  },
+  {
     href: "/preview/pull-to-refresh",
     title: "당겨서 새로고침",
     description: "당김 저항, 임계값, 새로고침 대기 인디케이터",

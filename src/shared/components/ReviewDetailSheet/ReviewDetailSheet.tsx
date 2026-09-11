@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import imageFallback from "@/shared/assets/dummy-image.png";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
 import { useDragScroll } from "@/shared/hooks/useDragScroll";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
@@ -8,6 +8,8 @@ import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { MapPinIcon, StarIcon } from "@/shared/ui/Icons";
+import { ImageViewer, ImageViewerTrigger } from "@/shared/ui/ImageViewer";
+import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { cn } from "@/shared/utils/cn";
 
 /** 사진 스트립 치수. 시안 실측값이 ds 스케일에 없어 값으로 둔다.
@@ -178,54 +180,62 @@ type PhotoStripProps = {
 
 function PhotoStrip({ photos }: PhotoStripProps) {
   const dragScroll = useDragScroll<HTMLUListElement>();
+  const photoUrls = photos.map((photo) => photo.url);
 
   if (photos.length === 1) {
     return (
-      <div
-        className={cn(
-          "w-full shrink-0 overflow-hidden rounded-ds-lg bg-surface-secondary",
-          PHOTO_HEIGHT,
-        )}
-      >
-        <Image
-          src={photos[0].url}
-          alt="리뷰 사진"
-          width={PHOTO_WIDTH_SINGLE_PX}
-          height={PHOTO_HEIGHT_PX}
-          className="size-full object-cover"
-          loading="lazy"
-        />
-      </div>
+      <ImageViewer imageUrls={photoUrls} label="리뷰 사진" fallbackSrc={imageFallback}>
+        <ImageViewerTrigger
+          index={0}
+          className={cn(
+            "w-full shrink-0 overflow-hidden rounded-ds-lg bg-surface-secondary",
+            PHOTO_HEIGHT,
+          )}
+        >
+          <ImageWithFallback
+            src={photos[0].url}
+            fallbackSrc={imageFallback}
+            alt="리뷰 사진"
+            width={PHOTO_WIDTH_SINGLE_PX}
+            height={PHOTO_HEIGHT_PX}
+            className="size-full object-cover"
+          />
+        </ImageViewerTrigger>
+      </ImageViewer>
     );
   }
 
   return (
-    <ul
-      {...dragScroll}
-      className="scrollbar-hidden -mr-ds-20 flex select-none gap-ds-4 overflow-x-auto rounded-l-ds-lg"
-    >
-      {photos.map((photo, index) => (
-        <li
-          key={photo.id}
-          className={cn(
-            "shrink-0 overflow-hidden bg-surface-secondary",
-            PHOTO_HEIGHT,
-            photos.length === 2 ? PHOTO_WIDTH_PAIR : PHOTO_WIDTH_TRIPLE,
-            index === photos.length - 1 && "rounded-r-ds-lg",
-          )}
-        >
-          <Image
-            src={photo.url}
-            alt={`리뷰 사진 ${index + 1}`}
-            width={photos.length === 2 ? PHOTO_WIDTH_PAIR_PX : PHOTO_WIDTH_TRIPLE_PX}
-            height={PHOTO_HEIGHT_PX}
-            draggable={false}
-            className="size-full object-cover"
-            loading="lazy"
-          />
-        </li>
-      ))}
-    </ul>
+    <ImageViewer imageUrls={photoUrls} label="리뷰 사진" fallbackSrc={imageFallback}>
+      <ul
+        {...dragScroll}
+        className="scrollbar-hidden -mr-ds-20 flex select-none gap-ds-4 overflow-x-auto rounded-l-ds-lg"
+      >
+        {photos.map((photo, index) => (
+          <li
+            key={photo.id}
+            className={cn(
+              "shrink-0 overflow-hidden bg-surface-secondary",
+              PHOTO_HEIGHT,
+              photos.length === 2 ? PHOTO_WIDTH_PAIR : PHOTO_WIDTH_TRIPLE,
+              index === photos.length - 1 && "rounded-r-ds-lg",
+            )}
+          >
+            <ImageViewerTrigger index={index} className="size-full">
+              <ImageWithFallback
+                src={photo.url}
+                fallbackSrc={imageFallback}
+                alt={`리뷰 사진 ${index + 1}`}
+                width={photos.length === 2 ? PHOTO_WIDTH_PAIR_PX : PHOTO_WIDTH_TRIPLE_PX}
+                height={PHOTO_HEIGHT_PX}
+                draggable={false}
+                className="size-full object-cover"
+              />
+            </ImageViewerTrigger>
+          </li>
+        ))}
+      </ul>
+    </ImageViewer>
   );
 }
 
