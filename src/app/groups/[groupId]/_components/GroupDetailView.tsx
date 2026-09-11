@@ -18,7 +18,7 @@ import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { ChevronLeftIcon, LeaveGroupIcon, SettingsIcon } from "@/shared/ui/Icons";
+import { ChevronLeftIcon, LeaveGroupIcon, PlusIcon, SettingsIcon } from "@/shared/ui/Icons";
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
@@ -36,6 +36,7 @@ import type {
 import { GroupFirstReviewSheet } from "./GroupFirstReviewSheet";
 import { GroupLeaveModal } from "./GroupLeaveModal";
 import { GroupProfile } from "./GroupProfile";
+import { GroupReviewEntrySheet } from "./GroupReviewEntrySheet";
 import { GroupTicketShortageSheet } from "./GroupTicketShortageSheet";
 import { JoinGroupTicketSheet } from "./JoinGroupTicketSheet";
 
@@ -57,6 +58,7 @@ export function GroupDetailView({
   const router = useRouter();
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [isEntrySheetOpen, setIsEntrySheetOpen] = useState(false);
   const favorite = useReviewFavorites(
     reviewList.status === "ready" ? reviewList.reviews : undefined,
   );
@@ -68,8 +70,9 @@ export function GroupDetailView({
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
   const firstReviewPrompt = useFirstReviewPrompt(shouldPromptFirstReview);
   const joinPreviewData = joinPreview.status === "ready" ? joinPreview : null;
+  // 비멤버는 가입 팝업이 `가입하기`로 뜰 때, 멤버는 `+`를 누를 때 공유할 리뷰가 있는지 본다.
   const shareEntry = useGroupShareEntry(group.id, {
-    enabled: isNonMember && joinPreviewData?.isJoinable === true,
+    enabled: (isNonMember && joinPreviewData?.isJoinable === true) || group.isMember,
   });
 
   // ⚠️ UT2 임시 계측. 상세 진입은 2-1, 티켓이 없는 채로 가입 시트가 열리면 2-3이다.
@@ -129,8 +132,18 @@ export function GroupDetailView({
     }
   };
 
+  const writeNewReview = () => router.push(newReviewForGroupJoinPath(group.id, reviewReturnTo));
+  // 공유할 내 리뷰가 없으면 고를 게 없다. 시트 없이 바로 새로 쓰기로 보낸다.
+  const openReviewEntry = () => {
+    if (shareEntry.hasReviewsToShare) {
+      setIsEntrySheetOpen(true);
+      return;
+    }
+    writeNewReview();
+  };
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-surface-secondary">
+    <div className="relative flex min-h-0 flex-1 flex-col bg-surface-secondary">
       <GNB
         title="그룹"
         className="shrink-0"
@@ -222,7 +235,36 @@ export function GroupDetailView({
           onOpenChangeAction={firstReviewPrompt.onOpenChange}
           onWriteReviewAction={() => {
             firstReviewPrompt.onOpenChange(false);
-            router.push(newReviewForGroupJoinPath(group.id, reviewReturnTo));
+            writeNewReview();
+          }}
+        />
+      ) : null}
+
+      {/* 피드의 전환 FAB과 같은 자리·모양이다. 시트는 body 끝에 포털되어 같은 z에서도 위에 그려진다.
+          공유할 리뷰가 있는지 아직 모르는 동안은 눌러도 어디로 갈지 정할 수 없어 잠시 막는다. */}
+      {group.isMember ? (
+        <button
+          type="button"
+          aria-label="그룹에 리뷰 남기기"
+          disabled={shareEntry.isChecking}
+          onClick={openReviewEntry}
+          className="absolute right-ds-20 bottom-ds-20 z-overlay rounded-ds-md bg-surface-interactive-secondary p-ds-8 text-icon-interactive-inverse"
+        >
+          <PlusIcon size={24} />
+        </button>
+      ) : null}
+
+      {group.isMember ? (
+        <GroupReviewEntrySheet
+          open={isEntrySheetOpen}
+          onOpenChangeAction={setIsEntrySheetOpen}
+          onShareAction={() => {
+            setIsEntrySheetOpen(false);
+            router.push(ROUTES.GROUPS.SHARE(group.id));
+          }}
+          onWriteNewAction={() => {
+            setIsEntrySheetOpen(false);
+            writeNewReview();
           }}
         />
       ) : null}

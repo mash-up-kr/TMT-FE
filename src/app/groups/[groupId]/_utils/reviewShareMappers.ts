@@ -19,5 +19,6 @@ export function toReviewShareItems(
     placeName: item.placeName,
     thumbnailUrl: hasText(item.thumbnailUrl) ? item.thumbnailUrl : null,
     contentPreview: item.contentPreview,
+    isShared: item.isShared,
   }));
 }
