@@ -15,6 +15,10 @@ type ProfileTabsProps = {
   counts?: ProfileTabCounts;
 };
 
+/**
+ * 탭은 세그먼트가 달라 이동할 때마다 라우팅된다. `replace`로 덮어쓰지 않으면 탭을 누른 횟수만큼
+ * 히스토리가 쌓여, 뒤로 가기가 프로필에 들어오기 전 화면이 아니라 직전에 보던 탭으로 간다.
+ */
 export function ProfileTabs({ activeTab, basePath, counts }: ProfileTabsProps) {
   return (
     <nav aria-label="프로필 탭" className="bg-surface-primary px-ds-20 py-ds-12">
@@ -26,6 +30,7 @@ export function ProfileTabs({ activeTab, basePath, counts }: ProfileTabsProps) {
             <li key={tab}>
               <Link
                 href={`${basePath}/${tab}`}
+                replace
                 aria-current={isActive ? "page" : undefined}
                 className={chipStyles({ selected: isActive })}
               >
