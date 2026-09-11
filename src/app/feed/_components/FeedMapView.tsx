@@ -41,6 +41,7 @@ export function FeedMapView({
         selectedPlaceId={selectedPlaceId}
         onBoundsChange={setBounds}
         onPinClick={setSelectedPlaceId}
+        onMapClick={() => setSelectedPlaceId(null)}
       />
       <div className="absolute top-ds-12 right-0 left-0 z-overlay flex flex-col gap-ds-12 px-ds-20">
         {searchBar}

@@ -9,6 +9,12 @@ import { FeedMapPin, MAP_PIN_MARKER } from "./FeedMapPin";
 const SELECTED_Z_INDEX = 100;
 const DEFAULT_Z_INDEX = 1;
 
+/**
+ * 마커에서 시작한 클릭임을 표시한다. 마커 클릭은 DOM을 타고 지도까지 올라가 지도 클릭도 함께
+ * 일으키므로, 지도 쪽에서 이 표시를 보고 빈 지도를 누른 경우와 가른다.
+ */
+export const MAP_PIN_ATTRIBUTE = "data-feed-map-pin";
+
 type FeedMapPinMarkerProps = {
   map: naver.maps.Map;
   pin: FeedPin;
@@ -23,7 +29,11 @@ type FeedMapPinMarkerProps = {
  */
 export function FeedMapPinMarker({ map, pin, selected, onSelect }: FeedMapPinMarkerProps) {
   // 마커 내용을 우리가 소유하는 노드로 넘기고, 그 안을 React가 계속 그린다.
-  const [element] = useState(() => document.createElement("div"));
+  const [element] = useState(() => {
+    const node = document.createElement("div");
+    node.setAttribute(MAP_PIN_ATTRIBUTE, "");
+    return node;
+  });
   const markerRef = useRef<naver.maps.Marker | null>(null);
   // 마커를 다시 만들지 않고도 최신 값을 읽으려면 ref로 들고 있어야 한다.
   const pinRef = useRef(pin);
