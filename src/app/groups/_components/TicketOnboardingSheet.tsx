@@ -5,10 +5,14 @@ import { useState } from "react";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
+import { cn } from "@/shared/utils/cn";
 import {
   TICKET_ONBOARDING_STEP_COUNT,
   TICKET_ONBOARDING_STEPS,
 } from "../_constants/ticketOnboarding";
+
+/** 콘텐츠와 인디케이터가 한 몸으로 움직여야 자연스러우므로 같은 시간·곡선을 쓴다. */
+const STEP_TRANSITION = "duration-250 ease-in-out motion-reduce:transition-none";
 
 type TicketOnboardingSheetProps = {
   open: boolean;
@@ -50,22 +54,39 @@ export function TicketOnboardingSheet({ open, onOpenChangeAction }: TicketOnboar
       }
     >
       <div className="flex flex-col items-center gap-ds-24 pb-ds-12">
-        <div className="flex w-full flex-col items-center gap-ds-12">
-          <Image
-            src={step.image}
-            alt=""
-            width={320}
-            height={179}
-            sizes="320px"
-            priority={stepIndex === 0}
-            draggable={false}
-            className="h-auto w-full max-w-80"
-          />
-          <div className="flex w-full flex-col gap-ds-8 text-center">
-            <h2 className="whitespace-pre-line text-content-primary text-heading-lg">
-              {step.title}
-            </h2>
-            <p className="text-body-lg-regular text-content-primary">{step.description}</p>
+        {/* 본문 좌우 여백까지 넓혀야 넘어가는 장이 여백 경계에서 잘려 보이지 않는다. */}
+        <div className="-mx-ds-20 self-stretch overflow-hidden">
+          <div
+            className={cn("flex transition-transform", STEP_TRANSITION)}
+            style={{ transform: `translateX(-${stepIndex * 100}%)` }}
+          >
+            {TICKET_ONBOARDING_STEPS.map((item, index) => (
+              <div
+                key={item.id}
+                // 화면 밖 장은 스크린리더와 포커스에서 뺀다.
+                inert={index !== stepIndex}
+                className="flex w-full shrink-0 flex-col items-center gap-ds-12 px-ds-20"
+              >
+                <Image
+                  src={item.image}
+                  alt=""
+                  width={320}
+                  height={179}
+                  sizes="320px"
+                  // 넘기는 순간 비어 보이지 않게 뒤 장도 미리 받는다.
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : "eager"}
+                  draggable={false}
+                  className="h-auto w-full max-w-80"
+                />
+                <div className="flex w-full flex-col gap-ds-8 text-center">
+                  <h2 className="whitespace-pre-line text-content-primary text-heading-lg">
+                    {item.title}
+                  </h2>
+                  <p className="text-body-lg-regular text-content-primary">{item.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         <StepIndicator current={stepIndex} total={TICKET_ONBOARDING_STEP_COUNT} />
@@ -79,61 +100,23 @@ type StepIndicatorProps = {
   total: number;
 };
 
-// 시안 점 6px, 간격 6px, 현재 단계 16px. 위치를 계산해 절대 배치하므로 px 값으로 둔다.
-const DOT_SIZE = 6;
-const DOT_PITCH = DOT_SIZE + 6;
-const ACTIVE_WIDTH = 16;
-/** 앞쪽 끝이 먼저 출발하고 뒤쪽 끝이 이만큼 늦게 따라가며 늘어났다 줄어든다. */
-const TRAIL_DELAY = "120ms";
-
-/**
- * 현재 단계 알약이 다음 점까지 늘어난 뒤 뒤쪽이 따라붙는 인디케이터.
- *
- * 회색 점은 뒤에 깔고 알약을 위에 겹친다. 알약의 좌우 끝을 따로 옮겨야 늘어나는 모양이 나오므로
- * 폭이 아니라 `left`·`right`를 전환하고, 진행 방향에 따라 어느 끝을 늦출지 정한다.
- */
 function StepIndicator({ current, total }: StepIndicatorProps) {
-  const [previous, setPrevious] = useState(current);
-  const [forward, setForward] = useState(true);
-
-  if (current !== previous) {
-    setPrevious(current);
-    setForward(current > previous);
-  }
-
-  const width = (total - 1) * DOT_PITCH + ACTIVE_WIDTH;
-  const activeLeft = current * DOT_PITCH;
-
   return (
-    <div
-      role="img"
-      aria-label={`${total}단계 중 ${current + 1}단계`}
-      className="relative h-1.5"
-      style={{ width }}
-    >
+    // 시안 점 6px, 간격 6px. ds 스케일에 6이 없어 기본 스케일을 쓴다.
+    <div role="img" aria-label={`${total}단계 중 ${current + 1}단계`} className="flex gap-1.5">
       {Array.from({ length: total }, (_, index) => (
         <span
           // biome-ignore lint/suspicious/noArrayIndexKey: 점은 순서 자체가 정체성이다.
           key={index}
-          className="absolute top-0 size-1.5 rounded-ds-full bg-surface-tertiary transition-[left] duration-300 ease-out motion-reduce:transition-none"
-          style={{ left: index * DOT_PITCH + dotOffset(index, current) }}
+          className={cn(
+            "h-1.5 rounded-ds-full transition-[width,background-color]",
+            STEP_TRANSITION,
+            index === current
+              ? "w-ds-16 bg-surface-interactive-primary"
+              : "w-1.5 bg-surface-tertiary",
+          )}
         />
       ))}
-      <span
-        className="absolute inset-y-0 rounded-ds-full bg-surface-interactive-primary transition-[left,right] duration-200 ease-in-out motion-reduce:transition-none"
-        style={{
-          left: activeLeft,
-          right: width - activeLeft - ACTIVE_WIDTH,
-          transitionDelay: forward ? `${TRAIL_DELAY}, 0ms` : `0ms, ${TRAIL_DELAY}`,
-        }}
-      />
     </div>
   );
-}
-
-/** 알약보다 뒤에 있는 점은 알약 폭만큼 밀리고, 알약 아래 점은 가운데에 숨는다. */
-function dotOffset(index: number, current: number) {
-  if (index < current) return 0;
-  if (index === current) return (ACTIVE_WIDTH - DOT_SIZE) / 2;
-  return ACTIVE_WIDTH - DOT_SIZE;
 }
