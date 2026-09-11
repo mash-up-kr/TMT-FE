@@ -13,7 +13,7 @@ export interface UpdateProfileRequest {
    */
   nickname: string;
   /**
-   * 업로드 발급(POST /v1/media/upload-intents)으로 받은 assetId. 없으면 사진 없는 상태가 된다
+   * 업로드 발급(POST /v1/media/upload-intents)으로 받은 assetId. 생략하면 현재 사진 유지, null이면 삭제
    * @nullable
    */
   profileImageAssetId?: string | null;

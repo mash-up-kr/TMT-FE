@@ -11,7 +11,10 @@ export interface GroupRequest {
   oneLineDescription: string;
   foodCategoryId: string;
   regionTagIds: string[];
-  /** @nullable */
+  /**
+   * 생략하면 기존 이미지 유지, null이면 삭제
+   * @nullable
+   */
   imageAssetId?: string | null;
   /** @nullable */
   description?: string | null;

@@ -16,4 +16,9 @@ export interface SaveResultResponse {
   ticket: TicketGrantSummary;
   /** 리뷰 성립(C4)에 모자란 항목. 리뷰가 됐으면 빈 배열. 사진은 항목이 아니다 (C4-1) */
   missing?: SaveResultResponseMissingItem[];
+  /**
+   * 이번 요청으로 리뷰가 올라간 그룹 (TMT-423). 요청에 groupId가 없었거나 그 그룹의 멤버가 아니거나 중간 저장(draft)이라 리뷰가 성립하지 않았으면 null이다 — 화면이 "그룹에 공유됐어요" 안내를 고르는 기준
+   * @nullable
+   */
+  sharedGroupId?: string | null;
 }
