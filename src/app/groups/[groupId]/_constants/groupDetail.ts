@@ -49,6 +49,7 @@ const GROUP_DETAIL_PAGE_FIXTURES: Record<string, GroupDetailPreviewFixture> = {
 export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
   {
     id: "review_1",
+    authorId: "user_1",
     authorNickname: "하아얀",
     authorProfileImageUrl: null,
     rating: 4.5,
@@ -68,6 +69,7 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
   },
   {
     id: "review_2",
+    authorId: "user_2",
     authorNickname: "하아얀",
     authorProfileImageUrl: null,
     rating: 4.5,
@@ -91,6 +93,7 @@ export const GROUP_DETAIL_PAGE_REVIEWS: ReviewCardData[] = [
   },
   {
     id: "review_3",
+    authorId: "user_3",
     authorNickname: "하아얀",
     authorProfileImageUrl: null,
     rating: 4.5,

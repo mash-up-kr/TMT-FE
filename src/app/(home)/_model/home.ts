@@ -36,6 +36,7 @@ export interface FeedReviewPlace {
 
 export interface FeedReview {
   id: string;
+  authorId: string;
   authorNickname: string;
   authorProfileImageUrl: string | null;
   rating: number;

@@ -4,7 +4,7 @@ import imageFallback from "@/shared/assets/dummy-image.png";
 import { FoodCategoryIcon } from "@/shared/components/FoodCategoryIcon/FoodCategoryIcon";
 import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
 import { ReviewTagIcon } from "@/shared/components/ReviewTagIcon/ReviewTagIcon";
-import { placeDetailPath } from "@/shared/constants/routes";
+import { placeDetailPath, userProfilePath } from "@/shared/constants/routes";
 import type { ReviewCardData } from "@/shared/model/review";
 import { ThumbDownIcon, ThumbUpIcon } from "@/shared/ui/ColorIcons";
 import { HeartIcon, StarIcon } from "@/shared/ui/Icons";
@@ -52,6 +52,7 @@ export function ReviewCard({
   return (
     <article className="flex flex-col bg-surface-primary">
       <ReviewCardHeader
+        authorId={review.authorId}
         nickname={review.authorNickname}
         profileImageUrl={review.authorProfileImageUrl}
         rating={review.rating}
@@ -91,6 +92,7 @@ export function ReviewCard({
 }
 
 type ReviewCardHeaderProps = {
+  authorId: string;
   nickname: string;
   profileImageUrl: string | null;
   rating: number;
@@ -98,31 +100,36 @@ type ReviewCardHeaderProps = {
 };
 
 function ReviewCardHeader({
+  authorId,
   nickname,
   profileImageUrl,
   rating,
   distanceMeters,
 }: ReviewCardHeaderProps) {
   return (
-    <header className="flex items-center gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
-      <AuthorAvatar imageUrl={profileImageUrl} />
-      <div className="flex min-w-0 flex-1 items-center justify-between gap-ds-8">
-        <p className="truncate text-body-lg-medium text-content-primary">{nickname}</p>
-        <div className="flex flex-col items-end justify-center">
-          <p className="flex items-center gap-ds-2 text-body-sm-medium text-content-interactive-primary">
-            <StarIcon
-              aria-hidden="true"
-              size={12}
-              className="shrink-0 text-icon-interactive-primary"
-            />
-            {rating.toFixed(1)}
+    <header className="flex items-center justify-between gap-ds-8 px-ds-12 pt-ds-16 pb-ds-8">
+      <Link
+        href={userProfilePath(authorId)}
+        aria-label={`${nickname}님의 프로필`}
+        className="flex min-w-0 flex-1 items-center gap-ds-8 rounded-ds-full text-content-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-interactive-primary active:text-content-tertiary"
+      >
+        <AuthorAvatar imageUrl={profileImageUrl} />
+        <p className="truncate text-body-lg-medium">{nickname}</p>
+      </Link>
+      <div className="flex shrink-0 flex-col items-end justify-center">
+        <p className="flex items-center gap-ds-2 text-body-sm-medium text-content-interactive-primary">
+          <StarIcon
+            aria-hidden="true"
+            size={12}
+            className="shrink-0 text-icon-interactive-primary"
+          />
+          {rating.toFixed(1)}
+        </p>
+        {distanceMeters === null ? null : (
+          <p className="text-body-sm-medium text-content-disabled">
+            {formatDistance(distanceMeters)}
           </p>
-          {distanceMeters === null ? null : (
-            <p className="text-body-sm-medium text-content-disabled">
-              {formatDistance(distanceMeters)}
-            </p>
-          )}
-        </div>
+        )}
       </div>
     </header>
   );

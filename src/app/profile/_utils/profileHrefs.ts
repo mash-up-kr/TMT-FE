@@ -1,4 +1,4 @@
-import { placeDetailPath, ROUTES } from "@/shared/constants/routes";
+import { placeDetailPath, ROUTES, userProfilePath } from "@/shared/constants/routes";
 import { withReviewReturnTo } from "@/shared/utils/reviewNavigation";
 
 export function toGroupHref(groupId: string): string {
@@ -15,5 +15,5 @@ export function toSaveHref(saveId: string, returnTo: string): string {
 }
 
 export function toUserProfileHref(userId: string): string {
-  return ROUTES.PROFILE.DETAIL.replace("[userId]", userId);
+  return userProfilePath(userId);
 }
