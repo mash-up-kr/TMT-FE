@@ -11,6 +11,9 @@ import {
   TICKET_ONBOARDING_STEPS,
 } from "../_constants/ticketOnboarding";
 
+/** 콘텐츠와 인디케이터가 한 몸으로 움직여야 자연스러우므로 같은 시간·곡선을 쓴다. */
+const STEP_TRANSITION = "duration-250 ease-in-out motion-reduce:transition-none";
+
 type TicketOnboardingSheetProps = {
   open: boolean;
   onOpenChangeAction: (open: boolean) => void;
@@ -51,22 +54,39 @@ export function TicketOnboardingSheet({ open, onOpenChangeAction }: TicketOnboar
       }
     >
       <div className="flex flex-col items-center gap-ds-24 pb-ds-12">
-        <div className="flex w-full flex-col items-center gap-ds-12">
-          <Image
-            src={step.image}
-            alt=""
-            width={320}
-            height={179}
-            sizes="320px"
-            priority={stepIndex === 0}
-            draggable={false}
-            className="h-auto w-full max-w-80"
-          />
-          <div className="flex w-full flex-col gap-ds-8 text-center">
-            <h2 className="whitespace-pre-line text-content-primary text-heading-lg">
-              {step.title}
-            </h2>
-            <p className="text-body-lg-regular text-content-primary">{step.description}</p>
+        {/* 본문 좌우 여백까지 넓혀야 넘어가는 장이 여백 경계에서 잘려 보이지 않는다. */}
+        <div className="-mx-ds-20 self-stretch overflow-hidden">
+          <div
+            className={cn("flex transition-transform", STEP_TRANSITION)}
+            style={{ transform: `translateX(-${stepIndex * 100}%)` }}
+          >
+            {TICKET_ONBOARDING_STEPS.map((item, index) => (
+              <div
+                key={item.id}
+                // 화면 밖 장은 스크린리더와 포커스에서 뺀다.
+                inert={index !== stepIndex}
+                className="flex w-full shrink-0 flex-col items-center gap-ds-12 px-ds-20"
+              >
+                <Image
+                  src={item.image}
+                  alt=""
+                  width={320}
+                  height={179}
+                  sizes="320px"
+                  // 넘기는 순간 비어 보이지 않게 뒤 장도 미리 받는다.
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : "eager"}
+                  draggable={false}
+                  className="h-auto w-full max-w-80"
+                />
+                <div className="flex w-full flex-col gap-ds-8 text-center">
+                  <h2 className="whitespace-pre-line text-content-primary text-heading-lg">
+                    {item.title}
+                  </h2>
+                  <p className="text-body-lg-regular text-content-primary">{item.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         <StepIndicator current={stepIndex} total={TICKET_ONBOARDING_STEP_COUNT} />
@@ -89,7 +109,8 @@ function StepIndicator({ current, total }: StepIndicatorProps) {
           // biome-ignore lint/suspicious/noArrayIndexKey: 점은 순서 자체가 정체성이다.
           key={index}
           className={cn(
-            "h-1.5 rounded-ds-full",
+            "h-1.5 rounded-ds-full transition-[width,background-color]",
+            STEP_TRANSITION,
             index === current
               ? "w-ds-16 bg-surface-interactive-primary"
               : "w-1.5 bg-surface-tertiary",
