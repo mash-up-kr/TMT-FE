@@ -26,7 +26,6 @@ export function useDragScroll<T extends HTMLElement>() {
     }
 
     drag.current = { startX: event.clientX, startScrollLeft: element.scrollLeft, moved: false };
-    element.setPointerCapture(event.pointerId);
     // 이미지 고스트 드래그와 텍스트 선택이 스크롤을 가로채지 않게 한다.
     event.preventDefault();
   }, []);
@@ -36,10 +35,18 @@ export function useDragScroll<T extends HTMLElement>() {
       return;
     }
 
+    // 붙잡기 전에는 요소 밖에서 버튼을 떼면 pointerup이 오지 않는다. 다음 움직임에서 끝낸다.
+    if ((event.buttons & 1) === 0) {
+      drag.current = null;
+      return;
+    }
+
     const distance = event.clientX - drag.current.startX;
 
-    if (Math.abs(distance) > DRAG_THRESHOLD_PX) {
+    if (!drag.current.moved && Math.abs(distance) > DRAG_THRESHOLD_PX) {
       drag.current.moved = true;
+      // 드래그로 확정된 뒤에만 붙잡는다. 누르자마자 붙잡으면 click이 이 요소로 가서 안쪽 버튼·링크가 눌리지 않는다.
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
 
     event.currentTarget.scrollLeft = drag.current.startScrollLeft - distance;
@@ -52,7 +59,10 @@ export function useDragScroll<T extends HTMLElement>() {
 
     suppressClick.current = drag.current.moved;
     drag.current = null;
-    event.currentTarget.releasePointerCapture(event.pointerId);
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
   }, []);
 
   // 드래그로 스크롤한 직후의 click은 자식(링크·버튼)에 닿기 전에 삼킨다.
