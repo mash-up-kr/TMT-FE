@@ -89,7 +89,7 @@ function StepIndicator({ current, total }: StepIndicatorProps) {
           // biome-ignore lint/suspicious/noArrayIndexKey: 점은 순서 자체가 정체성이다.
           key={index}
           className={cn(
-            "h-1.5 rounded-ds-full",
+            "h-1.5 rounded-ds-full transition-[width,background-color] duration-300 ease-out motion-reduce:transition-none",
             index === current
               ? "w-ds-16 bg-surface-interactive-primary"
               : "w-1.5 bg-surface-tertiary",
