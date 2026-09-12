@@ -16,6 +16,7 @@ import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
+import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon, LeaveGroupIcon, PlusIcon, SettingsIcon } from "@/shared/ui/Icons";
@@ -243,15 +244,14 @@ export function GroupDetailView({
       {/* 피드의 전환 FAB과 같은 자리·모양이다. 시트는 body 끝에 포털되어 같은 z에서도 위에 그려진다.
           공유할 리뷰가 있는지 아직 모르는 동안은 눌러도 어디로 갈지 정할 수 없어 잠시 막는다. */}
       {group.isMember ? (
-        <button
-          type="button"
+        <FloatingActionButton
+          placement="standalone"
           aria-label="그룹에 리뷰 남기기"
           disabled={shareEntry.isChecking}
           onClick={openReviewEntry}
-          className="absolute right-ds-20 bottom-ds-20 z-overlay rounded-ds-md bg-surface-interactive-secondary p-ds-8 text-icon-interactive-inverse"
         >
           <PlusIcon size={24} />
-        </button>
+        </FloatingActionButton>
       ) : null}
 
       {group.isMember ? (

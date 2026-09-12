@@ -7,17 +7,13 @@ import type { SaveListItemResponse } from "@/api/gen/_model/saveListItemResponse
 import type { SaveResultResponse } from "@/api/gen/_model/saveResultResponse.gen";
 import type { TagDefinition } from "@/api/gen/_model/tagDefinition.gen";
 import { isContinuableSave } from "@/shared/utils/continuableSave";
+import { hasText } from "@/shared/utils/hasText";
 import { MAX_REVIEW_RATING } from "../_constants/review";
 import { REVIEW_TAG_GROUPS } from "../_constants/tagGroups";
 import type { ContinuableDraft, ReviewDraftSnapshot } from "../_model/draft";
 import type { ReviewSaveResult } from "../_model/save";
 import type { AddressSearchResult, StoreSearchResult } from "../_model/store";
 import type { ReviewTag, ReviewTagGroup } from "../_model/tag";
-
-// 스펙상 nullable인 필드가 있어 undefined와 null을 함께 받는다.
-function hasText(value: string | null | undefined): value is string {
-  return typeof value === "string" && value.trim().length > 0;
-}
 
 function hasFiniteNumber(value: number | null | undefined): value is number {
   return typeof value === "number" && Number.isFinite(value);

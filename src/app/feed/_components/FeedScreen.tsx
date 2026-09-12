@@ -8,6 +8,7 @@ import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { invalidateCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
+import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { GNB } from "@/shared/ui/GNB";
 import { FeedIcon, MapIcon } from "@/shared/ui/Icons";
 import { RefreshableScrollArea } from "@/shared/ui/RefreshableScrollArea";
@@ -109,13 +110,12 @@ function ViewSwitchButton({ view, onToggle }: ViewSwitchButtonProps) {
   const isFeed = view === "feed";
 
   return (
-    <button
-      type="button"
+    <FloatingActionButton
+      placement="floating"
       onClick={onToggle}
       aria-label={isFeed ? "지도로 보기" : "피드로 보기"}
-      className="pointer-events-auto absolute right-ds-20 bottom-ds-0 z-overlay rounded-ds-md bg-surface-interactive-secondary p-ds-8 text-icon-interactive-inverse"
     >
       {isFeed ? <MapIcon size={24} /> : <FeedIcon filled size={24} />}
-    </button>
+    </FloatingActionButton>
   );
 }
