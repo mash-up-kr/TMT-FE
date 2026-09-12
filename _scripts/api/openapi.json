@@ -79,6 +79,10 @@
     {
       "name": "가게 상세",
       "description": "명세 v2 — B §3·§4"
+    },
+    {
+      "name": "랭킹",
+      "description": "유저 활동량 랭킹"
     }
   ],
   "paths": {
@@ -2598,6 +2602,65 @@
             "bearerAuth": []
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "마이페이지·타인 프로필"
+        ],
+        "summary": "회원탈퇴",
+        "description": "계정과 이 사용자가 만든 데이터를 지운다 (TMT-409). **되돌릴 수 없다** — 리뷰·저장·사진·티켓·찜과 가입 이력이 함께 사라지고, 남의 그룹에 공유해 둔 리뷰도 내려간다.\n\n**소유한 그룹은 멤버가 남아 있어도 그룹째 삭제된다** — 소유자는 바뀔 수 없다 (G13). 그 그룹에 남이 공유해 둔 리뷰는 공유만 풀리고 리뷰 자체는 남는다.\n\n탈퇴 후 기존 access 토큰으로 호출하면 사용자 행이 없어 USER_NOT_FOUND(404)로 떨어진다. 같은 카카오 계정으로 다시 로그인하면 신규 가입으로 들어온다.",
+        "operationId": "withdraw",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "- `USER_NOT_FOUND` — 사용자를 찾을 수 없습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/users/me/tickets": {
@@ -2786,6 +2849,82 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageReviewedPlaceItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "- `UNAUTHORIZED` — 로그인이 필요합니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/users/me/review-share-candidates": {
+      "get": {
+        "tags": [
+          "마이페이지·타인 프로필"
+        ],
+        "summary": "그룹 생성용 리뷰 공유 후보",
+        "description": "그룹 생성 5단계에서 고를 내 리뷰 목록 (TMT-428). 그룹이 아직 없어 isShared가 없고, 생성 후 PUT /v1/groups/{groupId}/review-shares로 공유한다. contentPreview는 본문 전체이고 화면이 두 줄로 자른다. 미완성 저장은 나오지 않는다 (R8).",
+        "operationId": "myReviewShareCandidates",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageReviewShareCandidateItem"
                 }
               }
             }
@@ -3153,6 +3292,67 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ReviewFormConfigResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "- `INTERNAL_ERROR` — 서버 내부 오류가 발생했습니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rankings/users": {
+      "get": {
+        "tags": [
+          "랭킹"
+        ],
+        "summary": "유저 활동량 랭킹",
+        "description": "리뷰 수 내림차순 전체 목록. 리뷰 0건 사용자도 포함한다.",
+        "operationId": "listUserRankings",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursorPageUserRankingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "- `VALIDATION_FAILED` — 요청 형식이 잘못되었습니다.\n- `INVALID_CURSOR` — 잘못된 커서입니다.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5735,6 +5935,64 @@
           "placeId"
         ]
       },
+      "CursorPageReviewShareCandidateItem": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/ReviewShareCandidateItem"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
+      },
+      "ReviewShareCandidateItem": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "placeName": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "contentPreview": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contentPreview",
+          "createdAt",
+          "placeName",
+          "reviewId"
+        ]
+      },
       "CursorPageSaveListItemResponse": {
         "type": "object",
         "description": "커서 기반 페이지 응답",
@@ -6164,6 +6422,66 @@
         "required": [
           "label",
           "tagId"
+        ]
+      },
+      "CursorPageUserRankingResponse": {
+        "type": "object",
+        "description": "커서 기반 페이지 응답",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "결과 목록. 없으면 빈 배열",
+            "items": {
+              "$ref": "#/components/schemas/UserRankingResponse"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "다음 페이지 요청에 그대로 전달. 마지막 페이지면 null"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "다음 페이지 존재 여부",
+            "example": true
+          }
+        },
+        "required": [
+          "hasNext",
+          "items"
+        ]
+      },
+      "UserRankingResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "memberCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "memberCount",
+          "nickname",
+          "reviewCount",
+          "userId"
         ]
       },
       "PlaceDetailResponse": {

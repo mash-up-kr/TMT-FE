@@ -26,11 +26,13 @@ import { tmtFetch } from "../../mutator";
 import type { CursorPageGroupCardResponse } from "../_model/cursorPageGroupCardResponse.gen";
 import type { CursorPageMyReviewGridItem } from "../_model/cursorPageMyReviewGridItem.gen";
 import type { CursorPagePlaceCardResponse } from "../_model/cursorPagePlaceCardResponse.gen";
+import type { CursorPageReviewShareCandidateItem } from "../_model/cursorPageReviewShareCandidateItem.gen";
 import type { CursorPageUserReviewGridItem } from "../_model/cursorPageUserReviewGridItem.gen";
 import type { ErrorResponse } from "../_model/errorResponse.gen";
 import type { MyFavoritesParams } from "../_model/myFavoritesParams.gen";
 import type { MyGroupsParams } from "../_model/myGroupsParams.gen";
 import type { MyProfileResponse } from "../_model/myProfileResponse.gen";
+import type { MyReviewShareCandidatesParams } from "../_model/myReviewShareCandidatesParams.gen";
 import type { MyReviewsParams } from "../_model/myReviewsParams.gen";
 import type { MyTicketsParams } from "../_model/myTicketsParams.gen";
 import type { TicketHistoryResponse } from "../_model/ticketHistoryResponse.gen";
@@ -797,6 +799,62 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = ErrorType
   return withQueryKey(query, queryOptions.queryKey);
 }
 
+export const getWithdrawUrl = () => {
+  return `/v1/users/me`;
+};
+
+/**
+ * 계정과 이 사용자가 만든 데이터를 지운다 (TMT-409). **되돌릴 수 없다** — 리뷰·저장·사진·티켓·찜과 가입 이력이 함께 사라지고, 남의 그룹에 공유해 둔 리뷰도 내려간다.
+ *
+ * **소유한 그룹은 멤버가 남아 있어도 그룹째 삭제된다** — 소유자는 바뀔 수 없다 (G13). 그 그룹에 남이 공유해 둔 리뷰는 공유만 풀리고 리뷰 자체는 남는다.
+ *
+ * 탈퇴 후 기존 access 토큰으로 호출하면 사용자 행이 없어 USER_NOT_FOUND(404)로 떨어진다. 같은 카카오 계정으로 다시 로그인하면 신규 가입으로 들어온다.
+ * @summary 회원탈퇴
+ */
+export const withdraw = async (options?: Parameters<typeof tmtFetch>[1]): Promise<void> => {
+  return tmtFetch<void>(getWithdrawUrl(), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getWithdrawMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof withdraw>>, TError, void, TContext>;
+  request?: SecondParameter<typeof tmtFetch>;
+}): UseMutationOptions<Awaited<ReturnType<typeof withdraw>>, TError, void, TContext> => {
+  const mutationKey = ["withdraw"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof withdraw>>, void> = () => {
+    return withdraw(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type WithdrawMutationResult = NonNullable<Awaited<ReturnType<typeof withdraw>>>;
+
+export type WithdrawMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary 회원탈퇴
+ */
+export const useWithdraw = <TError = ErrorType<ErrorResponse>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof withdraw>>, TError, void, TContext>;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof withdraw>>, TError, void, TContext> => {
+  return useMutation(getWithdrawMutationOptions(options), queryClient);
+};
 export const getMyTicketsUrl = (params?: MyTicketsParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -1057,6 +1115,153 @@ export function useMyReviews<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getMyReviewsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMyReviewShareCandidatesUrl = (params?: MyReviewShareCandidatesParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/users/me/review-share-candidates?${stringifiedParams}`
+    : `/v1/users/me/review-share-candidates`;
+};
+
+/**
+ * 그룹 생성 5단계에서 고를 내 리뷰 목록 (TMT-428). 그룹이 아직 없어 isShared가 없고, 생성 후 PUT /v1/groups/{groupId}/review-shares로 공유한다. contentPreview는 본문 전체이고 화면이 두 줄로 자른다. 미완성 저장은 나오지 않는다 (R8).
+ * @summary 그룹 생성용 리뷰 공유 후보
+ */
+export const myReviewShareCandidates = async (
+  params?: MyReviewShareCandidatesParams,
+  options?: Parameters<typeof tmtFetch>[1],
+): Promise<CursorPageReviewShareCandidateItem> => {
+  return tmtFetch<CursorPageReviewShareCandidateItem>(getMyReviewShareCandidatesUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getMyReviewShareCandidatesQueryKey = (params?: MyReviewShareCandidatesParams) => {
+  return [`/v1/users/me/review-share-candidates`, ...(params ? [params] : [])] as const;
+};
+
+export const getMyReviewShareCandidatesQueryOptions = <
+  TData = Awaited<ReturnType<typeof myReviewShareCandidates>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: MyReviewShareCandidatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myReviewShareCandidates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMyReviewShareCandidatesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof myReviewShareCandidates>>> = ({
+    signal,
+  }) => myReviewShareCandidates(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof myReviewShareCandidates>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MyReviewShareCandidatesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof myReviewShareCandidates>>
+>;
+export type MyReviewShareCandidatesQueryError = ErrorType<ErrorResponse>;
+
+export function useMyReviewShareCandidates<
+  TData = Awaited<ReturnType<typeof myReviewShareCandidates>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params: undefined | MyReviewShareCandidatesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myReviewShareCandidates>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myReviewShareCandidates>>,
+          TError,
+          Awaited<ReturnType<typeof myReviewShareCandidates>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMyReviewShareCandidates<
+  TData = Awaited<ReturnType<typeof myReviewShareCandidates>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: MyReviewShareCandidatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myReviewShareCandidates>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myReviewShareCandidates>>,
+          TError,
+          Awaited<ReturnType<typeof myReviewShareCandidates>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMyReviewShareCandidates<
+  TData = Awaited<ReturnType<typeof myReviewShareCandidates>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: MyReviewShareCandidatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myReviewShareCandidates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary 그룹 생성용 리뷰 공유 후보
+ */
+
+export function useMyReviewShareCandidates<
+  TData = Awaited<ReturnType<typeof myReviewShareCandidates>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: MyReviewShareCandidatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myReviewShareCandidates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof tmtFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMyReviewShareCandidatesQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
