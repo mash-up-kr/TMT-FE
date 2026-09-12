@@ -22,6 +22,7 @@ export { MyIcon } from "./MyIcon";
 export { OptionIcon } from "./OptionIcon";
 export { PhoneIcon } from "./PhoneIcon";
 export { PlusIcon } from "./PlusIcon";
+export { RankingIcon } from "./RankingIcon";
 export { RefreshIcon } from "./RefreshIcon";
 export { ReviewsIcon } from "./ReviewsIcon";
 export { SearchIcon } from "./SearchIcon";

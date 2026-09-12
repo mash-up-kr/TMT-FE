@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
@@ -7,9 +8,10 @@ import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
-import { LeaveGroupIcon } from "@/shared/ui/Icons";
+import { LeaveGroupIcon, RankingIcon } from "@/shared/ui/Icons";
 import { toast } from "@/shared/ui/Toast";
 import { useMyProfileSummary } from "../_hooks/useMyProfileSummary";
 import { useMyProfileTabPage } from "../_hooks/useMyProfileTabPage";
@@ -56,7 +58,18 @@ export function MeProfileScreen({ activeTab }: { activeTab: ProfileTab }) {
 
   return (
     <>
-      <ScreenLayout header={header}>
+      <ScreenLayout
+        header={header}
+        floating={
+          <FloatingActionButton
+            placement="floating"
+            render={<Link href={ROUTES.RANK} />}
+            aria-label="랭킹 보기"
+          >
+            <RankingIcon size={24} />
+          </FloatingActionButton>
+        }
+      >
         <ProfileTabPageView
           summary={summary}
           tabPage={tabPage}
