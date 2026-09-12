@@ -7,11 +7,8 @@ import { ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Notice } from "@/shared/ui/Notice";
 import { RankView } from "./_components/RankView";
 
-/** 순위 안내. 줄마다 박스 하나다. 첫 줄은 mapper의 기준(전 유저, 리뷰 수 순)과 같은 말이어야 한다. */
-const RANK_NOTICES = [
-  "랭크는 리뷰 수 순으로 정해져요.",
-  "가장 많은 맛집을 공유한 mash-up의 맛잘알은 누구!!",
-] as const;
+/** 순위 안내. 줄마다 박스 하나다. 정렬 기준은 화면의 정렬 칩이 보여주므로 여기 적지 않는다. */
+const RANK_NOTICES = ["가장 많은 맛집을 작성한 mash-up의 맛잘알은 누구!!"] as const;
 
 export const metadata: Metadata = {
   title: "랭킹",
@@ -38,7 +35,7 @@ export default function RankPage() {
       }
     >
       {/* 목록 행의 좌우 여백(px-ds-20)에 맞춘다. */}
-      <div className="flex flex-col gap-ds-8 px-ds-20 pt-ds-16 pb-ds-8">
+      <div className="flex flex-col gap-ds-8 px-ds-20 pt-ds-4 pb-ds-12">
         {RANK_NOTICES.map((message) => (
           <Notice key={message}>{message}</Notice>
         ))}
