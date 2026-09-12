@@ -12,5 +12,5 @@ export interface UserRankingResponse {
   /** @nullable */
   profileImageUrl?: string | null;
   reviewCount: number;
-  memberCount: number;
+  sharedReviewCount: number;
 }

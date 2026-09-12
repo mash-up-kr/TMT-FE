@@ -3315,9 +3315,23 @@
           "랭킹"
         ],
         "summary": "유저 활동량 랭킹",
-        "description": "리뷰 수 내림차순 전체 목록. 리뷰 0건 사용자도 포함한다.",
+        "description": "sort 축 내림차순 전체 목록. 리뷰 0건 사용자도 포함한다. 응답 필드는 sort와 무관하게 같고 줄 순서만 바뀐다.",
         "operationId": "listUserRankings",
         "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "정렬 축. 바꾸면 이전 커서는 INVALID_CURSOR다",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "reviewCount",
+              "enum": [
+                "reviewCount",
+                "sharedReviewCount"
+              ]
+            }
+          },
           {
             "name": "cursor",
             "in": "query",
@@ -6472,15 +6486,15 @@
             "type": "integer",
             "format": "int32"
           },
-          "memberCount": {
+          "sharedReviewCount": {
             "type": "integer",
             "format": "int32"
           }
         },
         "required": [
-          "memberCount",
           "nickname",
           "reviewCount",
+          "sharedReviewCount",
           "userId"
         ]
       },

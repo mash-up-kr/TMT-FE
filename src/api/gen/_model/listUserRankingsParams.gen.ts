@@ -5,8 +5,13 @@
  * 또맛또(TMT) API
  * OpenAPI spec version: v1
  */
+import type { ListUserRankingsSort } from "./listUserRankingsSort.gen";
 
 export type ListUserRankingsParams = {
+  /**
+   * 정렬 축. 바꾸면 이전 커서는 INVALID_CURSOR다
+   */
+  sort?: ListUserRankingsSort;
   cursor?: string;
   limit?: number;
 };
