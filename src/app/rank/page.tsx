@@ -7,9 +7,9 @@ import { ChevronLeftIcon } from "@/shared/ui/Icons";
 import { Notice } from "@/shared/ui/Notice";
 import { RankView } from "./_components/RankView";
 
-/** 순위 안내. 줄마다 박스 하나다. 첫 줄은 mapper의 기준(그룹을 만든 사람만, 리뷰 수 순)과 같은 말이어야 한다. */
+/** 순위 안내. 줄마다 박스 하나다. 첫 줄은 mapper의 기준(전 유저, 리뷰 수 순)과 같은 말이어야 한다. */
 const RANK_NOTICES = [
-  "랭크는 그룹을 만든 사람 중 리뷰 수 순으로 정해져요.",
+  "랭크는 리뷰 수 순으로 정해져요.",
   "가장 많은 맛집을 공유한 mash-up의 맛잘알은 누구!!",
 ] as const;
 
