@@ -58,7 +58,7 @@ export const getListUserRankingsUrl = (params?: ListUserRankingsParams) => {
 };
 
 /**
- * 리뷰 수 내림차순 전체 목록. 리뷰 0건 사용자도 포함한다.
+ * sort 축 내림차순 전체 목록. 리뷰 0건 사용자도 포함한다. 응답 필드는 sort와 무관하게 같고 줄 순서만 바뀐다.
  * @summary 유저 활동량 랭킹
  */
 export const listUserRankings = async (
