@@ -5,5 +5,6 @@ export type RankRow = Readonly<{
   nickname: string;
   profileImageUrl: string | null;
   reviewCount: number;
-  memberCount: number;
+  /** 그룹에 공유한 리뷰 수. 한 리뷰를 여러 그룹에 올려도 1이다 (TMT-438). */
+  sharedReviewCount: number;
 }>;
