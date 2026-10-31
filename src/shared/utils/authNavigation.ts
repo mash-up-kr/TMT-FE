@@ -14,7 +14,7 @@ export function safeReturnTo(value: unknown): string {
     const url = new URL(value, "https://tmt.invalid");
     if (
       url.origin !== "https://tmt.invalid" ||
-      /^\/(?:login|signup|auth|api)(?:\/|$)/.test(url.pathname)
+      /^\/(?:login|signup|onboarding|auth|api)(?:\/|$)/.test(url.pathname)
     )
       return ROUTES.ROOT;
     return `${url.pathname}${url.search}${url.hash}`;
@@ -23,12 +23,29 @@ export function safeReturnTo(value: unknown): string {
   }
 }
 
+/** 복귀 경로를 쿼리로 넘긴다. 읽는 쪽은 `safeReturnTo`를 거친다. */
+export function pathWithReturnTo(path: string, returnTo: string): string {
+  return `${path}?returnTo=${encodeURIComponent(safeReturnTo(returnTo))}`;
+}
+
+/** 로그인 화면의 `둘러보기` 목적지. 돌아갈 곳이 로그인 필수면 다시 로그인으로 튕기므로 홈으로 보낸다. */
+export function getBrowseTarget(returnTo: string): string {
+  const safe = safeReturnTo(returnTo);
+  const { pathname } = new URL(safe, "https://tmt.invalid");
+  return isPublicPage(pathname) ? safe : ROUTES.ROOT;
+}
+
 export function isPublicPage(pathname: string): boolean {
   return (
+    pathname === ROUTES.ROOT ||
+    pathname === ROUTES.FEED ||
+    pathname === ROUTES.GROUPS.ROOT ||
     pathname === ROUTES.LOGIN ||
     pathname === "/auth/complete" ||
     pathname === "/preview" ||
     pathname.startsWith("/preview/") ||
+    /^\/groups\/(?!new$)[^/]+$/.test(pathname) ||
+    /^\/places\/[^/]+$/.test(pathname) ||
     /^\/profile\/(?!me(?:\/|$))[^/]+(?:\/(?:reviews|groups|favorites))?$/.test(pathname)
   );
 }

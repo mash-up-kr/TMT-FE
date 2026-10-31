@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { useTrackInAppHistory } from "@/shared/hooks/useSafeBack";
 import { getActiveBottomNav } from "@/shared/utils/bottomNavigationPolicy";
 import { cn } from "@/shared/utils/cn";
 import { AppBottomNav } from "./AppBottomNav";
@@ -14,6 +15,7 @@ import { AppBottomNav } from "./AppBottomNav";
  * 그 값을 되돌려 받는다. 화면이 children으로 들어오는 건 그 선언을 상속시키기 위해서다.
  */
 export function AppChrome({ children }: { children: ReactNode }) {
+  useTrackInAppHistory();
   const pathname = usePathname();
   const activeBottomNav = getActiveBottomNav(pathname);
 

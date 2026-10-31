@@ -8,6 +8,8 @@ type LoginScreenProps = {
   disabled?: boolean;
   error?: string | null;
   onLogin: () => void;
+  /** 로그인하지 않고 공개 화면으로 돌아간다. */
+  onBrowse?: () => void;
 };
 
 export function LoginScreen({
@@ -15,6 +17,7 @@ export function LoginScreen({
   disabled = false,
   error,
   onLogin,
+  onBrowse,
 }: LoginScreenProps) {
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-surface-primary">
@@ -45,6 +48,17 @@ export function LoginScreen({
         >
           카카오로 시작하기
         </Button>
+        {onBrowse ? (
+          <Button
+            variant="ghost"
+            size="md"
+            className="w-full"
+            disabled={loading}
+            onClick={onBrowse}
+          >
+            둘러보기
+          </Button>
+        ) : null}
       </div>
     </main>
   );

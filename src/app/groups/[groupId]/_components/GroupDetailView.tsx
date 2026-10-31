@@ -12,8 +12,10 @@ import {
 import { newReviewForGroupJoinPath } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
 import { UT2_STEPS } from "@/shared/constants/ut2";
+import { useLoginGate } from "@/shared/hooks/useLoginGate";
 import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
+import { useSafeBack } from "@/shared/hooks/useSafeBack";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
@@ -57,6 +59,8 @@ export function GroupDetailView({
   leaveAction,
 }: GroupDetailViewProps) {
   const router = useRouter();
+  const goBack = useSafeBack();
+  const loginGate = useLoginGate();
   const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isEntrySheetOpen, setIsEntrySheetOpen] = useState(false);
@@ -65,7 +69,9 @@ export function GroupDetailView({
   );
   const reviews = favorite.reviews ?? [];
   const isNonMember = !group.isMember;
-  const reviewEntry = useGroupReviewEntry(group.id, { enabled: isNonMember });
+  const reviewEntry = useGroupReviewEntry(group.id, {
+    enabled: isNonMember && joinPreview.status !== "login-required",
+  });
   const reviewReturnTo = useReviewReturnTo();
   const shouldPromptFirstReview =
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
@@ -149,7 +155,7 @@ export function GroupDetailView({
         title="그룹"
         className="shrink-0"
         left={
-          <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
+          <IconButton aria-label="뒤로 가기" onClick={goBack}>
             <ChevronLeftIcon size={28} />
           </IconButton>
         }
@@ -187,7 +193,11 @@ export function GroupDetailView({
           <JoinGate
             disabled={joinPreview.status === "pending"}
             label={joinPreview.status === "pending" ? "가입 정보를 불러오는 중이에요" : undefined}
-            onJoin={() => setIsJoinSheetOpen(true)}
+            onJoin={() =>
+              joinPreview.status === "login-required"
+                ? loginGate.redirectToLogin()
+                : setIsJoinSheetOpen(true)
+            }
           />
         ) : null)}
 

@@ -1,7 +1,6 @@
 "use client";
 
 import type { StaticImageData } from "next/image";
-import { useRouter } from "next/navigation";
 import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
 import { PlaceFavoriteButton } from "@/shared/components/PlaceFavoriteButton";
@@ -10,6 +9,7 @@ import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import { UT2_STEPS } from "@/shared/constants/ut2";
 import { useCurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { usePlaceFavorite } from "@/shared/hooks/usePlaceFavorite";
+import { useSafeBack } from "@/shared/hooks/useSafeBack";
 import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
@@ -76,7 +76,7 @@ type PlaceDetailFavoriteAction = Readonly<{
 }>;
 
 function PlaceDetailHeader({ favorite }: { favorite: PlaceDetailFavoriteAction }) {
-  const router = useRouter();
+  const goBack = useSafeBack();
 
   return (
     <GNB
@@ -84,7 +84,7 @@ function PlaceDetailHeader({ favorite }: { favorite: PlaceDetailFavoriteAction }
       className="shrink-0"
       title={null}
       left={
-        <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
+        <IconButton aria-label="뒤로 가기" onClick={goBack}>
           <ChevronLeftIcon size={28} />
         </IconButton>
       }
@@ -97,7 +97,7 @@ function PlaceDetailHeader({ favorite }: { favorite: PlaceDetailFavoriteAction }
             disabled={favorite.isDisabled}
             onToggleAction={favorite.onToggleAction}
           />
-          <IconButton aria-label="닫기" onClick={() => router.back()}>
+          <IconButton aria-label="닫기" onClick={goBack}>
             <CancelIcon size={28} />
           </IconButton>
         </>

@@ -7,6 +7,7 @@ import {
 import type { CurrentPosition } from "@/shared/hooks/useCurrentPosition";
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import { cn } from "@/shared/utils/cn";
 import type { FeedReview } from "../_model/home";
 
 type HomeFeedProps = {
@@ -54,7 +55,7 @@ export function HomeFeed(props: HomeFeedProps) {
     props.position.status === "pending" ||
     (props.position.status === "granted" && props.isPending)
   ) {
-    return <HomeFeedSkeleton />;
+    return <HomeFeedSkeleton className="mt-ds-4" />;
   }
 
   const notice = resolveNotice(props);
@@ -102,12 +103,12 @@ export function HomeFeed(props: HomeFeedProps) {
 }
 
 /** 로드 완료 구조(section > ul > li > ReviewCard)를 그대로 따라야 전환 때 밀리지 않는다. */
-function HomeFeedSkeleton() {
+export function HomeFeedSkeleton({ className }: { className?: string }) {
   return (
     <section
       aria-busy="true"
       aria-label="최근 게시물"
-      className="mt-ds-4 flex min-h-0 flex-1 flex-col"
+      className={cn("flex min-h-0 flex-1 flex-col", className)}
       style={{ overflowAnchor: "none" }}
     >
       <ul className="flex flex-1 flex-col gap-ds-4">

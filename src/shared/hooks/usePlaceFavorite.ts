@@ -10,6 +10,7 @@ import {
   useRemoveFavorite,
 } from "@/api/gen/place-detail/place-detail.gen";
 import { getMeQueryKey, getMyFavoritesQueryKey } from "@/api/gen/profile/profile.gen";
+import { useLoginGate } from "@/shared/hooks/useLoginGate";
 import { toast } from "@/shared/ui/Toast";
 
 export type PlaceFavoriteTarget = Readonly<{
@@ -23,11 +24,17 @@ type UsePlaceFavoriteOptions = {
 
 export function usePlaceFavorite({ onSuccessAction }: UsePlaceFavoriteOptions = {}) {
   const queryClient = useQueryClient();
+  const loginGate = useLoginGate();
   const addFavorite = useAddFavorite();
   const removeFavorite = useRemoveFavorite();
   const isPending = addFavorite.isPending || removeFavorite.isPending;
 
   async function toggleFavorite(place: PlaceFavoriteTarget): Promise<void> {
+    if (!loginGate.isAuthenticated) {
+      loginGate.redirectToLogin();
+      return;
+    }
+
     if (isPending) {
       return;
     }

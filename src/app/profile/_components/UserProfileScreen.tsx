@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ReviewDetailSheet } from "@/shared/components/ReviewDetailSheet/ReviewDetailSheet";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { ROUTES } from "@/shared/constants/routes";
+import { useSafeBack } from "@/shared/hooks/useSafeBack";
 import { GNB } from "@/shared/ui/GNB";
 import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon } from "@/shared/ui/Icons";
@@ -24,6 +25,7 @@ type UserProfileScreenProps = {
 
 export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps) {
   const router = useRouter();
+  const goBack = useSafeBack();
   const isMyProfile = useIsMyProfile(userId);
   const summary = useUserProfileSummary(userId);
   const tabPage = useUserProfileTabPage(userId, activeTab);
@@ -45,7 +47,7 @@ export function UserProfileScreen({ userId, activeTab }: UserProfileScreenProps)
       className="shrink-0"
       title={null}
       left={
-        <IconButton aria-label="뒤로 가기" onClick={() => router.back()}>
+        <IconButton aria-label="뒤로 가기" onClick={goBack}>
           <ChevronLeftIcon size={28} />
         </IconButton>
       }

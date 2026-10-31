@@ -2,9 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
-import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
-import { safeReturnTo } from "@/shared/utils/authNavigation";
+import { getBrowseTarget, safeReturnTo } from "@/shared/utils/authNavigation";
 import { LoginScreen } from "./_components/LoginScreen";
 import { useKakaoLogin } from "./_hooks/useKakaoLogin";
 
@@ -16,14 +15,8 @@ function Login() {
   const { pending, error, login } = useKakaoLogin(returnTo, params.get("error"));
 
   useEffect(() => {
-    switch (state.status) {
-      case "authenticated":
-        router.replace(returnTo);
-        break;
-      case "signup-required":
-        router.replace(ROUTES.SIGNUP);
-        break;
-    }
+    // 가입 미완료는 AuthProvider가 복귀 경로와 함께 가입 화면으로 보낸다.
+    if (state.status === "authenticated") router.replace(returnTo);
   }, [state.status, returnTo, router]);
 
   return (
@@ -32,13 +25,16 @@ function Login() {
       disabled={state.status !== "anonymous" && state.status !== "error"}
       error={error}
       onLogin={() => void login()}
+      onBrowse={() => router.replace(getBrowseTarget(returnTo))}
     />
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<LoginScreen disabled onLogin={() => undefined} />}>
+    <Suspense
+      fallback={<LoginScreen disabled onLogin={() => undefined} onBrowse={() => undefined} />}
+    >
       <Login />
     </Suspense>
   );
