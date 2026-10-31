@@ -5,31 +5,20 @@ import { SHEET_PROMPT_DELAY_MS } from "@/shared/constants/motion";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { TICKET_ONBOARDING_STORAGE_KEY } from "../_constants/ticketOnboarding";
 
-/** 비로그인은 다음 방문에 다시 안내하도록 탭 세션 동안만 기억한다. */
-function getPromptStorage(isAuthenticated: boolean): Storage {
-  return isAuthenticated ? window.localStorage : window.sessionStorage;
-}
+type PromptStorage = "localStorage" | "sessionStorage";
 
-function hasSeenTicketOnboarding(isAuthenticated: boolean): boolean {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
+function hasSeenTicketOnboarding(storage: PromptStorage): boolean {
   try {
-    return getPromptStorage(isAuthenticated).getItem(TICKET_ONBOARDING_STORAGE_KEY) === "true";
+    return window[storage].getItem(TICKET_ONBOARDING_STORAGE_KEY) === "true";
   } catch {
     // 저장소가 막힌 환경에서는 기억하지 못한다. 안내가 다시 뜰 뿐 화면은 정상 동작한다.
     return false;
   }
 }
 
-function markTicketOnboardingSeen(isAuthenticated: boolean): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
+function markTicketOnboardingSeen(storage: PromptStorage): void {
   try {
-    getPromptStorage(isAuthenticated).setItem(TICKET_ONBOARDING_STORAGE_KEY, "true");
+    window[storage].setItem(TICKET_ONBOARDING_STORAGE_KEY, "true");
   } catch {
     // 위와 같다.
   }
@@ -46,21 +35,22 @@ function markTicketOnboardingSeen(isAuthenticated: boolean): void {
  */
 export function useTicketOnboardingPrompt() {
   const { state } = useAuth();
-  const isAuthenticated = state.status === "authenticated";
+  // 비로그인은 다음 방문에 다시 안내하도록 탭 세션 동안만 기억한다.
+  const storage = state.status === "authenticated" ? "localStorage" : "sessionStorage";
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (hasSeenTicketOnboarding(isAuthenticated)) {
+    if (hasSeenTicketOnboarding(storage)) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      markTicketOnboardingSeen(isAuthenticated);
+      markTicketOnboardingSeen(storage);
       setOpen(true);
     }, SHEET_PROMPT_DELAY_MS);
 
     return () => window.clearTimeout(timer);
-  }, [isAuthenticated]);
+  }, [storage]);
 
   return { open, onOpenChange: setOpen };
 }

@@ -3,26 +3,21 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { getListGroupsQueryKey } from "@/api/gen/group/group.gen";
 import { getNearbyReviewsQueryKey } from "@/api/gen/nearby/nearby.gen";
-import type { ReviewCardFavoriteAction } from "@/shared/components/ReviewCard/ReviewCard";
 import { ReviewCard } from "@/shared/components/ReviewCard/ReviewCard";
 import { ScreenLayout } from "@/shared/components/ScreenLayout";
 import { TMTLogoHomeLink } from "@/shared/components/TMTLogoHomeLink";
 import { invalidateCurrentPosition } from "@/shared/hooks/useCurrentPosition";
-import { type ResolvedPosition, useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
+import { useResolvedPosition } from "@/shared/hooks/useResolvedPosition";
 import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
 import { GNB } from "@/shared/ui/GNB";
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { useGuestNearbyReviews, useGuestRecommendedGroups } from "../_hooks/useGuestHome";
-import type { FeedReview } from "../_model/home";
 import { HomeFeedSkeleton } from "./HomeFeed";
 import { RecommendedGroupList } from "./RecommendedGroupList";
 
 export function GuestHomeScreen() {
   const queryClient = useQueryClient();
-  const position = useResolvedPosition();
-  const nearby = useGuestNearbyReviews(position);
   const groups = useGuestRecommendedGroups();
-  const favorite = useReviewFavorites(nearby.data);
 
   // 좌표만 다시 재면 같은 칸에 있을 때 목록 키가 안 바뀐다. 좌표와 조회를 함께 무효화한다.
   const refresh = () =>
@@ -41,14 +36,7 @@ export function GuestHomeScreen() {
         <h1 className="sr-only">또맛또 홈</h1>
         {/* 근처 리뷰가 없으면 영역째 사라지므로 간격을 요소가 아니라 컨테이너가 소유한다. */}
         <div className="flex min-h-0 flex-1 flex-col gap-ds-4 bg-surface-secondary">
-          <GuestNearbyReviews
-            position={position}
-            isPending={nearby.isPending}
-            isError={nearby.isError}
-            onRetry={() => nearby.refetch()}
-            reviews={favorite.reviews}
-            favoriteAction={favorite.favoriteAction}
-          />
+          <GuestNearbyReviews />
 
           {groups.isError ? (
             <div className="bg-surface-primary">
@@ -66,34 +54,22 @@ export function GuestHomeScreen() {
   );
 }
 
-type GuestNearbyReviewsProps = {
-  position: ResolvedPosition | null;
-  isPending: boolean;
-  isError: boolean;
-  onRetry: () => void;
-  reviews: FeedReview[] | undefined;
-  favoriteAction: ReviewCardFavoriteAction;
-};
+function GuestNearbyReviews() {
+  const position = useResolvedPosition();
+  const nearby = useGuestNearbyReviews(position);
+  const { reviews, favoriteAction } = useReviewFavorites(nearby.data);
 
-function GuestNearbyReviews({
-  position,
-  isPending,
-  isError,
-  onRetry,
-  reviews,
-  favoriteAction,
-}: GuestNearbyReviewsProps) {
   // 좌표가 정해지기 전에는 쿼리가 꺼져 있어 isPending만으로 구분되지 않는다.
-  if (position === null || isPending) {
+  if (position === null || nearby.isPending) {
     return <HomeFeedSkeleton />;
   }
 
   const label = position.isFallback ? "강남역 주변 리뷰" : "근처 리뷰";
 
-  if (isError) {
+  if (nearby.isError) {
     return (
       <section className="flex flex-col bg-surface-primary" aria-label={label}>
-        <RetryNotice message="리뷰를 불러오지 못했어요." onRetry={onRetry} />
+        <RetryNotice message="리뷰를 불러오지 못했어요." onRetry={() => nearby.refetch()} />
       </section>
     );
   }

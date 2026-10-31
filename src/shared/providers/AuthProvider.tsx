@@ -18,7 +18,7 @@ import { ErrorFallback } from "@/shared/components/ErrorFallback";
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
 import { PageLoading } from "@/shared/ui/PageLoading";
-import { isPublicPage, pathWithReturnTo, safeReturnTo } from "@/shared/utils/authNavigation";
+import { isPublicPage, pathWithReturnTo } from "@/shared/utils/authNavigation";
 import { getAuthState } from "./authState";
 
 function selectProfileCompleted(profile: MyProfileResponse): boolean {
@@ -84,8 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (snapshot.status === "anonymous" && !isPublicPage(pathname)) {
-      const returnTo = safeReturnTo(`${window.location.pathname}${window.location.search}`);
-      router.replace(pathWithReturnTo(ROUTES.LOGIN, returnTo));
+      const { pathname: currentPath, search } = window.location;
+      router.replace(pathWithReturnTo(ROUTES.LOGIN, `${currentPath}${search}`));
     }
   }, [pathname, router, snapshot.status]);
 

@@ -4,14 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuth } from "@/shared/hooks/useAuth";
-import { pathWithReturnTo, safeReturnTo } from "@/shared/utils/authNavigation";
+import { pathWithReturnTo } from "@/shared/utils/authNavigation";
 import { useSignup } from "../_hooks/useSignup";
 import { SignupForm } from "./SignupForm";
 
 export function SignupScreen() {
   const { state } = useAuth();
   const router = useRouter();
-  const returnTo = safeReturnTo(useSearchParams().get("returnTo"));
+  const returnTo = useSearchParams().get("returnTo") ?? ROUTES.ROOT;
   const signup = useSignup();
   useEffect(() => {
     if (state.status === "authenticated") {
