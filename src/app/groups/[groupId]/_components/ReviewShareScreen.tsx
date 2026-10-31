@@ -1,12 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useGroupDetail } from "@/api/gen/group/group.gen";
 import dummyImage from "@/shared/assets/dummy-image.png";
-import { ROUTES } from "@/shared/constants/routes";
-import { useJoinGroup } from "@/shared/hooks/useJoinGroup";
-import { useShareReviewsToGroup } from "@/shared/hooks/useShareReviewsToGroup";
 import { Button } from "@/shared/ui/Button";
 import { ButtonStack } from "@/shared/ui/ButtonStack";
 import { Checkbox, CheckboxGroup } from "@/shared/ui/Checkbox";
@@ -16,9 +10,8 @@ import { CancelIcon } from "@/shared/ui/Icons";
 import { ImageWithFallback } from "@/shared/ui/ImageWithFallback";
 import { Spinner } from "@/shared/ui/Spinner";
 import { cn } from "@/shared/utils/cn";
-import { useReviewSharePages } from "../_hooks/useReviewSharePages";
+import { useReviewShareSelection } from "../_hooks/useReviewShareSelection";
 import type { ReviewShareItem } from "../_model/reviewShare";
-import { toReviewShareItems } from "../_utils/reviewShareMappers";
 
 const SHARE_NOTICE =
   "리뷰 공유는 선택이에요. 다만 그룹 주제와 관련 없는 리뷰는 운영 정책에 따라 삭제될 수 있어요.";
@@ -48,38 +41,18 @@ type ReviewShareScreenProps = Readonly<{
  * 무르는 길은 GNB의 X 하나다. 아무것도 바꾸지 않고 그룹 상세로 돌아간다.
  */
 export function ReviewShareScreen({ groupId, mode }: ReviewShareScreenProps) {
-  const router = useRouter();
-  const detail = useGroupDetail(groupId);
-  const pages = useReviewSharePages(groupId);
-  const join = useJoinGroup(groupId);
-  const share = useShareReviewsToGroup(groupId);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const items = toReviewShareItems(pages.data?.pages.flatMap((page) => page.items));
-  // 이미 공유된 리뷰. 가입 전에는 공유된 게 있을 수 없어 mode를 따로 보지 않는다.
-  const lockedIds = new Set(items.filter((item) => item.isShared).map((item) => item.reviewId));
-  // 새로 고른 것만. 잠긴 리뷰는 합집합으로 항상 실리므로 여기서 세지 않는다.
-  const newIds = selectedIds.filter((id) => !lockedIds.has(id));
-  const isPending = mode === "join" ? join.isPending : share.isPending;
-
-  const leave = () => router.replace(ROUTES.GROUPS.DETAIL(groupId));
-  const submit = async (reviewIds: readonly string[]) => {
-    const didSubmit =
-      mode === "join"
-        ? await join.joinGroup({ sourceReviewIds: reviewIds })
-        : await share.shareReviews(reviewIds);
-    if (!didSubmit) {
-      return;
-    }
-    router.replace(ROUTES.GROUPS.DETAIL(groupId));
-  };
+  const selection = useReviewShareSelection(groupId, mode);
 
   return (
     <>
       <GNB
         title="리뷰 공유"
         right={
-          <IconButton aria-label="리뷰 공유 닫기" disabled={isPending} onClick={leave}>
+          <IconButton
+            aria-label="리뷰 공유 닫기"
+            disabled={selection.isPending}
+            onClick={selection.leave}
+          >
             <CancelIcon thick />
           </IconButton>
         }
@@ -88,7 +61,7 @@ export function ReviewShareScreen({ groupId, mode }: ReviewShareScreenProps) {
       <main className="content-container flex min-h-0 flex-1 flex-col gap-ds-20 overflow-y-auto pt-ds-24">
         <div className="flex flex-col gap-ds-12">
           <h1 className="text-heading-lg text-content-primary">
-            <span className="text-content-interactive-primary">{detail.data?.name}</span> 그룹에
+            <span className="text-content-interactive-primary">{selection.groupName}</span> 그룹에
             공유할
             <br />
             리뷰를 선택해 주세요
@@ -99,34 +72,38 @@ export function ReviewShareScreen({ groupId, mode }: ReviewShareScreenProps) {
         </div>
 
         <ReviewShareList
-          items={items}
-          selectedIds={[...new Set([...lockedIds, ...selectedIds])]}
-          onSelectedIdsChange={setSelectedIds}
-          isPending={pages.isPending}
-          isError={pages.isError}
-          onRetry={() => void pages.refetch()}
-          hasNextPage={pages.hasNextPage}
-          isFetchingNextPage={pages.isFetchingNextPage}
-          onLoadMore={() => void pages.fetchNextPage()}
+          items={selection.items}
+          selectedIds={selection.selectedIds}
+          onSelectedIdsChange={selection.setSelectedIds}
+          isPending={selection.pages.isPending}
+          isError={selection.pages.isError}
+          onRetry={() => void selection.pages.refetch()}
+          hasNextPage={selection.pages.hasNextPage}
+          isFetchingNextPage={selection.pages.isFetchingNextPage}
+          onLoadMore={() => void selection.pages.fetchNextPage()}
         />
       </main>
 
       <div className="content-container pt-ds-12 pb-ds-32">
         {mode === "join" ? (
           <ButtonStack type="horizontal">
-            <Button variant="tertiary" disabled={isPending} onClick={() => void submit([])}>
+            <Button
+              variant="tertiary"
+              disabled={selection.isPending}
+              onClick={() => void selection.skip()}
+            >
               건너뛰기
             </Button>
-            <Button loading={isPending} onClick={() => void submit(selectedIds)}>
+            <Button loading={selection.isPending} onClick={() => void selection.submitSelected()}>
               가입하기
             </Button>
           </ButtonStack>
         ) : (
           <ButtonStack>
             <Button
-              loading={isPending}
-              disabled={newIds.length === 0}
-              onClick={() => void submit(newIds)}
+              loading={selection.isPending}
+              disabled={!selection.canShare}
+              onClick={() => void selection.submitSelected()}
             >
               공유하기
             </Button>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import emptyMascot from "@/shared/components/assets/mascot-empty.png";
 import { ContinueDraftSheet } from "@/shared/components/ContinueDraftSheet";
 import { EmptyNotice } from "@/shared/components/EmptyNotice/EmptyNotice";
@@ -9,14 +8,9 @@ import {
   ReviewCard,
   type ReviewCardFavoriteAction,
 } from "@/shared/components/ReviewCard/ReviewCard";
-import { newReviewForGroupJoinPath } from "@/shared/constants/reviewJoinGroup";
 import { ROUTES } from "@/shared/constants/routes";
-import { UT2_STEPS } from "@/shared/constants/ut2";
-import { useLoginGate } from "@/shared/hooks/useLoginGate";
-import { useReviewReturnTo } from "@/shared/hooks/useReviewEntryPath";
 import { useReviewFavorites } from "@/shared/hooks/useReviewFavorites";
 import { useSafeBack } from "@/shared/hooks/useSafeBack";
-import { useUt2Step } from "@/shared/hooks/useUt2Step";
 import { Button } from "@/shared/ui/Button";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { GNB } from "@/shared/ui/GNB";
@@ -24,14 +18,10 @@ import { IconButton } from "@/shared/ui/IconButton";
 import { ChevronLeftIcon, LeaveGroupIcon, PlusIcon, SettingsIcon } from "@/shared/ui/Icons";
 import { RetryNotice } from "@/shared/ui/RetryNotice";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { toast } from "@/shared/ui/Toast";
-import { useFirstReviewPrompt } from "../_hooks/useFirstReviewPrompt";
-import { useGroupReviewEntry } from "../_hooks/useGroupReviewEntry";
-import { useGroupShareEntry } from "../_hooks/useGroupShareEntry";
+import { useGroupDetailFlow } from "../_hooks/useGroupDetailFlow";
 import type {
   GroupDetailViewData,
   GroupJoinAction,
-  GroupJoinInfo,
   GroupJoinPreviewState,
   GroupLeaveAction,
   GroupReviewListState,
@@ -60,94 +50,19 @@ export function GroupDetailView({
 }: GroupDetailViewProps) {
   const router = useRouter();
   const goBack = useSafeBack();
-  const loginGate = useLoginGate();
-  const [isJoinSheetOpen, setIsJoinSheetOpen] = useState(false);
-  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
-  const [isEntrySheetOpen, setIsEntrySheetOpen] = useState(false);
   const favorite = useReviewFavorites(
     reviewList.status === "ready" ? reviewList.reviews : undefined,
   );
   const reviews = favorite.reviews ?? [];
-  const isNonMember = !group.isMember;
-  const reviewEntry = useGroupReviewEntry(group.id, {
-    enabled: isNonMember && joinPreview.status !== "login-required",
-  });
-  const reviewReturnTo = useReviewReturnTo();
   const shouldPromptFirstReview =
     group.isMember && reviewList.status === "ready" && reviewList.reviews.length === 0;
-  const firstReviewPrompt = useFirstReviewPrompt(shouldPromptFirstReview);
-  const joinPreviewData = joinPreview.status === "ready" ? joinPreview : null;
-  // 비멤버는 가입 팝업이 `가입하기`로 뜰 때, 멤버는 `+`를 누를 때 공유할 리뷰가 있는지 본다.
-  const shareEntry = useGroupShareEntry(group.id, {
-    enabled: (isNonMember && joinPreviewData?.isJoinable === true) || group.isMember,
+  const flow = useGroupDetailFlow({
+    group,
+    joinPreview,
+    joinAction,
+    leaveAction,
+    shouldPromptFirstReview,
   });
-
-  // ⚠️ UT2 임시 계측. 상세 진입은 2-1, 티켓이 없는 채로 가입 시트가 열리면 2-3이다.
-  useUt2Step(UT2_STEPS.GROUP_DETAIL_ENTER);
-  useUt2Step(
-    UT2_STEPS.TICKET_INSUFFICIENT_SHEET,
-    isJoinSheetOpen && isNonMember && joinPreviewData?.availableTicketCount === 0,
-  );
-
-  const sheetJoinAction: GroupJoinAction = {
-    ...joinAction,
-    isPending: joinAction.isPending || shareEntry.isChecking,
-    onJoin: async () => {
-      // 공유할 리뷰가 있으면 가입 전에 고르게 한다. 공유는 가입 요청에 함께 실어야 하므로
-      // 가입은 그 화면이 맡고, 여기서는 아직 가입하지 않은 것으로 돌려준다.
-      if (shareEntry.hasReviewsToShare) {
-        setIsJoinSheetOpen(false);
-        router.push(ROUTES.GROUPS.JOIN(group.id));
-        return false;
-      }
-
-      // 성공·실패 안내는 useJoinGroup이 띄운다. 여기서는 시트만 정리한다.
-      const didJoin = await joinAction.onJoin();
-
-      if (didJoin) {
-        setIsJoinSheetOpen(false);
-      }
-
-      return didJoin;
-    },
-  };
-
-  const groupJoinInfo: GroupJoinInfo = {
-    name: group.name,
-    imageUrl: group.imageUrl,
-    availableTicketCount: joinPreviewData?.availableTicketCount ?? 0,
-  };
-  const leaveModalAction: GroupLeaveAction = {
-    ...leaveAction,
-    onLeaveAction: async () => {
-      const result = await leaveAction.onLeaveAction();
-
-      if (result.success) {
-        setIsLeaveModalOpen(false);
-        toast.success("그룹 탈퇴가 완료되었어요.");
-        router.replace(ROUTES.GROUPS.ROOT);
-      } else {
-        toast.error(result.errorTitle ?? "그룹 탈퇴에 실패했어요. 다시 시도해 주세요.");
-      }
-
-      return result;
-    },
-  };
-  const handleLeaveModalOpenChange = (open: boolean) => {
-    if (!leaveAction.isPending) {
-      setIsLeaveModalOpen(open);
-    }
-  };
-
-  const writeNewReview = () => router.push(newReviewForGroupJoinPath(group.id, reviewReturnTo));
-  // 공유할 내 리뷰가 없으면 고를 게 없다. 시트 없이 바로 새로 쓰기로 보낸다.
-  const openReviewEntry = () => {
-    if (shareEntry.hasReviewsToShare) {
-      setIsEntrySheetOpen(true);
-      return;
-    }
-    writeNewReview();
-  };
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col bg-surface-secondary">
@@ -168,7 +83,7 @@ export function GroupDetailView({
               <SettingsIcon size={28} />
             </IconButton>
           ) : group.isMember ? (
-            <IconButton aria-label="그룹 나가기" onClick={() => setIsLeaveModalOpen(true)}>
+            <IconButton aria-label="그룹 나가기" onClick={flow.leaveModal.onOpen}>
               <LeaveGroupIcon size={24} />
             </IconButton>
           ) : undefined
@@ -178,76 +93,69 @@ export function GroupDetailView({
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <GroupProfile group={group} />
         <GroupReviewList
-          isContentRestricted={isNonMember}
+          isContentRestricted={flow.isNonMember}
           isOwner={group.isOwner}
           reviewList={reviewList.status === "ready" ? { ...reviewList, reviews } : reviewList}
           favoriteAction={group.isMember ? favorite.favoriteAction : undefined}
         />
-        {isNonMember && joinPreview.status === "error" ? (
+        {flow.isNonMember && joinPreview.status === "error" ? (
           <RetryNotice message="가입 정보를 불러오지 못했어요." onRetry={joinPreview.onRetry} />
         ) : null}
       </main>
 
-      {isNonMember &&
+      {flow.isNonMember &&
         (joinPreview.status !== "error" ? (
           <JoinGate
             disabled={joinPreview.status === "pending"}
             label={joinPreview.status === "pending" ? "가입 정보를 불러오는 중이에요" : undefined}
-            onJoin={() =>
-              joinPreview.status === "login-required"
-                ? loginGate.redirectToLogin()
-                : setIsJoinSheetOpen(true)
-            }
+            onJoin={flow.joinSheet.onOpen}
           />
         ) : null)}
 
-      {isNonMember &&
-        joinPreviewData &&
-        (joinPreviewData.isJoinable ? (
+      {flow.isNonMember &&
+        flow.joinSheet.preview &&
+        (flow.joinSheet.preview.isJoinable ? (
           <JoinGroupTicketSheet
-            open={isJoinSheetOpen}
-            onOpenChangeAction={setIsJoinSheetOpen}
-            group={groupJoinInfo}
-            joinAction={sheetJoinAction}
+            open={flow.joinSheet.open}
+            onOpenChangeAction={flow.joinSheet.onOpenChange}
+            group={flow.joinSheet.group}
+            joinAction={flow.joinSheet.action}
           />
         ) : (
           <GroupTicketShortageSheet
-            open={isJoinSheetOpen}
-            onOpenChangeAction={setIsJoinSheetOpen}
-            onWriteReviewAction={() => {
-              setIsJoinSheetOpen(false);
-              reviewEntry.startWriting();
-            }}
-            isWriteReviewPending={reviewEntry.isChecking}
-            group={groupJoinInfo}
+            open={flow.joinSheet.open}
+            onOpenChangeAction={flow.joinSheet.onOpenChange}
+            onWriteReviewAction={flow.joinSheet.onWriteReview}
+            isWriteReviewPending={flow.joinSheet.isWriteReviewPending}
+            group={flow.joinSheet.group}
           />
         ))}
 
-      {isNonMember && (
+      {flow.isNonMember && (
         <ContinueDraftSheet
-          open={reviewEntry.continueSheet.open}
-          onOpenChangeAction={reviewEntry.continueSheet.onOpenChange}
-          onContinueAction={reviewEntry.continueSheet.continueDraft}
-          secondaryAction={{ label: "새로 작성하기", onClick: reviewEntry.continueSheet.startNew }}
+          open={flow.continueSheet.open}
+          onOpenChangeAction={flow.continueSheet.onOpenChange}
+          onContinueAction={flow.continueSheet.continueDraft}
+          secondaryAction={{
+            label: "새로 작성하기",
+            onClick: flow.continueSheet.startNew,
+          }}
         />
       )}
 
       {group.isMember ? (
         <GroupLeaveModal
-          open={isLeaveModalOpen}
-          onOpenChangeAction={handleLeaveModalOpenChange}
-          leaveAction={leaveModalAction}
+          open={flow.leaveModal.open}
+          onOpenChangeAction={flow.leaveModal.onOpenChange}
+          leaveAction={flow.leaveModal.action}
         />
       ) : null}
 
       {shouldPromptFirstReview ? (
         <GroupFirstReviewSheet
-          open={firstReviewPrompt.isOpen}
-          onOpenChangeAction={firstReviewPrompt.onOpenChange}
-          onWriteReviewAction={() => {
-            firstReviewPrompt.onOpenChange(false);
-            writeNewReview();
-          }}
+          open={flow.firstReviewPrompt.isOpen}
+          onOpenChangeAction={flow.firstReviewPrompt.onOpenChange}
+          onWriteReviewAction={flow.firstReviewPrompt.onWriteReview}
         />
       ) : null}
 
@@ -257,8 +165,8 @@ export function GroupDetailView({
         <FloatingActionButton
           placement="standalone"
           aria-label="그룹에 리뷰 남기기"
-          disabled={shareEntry.isChecking}
-          onClick={openReviewEntry}
+          disabled={flow.reviewEntrySheet.isChecking}
+          onClick={flow.reviewEntrySheet.onOpen}
         >
           <PlusIcon size={24} />
         </FloatingActionButton>
@@ -266,16 +174,10 @@ export function GroupDetailView({
 
       {group.isMember ? (
         <GroupReviewEntrySheet
-          open={isEntrySheetOpen}
-          onOpenChangeAction={setIsEntrySheetOpen}
-          onShareAction={() => {
-            setIsEntrySheetOpen(false);
-            router.push(ROUTES.GROUPS.SHARE(group.id));
-          }}
-          onWriteNewAction={() => {
-            setIsEntrySheetOpen(false);
-            writeNewReview();
-          }}
+          open={flow.reviewEntrySheet.open}
+          onOpenChangeAction={flow.reviewEntrySheet.onOpenChange}
+          onShareAction={flow.reviewEntrySheet.onShare}
+          onWriteNewAction={flow.reviewEntrySheet.onWriteNew}
         />
       ) : null}
     </div>
