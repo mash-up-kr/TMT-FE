@@ -4,6 +4,7 @@ import {
   type JoinPreviewQueryResult,
   useJoinPreview,
 } from "@/api/gen/group-membership/group-membership.gen";
+import { useAuth } from "@/shared/hooks/useAuth";
 import { toReviewCardData } from "@/shared/utils/reviewMapper";
 import type {
   GroupDetailViewData,
@@ -45,11 +46,17 @@ function toReviewListState(reviews: ReturnType<typeof useGroupReviewPages>): Gro
 }
 
 function toJoinPreviewState(
+  isAuthenticated: boolean,
   isMember: boolean,
   joinPreview: UseQueryResult<JoinPreviewQueryResult, JoinPreviewQueryError>,
 ): GroupJoinPreviewState {
   if (isMember) {
     return { status: "not-required" };
+  }
+
+  // 꺼진 쿼리는 계속 pending이라, 이 분기가 없으면 가입 버튼이 비활성으로 멈춘다.
+  if (!isAuthenticated) {
+    return { status: "login-required" };
   }
 
   if (joinPreview.isPending) {
@@ -68,15 +75,17 @@ function toJoinPreviewState(
 }
 
 export function useGroupDetailQueryState(groupId: string): GroupDetailQueryState {
+  const { state } = useAuth();
+  const isAuthenticated = state.status === "authenticated";
   const { data: detail } = useSuspenseGroupDetail(groupId);
   const reviews = useGroupReviewPages(groupId, detail.isMember);
   const joinPreview = useJoinPreview(groupId, {
-    query: { enabled: detail.isMember === false },
+    query: { enabled: isAuthenticated && detail.isMember === false },
   });
 
   return {
     group: toGroupDetailViewData(detail),
     reviewList: toReviewListState(reviews),
-    joinPreview: toJoinPreviewState(detail.isMember, joinPreview),
+    joinPreview: toJoinPreviewState(isAuthenticated, detail.isMember, joinPreview),
   };
 }

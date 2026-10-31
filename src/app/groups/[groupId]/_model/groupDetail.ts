@@ -41,6 +41,7 @@ export type GroupLeaveAction = Readonly<{
 
 export type GroupJoinPreviewState =
   | Readonly<{ status: "not-required" }>
+  | Readonly<{ status: "login-required" }>
   | Readonly<{ status: "pending" }>
   | Readonly<{ status: "error"; onRetry: () => void }>
   | Readonly<{ status: "ready"; availableTicketCount: number; isJoinable: boolean }>;

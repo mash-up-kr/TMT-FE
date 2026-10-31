@@ -113,6 +113,7 @@ export const tmtFetch = async <T>(url: string, init?: RequestInit): Promise<T> =
       }
     }
     if (
+      requestToken !== null &&
       (code === "AUTH_TOKEN_INVALID" || code === "UNAUTHORIZED") &&
       requestToken === getAccessToken()
     ) {

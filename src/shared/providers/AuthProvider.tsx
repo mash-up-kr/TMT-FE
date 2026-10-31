@@ -18,7 +18,7 @@ import { ErrorFallback } from "@/shared/components/ErrorFallback";
 import { ROUTES } from "@/shared/constants/routes";
 import { AuthContext } from "@/shared/providers/AuthContext";
 import { PageLoading } from "@/shared/ui/PageLoading";
-import { isPublicPage, safeReturnTo } from "@/shared/utils/authNavigation";
+import { isPublicPage, pathWithReturnTo, safeReturnTo } from "@/shared/utils/authNavigation";
 import { getAuthState } from "./authState";
 
 function selectProfileCompleted(profile: MyProfileResponse): boolean {
@@ -26,6 +26,13 @@ function selectProfileCompleted(profile: MyProfileResponse): boolean {
     throw new Error("가입 상태 응답이 올바르지 않습니다.");
   }
   return profile.profileCompleted;
+}
+
+/** 가입 뒤 돌아갈 곳. 로그인 화면이면 이미 받은 복귀 경로를, 그 밖에는 보던 화면을 쓴다. */
+function readSignupReturnTo(): string {
+  const { pathname, search } = window.location;
+  if (pathname !== ROUTES.LOGIN) return `${pathname}${search}`;
+  return new URLSearchParams(search).get("returnTo") ?? ROUTES.ROOT;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -50,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     pathname !== "/auth/complete";
 
   useEffect(() => {
-    if (requiresSignup) router.replace(ROUTES.SIGNUP);
+    if (requiresSignup) router.replace(pathWithReturnTo(ROUTES.SIGNUP, readSignupReturnTo()));
   }, [requiresSignup, router]);
 
   useEffect(() => {
@@ -78,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (snapshot.status === "anonymous" && !isPublicPage(pathname)) {
       const returnTo = safeReturnTo(`${window.location.pathname}${window.location.search}`);
-      router.replace(`${ROUTES.LOGIN}?returnTo=${encodeURIComponent(returnTo)}`);
+      router.replace(pathWithReturnTo(ROUTES.LOGIN, returnTo));
     }
   }, [pathname, router, snapshot.status]);
 
@@ -100,8 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       case "anonymous":
         return isPublicPage(pathname) ? children : <PageLoading />;
       case "restoring-session":
-        // 공개 프로필도 내 계정인지 구분할 수 있도록 세션 복원을 기다린다.
-        if (isPublicPage(pathname) && !pathname.startsWith("/profile/")) return children;
+        // 공개 화면도 복원을 기다린다. 토큰 없이 받은 가입·찜 상태는 복원 뒤 다시 조회되지 않는다.
+        if (pathname === ROUTES.LOGIN || pathname === "/auth/complete") return children;
         return <PageLoading />;
       case "checking-profile":
         return <PageLoading />;

@@ -13,7 +13,7 @@ function toMyGroup(group: MyGroup): HomeGroup {
   };
 }
 
-function toRecommendedGroup(group: GroupCardResponse): HomeRecommendedGroup {
+export function toRecommendedGroup(group: GroupCardResponse): HomeRecommendedGroup {
   return {
     id: group.groupId,
     name: group.name,
